@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\..\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\Amiguchi00.json">
+        <Link>src\Amiguchi00.json</Link>
+      </Content>
+    </ItemGroup>
+
+</Project>
