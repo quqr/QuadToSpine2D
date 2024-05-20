@@ -1,38 +1,16 @@
-﻿using System.Reflection;
-using System.Text;
-using Newtonsoft.Json.Serialization;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using QuadPlayer.SpineJson;
-using Image = QuadPlayer.SpineJson.Image;
-
-namespace QuadPlayer;
+﻿using QuadPlayer;
+using QuadPlayer.Spine;
 
 class Program
 {
     static void Main(string[] args)
     {
-        ProcessQuadFile processQuadFile = new();
-        ProcessImage processImage = new(processQuadFile.Quad);
-        SpineJson.SpineJson spineJson = new(processImage);
-
-    }
-}
-public class MyWriteResolver : DefaultContractResolver
-{
-    protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-    {
-        var prop = base.CreateProperty(member, memberSerialization);
-        var attr = member.GetCustomAttribute(typeof(JsonAttribute)) as JsonAttribute;
-        if (attr != null)
-        {
-            prop.ShouldSerialize = instance =>
-            {
-                var val = prop.ValueProvider.GetValue(instance) as BaseImage;
-                prop.PropertyName = val.name;
-                return true;
-            };
-        }
-        return prop;
+        var quadPath = "D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\swi sent Amiguchi00.mbs.v55.quad";
+        var imagePath = "D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\swi sent Amiguchi00.0.nvt.png";
+        var outputPath = "E:\\Asset\\Muramasa[PICTURE]\\WORK\\TestSpine\\test.json";
+        var quad = new ProcessQuadFile(quadPath);
+        var imageQuad = new ProcessImage(imagePath, quad.Quad);
+        var spineJson = new ProcessSpineJson(imageQuad,quad.Quad);
+        File.WriteAllText(outputPath,spineJson.SpineJsonFile);
     }
 }

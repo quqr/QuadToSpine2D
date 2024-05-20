@@ -1,65 +1,52 @@
-﻿using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+﻿using SixLabors.ImageSharp.Processing;
 
 namespace QuadPlayer;
 using SixLabors.ImageSharp;
 
 public class ProcessImage
 {
-    public Dictionary<string, Image> ClipImage = new();
-
-    public ProcessImage(QuadJson quad)
+    public Dictionary<string, Image> ClipImages = new();
+    public ProcessImage(string imagePath,QuadJson quad)
     {
-        Image image = ReadImage("D:\\Code\\C#\\Q\\QuadPlayer\\src\\swi sent Amiguchi00.0.nvt.png");
+        Image image = ReadImage(imagePath);
         foreach (var keyframe in quad.Keyframe)
         {
-            if(keyframe.Layers is null) continue;
-            foreach (var layer in keyframe.Layers)
+            if(keyframe?.Layer is null) continue;
+            foreach (var layer in keyframe.Layer)
             {
-                if (layer is null || layer.LayerGUID.Equals(string.Empty) || ClipImage.ContainsKey(layer.LayerGUID)) continue;
-                Rectangle rectangle = ProcessRectangle(layer.Srcquad);
-                ClipImage[layer.LayerGUID] = CutImage(image,rectangle);
+                if (layer is null ||
+                    layer.LayerGuid.Equals(string.Empty) ||
+                    ClipImages.ContainsKey(layer.LayerGuid) ||
+                    layer.Srcquad is null) continue;
+                ClipImages[layer.LayerGuid] = CutImage(image,CalculateRectangle(layer));
             }
         }
-        //CombineCutImage(quad);
+        Console.WriteLine("ProcessImage Finished");
     }
-    public Dictionary<int, Image> KeyframeImage = new();
-    void CombineCutImage(QuadJson quad)
+    private Rectangle CalculateRectangle(KeyframeLayer layer)
     {
-        var image = new Image<Rgba32>((int)quad.Keyframe[0].Width, (int)quad.Keyframe[0].Height);
-        image.Mutate(x =>
-        {
-            foreach (var layer in quad.Keyframe[0].Layers)
-            {
-                x.DrawImage(ClipImage[layer.LayerGUID],
-                    new Point((int)(layer.Dstquad[0] + quad.Keyframe[1].Width / 2), (int)(layer.Dstquad[1] + quad.Keyframe[1].Height / 2)),
-                    1);
-                //Console.WriteLine((int)(layer.Dstquad[0]+quad.Keyframe[1].Width/2)+":::"+ (int)(layer.Dstquad[1] + quad.Keyframe[1].Height / 2));
-            }
-        });
-        image.SaveAsPng("D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\1.png");
-    }
-    private Rectangle ProcessRectangle(float[] srcquad)
-    {
-        var points = ProcessTools.FindMinAndMaxPoints(srcquad);
         return new Rectangle()
         {
-            X = (int)points[0],
-            Y = (int)points[1],
-            Width = (int)(points[2] - points[0]),
-            Height = (int)(points[3] - points[1]),
+            X = (int)layer.MinAndMaxSrcPoints[0],
+            Y = (int)layer.MinAndMaxSrcPoints[1],
+            Width = (int)layer.Width,
+            Height = (int)layer.Height,
         };
     }
     private Image ReadImage(string src)
     {
         return Image.Load(src);
     }
+
+    private int _imageIndex=0;
     private Image CutImage(Image image,Rectangle rectangle)
     {
-        var newImage = image.Clone(context =>
+        var cutImage = image.Clone(context =>
         {
             context.Crop(rectangle);
         });
-        return newImage;
+        cutImage.SaveAsPng($"D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\Output\\{_imageIndex}.png");
+        _imageIndex++;
+        return cutImage;
     }
 }

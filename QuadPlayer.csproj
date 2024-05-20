@@ -13,8 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\..\..\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\Amiguchi00.json">
-        <Link>src\Amiguchi00.json</Link>
+      <Content Include="..\..\..\..\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\Alice.json">
+        <Link>src\Alice.json</Link>
       </Content>
     </ItemGroup>
 
