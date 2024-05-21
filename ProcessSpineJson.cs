@@ -5,46 +5,37 @@ namespace QuadPlayer;
 
 public class ProcessSpineJson
 {
-    public SpineJson SpineJson=new();
+    private SpineJson _spineJson=new();
     public string SpineJsonFile;
-    public Dictionary<string, string> LayerGUIDAndSliceName = new();
-    public Dictionary<string, string> LayerGUIDAndBoneName = new();
-    public Dictionary<string, string> LayerGUIDAndSlotName = new();
-    public Dictionary<int, DefaultAnimationKeyframe> DefaultKeyframes = new();
-    private List<SpineAnimation> SpineAnimations = new();
+    private Dictionary<string, string> _layerGuidAndSlotName = new();
     public ProcessSpineJson(ProcessImage processImage,QuadJson quadJson)
     {
         Init(processImage);
-        ProcessAnimation(quadJson);
+        ProcessAnimation(quadJson,processImage);
         SpineJsonFile = ConvertJson();
         Console.WriteLine("ProcessSpineJson Finished");
     }
 
     private void Init(ProcessImage processImage)
     {
-        SpineJson.Skeletons.Images = "D:/Download/quad_mobile_v05_beta-20240404-2000/quad_mobile_v05_beta/data/Test";
-        SpineJson.Bones.Add(new Spine.Bone() { Name = "root"});
-        SpineJson.Skins.Add(new Skin());
-        for (int index = 0; index < processImage.ClipImages.Count; index++)
+        _spineJson.Skeletons.Images = "D:/Download/quad_mobile_v05_beta-20240404-2000/quad_mobile_v05_beta/data/Output";
+        _spineJson.Bones.Add(new Spine.Bone() { Name = "root"});
+        _spineJson.Skins.Add(new Skin());
+        for (int index = 0; index < processImage.ImagesData.Count; index++)
         {
-            var BoneName = $"Bone {index}";
-            var SlotName = $"Slot {index}";
-            var SliceName = $"Slice {index}";
-            
-            var LayerGUID = processImage.ClipImages.Keys.ElementAt(index);
-            LayerGUIDAndSliceName[LayerGUID] = SliceName;
-            LayerGUIDAndBoneName[LayerGUID] = BoneName;
-            LayerGUIDAndSlotName[LayerGUID] = SlotName;
-            
-            SpineJson.Bones.Add(new Spine.Bone(){Name = BoneName,Parent = "root"});
-            SpineJson.Slots.Add(new Slot(){Name = SlotName,Attachment = SliceName,Bone = BoneName});
-            SpineJson.Skins[0].Attachments.Add(new Attachments
+            var layerGuid = processImage.ImagesData.Keys.ElementAt(index);
+            var slotName = processImage.ImagesData[layerGuid].ImageName;
+            var sliceName = slotName;
+            _layerGuidAndSlotName[layerGuid] = slotName;
+            _spineJson.Slots.Add(new Slot(){Name = slotName,Attachment = sliceName ,Bone = "root"});
+            _spineJson.Skins[0].Attachments.Add(new Attachments
             {
-                Value = new ImageSource
+                Value = new Mesh
                 {
-                    Name = SliceName,
-                    Width = processImage.ClipImages.Values.ElementAt(index).Width,
-                    Height = processImage.ClipImages.Values.ElementAt(index).Height
+                    Name = sliceName,
+                    Uvs = processImage.ImagesData[layerGuid].UVs,
+                    //Vertices =  processImage.ImagesData[layerGuid].Vertices,
+                    Vertices = new float[8],
                 }
             });
         }
@@ -55,61 +46,80 @@ public class ProcessSpineJson
     {
         var setting = new JsonSerializerSettings()
             { ContractResolver = new DefaultContractResolver() { NamingStrategy = new SnakeCaseNamingStrategy() } };
-        var json = JsonConvert.SerializeObject(SpineJson,Formatting.Indented,setting);
+        var json = JsonConvert.SerializeObject(_spineJson,Formatting.Indented,setting);
         return json;
     }
 
-    private void ProcessAnimation(QuadJson quad)
+    private Dictionary<string,SpineAnimation> spineAnimations = new();
+    private void ProcessAnimation(QuadJson quad,ProcessImage processImage)
     {
-        foreach (var keyframe in quad.Keyframe)
+        foreach (var skeleton in quad.Skeleton)
         {
-            DefaultAnimationKeyframe defaultAnimationKeyframe = new();
-            foreach (var layer in keyframe.Layer)
-            {
-                if(layer.LayerGuid.Equals(String.Empty)) continue;
-                AnimationAttachment sliceImage = new();
-                AnimationBone animationBone = new();
-
-                sliceImage.Time = 0;
-                sliceImage.Name = LayerGUIDAndSliceName[layer.LayerGuid];
-
-                animationBone.Rotate.Add(new Rotate() { Time = 0, Angle = layer.Rotate });
-                animationBone.Translate.Add(new Translate()
-                    { Time = 0, X = layer.CenterPosition.X, Y = layer.CenterPosition.Y });
-
-                defaultAnimationKeyframe.SliceImageData.Add(sliceImage);
-                defaultAnimationKeyframe.AnimationBones.Add(animationBone);
-            }
-            DefaultKeyframes[keyframe.ID] = defaultAnimationKeyframe;
-        }
-
-        foreach (var animation in quad.Animation)
-        {
+            HashSet<KeyframeLayer> keyframeLayers = [];
             SpineAnimation spineAnimation = new();
-            spineAnimation.Name = animation.Name;
-            foreach (var timeline in animation.Timeline)
+            Deform deform = new();
+            var timelines = quad.Animation
+                .Find(x => x.ID == skeleton.Bone[0].Attach.ID).Timeline
+                .Where(a => a.Attach.Type.Equals("keyframe")).ToList();
+            float time=0;
+            string layerName = "";
+            foreach (var timeline in timelines)
             {
-                if(!DefaultKeyframes.ContainsKey(timeline.Attach.ID))continue; 
-                DefaultKeyframes[timeline.Attach.ID].SliceImageData.ForEach(x =>
+                time += timeline.Time*0.03334f;
+                var layers = quad.Keyframe.Find(x => x.ID == timeline.Attach.ID).Layer;
+                foreach (var layer in layers)
                 {
-                    spineAnimation.Slots.Add(new AnimationSlot()
+                    layerName = processImage.ImagesData[layer.LayerGuid].ImageName;
+                    if (keyframeLayers.Add(layer))
                     {
-                        Name = x.Name,
-                        Attachment = [new AnimationAttachment() { Name = x.Name, Time = x.Time }],
-                    });
-                });  
-                DefaultKeyframes[timeline.Attach.ID].AnimationBones.ForEach(x =>
+                        if (!spineAnimation.Slots.TryGetValue(layerName, out AnimationSlot? value))
+                        {
+                            spineAnimation.Slots[layerName] = new();
+                            spineAnimation.Slots[layerName].Attachment.Add(new AnimationAttachment
+                            {
+                                Time = time,
+                                Name = layerName
+                            });
+                        }
+                        else if(value.Attachment.Last().Name is null)
+                        {
+                            value.Attachment.Add(new AnimationAttachment
+                            {
+                                Time = time,
+                                Name = layerName
+                            });
+                        }
+                    }
+                    AnimationVertices item = new();
+                    item.Time = time;
+                    if (!deform.Default.TryGetValue(layerName, out var vertex))
+                    {
+                        deform.Default[layerName] = new();
+                        deform.Default[layerName].Name = layerName;
+                        item.Time = 0;
+                        item.Vertices = new float[8];
+                    }
+                    else
+                    {
+                        item.Vertices = ProcessTools.MinusFloats(layer.Dstquad, vertex.ImageVertices.Last().Vertices);
+                    }
+                    deform.Default[layerName].ImageVertices.Add(item);
+                }
+
+                keyframeLayers.Where(x => !layers.Contains(x)).ToList().ForEach(x =>
                 {
-                    spineAnimation.Bones.Add(new AnimationBone
+                    spineAnimation.Slots[layerName].Attachment.Add(new AnimationAttachment
                     {
-                        Rotate = x.Rotate,
-                        Translate = x.Translate
+                        Time = time,
+                        Name = null
                     });
                 });
             }
-            SpineAnimations.Add(spineAnimation);
+            spineAnimation.Deform = deform;
+            spineAnimations[skeleton.Name] = spineAnimation;
         }
 
-        SpineJson.Animations = SpineAnimations;
+        //_spineJson.Animations = spineAnimations;
     }
+    
 }

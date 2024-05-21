@@ -1,14 +1,16 @@
 ﻿using System.Numerics;
 using Newtonsoft.Json.Linq;
+using QuadPlayer.JsonConverters;
 
 namespace QuadPlayer;
 
 public class QuadJson
 {
     public List<Keyframe?> Keyframe { get; set; }
-    public List<Animation> Animation { get; set; }
-    public List<Skeleton> Skeleton { get; set; }
+    public List<Animation?> Animation { get; set; }
+    public List<Skeleton?> Skeleton { get; set; }
 }
+
 [JsonConverter(typeof(KeyframeJsonConverter))]
 public class Keyframe
 {
@@ -26,86 +28,14 @@ public class Keyframe
 
     public int ID { get; set; }
     public List<KeyframeLayer?>? Layer;
-    public float Width{ get; set; }
-    public float Height{ get; set; }
-    public Vector2 CenterPoint { get; set; }=Vector2.Zero;
-    public void CalculateRect(float[] points)
-    {
-        Width = 4 * (Math.Max(Math.Abs(points[2]), Math.Abs(points[0])) -
-                     Math.Min(Math.Abs(points[2]), Math.Abs(points[0])));
-        Height = 4 * (Math.Max(Math.Abs(points[3]), Math.Abs(points[1])) -
-                      Math.Min(Math.Abs(points[1]), Math.Abs(points[3])));
-        CenterPoint = new Vector2(points[0] + Width / 2, points[1] + Height / 2);
-    }
 }
 
-public class KeyframeJsonConverter: JsonConverter
-{
-    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-    {
-        throw new NotImplementedException();
-    }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
-    {
-        var obj = serializer.Deserialize(reader);
-        if (obj.GetType()!=typeof(JObject)) return null;
-        var jobj = obj as JObject;
-        var keyframe = new Keyframe();
-        keyframe.Name = jobj["name"]?.ToString();
-        keyframe.Layer = jobj["layer"]?.ToObject<List<KeyframeLayer?>>();
-        return keyframe;
-    }
-
-    public override bool CanConvert(Type objectType)
-    {
-        return typeof(Keyframe) == objectType;
-    }
-}
-
-public class KeyframeLayerJsonConverter : JsonConverter
-{
-    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
-    {
-        var obj = serializer.Deserialize(reader);
-        if (obj.GetType()!=typeof(JObject)) return null;
-        var jobj = obj as JObject;
-        var layer = new KeyframeLayer();
-        layer.Dstquad = jobj["dstquad"]?.ToObject<float[]>();
-        layer.BlendId = jobj["blend_id"]?.ToObject<int>();
-        layer.Attribute = jobj["attribute"]?.ToString();
-        layer.Colorize = jobj["colorize"]?.ToString();
-        layer.TexId = jobj["tex_id"]?.ToObject<int>();
-        layer.Srcquad = jobj["srcquad"]?.ToObject<float[]>();
-        return layer;
-    }
-
-    public override bool CanConvert(Type objectType)
-    {
-        return typeof(KeyframeLayer) == objectType;
-    }
-}
 
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
 public class KeyframeLayer
 {
-    private float[]? _dstquad;
-
-    public float[]? Dstquad
-    {
-        get => _dstquad;
-        set
-        {
-            _dstquad = value;
-            if(_dstquad is null) return;
-            MinAndMaxDstPoints = ProcessTools.FindMinAndMaxPoints(_dstquad);
-        }
-    }
+    public float[]? Dstquad { get; set; }
 
     private float[]? _srcquad;
 
@@ -121,40 +51,55 @@ public class KeyframeLayer
             Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
             Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
             LayerGuid = _srcquad.Sum(x => x / 7).ToString();
+            CalculateUVs(_srcquad);
         }
     }
-
-    public Vector2 CenterPosition { get; set; }
     public int? BlendId{ get; set; }
     public string? Attribute{ get; set; }
     public string? Colorize { get; set; }
     public int? TexId{ get; set; }
-    public string LayerGuid { get; set; } = "None";
+    public string LayerGuid { get; set; } = "";
     public float Height{ get; set; }
     public float Width{ get; set; }
-    public float Rotate{ get; set; }
-    public float[] MinAndMaxDstPoints{ get; set; }
     public float[] MinAndMaxSrcPoints{ get; set; }
+    public float[] UVs { get; set; } = new float[8];
 
-    public void CalculateRotate()
+    void CalculateUVs(float[] src)
     {
-        if (Dstquad is null || Srcquad is null) return;
-        var dst = new Vector2(MinAndMaxDstPoints[2] - MinAndMaxDstPoints[0],
-            MinAndMaxDstPoints[3] - MinAndMaxDstPoints[1]);
-        var src = new Vector2(MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0],
-            MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1]);
-        var dot = (src.X * dst.X - src.Y * dst.Y);
-        Rotate = (src.X * dst.X + src.Y * dst.Y) / (dst.Length() * src.Length()) *
-                 (dot / float.Abs(dot));
-        CenterPosition = new Vector2(MinAndMaxDstPoints[0] + Width / 2, MinAndMaxDstPoints[1] + Height / 2);
+        List<Vector3> points =
+        [
+            new Vector3(src[0], src[1], 0),
+            new Vector3(src[2], src[3], 1),
+            new Vector3(src[4], src[5], 2),
+            new Vector3(src[6], src[7], 3)
+        ];
+        Vector2[] uvs = [new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1)];
+        var orderPoints = points.OrderBy(a=>a.X).ThenBy(b=>b.Y).ToList();
+        for (int i = 0; i < 4; i++) {
+            UVs[(int)orderPoints[i].Z * 2] = uvs[i].X;
+            UVs[(int)orderPoints[i].Z * 2 + 1] = uvs[i].Y;
+        }
     }
 }
 
 public class Animation
 {
-    public string Name { get; set; }
+    private string _name;
+
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            if(_name.Equals("ALL KEYFRAMES")) return;
+            ID = Convert.ToInt32(_name.Split(' ').Last());
+        }
+    }
+
+    public int ID { get; set; }
     public List<Timeline> Timeline{ get; set; }
-    public int LoopId { get; set; }
+    public int LoopID { get; set; }
 }
 
 public class Timeline
@@ -175,29 +120,7 @@ public class Attach
     public int ID { get; set; }
 }
 
-public class SkeletonJsonConverter : JsonConverter
-{
-    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-    {
-        throw new NotImplementedException();
-    }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
-    {
-        var obj = serializer.Deserialize(reader);
-        if (obj.GetType()!=typeof(JObject)) return null;
-        var jobj = obj as JObject;
-        var skeleton = new Skeleton();
-        skeleton.Name = jobj["name"]?.ToString();
-        skeleton.Bone = jobj["bone"]?.ToObject<List<Bone>>();
-        return skeleton;
-    }
-
-    public override bool CanConvert(Type objectType)
-    {
-        return typeof(Skeleton) == objectType;
-    }
-}
 [JsonConverter(typeof(SkeletonJsonConverter))]
 public class Skeleton
 {
