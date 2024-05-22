@@ -22,29 +22,6 @@ public static class ProcessTools
 
         return [minX, minY, maxX, maxY];
     }
-    public static float[] FindMinAndMaxPoints(float[] oldQuad,float[]? newQuad)
-    {
-        if (newQuad is null) return oldQuad;
-        float minX = float.MaxValue, maxX = float.MinValue, minY = float.MaxValue, maxY = float.MinValue;
-        var list = new List<float>(8);
-        list.AddRange(oldQuad);
-        list.AddRange(newQuad);
-        for (int i = 4; i < list.Count; i++)
-        {
-            if (i % 2 == 0)
-            {
-                minX = float.Min(minX, list[i]);
-                maxX = float.Max(maxX, list[i]);
-            }
-            else
-            {
-                minY = float.Min(minY, list[i]);
-                maxY = float.Max(maxY, list[i]);
-            }
-        }
-        return [minX, minY, maxX, maxY];
-    }
-
     public static float[] MinusFloats(float[] a, float[] b)
     {
         var c = new float[a.Length];

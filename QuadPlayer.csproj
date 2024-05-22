@@ -12,10 +12,4 @@
       <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="..\..\..\..\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\Alice.json">
-        <Link>src\Alice.json</Link>
-      </Content>
-    </ItemGroup>
-
 </Project>

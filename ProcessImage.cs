@@ -11,6 +11,7 @@ public class ProcessImage
     private int _imageIndex;
     public ProcessImage(string[] imagePath,QuadJson quad)
     {
+        Console.WriteLine("Cutting images...");
         for (var index = 0; index < imagePath.Length; index++)
         {
             _imageNums = index;
@@ -24,6 +25,7 @@ public class ProcessImage
                 }
             }
         }
+        Console.WriteLine("Finished");
     }
     private Rectangle CalculateRectangle(KeyframeLayer layer)
     {
@@ -50,7 +52,7 @@ public class ProcessImage
             UVs = layer.UVs,
             Width = cutImage.Width,
             Height = cutImage.Height,
-            Vertices = layer.Srcquad,
+            SrcVertices = layer.Srcquad,
             ImageName = imageName,
         };
     }
@@ -61,6 +63,6 @@ public class ImageData
     public float[] UVs { get; set; } = new float[8];
     public float Width { get; set; }
     public float Height { get; set; }
-    public float[] Vertices { get; set; } = new float[8];
+    public float[] SrcVertices { get; set; } = new float[8];
     public string ImageName { get; set; } = string.Empty;
 }

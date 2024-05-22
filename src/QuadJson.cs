@@ -73,7 +73,7 @@ public class KeyframeLayer
             new Vector3(src[4], src[5], 2),
             new Vector3(src[6], src[7], 3)
         ];
-        Vector2[] uvs = [new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1)];
+        Vector2[] uvs = [new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 1), new Vector2(1, 0)];
         var orderPoints = points.OrderBy(a=>a.X).ThenBy(b=>b.Y).ToList();
         for (int i = 0; i < 4; i++) {
             UVs[(int)orderPoints[i].Z * 2] = uvs[i].X;
@@ -92,8 +92,9 @@ public class Animation
         set
         {
             _name = value;
-            if(_name.Equals("ALL KEYFRAMES")) return;
-            ID = Convert.ToInt32(_name.Split(' ').Last());
+            var splitName = _name.Split(' ');
+            if(!splitName[0].Equals("animation")) return;
+            ID = Convert.ToInt32(splitName.Last());
         }
     }
 
