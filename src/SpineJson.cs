@@ -20,8 +20,10 @@ public class Slot
 {
     public string Name { get; set; }
     public string Bone { get; set; }
-    //[JsonIgnore]
+    [JsonIgnore]
     public string Attachment { get; set; }
+    [JsonIgnore]
+    public int Order { get; set; }
 }
 
 public class Skin
@@ -53,9 +55,22 @@ public class Bone
 }
 public class SpineAnimation
 {
-    [JsonIgnore] public int FPS = 60;
-    public Dictionary<string,AnimationSlot> Slots = new();
-    public Deform Deform = new();
+    [JsonIgnore] public int FPS{ get; set; } = 60;
+    public Dictionary<string,AnimationSlot> Slots{ get; set; } = new();
+    public Deform Deform{ get; set; } = new();
+    [JsonIgnore]public List<DrawOrder> DrawOrder{ get; set; } = new();
+}
+
+public class DrawOrder
+{
+    public float Time { get; set; }
+    public List<DrawOrderOffset> Offsets{ get; set; } = new ();
+}
+
+public class DrawOrderOffset
+{
+    public string Slot { get; set; } = string.Empty;
+    public int Offset { get; set; }
 }
 public class AnimationSlot
 {
@@ -82,7 +97,6 @@ public class AnimationVertices
 {
     public float Time { get; set; }
     public float[] Vertices { get; set; } = new float[8];
-
 }
 
 

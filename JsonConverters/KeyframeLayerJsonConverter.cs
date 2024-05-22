@@ -16,11 +16,11 @@ public class KeyframeLayerJsonConverter : JsonConverter
         var jobj = obj as JObject;
          var layer = new KeyframeLayer
          {
-             Dstquad = jobj["dstquad"]?.ToObject<float[]>(),
-             BlendId = jobj["blend_id"]?.ToObject<int>(),
+             BlendID = jobj["blend_id"]?.ToObject<int>(),
              Attribute = jobj["attribute"]?.ToString(),
              Colorize = jobj["colorize"]?.ToString(),
-             TexId = jobj["tex_id"]?.ToObject<int>(),
+             TexID = jobj["tex_id"]?.ToObject<int>(),
+             Dstquad = jobj["dstquad"]?.ToObject<float[]>(),
              Srcquad = jobj["srcquad"]?.ToObject<float[]>()
          };
          return layer;

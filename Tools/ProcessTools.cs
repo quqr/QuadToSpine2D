@@ -32,4 +32,14 @@ public static class ProcessTools
         }
         return c;
     }
+    public static float[] PlusFloats(float[] a, float[] b)
+    {
+        var c = new float[a.Length];
+        for (int i = 0; i < a.Length; i++)
+        {
+            if(i>b.Length) break;
+            c[i] = a[i] + b[i];
+        }
+        return c;
+    }
 }

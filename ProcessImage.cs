@@ -20,7 +20,11 @@ public class ProcessImage
             {
                 foreach (var layer in keyframe.Layer)
                 {
-                    if (ImagesData.ContainsKey(layer.LayerGuid)) continue;
+                    if (ImagesData.ContainsKey(layer.LayerGuid))
+                    {
+                        layer.LayerName = ImagesData[layer.LayerGuid].ImageName;
+                        continue;
+                    }
                     ImagesData[layer.LayerGuid] = CutImage(image, CalculateRectangle(layer), layer);
                 }
             }
@@ -45,6 +49,7 @@ public class ProcessImage
             context.Crop(rectangle);
         });
         var imageName = $"Slice {_imageNums}_{_imageIndex}";
+        layer.LayerName = imageName;
         cutImage.SaveAsPng($"D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\Output\\{imageName}.png");
         _imageIndex++;
         return new ImageData
@@ -54,6 +59,7 @@ public class ProcessImage
             Height = cutImage.Height,
             SrcVertices = layer.Srcquad,
             ImageName = imageName,
+            ZeroCenterPoints = layer.ZeroCenterPoints,
         };
     }
 }
@@ -65,4 +71,5 @@ public class ImageData
     public float Height { get; set; }
     public float[] SrcVertices { get; set; } = new float[8];
     public string ImageName { get; set; } = string.Empty;
+    public float[] ZeroCenterPoints { get; set; }
 }

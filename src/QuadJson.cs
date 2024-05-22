@@ -35,7 +35,27 @@ public class Keyframe
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
 public class KeyframeLayer
 {
-    public float[]? Dstquad { get; set; }
+    private float[]? _dstquad = new float[8];
+
+    public float[]? Dstquad
+    {
+        get => _dstquad;
+        set
+        {
+            //Y is down 
+            if (value is null) _dstquad = value;
+            else
+                for (int i = 0; i < 8; i++)
+                {
+                    if (i % 2 != 0)
+                    {
+                        _dstquad[i] = -value[i];
+                        continue;
+                    }
+                    _dstquad[i] = value[i];
+                }
+        }
+    }
 
     private float[]? _srcquad;
 
@@ -50,19 +70,22 @@ public class KeyframeLayer
             MinAndMaxSrcPoints = ProcessTools.FindMinAndMaxPoints(_srcquad);
             Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
             Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
-            LayerGuid = _srcquad.Sum(x => x / 7).ToString();
+            LayerGuid = $"{TexID}_{_srcquad.Sum(x => x / 7.7f)}";
             CalculateUVs(_srcquad);
         }
     }
-    public int? BlendId{ get; set; }
+    public int? BlendID{ get; set; }
     public string? Attribute{ get; set; }
     public string? Colorize { get; set; }
-    public int? TexId{ get; set; }
+    public int? TexID{ get; set; }
+    public int Order { get; set; }
     public string LayerGuid { get; set; } = "";
     public float Height{ get; set; }
     public float Width{ get; set; }
     public float[] MinAndMaxSrcPoints{ get; set; }
     public float[] UVs { get; set; } = new float[8];
+    public float[] ZeroCenterPoints { get; set; } = new float[8];
+    public string LayerName { get; set; } = string.Empty;
 
     void CalculateUVs(float[] src)
     {
@@ -73,11 +96,20 @@ public class KeyframeLayer
             new Vector3(src[4], src[5], 2),
             new Vector3(src[6], src[7], 3)
         ];
-        Vector2[] uvs = [new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 1), new Vector2(1, 0)];
+        //Vector2[] uvs = [new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 1), new Vector2(1, 0)];
+        Vector2[] uvs = [new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1)];
         var orderPoints = points.OrderBy(a=>a.X).ThenBy(b=>b.Y).ToList();
         for (int i = 0; i < 4; i++) {
             UVs[(int)orderPoints[i].Z * 2] = uvs[i].X;
             UVs[(int)orderPoints[i].Z * 2 + 1] = uvs[i].Y;
+        }
+        //calculate ZeroCenterPoints
+        for (var i = 0; i < UVs.Length; i++)
+        {
+            if (i % 2 == 0)
+                ZeroCenterPoints[i] = (UVs[i] * 2f - 1f) * Width / 8f;
+            else
+                ZeroCenterPoints[i] = (UVs[i] * 2f - 1f) * Height / 8f;
         }
     }
 }
