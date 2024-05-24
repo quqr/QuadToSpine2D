@@ -3,10 +3,10 @@
 namespace QuadPlayer.Spine;
 public class SpineJson
 {
-    public Skeleton Skeletons = new();
-    public List<Bone> Bones = new();
-    public List<Slot> Slots= new();
-    public List<Skin> Skins = new(1);
+    public Skeleton Skeletons{ get; set; } = new();
+    public List<Bone> Bones{ get; set; } = new();
+    public List<Slot> Slots{ get; set; }= new();
+    public List<Skin> Skins{ get; set; } = new(1);
     public Dictionary<string,SpineAnimation> Animations { get; set; } = new();
 }
 
@@ -58,7 +58,7 @@ public class SpineAnimation
     [JsonIgnore] public int FPS{ get; set; } = 60;
     public Dictionary<string,AnimationSlot> Slots{ get; set; } = new();
     public Deform Deform{ get; set; } = new();
-    [JsonIgnore]public List<DrawOrder> DrawOrder{ get; set; } = new();
+    public List<DrawOrder> DrawOrder{ get; set; } = new();
 }
 
 public class DrawOrder

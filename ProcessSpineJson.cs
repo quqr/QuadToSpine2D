@@ -22,7 +22,7 @@ public class ProcessSpineJson
         _spineJson.Skeletons.Images = "D:/Download/quad_mobile_v05_beta-20240404-2000/quad_mobile_v05_beta/data/Output";
         _spineJson.Bones.Add(new Spine.Bone() { Name = "root"});
         _spineJson.Skins.Add(new Skin());
-        for (int index = 0; index < processImage.ImagesData.Count; index++)
+        for (int index = processImage.ImagesData.Count - 1; index >= 0; index--)
         {
             var layerGuid = processImage.ImagesData.Keys.ElementAt(index);
             var slotName = processImage.ImagesData[layerGuid].ImageName;
@@ -38,7 +38,6 @@ public class ProcessSpineJson
                 }
             });
         }
-
     }
 
     private string ConvertToJson()
@@ -71,9 +70,7 @@ public class ProcessSpineJson
                 {
                     var layerName = layer.LayerName;
                     var slotOrder = _spineJson.Slots.Find(x => x.Name == layerName).Order;
-                    var offset = layer.Order + slotOrder >= _spineJson.Slots.Count
-                        ? _spineJson.Slots.Count - slotOrder - layer.Order
-                        : layer.Order;
+                    var offset = layer.Order - slotOrder;
                     drawOrder.Offsets.Add(new DrawOrderOffset
                     {
                         Slot = layerName,
@@ -137,6 +134,7 @@ public class ProcessSpineJson
             }
             spineAnimation.Deform = deform;
             spineAnimation.DrawOrder = drawOrders;
+            spineAnimation.DrawOrder.Reverse();
             spineAnimations[skeleton.Name] = spineAnimation;
         }
         _spineJson.Animations = spineAnimations;

@@ -15,7 +15,7 @@ public class ProcessQuadFile
                 x.Layer.RemoveAll(y => y.LayerGuid.Equals(string.Empty));
                 for (int i = 0; i < x.Layer.Count; i++)
                 {
-                    x.Layer[i].Order = x.Layer.Count - i;
+                    x.Layer[i].Order = i;
                 }
             });
         Quad.Skeleton.RemoveAll(x => x is null);
