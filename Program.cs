@@ -46,7 +46,7 @@ class Program
             if(quadPath.Split('.').Last().Equals("quad")) break;
             Console.WriteLine("Not .quad file, try again!");
         }
-        Console.WriteLine("Please input images path, input ok exit");
+        Console.WriteLine("Please input images path, input ok to exit");
         while (true)
         {
             var path = Console.ReadLine();
@@ -58,7 +58,7 @@ class Program
                     break;
             }
             if (path.Split('.').Last().Equals("png")) imagePath.Add(path);
-            Console.WriteLine("ok!");
+            Console.WriteLine(">>>");
         }
 
         return quadPath;
