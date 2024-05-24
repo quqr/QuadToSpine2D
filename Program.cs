@@ -1,13 +1,11 @@
-﻿using System.Diagnostics;
-using QuadPlayer;
-using QuadPlayer.Spine;
+﻿using QuadPlayer;
 
 class Program
 {
     static void Main(string[] args)
     {
-        //Release();
-        DebugMode();
+        ReleaseMode();
+        //DebugMode();
     }
 
     private static void DebugMode()
@@ -31,6 +29,7 @@ class Program
         var imageSavePath = $"{Directory.GetCurrentDirectory()}/images";
         var quadPath = LoadPaths(imageSavePath, imagePath);
         ProcessJson(quadPath, imagePath, imageSavePath, jsonOutputPath);
+        Console.ReadLine();
     }
 
     private static string LoadPaths(string imageSavePath, List<string> imagePath)

@@ -65,7 +65,7 @@ public class KeyframeLayer
         {
             _srcquad = value;
             LayerGuid = string.Empty;
-            if(_srcquad is null) return;
+            if (_srcquad is null)return;
             MinAndMaxSrcPoints = ProcessTools.FindMinAndMaxPoints(_srcquad);
             Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
             Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
@@ -73,9 +73,6 @@ public class KeyframeLayer
             CalculateUVs(_srcquad);
         }
     }
-    public int? BlendID{ get; set; }
-    public string? Attribute{ get; set; }
-    public string? Colorize { get; set; }
     public int TexID { get; set; }
 
     public int Order { get; set; }

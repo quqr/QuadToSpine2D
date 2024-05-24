@@ -79,21 +79,23 @@ public class ProcessSpineJson
             .Where(a => a.Attach.Type.Equals("keyframe")).ToList();
         
         var time = 0f;
-        foreach (var timeline in timelines)
+        for (var index = 0; index < timelines.Count; index++)
         {
-            time = SetLayersData(quad, timeline, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+            AddKeyframe(quad, timelines[index], time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+
+            // 60 fps
+            time += timelines[index].Time / 30f;
         }
-            
+
         spineAnimation.Deform = deform;
         spineAnimation.DrawOrder = drawOrders;
         _spineAnimations[skeleton.Name] = spineAnimation;
     }
 
-    private float SetLayersData(QuadJson quad, Timeline timeline, float time, HashSet<string> keyframeLayerNames,
+    private void AddKeyframe(QuadJson quad, Timeline timeline, float time, HashSet<string> keyframeLayerNames,
         SpineAnimation spineAnimation, Deform deform, List<DrawOrder> drawOrders)
     {
         var layers = quad.Keyframe.Find(x => x.ID == timeline.Attach.ID).Layer;
-
         DrawOrder drawOrder = new ()
         {
             Time = time
@@ -108,14 +110,10 @@ public class ProcessSpineJson
             AddDrawOrderOffset(layerName, index, drawOrder);
         }
 
-        RemoveNotExistsLayer(keyframeLayerNames, layers, spineAnimation, time);
-                
-        // 60 fps
-        time += timeline.Time * 0.01337f;
         //Set Order By Slot
         drawOrder.Offsets = drawOrder.Offsets.OrderBy(x => x.SlotNum).ToList();
         drawOrders.Add(drawOrder);
-        return time;
+        RemoveNotExistsLayer(keyframeLayerNames, layers, spineAnimation, time);
     }
 
     private static void RemoveNotExistsLayer(HashSet<string> keyframeLayerNames,
@@ -186,8 +184,9 @@ public class ProcessSpineJson
         if (existLayer != null)
         {
             existLayer.Offset = offset;
+            return;
         }
-        else if(offset!=0)
+        if(offset!=0)
         {
             drawOrder.Offsets.Add(new DrawOrderOffset
             {

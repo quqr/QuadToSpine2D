@@ -1,4 +1,5 @@
 ﻿using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
 namespace QuadPlayer;
 using SixLabors.ImageSharp;
@@ -62,7 +63,6 @@ public class ProcessImage
         using var cutImage = image.Clone(x =>
         {
             x.Crop(rectangle);
-            x.Fill(new RecolorBrush(Color.Black, Color.Transparent,.5f));
         });
         
         var imageName = $"Slice {layer.TexID}_{_imageIndex}";
