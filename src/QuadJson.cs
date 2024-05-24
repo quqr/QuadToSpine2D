@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using Newtonsoft.Json.Linq;
 using QuadPlayer.JsonConverters;
 
 namespace QuadPlayer;
@@ -70,14 +69,15 @@ public class KeyframeLayer
             MinAndMaxSrcPoints = ProcessTools.FindMinAndMaxPoints(_srcquad);
             Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
             Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
-            LayerGuid = $"{TexID}_{_srcquad.Sum(x => x / 7.7f)}";
+            LayerGuid = $"{TexID}_{_srcquad.Sum(x => (x*37.73f) / 3.7f)}";
             CalculateUVs(_srcquad);
         }
     }
     public int? BlendID{ get; set; }
     public string? Attribute{ get; set; }
     public string? Colorize { get; set; }
-    public int? TexID{ get; set; }
+    public int TexID { get; set; }
+
     public int Order { get; set; }
     public string LayerGuid { get; set; } = "";
     public float Height{ get; set; }

@@ -1,36 +1,51 @@
-﻿using System.Numerics;
+﻿using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Processing;
-
 namespace QuadPlayer;
 using SixLabors.ImageSharp;
 
 public class ProcessImage
 {
-    public Dictionary<string, ImageData> ImagesData { get; set; }= new();
-    private int _imageNums;
+    public Dictionary<string, LayerData> ImagesData { get; set; }= new();
+    public string SavePath;
     private int _imageIndex;
-    public ProcessImage(string[] imagePath,QuadJson quad)
+    private Image[] _images;
+    public ProcessImage(List<string> images,QuadJson quad,string savePath)
     {
         Console.WriteLine("Cutting images...");
-        for (var index = 0; index < imagePath.Length; index++)
+        _images = new Image[images.Count];
+        SavePath = savePath;
+        GetAllImages(images);
+        var layers = quad.Keyframe.SelectMany(keyframe => keyframe.Layer);
+        foreach (var layer in layers)
         {
-            _imageNums = index;
-            using var image = Image.Load(imagePath[index]);
-            foreach (var keyframe in quad.Keyframe)
+            if (ImagesData.TryGetValue(layer.LayerGuid, out var value))
             {
-                foreach (var layer in keyframe.Layer)
-                {
-                    if (ImagesData.ContainsKey(layer.LayerGuid))
-                    {
-                        layer.LayerName = ImagesData[layer.LayerGuid].ImageName;
-                        continue;
-                    }
-                    ImagesData[layer.LayerGuid] = CutImage(image, CalculateRectangle(layer), layer);
-                }
+                layer.LayerName = value.ImageName;
+                continue;
             }
+            ImagesData[layer.LayerGuid] = CutImage(_images[layer.TexID], CalculateRectangle(layer), layer);
         }
-        Console.WriteLine("Finished");
+        DisposeImages();
+        Console.WriteLine("Finish");
     }
+
+    private void DisposeImages()
+    {
+        foreach (var i in _images)
+        {
+            i.Dispose();
+        }
+    }
+
+    private void GetAllImages(List<string> images)
+    {
+        for (var index = 0; index < images.Count; index++)
+        {
+            var image = Image.Load(images[index]);
+            _images[index] = image;
+        }
+    }
+
     private Rectangle CalculateRectangle(KeyframeLayer layer)
     {
         return new Rectangle()
@@ -42,34 +57,30 @@ public class ProcessImage
         };
     }
 
-    private ImageData CutImage(Image image,Rectangle rectangle,KeyframeLayer layer)
+    private LayerData CutImage(Image image,Rectangle rectangle,KeyframeLayer layer)
     {
-        using var cutImage = image.Clone(context =>
+        using var cutImage = image.Clone(x =>
         {
-            context.Crop(rectangle);
+            x.Crop(rectangle);
+            x.Fill(new RecolorBrush(Color.Black, Color.Transparent,.5f));
         });
-        var imageName = $"Slice {_imageNums}_{_imageIndex}";
+        
+        var imageName = $"Slice {layer.TexID}_{_imageIndex}";
         layer.LayerName = imageName;
-        cutImage.SaveAsPng($"D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\Output\\{imageName}.png");
+        cutImage.SaveAsPng($"{SavePath}\\{imageName}.png");
         _imageIndex++;
-        return new ImageData
+        return new LayerData
         {
             UVs = layer.UVs,
-            Width = cutImage.Width,
-            Height = cutImage.Height,
-            SrcVertices = layer.Srcquad,
             ImageName = imageName,
             ZeroCenterPoints = layer.ZeroCenterPoints,
         };
     }
 }
 
-public class ImageData
+public class LayerData
 {
     public float[] UVs { get; set; } = new float[8];
-    public float Width { get; set; }
-    public float Height { get; set; }
-    public float[] SrcVertices { get; set; } = new float[8];
     public string ImageName { get; set; } = string.Empty;
-    public float[] ZeroCenterPoints { get; set; }
+    public float[] ZeroCenterPoints { get; set; }= new float[8];
 }

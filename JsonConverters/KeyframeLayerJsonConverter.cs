@@ -13,16 +13,14 @@ public class KeyframeLayerJsonConverter : JsonConverter
     {
         var obj = serializer.Deserialize(reader);
         if (obj.GetType()!=typeof(JObject)) return null;
-        var jobj = obj as JObject;
-         var layer = new KeyframeLayer
-         {
-             BlendID = jobj["blend_id"]?.ToObject<int>(),
-             Attribute = jobj["attribute"]?.ToString(),
-             Colorize = jobj["colorize"]?.ToString(),
-             TexID = jobj["tex_id"]?.ToObject<int>(),
-             Dstquad = jobj["dstquad"]?.ToObject<float[]>(),
-             Srcquad = jobj["srcquad"]?.ToObject<float[]>()
-         };
+        var jObject = obj as JObject;
+         var layer = new KeyframeLayer();
+         // layer.BlendID = jobj["blend_id"]?.ToObject<int>();
+         // layer.Attribute = jobj["attribute"]?.ToString();
+         // layer.Colorize = jobj["colorize"]?.ToString();
+         layer.TexID = jObject["tex_id"]?.ToObject<int>() ?? 0;
+         layer.Dstquad = jObject["dstquad"]?.ToObject<float[]>();
+         layer.Srcquad = jObject["srcquad"]?.ToObject<float[]>();
          return layer;
     }
 

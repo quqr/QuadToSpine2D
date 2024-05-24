@@ -13,11 +13,11 @@ public class KeyframeJsonConverter: JsonConverter
     {
         var obj = serializer.Deserialize(reader);
         if (obj.GetType()!=typeof(JObject)) return null;
-        var jobj = obj as JObject;
+        var jObject = obj as JObject;
         var keyframe = new Keyframe
         {
-            Name = jobj["name"]?.ToString(),
-            Layer = jobj["layer"]?.ToObject<List<KeyframeLayer?>>()
+            Name = jObject["name"]?.ToString(),
+            Layer = jObject["layer"]?.ToObject<List<KeyframeLayer?>>()
         };
         return keyframe;
     }
