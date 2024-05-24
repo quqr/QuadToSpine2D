@@ -16,7 +16,7 @@
   <img height="150" src="MD/1.png" width="200"/>
 + ### You will get **result.json** and **images** folder.
 # **Second**
-1. ### Open Spine and import result. (Ignore warring)
+1. ### Open Spine and import result. (Ignore warning)
 +  <img height="300" src="MD/2.png" width="200"/>
 2. ### Import images
 + <img height="300" src="MD/3.png" width="200"/>
