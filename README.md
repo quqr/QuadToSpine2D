@@ -17,8 +17,8 @@
 + ### You will get **result.json** and **images** folder.
 # **Second**
 1. ### Open Spine and import result. (Ignore warring)
-+  <img height="150" src="MD/2.png" width="300"/>
++  <img height="300" src="MD/2.png" width="200"/>
 2. ### Import images
-+ <img height="150" src="MD/3.png" width="300"/>
++ <img height="300" src="MD/3.png" width="200"/>
 3. ### Check animations
 + <img height="150" src="MD/4.png" width="300"/>
