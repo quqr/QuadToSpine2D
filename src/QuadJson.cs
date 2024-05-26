@@ -8,6 +8,13 @@ public class QuadJson
     public List<Keyframe?> Keyframe { get; set; }
     public List<Animation?> Animation { get; set; }
     public List<Skeleton?> Skeleton { get; set; }
+    public List<Slot> Slot { get; set; }
+}
+
+[JsonConverter(typeof(SlotJsonConverter))]
+public class Slot
+{
+    public List<Attach>? Attaches { get; set; }
 }
 
 [JsonConverter(typeof(KeyframeJsonConverter))]
@@ -135,7 +142,7 @@ public class Animation
 public class Timeline
 {
     public int Time { get; set; }
-    public Attach Attach { get; set; }
+    public Attach? Attach { get; set; }
     public float[]? Matrix { get; set; }
     public string Color { get; set; }
     public bool MatrixMix { get; set; }

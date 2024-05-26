@@ -12,13 +12,18 @@ class Program
     {
         List<string> imagePath =
         [
-            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png",
-            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png"
+            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.0.tpl.png",
+            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.1.tpl.png",
+            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.2.tpl.png",
+            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.3.tpl.png",
+            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.4.tpl.png",
+            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.5.tpl.png",
+
         ];
-        var jsonOutputPath = $"{Directory.GetCurrentDirectory()}/result.json";
-        var imageSavePath = $"{Directory.GetCurrentDirectory()}/images";
+        var jsonOutputPath = "E:\\Asset\\ttt\\result.json";
+        var imageSavePath = "E:\\Asset\\ttt\\images";
         var quadPath =
-            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
+            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana_a.mbs.v55.quad";
         ProcessJson(quadPath, imagePath, imageSavePath, jsonOutputPath);
     }
 
@@ -39,28 +44,29 @@ class Program
             Directory.CreateDirectory(imageSavePath);
         }
         var quadPath = string.Empty;
-        Console.WriteLine("Please input *.quad path");
+        Console.WriteLine(">>> Please input *.quad path");
         while (true)
         {
             quadPath = Console.ReadLine();
             if(quadPath.Split('.').Last().Equals("quad")) break;
-            Console.WriteLine("Not .quad file, try again!");
+            Console.WriteLine(">>> Not .quad file, try again!");
         }
-        Console.WriteLine("Please input images path, input ok to exit");
+        Console.WriteLine(">>> Please input images path, input ok to exit");
         while (true)
         {
             var path = Console.ReadLine();
             if (path.ToLower().Equals("ok"))
             {
                 if(imagePath.FirstOrDefault() is null)
-                    Console.WriteLine("There is no image, try again");
+                    Console.WriteLine(">>> There is no image, try again");
                 else
                     break;
             }
             if (path.Split('.').Last().Equals("png")) imagePath.Add(path);
-            Console.WriteLine(">>>");
+            Console.WriteLine(">>> Please input images path, input ok to exit");
+            Console.Write(">>>");
         }
-
+        
         return quadPath;
     }
 
@@ -70,5 +76,6 @@ class Program
         var imageQuad = new ProcessImage(imagePath, quad.Quad,imageSavePath);
         var spineJson = new ProcessSpineJson(imageQuad,quad.Quad);
         File.WriteAllText(jsonOutputPath,spineJson.SpineJsonFile);
+        Console.WriteLine("Process Finished...");
     }
 }

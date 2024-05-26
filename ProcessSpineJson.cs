@@ -34,7 +34,7 @@ public class ProcessSpineJson
     {
         var layerGuid = processImage.ImagesData.Keys.ElementAt(index);
         var slotName = processImage.ImagesData[layerGuid].ImageName;
-        _spineJson.Slots.Add(new Slot(){Name = slotName,Attachment = slotName ,Bone = "root",Order = index});
+        _spineJson.Slots.Add(new  SpineSlot(){Name = slotName,Attachment = slotName ,Bone = "root",Order = index});
         _spineJson.Skins[0].Attachments.Add(new Attachments
         {
             Value = new Mesh
@@ -73,18 +73,38 @@ public class ProcessSpineJson
         List<DrawOrder> drawOrders = [];
         SpineAnimation spineAnimation = new();
         Deform deform = new();
-            
-        var timelines = quad.Animation
-            .Find(x => x.ID == skeleton.Bone[0].Attach.ID).Timeline
-            .Where(a => a.Attach.Type.Equals("keyframe")).ToList();
-        
-        var time = 0f;
-        for (var index = 0; index < timelines.Count; index++)
+        List<Timeline> timelines = [];
+        foreach (var bone in skeleton.Bone)
         {
-            AddKeyframe(quad, timelines[index], time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+            timelines
+                .AddRange(quad.Animation
+                .Where(x => x.ID == bone.Attach.ID)
+                .SelectMany(x => x.Timeline).ToList());
+        }
 
-            // 60 fps
-            time += timelines[index].Time / 30f;
+        if (skeleton.Name.Equals("N_ATTACK_A1"))
+        {
+            Console.WriteLine(1);
+        }
+        var time = 0f;
+        foreach (var timeline in timelines)
+        {
+            if(timeline.Attach is null) continue;
+            if (timeline.Attach.Type.Equals("keyframe"))
+            {
+                var layers = quad.Keyframe.Find(x => x.ID == timeline.Attach.ID).Layer;
+                AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+            }
+            else if (timeline.Attach.Type.Equals("slot"))
+            {
+                var attach = quad.Slot[timeline.Attach.ID].Attaches?
+                    .Find(x => x.Type.Equals("keyframe"));
+                if(attach is null) continue;
+                var layers = quad.Keyframe
+                    .Find(x => x.ID == attach.ID).Layer;
+                AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+            }
+            time += timeline.Time / 30f;
         }
 
         spineAnimation.Deform = deform;
@@ -92,10 +112,9 @@ public class ProcessSpineJson
         _spineAnimations[skeleton.Name] = spineAnimation;
     }
 
-    private void AddKeyframe(QuadJson quad, Timeline timeline, float time, HashSet<string> keyframeLayerNames,
+    private void AddKeyframe(List<KeyframeLayer> layers, float time, HashSet<string> keyframeLayerNames,
         SpineAnimation spineAnimation, Deform deform, List<DrawOrder> drawOrders)
     {
-        var layers = quad.Keyframe.Find(x => x.ID == timeline.Attach.ID).Layer;
         DrawOrder drawOrder = new ()
         {
             Time = time

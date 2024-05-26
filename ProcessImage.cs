@@ -1,6 +1,4 @@
-﻿using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.Formats.Png;
-using SixLabors.ImageSharp.Processing;
+﻿using SixLabors.ImageSharp.Processing;
 namespace QuadPlayer;
 using SixLabors.ImageSharp;
 

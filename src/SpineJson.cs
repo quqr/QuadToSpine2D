@@ -5,7 +5,7 @@ public class SpineJson
 {
     public Skeleton Skeletons{ get; set; } = new();
     public List<Bone> Bones{ get; set; } = [];
-    public List<Slot> Slots{ get; set; }= [];
+    public List<SpineSlot> Slots{ get; set; }= [];
     public List<Skin> Skins{ get; set; } = new(1);
     public Dictionary<string,SpineAnimation> Animations { get; set; } = new();
 }
@@ -16,7 +16,7 @@ public class Skeleton
     public string ImagesPath="";
 }
 
-public class Slot
+public class SpineSlot
 {
     public string Name { get; set; }
     public string Bone { get; set; }
