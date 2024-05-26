@@ -36,8 +36,6 @@ public class Keyframe
     public List<KeyframeLayer?>? Layer;
 }
 
-
-
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
 public class KeyframeLayer
 {
@@ -51,13 +49,14 @@ public class KeyframeLayer
             //Y is down 
             if (value is null) _dstquad = value;
             else
-                for (int i = 0; i < 8; i++)
+                for (var i = 0; i < 8; i++)
                 {
                     if (i % 2 != 0)
                     {
                         _dstquad[i] = -value[i];
                         continue;
                     }
+
                     _dstquad[i] = value[i];
                 }
         }
@@ -72,26 +71,27 @@ public class KeyframeLayer
         {
             _srcquad = value;
             LayerGuid = string.Empty;
-            if (_srcquad is null)return;
+            if (_srcquad is null) return;
             MinAndMaxSrcPoints = ProcessTools.FindMinAndMaxPoints(_srcquad);
             Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
             Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
-            LayerGuid = $"{TexID}_{_srcquad.Sum(x => (x*37.73f) / 3.7f)}";
+            LayerGuid = $"{TexID}_{_srcquad.Sum(x => x * 37.73f / 3.7f)}";
             CalculateUVs(_srcquad);
         }
     }
+
     public int TexID { get; set; }
 
     public int Order { get; set; }
     public string LayerGuid { get; set; } = "";
-    public float Height{ get; set; }
-    public float Width{ get; set; }
-    public float[] MinAndMaxSrcPoints{ get; set; }
+    public float Height { get; set; }
+    public float Width { get; set; }
+    public float[] MinAndMaxSrcPoints { get; set; }
     public float[] UVs { get; set; } = new float[8];
     public float[] ZeroCenterPoints { get; set; } = new float[8];
     public string LayerName { get; set; } = string.Empty;
 
-    void CalculateUVs(float[] src)
+    private void CalculateUVs(float[] src)
     {
         List<Vector3> points =
         [
@@ -102,19 +102,19 @@ public class KeyframeLayer
         ];
         //Vector2[] uvs = [new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 1), new Vector2(1, 0)];
         Vector2[] uvs = [new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1)];
-        var orderPoints = points.OrderBy(a=>a.X).ThenBy(b=>b.Y).ToList();
-        for (int i = 0; i < 4; i++) {
+        var orderPoints = points.OrderBy(a => a.X).ThenBy(b => b.Y).ToList();
+        for (var i = 0; i < 4; i++)
+        {
             UVs[(int)orderPoints[i].Z * 2] = uvs[i].X;
             UVs[(int)orderPoints[i].Z * 2 + 1] = uvs[i].Y;
         }
+
         //calculate ZeroCenterPoints
         for (var i = 0; i < UVs.Length; i++)
-        {
             if (i % 2 == 0)
                 ZeroCenterPoints[i] = (UVs[i] * 2f - 1f) * Width / 8f;
             else
                 ZeroCenterPoints[i] = (UVs[i] * 2f - 1f) * Height / 8f;
-        }
     }
 }
 
@@ -129,13 +129,13 @@ public class Animation
         {
             _name = value;
             var splitName = _name.Split(' ');
-            if(!splitName[0].Equals("animation")) return;
+            if (!splitName[0].Equals("animation")) return;
             ID = Convert.ToInt32(splitName.Last());
         }
     }
 
     public int ID { get; set; }
-    public List<Timeline> Timeline{ get; set; }
+    public List<Timeline> Timeline { get; set; }
     public int LoopID { get; set; }
 }
 
@@ -156,7 +156,6 @@ public class Attach
     public string Type { get; set; }
     public int ID { get; set; }
 }
-
 
 [JsonConverter(typeof(SkeletonJsonConverter))]
 public class Skeleton

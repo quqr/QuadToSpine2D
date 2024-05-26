@@ -9,17 +9,18 @@ public class SkeletonJsonConverter : JsonConverter
         throw new NotImplementedException();
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         var obj = serializer.Deserialize(reader);
-        if (obj.GetType()!=typeof(JObject)) return null;
-         var jobj = obj as JObject;
-         var skeleton = new Skeleton
-         {
-             Name = jobj["name"]?.ToString(),
-             Bone = jobj["bone"]?.ToObject<List<Bone>>()
-         };
-         return skeleton;
+        if (obj.GetType() != typeof(JObject)) return null;
+        var jobj = obj as JObject;
+        var skeleton = new Skeleton
+        {
+            Name = jobj["name"]?.ToString(),
+            Bone = jobj["bone"]?.ToObject<List<Bone>>()
+        };
+        return skeleton;
     }
 
     public override bool CanConvert(Type objectType)

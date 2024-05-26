@@ -6,8 +6,7 @@ public static class ProcessTools
     {
         if (quad is null) return new float[4];
         float minX = float.MaxValue, maxX = float.MinValue, minY = float.MaxValue, maxY = float.MinValue;
-        for (int i = 0; i < quad.Length; i++)
-        {
+        for (var i = 0; i < quad.Length; i++)
             if (i % 2 == 0)
             {
                 minX = float.Min(minX, quad[i]);
@@ -18,28 +17,31 @@ public static class ProcessTools
                 minY = float.Min(minY, quad[i]);
                 maxY = float.Max(maxY, quad[i]);
             }
-        }
 
         return [minX, minY, maxX, maxY];
     }
+
     public static float[] MinusFloats(float[] a, float[] b)
     {
         var c = new float[a.Length];
-        for (int i = 0; i < a.Length; i++)
+        for (var i = 0; i < a.Length; i++)
         {
-            if(i>b.Length) break;
+            if (i > b.Length) break;
             c[i] = a[i] - b[i];
         }
+
         return c;
     }
+
     public static float[] PlusFloats(float[] a, float[] b)
     {
         var c = new float[a.Length];
-        for (int i = 0; i < a.Length; i++)
+        for (var i = 0; i < a.Length; i++)
         {
-            if(i>b.Length) break;
+            if (i > b.Length) break;
             c[i] = a[i] + b[i];
         }
+
         return c;
     }
 }

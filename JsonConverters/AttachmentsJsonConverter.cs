@@ -13,7 +13,7 @@ public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
         }
 
         writer.WriteStartObject();
-        for (int i = 0; i < value.Count; i++)
+        for (var i = 0; i < value.Count; i++)
         {
             var attachment = value[i] as Attachments;
             writer.WritePropertyName(attachment.Value.Name);
@@ -22,6 +22,7 @@ public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
             serializer.Serialize(writer, attachment.Value);
             writer.WriteEndObject();
         }
+
         writer.WriteEndObject();
     }
 
