@@ -6,7 +6,7 @@
 
 ## **How to use**
 
-### **Runtime**
+### **Runtimes**
 
 * [.NET8](https://dotnet.microsoft.com/zh-cn/download)
 
@@ -14,22 +14,23 @@
 
 * [How to get quad files](https://github.com/rufaswan/Web2D_Games/blob/master/docs/psxtools-steps.adoc)
 
-## **First**
-
 + ### Input quad file path and images path.
   <img height="150" src="MD/1.png" width="200"/>
 + ### You will get **result.json** and **images** folder.
 
-# **Second**
-
-1. ### Open Spine and import result. (Ignore warning)
++ ### Open Spine and import "result.json" . (Ignore warning)
 
 +  <img height="300" src="MD/2.png" width="200"/>
 
-2. ### Import images
++ ### Import images
 
 + <img height="300" src="MD/3.png" width="200"/>
 
-3. ### Check animations
++ ### Set Playback
++ Open Views->Playback and set "Stepped"
+
++ <img height="150" src="MD/5.png" width="300"/>
+
++ ### Check animations
 
 + <img height="150" src="MD/4.png" width="300"/>
