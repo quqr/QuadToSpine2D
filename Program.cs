@@ -12,18 +12,16 @@ internal class Program
     {
         List<string> imagePath =
         [
-            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.0.tpl.png",
-            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.1.tpl.png",
-            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.2.tpl.png",
-            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.3.tpl.png",
-            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.4.tpl.png",
-            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana.5.tpl.png"
+            @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png",
+            @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png",
+            @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"
         ];
         var jsonOutputPath = "E:\\Asset\\ttt\\result.json";
         var imageSavePath = "E:\\Asset\\ttt\\images";
         var quadPath =
-            @"E:\BaiduNetdiskDownload\momohime\4k\00Files\file\Momohime_Katana_a.mbs.v55.quad";
-        ProcessJson(quadPath, imagePath, imageSavePath, jsonOutputPath);
+            @"E:\Asset\momohime\4k\00Files\file\Momohime_Battle.mbs.v55.quad";
+        int scaleFactor = 1;
+        ProcessJson(quadPath, imagePath, imageSavePath, jsonOutputPath,scaleFactor);
     }
 
     private static void ReleaseMode()
@@ -31,12 +29,13 @@ internal class Program
         List<string> imagePath = [];
         var jsonOutputPath = $"{Directory.GetCurrentDirectory()}/result.json";
         var imageSavePath = $"{Directory.GetCurrentDirectory()}/images";
-        var quadPath = LoadPaths(imageSavePath, imagePath);
-        ProcessJson(quadPath, imagePath, imageSavePath, jsonOutputPath);
+        int scaleFactor = 1;
+        var quadPath = LoadPaths(imageSavePath, imagePath, ref scaleFactor);
+        ProcessJson(quadPath, imagePath, imageSavePath, jsonOutputPath,scaleFactor);
         Console.ReadLine();
     }
 
-    private static string LoadPaths(string imageSavePath, List<string> imagePath)
+    private static string LoadPaths(string imageSavePath, List<string> imagePath, ref int scaleFactor)
     {
         if (!Directory.Exists(imageSavePath)) Directory.CreateDirectory(imageSavePath);
         var quadPath = string.Empty;
@@ -59,19 +58,21 @@ internal class Program
                 else
                     break;
             }
-
             if (path.Split('.').Last().Equals("png")) imagePath.Add(path);
             Console.WriteLine(">>> Please input images path, input ok to exit");
             Console.Write(">>>");
         }
-
+        Console.WriteLine(">>> Please input scale factor (default 1)");
+        var value = Console.ReadLine();
+        scaleFactor = Convert.ToInt32(value);
+        
         return quadPath;
     }
 
     private static void ProcessJson(string quadPath, List<string> imagePath, string imageSavePath,
-        string jsonOutputPath)
+        string jsonOutputPath,int scaleFactor)
     {
-        var quad = new ProcessQuadFile(quadPath);
+        var quad = new ProcessQuadFile(quadPath,scaleFactor);
         var imageQuad = new ProcessImage(imagePath, quad.Quad, imageSavePath);
         var spineJson = new ProcessSpineJson(imageQuad, quad.Quad);
         File.WriteAllText(jsonOutputPath, spineJson.SpineJsonFile);

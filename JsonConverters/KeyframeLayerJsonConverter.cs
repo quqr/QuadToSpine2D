@@ -20,8 +20,10 @@ public class KeyframeLayerJsonConverter : JsonConverter
         // layer.Attribute = jobj["attribute"]?.ToString();
         // layer.Colorize = jobj["colorize"]?.ToString();
         layer.TexID = jObject["tex_id"]?.ToObject<int>() ?? 0;
-        layer.Dstquad = jObject["dstquad"]?.ToObject<float[]>();
-        layer.Srcquad = jObject["srcquad"]?.ToObject<float[]>();
+        layer.Dstquad = ProcessTools.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
+            TransmissionData.Instance.ScaleFactor);
+        layer.Srcquad = ProcessTools.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
+            TransmissionData.Instance.ScaleFactor);
         return layer;
     }
 

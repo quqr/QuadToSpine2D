@@ -74,25 +74,32 @@ public class ProcessSpineJson
                 .AddRange(quad.Animation
                     .Where(x => x.ID == bone.Attach.ID)
                     .SelectMany(x => x.Timeline).ToList());
-
-        if (skeleton.Name.Equals("N_ATTACK_A1")) Console.WriteLine(1);
         var time = 0f;
+        if (skeleton.Name == "P_ATTACK_A")
+        {
+            Console.WriteLine();
+        }
         foreach (var timeline in timelines)
         {
             if (timeline.Attach is null) continue;
-            if (timeline.Attach.Type.Equals("keyframe"))
+            switch (timeline.Attach.Type)
             {
-                var layers = quad.Keyframe.Find(x => x.ID == timeline.Attach.ID).Layer;
-                AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
-            }
-            else if (timeline.Attach.Type.Equals("slot"))
-            {
-                var attach = quad.Slot[timeline.Attach.ID].Attaches?
-                    .Find(x => x.Type.Equals("keyframe"));
-                if (attach is null) continue;
-                var layers = quad.Keyframe
-                    .Find(x => x.ID == attach.ID).Layer;
-                AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+                case "keyframe":
+                {
+                    var layers = quad.Keyframe.Find(x => x.ID == timeline.Attach.ID).Layer;
+                    AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+                    break;
+                }
+                case "slot":
+                {
+                    var attach = quad.Slot[timeline.Attach.ID].Attaches?
+                        .Find(x => x.Type.Equals("keyframe"));
+                    if (attach is null) continue;
+                    var layers = quad.Keyframe
+                        .Find(x => x.ID == attach.ID).Layer;
+                    AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+                    break;
+                }
             }
 
             time += timeline.Time / 30f;
@@ -119,7 +126,6 @@ public class ProcessSpineJson
 
             AddDrawOrderOffset(layerName, index, drawOrder);
         }
-
         //Set Order By Slot
         drawOrder.Offsets = drawOrder.Offsets.OrderBy(x => x.SlotNum).ToList();
         drawOrders.Add(drawOrder);
@@ -137,7 +143,6 @@ public class ProcessSpineJson
             .ToList();
         foreach (var layerName in notContainsLayers)
         {
-            if (layers.Exists(x => x.LayerName.Equals(layerName))) continue;
             spineAnimation.Slots[layerName].Attachment.Add(new AnimationAttachment
             {
                 Time = time,
@@ -178,7 +183,6 @@ public class ProcessSpineJson
             value = new AnimationSlot();
             spineAnimation.Slots[layerName] = value;
         }
-
         value.Attachment.Add(new AnimationAttachment
         {
             Time = time,
@@ -198,11 +202,13 @@ public class ProcessSpineJson
         }
 
         if (offset != 0)
+        {
             drawOrder.Offsets.Add(new DrawOrderOffset
             {
                 Slot = layerName,
                 Offset = offset,
                 SlotNum = slotOrder
             });
+        }
     }
 }

@@ -44,4 +44,14 @@ public static class ProcessTools
 
         return c;
     }
+    public static float[]? MulFloats(float[]? a, float b)
+    {
+        if (a is null) return null;
+        var c = new float[a.Length];
+        for (var i = 0; i < a.Length; i++)
+        {
+            c[i] = a[i] * b;
+        }
+        return c;
+    }
 }

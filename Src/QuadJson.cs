@@ -49,6 +49,7 @@ public class KeyframeLayer
             //Y is down 
             if (value is null) _dstquad = value;
             else
+            {
                 for (var i = 0; i < 8; i++)
                 {
                     if (i % 2 != 0)
@@ -56,9 +57,9 @@ public class KeyframeLayer
                         _dstquad[i] = -value[i];
                         continue;
                     }
-
                     _dstquad[i] = value[i];
                 }
+            }
         }
     }
 
@@ -75,14 +76,14 @@ public class KeyframeLayer
             MinAndMaxSrcPoints = ProcessTools.FindMinAndMaxPoints(_srcquad);
             Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
             Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
-            LayerGuid = $"{TexID}_{_srcquad.Sum(x => x * 37.73f / 3.7f)}";
+            LayerGuid = $"{TexID}_{_srcquad
+                .Select((t, i) => t * 3.7 / 7.3  + t * i * 97311397.135f / 773377.2746f )
+                .Sum()}";
             CalculateUVs(_srcquad);
         }
     }
 
     public int TexID { get; set; }
-
-    public int Order { get; set; }
     public string LayerGuid { get; set; } = "";
     public float Height { get; set; }
     public float Width { get; set; }
