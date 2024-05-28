@@ -1,29 +1,22 @@
-name: Release
+name: Release Drafter
+
 on:
   push:
-    branches: [ master ]
+    branches:
+      - main
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
 jobs:
-  build:
-    name: Release
-    runs-on: windows-latest , ubuntu-latest
+  update_release_draft:
+    permissions:
+      contents: write  # for release-drafter/release-drafter to create a github release
+      pull-requests: write  # for release-drafter/release-drafter to add label to PR
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '8.0.x'
-    - name: Build
-      shell: pwsh
-      run: .\build.ps1 --stable=true
-    - name: Get Release Version
-      shell: pwsh
-      run: .\build\getReleaseVersion.ps1
-    - name: Create GitHub release
-      uses: marvinpinto/action-automatic-releases@latest
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: ${{ env.ReleaseVersion }}
-        title: ${{ env.ReleaseVersion }}
-        prerelease: false
-        files: |
-          artifacts/packages/*
+      - uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
