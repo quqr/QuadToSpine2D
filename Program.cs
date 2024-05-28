@@ -12,14 +12,15 @@ internal class Program
     {
         List<string> imagePath =
         [
-            @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png",
-            @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png",
-            @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"
+            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.0.nvt.png",
+            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.1.nvt.png",
+            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.2.gnf.png"
+
         ];
         var jsonOutputPath = "E:\\Asset\\ttt\\result.json";
         var imageSavePath = "E:\\Asset\\ttt\\images";
         var quadPath =
-            @"E:\Asset\momohime\4k\00Files\file\Momohime_Battle.mbs.v55.quad";
+            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
         int scaleFactor = 1;
         ProcessJson(quadPath, imagePath, imageSavePath, jsonOutputPath,scaleFactor);
     }

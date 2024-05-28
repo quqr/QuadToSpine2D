@@ -8,15 +8,14 @@ public class ProcessSpineJson
     private SpineJson _spineJson = new();
     private string _imagesPath = string.Empty;
     public string SpineJsonFile;
-
+    public int SplitFactor = 1;
     public ProcessSpineJson(ProcessImage processImage, QuadJson quadJson)
     {
         Console.WriteLine("Writing spine json...");
         _imagesPath = processImage.SavePath;
         Init(processImage);
         ProcessAnimation(quadJson);
-        ConvertToJson();
-
+        ConvertToJson(); 
         Console.WriteLine("Finish");
     }
 
@@ -46,7 +45,7 @@ public class ProcessSpineJson
 
     private void ConvertToJson()
     {
-        SpineJsonFile = JsonConvert.SerializeObject(_spineJson, Formatting.Indented,
+        SpineJsonFile = JsonConvert.SerializeObject(_spineJson,
             new JsonSerializerSettings
             {
                 ContractResolver = new DefaultContractResolver
@@ -75,12 +74,10 @@ public class ProcessSpineJson
                     .Where(x => x.ID == bone.Attach.ID)
                     .SelectMany(x => x.Timeline).ToList());
         var time = 0f;
-        if (skeleton.Name == "P_ATTACK_A")
+        //TODO : 分而治之
+        for (var index = 0; index < timelines.Count; index++)
         {
-            Console.WriteLine();
-        }
-        foreach (var timeline in timelines)
-        {
+            var timeline = timelines[index];
             if (timeline.Attach is null) continue;
             switch (timeline.Attach.Type)
             {
@@ -101,10 +98,8 @@ public class ProcessSpineJson
                     break;
                 }
             }
-
             time += timeline.Time / 30f;
         }
-
         spineAnimation.Deform = deform;
         spineAnimation.DrawOrder = drawOrders;
         _spineAnimations[skeleton.Name] = spineAnimation;

@@ -47,6 +47,10 @@ public static class ProcessTools
     public static float[]? MulFloats(float[]? a, float b)
     {
         if (a is null) return null;
+        if (Math.Abs(b - 1) < .1f)
+        {
+            return a;
+        }
         var c = new float[a.Length];
         for (var i = 0; i < a.Length; i++)
         {

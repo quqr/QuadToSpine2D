@@ -4,6 +4,9 @@
 
 + Spine 3.8
 
+## Known issues
+1. **If the result.json file is too large, the import may fail.**
+2. **Some animations are displayed in the wrong order.**
 ## **How to use**
 
 ### **Runtimes**
