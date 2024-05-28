@@ -1,28 +1,43 @@
-name: Release
+name: Release CI
+
 on:
   push:
-    branches: [ master ]
+    tags:
+      - "v*"
+
 jobs:
-  build:
-    name: Release
+  build-winform:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 8.0.x
-    - name: Build
-      shell: pwsh
-      run: .\build.ps1 --stable=true
-    - name: Get Release Version
-      shell: pwsh
-      run: .\build\getReleaseVersion.ps1
-    - name: Create GitHub release
-      uses: marvinpinto/action-automatic-releases@latest
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        title: ${{ env.ReleaseVersion }}
-        prerelease: false
-        files: |
-          artifacts/packages/*
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore "./"
+
+      - name: Publish
+        run: dotnet publish --configuration Release --output ./publish "./"
+
+      - name: Archive Release
+        run: 7z a -tzip QuadToSpineJson_Windows.zip publish/
+
+      - name: Update CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
+          tag: ${{ github.ref_name }}
+          writeToFile: false
+          includeInvalidCommits: true
+
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "QuadToSpineJson_Windows.zip"
+          allowUpdates: true
+          body: |
+            ${{ steps.changelog.outputs.changes }}
+          token: ${{ secrets.GITHUB_TOKEN }}
