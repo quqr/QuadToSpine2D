@@ -33,7 +33,7 @@ public class Keyframe
     }
 
     public int ID { get; set; }
-    public List<KeyframeLayer?>? Layer;
+    public List<KeyframeLayer?>? Layer { get; set; }
 }
 
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
@@ -82,7 +82,8 @@ public class KeyframeLayer
             CalculateUVs(_srcquad);
         }
     }
-
+    
+    public int BlendId { get; set; }
     public int TexID { get; set; }
     public string LayerGuid { get; set; } = "";
     public float Height { get; set; }
@@ -130,26 +131,23 @@ public class Animation
         {
             _name = value;
             var splitName = _name.Split(' ');
-            if (!splitName[0].Equals("animation")) return;
+            if (!splitName[0].Equals("animation"))
+            {
+                Console.WriteLine(value);
+                return;
+            }
             ID = Convert.ToInt32(splitName.Last());
         }
     }
 
-    public int ID { get; set; }
+    public int ID { get; set; } = -1;
     public List<Timeline> Timeline { get; set; }
-    public int LoopID { get; set; }
 }
 
 public class Timeline
 {
     public int Time { get; set; }
     public Attach? Attach { get; set; }
-    public float[]? Matrix { get; set; }
-    public string Color { get; set; }
-    public bool MatrixMix { get; set; }
-    public bool ColorMix { get; set; }
-    public bool KeyframeMix { get; set; }
-    public bool HitboxMix { get; set; }
 }
 
 public class Attach
@@ -167,6 +165,5 @@ public class Skeleton
 
 public class Bone
 {
-    public string Name { get; set; }
     public Attach Attach { get; set; }
 }

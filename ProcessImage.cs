@@ -1,18 +1,19 @@
-﻿using SixLabors.ImageSharp.Processing;
+﻿using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 namespace QuadPlayer;
 using SixLabors.ImageSharp;
 
 public class ProcessImage: Singleton<ProcessImage>
 {
-    public Dictionary<string, LayerData> ImagesData { get; set; } = new();
+    public Dictionary<string, LayerData> ImagesData { get; } = new();
     public string SavePath;
     private int _imageIndex;
-    private Image[] _images;
+    private Image<Rgba32>[] _images;
     private bool _isCopy;
-    public ProcessImage(List<string> images, QuadJson quad, string savePath)
+    public void Process(List<string> images, QuadJson quad, string savePath)
     {
-        Console.WriteLine("Cutting images...");
-        _images = new Image[images.Count];
+        Console.WriteLine("Clipping images...");
+        _images = new Image<Rgba32>[images.Count];
         SavePath = savePath;
         GetAllImages(images);
         foreach (var keyframe in quad.Keyframe)
@@ -26,6 +27,9 @@ public class ProcessImage: Singleton<ProcessImage>
                     Console.WriteLine($"Missing image. TexID: {layer.TexID}");
                     continue;
                 }
+                //clip image.
+                //if image exist continue.
+                //Or if one keyframe has same layer, clip same image and rename.
                 if (ImagesData.TryGetValue(layer.LayerGuid, out var value))
                 {
                     layer.LayerName = value.ImageName;
@@ -36,7 +40,8 @@ public class ProcessImage: Singleton<ProcessImage>
                     if (ImagesData.ContainsKey(layer.LayerGuid)) continue;
                     _isCopy = true;
                 }
-                ImagesData[layer.LayerGuid] = CutImage(_images[layer.TexID], CalculateRectangle(layer), layer);
+                
+                ImagesData[layer.LayerGuid] = ClipImage(_images[layer.TexID], CalculateRectangle(layer), layer);
             }
         }
         Console.WriteLine("Finish");
@@ -46,8 +51,7 @@ public class ProcessImage: Singleton<ProcessImage>
     {
         for (var index = 0; index < images.Count; index++)
         {
-            var image = Image.Load(images[index]);
-            _images[index] = image;
+            _images[index] = Image.Load<Rgba32>(images[index]);
         }
     }
 
@@ -61,10 +65,9 @@ public class ProcessImage: Singleton<ProcessImage>
             Height = (int)layer.Height
         };
     }
-
-    private LayerData CutImage(Image image, Rectangle rectangle, KeyframeLayer layer)
+    private LayerData ClipImage(Image<Rgba32> image, Rectangle rectangle, KeyframeLayer layer)
     {
-        using var cutImage = image.Clone(x => { x.Crop(rectangle); });
+        using var clipImage = image.Clone(x => { x.Crop(rectangle); });
         string imageName;
         if (_isCopy)
         {
@@ -77,7 +80,7 @@ public class ProcessImage: Singleton<ProcessImage>
             _imageIndex++;
         }
         layer.LayerName = imageName;
-        cutImage.SaveAsPng($"{SavePath}\\{imageName}.png");
+        clipImage.SaveAsPngAsync($"{SavePath}\\{imageName}.png");
         return new LayerData
         {
             UVs = layer.UVs,

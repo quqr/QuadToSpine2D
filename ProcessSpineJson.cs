@@ -7,15 +7,14 @@ public class ProcessSpineJson
 {
     private SpineJson _spineJson = new();
     private string _imagesPath = string.Empty;
-    public string SpineJsonFile;
-    public int SplitFactor = 1;
-    public ProcessSpineJson(ProcessImage processImage, QuadJson quadJson)
+    private string _outputPath;
+    public void Process(ProcessImage processImage, QuadJson quadJson,string outputPath)
     {
         Console.WriteLine("Writing spine json...");
         _imagesPath = processImage.SavePath;
+        _outputPath = outputPath;
         Init(processImage);
         ProcessAnimation(quadJson);
-        ConvertToJson(); 
         Console.WriteLine("Finish");
     }
 
@@ -43,22 +42,38 @@ public class ProcessSpineJson
         });
     }
 
-    private void ConvertToJson()
+    private int _fileIndex;
+    private void WriteToJson()
     {
-        SpineJsonFile = JsonConvert.SerializeObject(_spineJson,
+        var spineJsonFile = JsonConvert.SerializeObject(_spineJson,Formatting.Indented,
             new JsonSerializerSettings
             {
                 ContractResolver = new DefaultContractResolver
                     { NamingStrategy = new CamelCaseNamingStrategy() }
             });
+        var fileName = $"Result_{_fileIndex}.json";
+        _fileIndex++;
+        var output = _outputPath + fileName;
+        File.WriteAllText(output,spineJsonFile);
+        Console.WriteLine(output);
     }
 
     private Dictionary<string, SpineAnimation> _spineAnimations { get; set; } = new();
 
     private void ProcessAnimation(QuadJson quad)
     {
-        foreach (var skeleton in quad.Skeleton) SetKeyframesData(quad, skeleton);
+        for (var index = 0; index < quad.Skeleton.Count; index++)
+        {
+            SetKeyframesData(quad, quad.Skeleton[index]);
+        }
+        ConvertToJson();
+    }
+
+    private void ConvertToJson()
+    {
         _spineJson.Animations = _spineAnimations;
+        WriteToJson();
+        _spineAnimations.Clear();
     }
 
     private void SetKeyframesData(QuadJson quad, Skeleton? skeleton)
@@ -69,12 +84,13 @@ public class ProcessSpineJson
         Deform deform = new();
         List<Timeline> timelines = [];
         foreach (var bone in skeleton.Bone)
-            timelines
-                .AddRange(quad.Animation
+        {
+            timelines.AddRange(quad.Animation
                     .Where(x => x.ID == bone.Attach.ID)
                     .SelectMany(x => x.Timeline).ToList());
+        }
+
         var time = 0f;
-        //TODO : 分而治之
         for (var index = 0; index < timelines.Count; index++)
         {
             var timeline = timelines[index];
@@ -83,23 +99,25 @@ public class ProcessSpineJson
             {
                 case "keyframe":
                 {
-                    var layers = quad.Keyframe.Find(x => x.ID == timeline.Attach.ID).Layer;
+                    var layers = quad.Keyframe.Find(x => x.ID == timeline.Attach.ID)?.Layer;
+                    if (layers is null) break;
                     AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
                     break;
                 }
                 case "slot":
                 {
-                    var attach = quad.Slot[timeline.Attach.ID].Attaches?
-                        .Find(x => x.Type.Equals("keyframe"));
-                    if (attach is null) continue;
-                    var layers = quad.Keyframe
-                        .Find(x => x.ID == attach.ID).Layer;
+                    var attach = quad.Slot[timeline.Attach.ID].Attaches?.Find(x => x.Type.Equals("keyframe"));
+                    if (attach is null) break;
+                    var layers = quad.Keyframe.Find(x => x.ID == attach.ID)?.Layer;
+                    if (layers is null) break;
                     AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
                     break;
                 }
             }
-            time += timeline.Time / 30f;
+            time += timeline.Time / 60f;
         }
+        drawOrders.RemoveAll(x => x.Offsets.Count == 0);
+
         spineAnimation.Deform = deform;
         spineAnimation.DrawOrder = drawOrders;
         _spineAnimations[skeleton.Name] = spineAnimation;

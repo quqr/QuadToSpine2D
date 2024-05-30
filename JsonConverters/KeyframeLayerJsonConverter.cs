@@ -24,6 +24,7 @@ public class KeyframeLayerJsonConverter : JsonConverter
             TransmissionData.Instance.ScaleFactor);
         layer.Srcquad = ProcessTools.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
             TransmissionData.Instance.ScaleFactor);
+        layer.BlendId = jObject["blend_id"]?.ToObject<int>() ?? 0;
         return layer;
     }
 
