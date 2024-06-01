@@ -4,8 +4,8 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        //ReleaseMode();
-        DebugMode();
+        ReleaseMode();
+        //DebugMode();
     }
 
     private static void DebugMode()
@@ -22,10 +22,13 @@ internal class Program
             //@"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png",
             //@"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png",
             //@"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png",
-            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png",
-            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png",
-            //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.0.nvt.png",
-            //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.1.nvt.png"
+            
+            //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png",
+            //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png",
+            
+            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.0.nvt.png",
+            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.1.nvt.png"
+            
             //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Amiguchi00.0.nvt.png"
 
         ];
@@ -34,8 +37,10 @@ internal class Program
         var quadPath =
             //@"E:\Asset\momohime\4k\00Files\file\Momohime_Katana_a.mbs.v55.quad";
             //@"E:\Asset\momohime\4k\00Files\file\Momohime_Battle.mbs.v55.quad";
-            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
-            //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
+            
+            //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
+            
+            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
             //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Amiguchi00.mbs.v55.quad";
             
         const int scaleFactor = 1;
