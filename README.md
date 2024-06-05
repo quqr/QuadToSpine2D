@@ -9,7 +9,7 @@
 2. **Some animations are displayed in the wrong order.**
 ## **How to use**
 
-### **Runtimes**
+### **Runtime**
 
 * [.NET8](https://dotnet.microsoft.com/zh-cn/download)
 
