@@ -11,16 +11,27 @@ public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
             writer.WriteNull();
             return;
         }
-
         writer.WriteStartObject();
         for (var i = 0; i < value.Count; i++)
         {
             var attachment = value[i] as Attachments;
-            writer.WritePropertyName(attachment.Value.Name);
-            writer.WriteStartObject();
-            writer.WritePropertyName(attachment.Value.Name);
-            serializer.Serialize(writer, attachment.Value);
-            writer.WriteEndObject();
+            if (attachment?.Value.CurrentType == typeof(Mesh))
+            {
+                writer.WritePropertyName(attachment.Value.Name);
+                writer.WriteStartObject();
+                writer.WritePropertyName(attachment.Value.Name);
+                serializer.Serialize(writer, attachment.Value);
+                writer.WriteEndObject();
+            }
+            else
+            {
+                var parent = (attachment.Value as LinkedMesh).Parent;
+                writer.WritePropertyName(parent);
+                writer.WriteStartObject();
+                writer.WritePropertyName(parent);
+                serializer.Serialize(writer, attachment.Value);
+                writer.WriteEndObject();
+            }
         }
 
         writer.WriteEndObject();

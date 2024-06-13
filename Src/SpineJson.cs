@@ -7,7 +7,8 @@ public class SpineJson
     public Skeleton Skeletons { get; set; } = new();
     public List<Bone> Bones { get; set; } = [];
     public List<SpineSlot> Slots { get; set; } = [];
-    public List<Skin> Skins { get; set; } = new(1);
+    public List<Skin> Skins { get; set; } = [];
+    //[JsonIgnore]
     public Dictionary<string, SpineAnimation> Animations { get; set; } = new();
 }
 
@@ -27,26 +28,35 @@ public class SpineSlot
 
 public class Skin
 {
-    public string Name = "default";
-
+    public string Name = string.Empty;
     [JsonConverter(typeof(AttachmentsJsonConverter<Attachments>))]
     public List<Attachments> Attachments = [];
 }
 
 public class Attachments
 {
-    public Mesh Value { get; set; }
+    public BaseMesh Value { get; set; }
 }
 
-public class Mesh
+public class BaseMesh
 {
-    [JsonIgnore] public string Name;
-
+    public string Name;
+    [JsonIgnore]public Type CurrentType;
+}
+public class Mesh : BaseMesh
+{
     public string Type { get; set; } = "mesh";
     public float[] Uvs { get; set; } = new float[8];
     public float[] Triangles { get; set; } = [1, 2, 3, 1, 3, 0];
     public float[] Vertices { get; set; } = new float[8];
     public int Hull { get; set; } = 4;
+}
+
+public class LinkedMesh: BaseMesh
+{
+    public string Type { get; set; }
+    public string Skin { get; set; }
+    public string Parent { get; set; }
 }
 
 public class Bone
@@ -57,10 +67,12 @@ public class Bone
 public class SpineAnimation
 {
     public Dictionary<string, AnimationSlot> Slots { get; set; } = new();
+    //[JsonIgnore]
     public Deform Deform { get; set; } = new();
-    public List<DrawOrder> DrawOrder { get; set; } = [];
+    //[JsonIgnore]
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public List<DrawOrder>? DrawOrder { get; set; } = [];
 }
-
 public class DrawOrder
 {
     public float Time { get; set; }
@@ -87,7 +99,7 @@ public class AnimationAttachment
 
 public class Deform
 {
-    public Dictionary<string, AnimationDefault> @Default = new();
+    public Dictionary<string, AnimationDefault> Skin_0 = new();
 }
 
 [JsonConverter(typeof(AnimationDefaultJsonConverter))]

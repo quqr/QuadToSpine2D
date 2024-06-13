@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "QuadPlayer": {
+      "commandName": "Project",
+      "hotReloadEnabled": true
+    }
+  }
+}
