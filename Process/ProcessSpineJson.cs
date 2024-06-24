@@ -1,14 +1,14 @@
 ﻿using Newtonsoft.Json.Serialization;
 using QuadPlayer.Spine;
 
-namespace QuadPlayer;
+namespace QuadPlayer.Process;
 
 public class ProcessSpineJson
 {
-    private SpineJson _spineJson = new();
+    private readonly SpineJson _spineJson = new();
     private string _imagesPath = string.Empty;
-    private string _outputPath;
-    public void Process(ProcessImage processImage, QuadJson quadJson,string outputPath)
+    private string _outputPath = string.Empty;
+    public void Process(ProcessImage processImage, QuadJson quadJson, string outputPath)
     {
         Console.WriteLine("Writing spine json...");
         _imagesPath = processImage.SavePath;
@@ -27,12 +27,12 @@ public class ProcessSpineJson
             _spineJson.Skins.Add(new Skin { Name = $"skin_{i}" });
             for (int j = 0; j < processImage.ImagesData[0].Count; j++)
             {
-                SetBaseData(processImage.ImagesData[i].ElementAt(j).Value,i,j);
+                SetBaseData(processImage.ImagesData[i].ElementAt(j).Value, i, j);
             }
         }
     }
 
-    private void SetBaseData(LayerData layerData,int curSkin,int order)
+    private void SetBaseData(LayerData layerData, int curSkin, int order)
     {
         var slotName = layerData.ImageName;
         if (curSkin == 0)
@@ -66,25 +66,26 @@ public class ProcessSpineJson
     }
     private void WriteToJson()
     {
-        var spineJsonFile = JsonConvert.SerializeObject(_spineJson,Formatting.Indented,
+        var spineJsonFile = JsonConvert.SerializeObject(_spineJson, Formatting.Indented,
             new JsonSerializerSettings
             {
                 ContractResolver = new DefaultContractResolver
-                    { NamingStrategy = new CamelCaseNamingStrategy() },
+                { NamingStrategy = new CamelCaseNamingStrategy() },
             });
         var output = Path.Combine(_outputPath, "Result.json");
-        File.WriteAllText(output,spineJsonFile);
+        File.WriteAllText(output, spineJsonFile);
         Console.WriteLine(output);
     }
 
-    private Dictionary<string, SpineAnimation> _spineAnimations { get; set; } = new();
+    private Dictionary<string, SpineAnimation> _spineAnimations { get; } = new();
 
     private void ProcessAnimation(QuadJson quad)
     {
-        for (var index = 0; index < quad.Skeleton.Count; index++)
+        foreach (var skeleton in quad.Skeleton)
         {
-            SetKeyframesData(quad, quad.Skeleton[index]);
+            SetKeyframesData(quad, skeleton);
         }
+
         ConvertToJson();
     }
 
@@ -110,15 +111,15 @@ public class ProcessSpineJson
         }
 
         var time = 0f;
-        for (var index = 0; index < timelines.Count; index++)
+        foreach (var timeline in timelines)
         {
-            var timeline = timelines[index];
             if (timeline.Attach is null) continue;
             switch (timeline.Attach.Type)
             {
                 case "keyframe":
                 {
-                    var layers = quad.Keyframe.FirstOrDefault(x => x.ID == timeline.Attach.ID)?.Layer;
+                    var timeline1 = timeline;
+                    var layers = quad.Keyframe.FirstOrDefault(x => x.ID == timeline1.Attach.ID)?.Layer;
                     if (layers is null) break;
                     AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
                     break;
@@ -183,7 +184,7 @@ public class ProcessSpineJson
         }
     }
 
-    private static void AddAnimationVertices(float time, Deform deform,KeyframeLayer layer)
+    private static void AddAnimationVertices(float time, Deform deform, KeyframeLayer layer)
     {
         AnimationVertices item = new()
         {

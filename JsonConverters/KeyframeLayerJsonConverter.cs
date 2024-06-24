@@ -15,16 +15,18 @@ public class KeyframeLayerJsonConverter : JsonConverter
         var obj = serializer.Deserialize(reader);
         if (obj.GetType() != typeof(JObject)) return null;
         var jObject = obj as JObject;
-        var layer = new KeyframeLayer();
-        // layer.BlendID = jobj["blend_id"]?.ToObject<int>();
-        // layer.Attribute = jobj["attribute"]?.ToString();
-        // layer.Colorize = jobj["colorize"]?.ToString();
-        layer.TexID = jObject["tex_id"]?.ToObject<int>() ?? 0;
-        layer.Dstquad = ProcessTools.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
-            TransmissionData.Instance.ScaleFactor);
-        layer.Srcquad = ProcessTools.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
-            TransmissionData.Instance.ScaleFactor);
-        layer.BlendId = jObject["blend_id"]?.ToObject<int>() ?? 0;
+        var layer = new KeyframeLayer
+        {
+            // layer.BlendID = jobj["blend_id"]?.ToObject<int>();
+            // layer.Attribute = jobj["attribute"]?.ToString();
+            // layer.Colorize = jobj["colorize"]?.ToString();
+            TexID = jObject["tex_id"]?.ToObject<int>() ?? 0,
+            Dstquad = ProcessTools.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
+                TransmissionData.Instance.ScaleFactor),
+            Srcquad = ProcessTools.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
+                TransmissionData.Instance.ScaleFactor),
+            BlendId = jObject["blend_id"]?.ToObject<int>() ?? 0
+        };
         return layer;
     }
 

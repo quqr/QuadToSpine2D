@@ -12,10 +12,10 @@ public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
             return;
         }
         writer.WriteStartObject();
-        for (var i = 0; i < value.Count; i++)
+        foreach (var v in value)
         {
-            var attachment = value[i] as Attachments;
-            if (attachment?.Value.CurrentType == typeof(Mesh))
+            var attachment = v as Attachments;
+            if (attachment.Value.CurrentType == typeof(Mesh))
             {
                 writer.WritePropertyName(attachment.Value.Name);
                 writer.WriteStartObject();

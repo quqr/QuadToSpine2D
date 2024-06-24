@@ -1,5 +1,5 @@
-﻿using System.Numerics;
-using QuadPlayer.JsonConverters;
+﻿using QuadPlayer.JsonConverters;
+using System.Numerics;
 
 namespace QuadPlayer;
 
@@ -77,12 +77,12 @@ public class KeyframeLayer
             Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
             Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
             LayerGuid = $"{TexID}_{_srcquad
-                .Select((t, i) => t * 3.7 / 7.3  + t * i * 97311397.135f / 773377.2746f )
+                .Select((t, i) => t * 3.7 / 7.3 + t * i * 97311397.135f / 773377.2746f)
                 .Sum()}";
             CalculateUVs(_srcquad);
         }
     }
-    
+
     public int BlendId { get; set; }
     public int TexID { get; set; }
     public string LayerGuid { get; set; } = "";

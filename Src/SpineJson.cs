@@ -35,13 +35,13 @@ public class Skin
 
 public class Attachments
 {
-    public BaseMesh Value { get; set; }
+    public BaseMesh Value { get; init; }
 }
 
 public class BaseMesh
 {
-    public string Name;
-    [JsonIgnore]public Type CurrentType;
+    public string Name{ get; init; }
+    [JsonIgnore] public Type CurrentType{ get; init; }
 }
 public class Mesh : BaseMesh
 {
@@ -52,11 +52,11 @@ public class Mesh : BaseMesh
     public int Hull { get; set; } = 4;
 }
 
-public class LinkedMesh: BaseMesh
+public class LinkedMesh : BaseMesh
 {
     public string Type { get; set; }
     public string Skin { get; set; }
-    public string Parent { get; set; }
+    public string Parent { get; init; }
 }
 
 public class Bone
@@ -105,7 +105,7 @@ public class Deform
 [JsonConverter(typeof(AnimationDefaultJsonConverter))]
 public class AnimationDefault
 {
-    public string Name { get; set; }
+    public string Name { get; init; }
     public List<AnimationVertices> ImageVertices { get; set; } = [];
 }
 

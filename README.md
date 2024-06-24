@@ -17,8 +17,9 @@
 * [How to get quad files](https://github.com/rufaswan/Web2D_Games/blob/master/docs/psxtools-steps.adoc)
 
 + ### Input quad file path and images path. (Skin images can be imported)
+  #### If your image is larger than the original image, the scale factor should be: current image size/original image size. 
   <img height="150" src="MD/1.png" width="200"/>
-+ ### You will get **result.json** and **images** folder.
++ ### You will get **Result.json** and **images** folder.
 
 + ### Open Spine and import "Result.json". (Ignore warning)
 

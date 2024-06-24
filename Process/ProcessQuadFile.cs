@@ -1,12 +1,12 @@
-﻿namespace QuadPlayer;
+﻿namespace QuadPlayer.Process;
 
 public class ProcessQuadFile
 {
     public QuadJson Quad;
-    public void Load(string quadPath,int scaleFactor)
+    public void Load(string quadPath, int scaleFactor)
     {
         Console.WriteLine("Loading quad file...");
-        
+
         TransmissionData.Instance.ScaleFactor = scaleFactor > 1 ? scaleFactor : 1;
         var json = File.ReadAllText(quadPath);
         Quad = JsonConvert.DeserializeObject<QuadJson>(json)!;
