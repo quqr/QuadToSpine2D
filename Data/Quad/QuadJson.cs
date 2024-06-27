@@ -1,13 +1,14 @@
-﻿using QuadPlayer.JsonConverters;
-using System.Numerics;
+﻿using System.Numerics;
+using QuadToSpine.JsonConverters;
+using QuadToSpine.Tools;
 
-namespace QuadPlayer;
+namespace QuadToSpine.Quad;
 
 public class QuadJson
 {
     public List<Keyframe?> Keyframe { get; set; }
     public List<Animation?> Animation { get; set; }
-    public List<Skeleton?> Skeleton { get; set; }
+    public List<QuadSkeleton?> Skeleton { get; set; }
     public List<Slot> Slot { get; set; }
 }
 
@@ -49,7 +50,6 @@ public class KeyframeLayer
             //Y is down 
             if (value is null) _dstquad = value;
             else
-            {
                 for (var i = 0; i < 8; i++)
                 {
                     if (i % 2 != 0)
@@ -57,9 +57,9 @@ public class KeyframeLayer
                         _dstquad[i] = -value[i];
                         continue;
                     }
+
                     _dstquad[i] = value[i];
                 }
-            }
         }
     }
 
@@ -136,6 +136,7 @@ public class Animation
                 Console.WriteLine(value);
                 return;
             }
+
             ID = Convert.ToInt32(splitName.Last());
         }
     }
@@ -157,7 +158,7 @@ public class Attach
 }
 
 [JsonConverter(typeof(SkeletonJsonConverter))]
-public class Skeleton
+public class QuadSkeleton
 {
     public string Name { get; set; }
     public List<Bone>? Bone { get; set; }

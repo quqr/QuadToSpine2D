@@ -1,4 +1,4 @@
-namespace QuadPlayer;
+namespace QuadToSpine.Tools;
 
 public class TransmissionData : Singleton<TransmissionData>
 {

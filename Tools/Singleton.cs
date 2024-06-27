@@ -1,4 +1,4 @@
-namespace QuadPlayer;
+namespace QuadToSpine.Tools;
 
 public class Singleton<T>
 {
@@ -8,10 +8,7 @@ public class Singleton<T>
     {
         get
         {
-            if (_instance is null)
-            {
-                _instance = Activator.CreateInstance<T>();
-            }
+            if (_instance is null) _instance = Activator.CreateInstance<T>();
             return _instance;
         }
     }

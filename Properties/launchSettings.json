@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "QuadPlayer": {
+    "QuadToSpine": {
       "commandName": "Project",
       "hotReloadEnabled": true
     }

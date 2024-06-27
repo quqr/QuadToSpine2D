@@ -1,13 +1,16 @@
 ﻿using Newtonsoft.Json.Serialization;
-using QuadPlayer.Spine;
+using QuadToSpine.Quad;
+using QuadToSpine.Spine;
+using QuadToSpine.Tools;
 
-namespace QuadPlayer.Process;
+namespace QuadToSpine.Process;
 
 public class ProcessSpineJson
 {
     private readonly SpineJson _spineJson = new();
     private string _imagesPath = string.Empty;
     private string _outputPath = string.Empty;
+
     public void Process(ProcessImage processImage, QuadJson quadJson, string outputPath)
     {
         Console.WriteLine("Writing spine json...");
@@ -20,15 +23,13 @@ public class ProcessSpineJson
 
     private void Init(ProcessImage processImage)
     {
-        _spineJson.Skeletons.ImagesPath = _imagesPath;
+        _spineJson.SpineSkeletons.ImagesPath = _imagesPath;
         _spineJson.Bones.Add(new Spine.Bone() { Name = "root" });
-        for (int i = 0; i < processImage.SkinsCount; i++)
+        for (var i = 0; i < processImage.SkinsCount; i++)
         {
             _spineJson.Skins.Add(new Skin { Name = $"skin_{i}" });
-            for (int j = 0; j < processImage.ImagesData[0].Count; j++)
-            {
+            for (var j = 0; j < processImage.ImagesData[0].Count; j++)
                 SetBaseData(processImage.ImagesData[i].ElementAt(j).Value, i, j);
-            }
         }
     }
 
@@ -37,7 +38,8 @@ public class ProcessSpineJson
         var slotName = layerData.ImageName;
         if (curSkin == 0)
         {
-            _spineJson.Slots.Add(new SpineSlot { Name = slotName, Attachment = slotName, Bone = "root", Order = order });
+            _spineJson.Slots.Add(new SpineSlot
+                { Name = slotName, Attachment = slotName, Bone = "root", Order = order });
             _spineJson.Skins[curSkin].Attachments.Add(new Attachments
             {
                 Value = new Mesh
@@ -45,8 +47,8 @@ public class ProcessSpineJson
                     Name = slotName,
                     Uvs = layerData.UVs,
                     Vertices = layerData.ZeroCenterPoints,
-                    CurrentType = typeof(Mesh),
-                },
+                    CurrentType = typeof(Mesh)
+                }
             });
         }
         else
@@ -59,18 +61,19 @@ public class ProcessSpineJson
                     Type = "linkedmesh",
                     Skin = "skin_0",
                     Parent = _spineJson.Skins[0].Attachments[order].Value.Name,
-                    CurrentType = typeof(LinkedMesh),
+                    CurrentType = typeof(LinkedMesh)
                 }
             });
         }
     }
+
     private void WriteToJson()
     {
         var spineJsonFile = JsonConvert.SerializeObject(_spineJson, Formatting.Indented,
             new JsonSerializerSettings
             {
                 ContractResolver = new DefaultContractResolver
-                { NamingStrategy = new CamelCaseNamingStrategy() },
+                    { NamingStrategy = new CamelCaseNamingStrategy() }
             });
         var output = Path.Combine(_outputPath, "Result.json");
         File.WriteAllText(output, spineJsonFile);
@@ -81,10 +84,7 @@ public class ProcessSpineJson
 
     private void ProcessAnimation(QuadJson quad)
     {
-        foreach (var skeleton in quad.Skeleton)
-        {
-            SetKeyframesData(quad, skeleton);
-        }
+        foreach (var skeleton in quad.Skeleton) SetKeyframesData(quad, skeleton);
 
         ConvertToJson();
     }
@@ -96,7 +96,7 @@ public class ProcessSpineJson
         _spineAnimations.Clear();
     }
 
-    private void SetKeyframesData(QuadJson quad, Skeleton? skeleton)
+    private void SetKeyframesData(QuadJson quad, QuadSkeleton? skeleton)
     {
         HashSet<string> keyframeLayerNames = [];
         List<DrawOrder> drawOrders = [];
@@ -104,11 +104,9 @@ public class ProcessSpineJson
         Deform deform = new();
         List<Timeline> timelines = [];
         foreach (var bone in skeleton.Bone)
-        {
             timelines.AddRange(quad.Animation
-                    .Where(x => x.ID == bone.Attach.ID)
-                    .SelectMany(x => x.Timeline).ToList());
-        }
+                .Where(x => x.ID == bone.Attach.ID)
+                .SelectMany(x => x.Timeline).ToList());
 
         var time = 0f;
         foreach (var timeline in timelines)
@@ -134,8 +132,10 @@ public class ProcessSpineJson
                     break;
                 }
             }
+
             time += timeline.Time / 60f;
         }
+
         drawOrders.RemoveAll(x => x.Offsets.Count == 0);
 
         spineAnimation.Deform = deform;
@@ -158,6 +158,7 @@ public class ProcessSpineJson
 
             AddDrawOrderOffset(layers[index].LayerName, index, drawOrder);
         }
+
         //Set Order By Slot
         drawOrder.Offsets = drawOrder.Offsets.OrderBy(x => x.SlotNum).ToList();
         drawOrders.Add(drawOrder);
@@ -215,6 +216,7 @@ public class ProcessSpineJson
             value = new AnimationSlot();
             spineAnimation.Slots[layerName] = value;
         }
+
         value.Attachment.Add(new AnimationAttachment
         {
             Time = time,
@@ -234,13 +236,11 @@ public class ProcessSpineJson
         }
 
         if (offset != 0)
-        {
             drawOrder.Offsets.Add(new DrawOrderOffset
             {
                 Slot = layerName,
                 Offset = offset,
                 SlotNum = slotOrder
             });
-        }
     }
 }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuadPlayer", "QuadPlayer.csproj", "{5BC68081-76DF-47C2-8267-CCF8F0AA40BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuadToSpine", "QuadToSpine.csproj", "{5BC68081-76DF-47C2-8267-CCF8F0AA40BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

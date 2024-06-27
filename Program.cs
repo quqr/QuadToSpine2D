@@ -1,5 +1,6 @@
-﻿using QuadPlayer;
-using QuadPlayer.Process;
+﻿using QuadToSpine.Process;
+
+namespace QuadToSpine;
 
 internal class Program
 {
@@ -14,15 +15,15 @@ internal class Program
         List<List<string>> imagePath =
         [
             [
-            @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png",
-            @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png",
-            @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png"
+                @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png",
+                @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png",
+                @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png"
             ],
-            [                
-            @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.0.tpl.png",
-            @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.1.tpl.png",
-            @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.2.tpl.png"
-            ],
+            [
+                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.0.tpl.png",
+                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.1.tpl.png",
+                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.2.tpl.png"
+            ]
             // [
             //     "D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\swi sent Fuyusaka00.0.nvt.png",
             //     "D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\swi sent Fuyusaka00.1.nvt.png"
@@ -39,9 +40,9 @@ internal class Program
             //@"E:\Asset\momohime\4k\00Files\file\Momohime_Katana_a.mbs.v55.quad";
             @"E:\Asset\momohime\4k\00Files\file\Momohime_Battle.mbs.v55.quad";
 
-            //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
+        //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
 
-            //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
+        //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
         //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Amiguchi00.mbs.v55.quad";
         const int scaleFactor = 1;
         if (!Directory.Exists(imageSavePath)) Directory.CreateDirectory(imageSavePath);
@@ -72,12 +73,13 @@ internal class Program
                 quadPath = quadPath.Replace("'", "");
                 break;
             }
+
             Console.WriteLine(">>> Not .quad file, try again!");
         }
 
         Console.WriteLine(">>> Please input images path, input ok to exit");
 
-        int currentSkinCount = 0;
+        var currentSkinCount = 0;
         imagePath.Add([]);
         while (true)
         {
@@ -101,8 +103,10 @@ internal class Program
                 path = path.Replace("'", "");
                 imagePath[currentSkinCount].Add(path);
             }
+
             Console.WriteLine(">>> Please input images path, input ok to exit, input n to input next skin path");
         }
+
         Console.WriteLine(">>> Please input scale factor (default 1)");
         var scale = Console.ReadLine() ?? string.Empty;
         scaleFactor = Convert.ToInt32(scale == string.Empty ? 1 : scale);

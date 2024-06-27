@@ -1,7 +1,8 @@
-﻿using SixLabors.ImageSharp;
+﻿using QuadToSpine.Quad;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-namespace QuadPlayer.Process;
+namespace QuadToSpine.Process;
 
 public class ProcessImage
 {
@@ -11,6 +12,7 @@ public class ProcessImage
     private int _imageIndex;
     private Image[,] _images;
     private bool _isCopy;
+
     public void Process(List<List<string>> imagesSrc, QuadJson quad, string savePath)
     {
         Console.WriteLine("Clipping images...");
@@ -31,8 +33,9 @@ public class ProcessImage
                     Console.WriteLine($"Missing image. TexID: {layer.TexID}");
                     continue;
                 }
+
                 var rectangle = CalculateRectangle(layer);
-                for (int curSkin = 0; curSkin < SkinsCount; curSkin++)
+                for (var curSkin = 0; curSkin < SkinsCount; curSkin++)
                 {
                     ImagesData.TryAdd(curSkin, new Dictionary<string, LayerData>());
                     //clip image.
@@ -48,22 +51,21 @@ public class ProcessImage
                         if (ImagesData[curSkin].ContainsKey(layer.LayerGuid)) continue;
                         _isCopy = true;
                     }
-                    ImagesData[curSkin][layer.LayerGuid] = ClipImage(_images[curSkin, layer.TexID], rectangle, layer, curSkin);
-                }
 
+                    ImagesData[curSkin][layer.LayerGuid] =
+                        ClipImage(_images[curSkin, layer.TexID], rectangle, layer, curSkin);
+                }
             }
         }
+
         Console.WriteLine("Finish");
     }
+
     private void GetAllImages(List<List<string>> images)
     {
-        for (int i = 0; i < images.Count; i++)
-        {
-            for (int j = 0; j < images[0].Count; j++)
-            {
-                _images[i, j] = Image.Load(images[i][j]);
-            }
-        }
+        for (var i = 0; i < images.Count; i++)
+        for (var j = 0; j < images[0].Count; j++)
+            _images[i, j] = Image.Load(images[i][j]);
     }
 
     private Rectangle CalculateRectangle(KeyframeLayer layer)
@@ -76,6 +78,7 @@ public class ProcessImage
             Height = (int)layer.Height
         };
     }
+
     private LayerData ClipImage(Image image, Rectangle rectangle, KeyframeLayer layer, int curSkin)
     {
         using var clipImage = image.Clone(x => { x.Crop(rectangle); });
@@ -90,16 +93,14 @@ public class ProcessImage
             imageName = $"Slice {_imageIndex}_{layer.TexID}_{curSkin}";
             _imageIndex++;
         }
-        if (curSkin == 0)
-        {
-            layer.LayerName = imageName;
-        }
+
+        if (curSkin == 0) layer.LayerName = imageName;
         clipImage.SaveAsPngAsync(Path.Combine(SavePath, imageName + ".png"));
         return new LayerData
         {
             UVs = layer.UVs,
             ImageName = imageName,
-            ZeroCenterPoints = layer.ZeroCenterPoints,
+            ZeroCenterPoints = layer.ZeroCenterPoints
         };
     }
 }

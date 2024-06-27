@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
+using QuadToSpine.Quad;
 
-namespace QuadPlayer.JsonConverters;
+namespace QuadToSpine.JsonConverters;
 
 public class SkeletonJsonConverter : JsonConverter
 {
@@ -15,7 +16,7 @@ public class SkeletonJsonConverter : JsonConverter
         var obj = serializer.Deserialize(reader);
         if (obj.GetType() != typeof(JObject)) return null;
         var jobj = obj as JObject;
-        var skeleton = new Skeleton
+        var skeleton = new QuadSkeleton
         {
             Name = jobj["name"]?.ToString(),
             Bone = jobj["bone"]?.ToObject<List<Bone>>()
@@ -25,6 +26,6 @@ public class SkeletonJsonConverter : JsonConverter
 
     public override bool CanConvert(Type objectType)
     {
-        return typeof(Skeleton) == objectType;
+        return typeof(QuadSkeleton) == objectType;
     }
 }

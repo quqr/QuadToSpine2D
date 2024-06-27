@@ -1,18 +1,20 @@
-﻿using QuadPlayer.JsonConverters;
+﻿using QuadToSpine.JsonConverters;
 
-namespace QuadPlayer.Spine;
+namespace QuadToSpine.Spine;
 
 public class SpineJson
 {
-    public Skeleton Skeletons { get; set; } = new();
+    public SpineSkeleton SpineSkeletons { get; set; } = new();
     public List<Bone> Bones { get; set; } = [];
     public List<SpineSlot> Slots { get; set; } = [];
+
     public List<Skin> Skins { get; set; } = [];
+
     //[JsonIgnore]
     public Dictionary<string, SpineAnimation> Animations { get; set; } = new();
 }
 
-public class Skeleton
+public class SpineSkeleton
 {
     public string Spine = "3.8";
     public string ImagesPath = "";
@@ -29,6 +31,7 @@ public class SpineSlot
 public class Skin
 {
     public string Name = string.Empty;
+
     [JsonConverter(typeof(AttachmentsJsonConverter<Attachments>))]
     public List<Attachments> Attachments = [];
 }
@@ -40,9 +43,10 @@ public class Attachments
 
 public class BaseMesh
 {
-    public string Name{ get; init; }
-    [JsonIgnore] public Type CurrentType{ get; init; }
+    public string Name { get; init; }
+    [JsonIgnore] public Type CurrentType { get; init; }
 }
+
 public class Mesh : BaseMesh
 {
     public string Type { get; set; } = "mesh";
@@ -67,12 +71,15 @@ public class Bone
 public class SpineAnimation
 {
     public Dictionary<string, AnimationSlot> Slots { get; set; } = new();
+
     //[JsonIgnore]
     public Deform Deform { get; set; } = new();
+
     //[JsonIgnore]
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public List<DrawOrder>? DrawOrder { get; set; } = [];
 }
+
 public class DrawOrder
 {
     public float Time { get; set; }

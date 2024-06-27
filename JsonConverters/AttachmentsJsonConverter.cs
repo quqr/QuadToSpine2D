@@ -1,6 +1,6 @@
-﻿using QuadPlayer.Spine;
+﻿using QuadToSpine.Spine;
 
-namespace QuadPlayer.JsonConverters;
+namespace QuadToSpine.JsonConverters;
 
 public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
 {
@@ -11,6 +11,7 @@ public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
             writer.WriteNull();
             return;
         }
+
         writer.WriteStartObject();
         foreach (var v in value)
         {

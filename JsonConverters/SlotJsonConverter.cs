@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
+using QuadToSpine.Quad;
 
-namespace QuadPlayer.JsonConverters;
+namespace QuadToSpine.JsonConverters;
 
 public class SlotJsonConverter : JsonConverter
 {
