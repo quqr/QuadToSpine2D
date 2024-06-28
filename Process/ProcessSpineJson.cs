@@ -1,9 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
-using QuadToSpine.Quad;
-using QuadToSpine.Spine;
-using QuadToSpine.Tools;
-
-namespace QuadToSpine.Process;
+﻿namespace QuadToSpine.Process;
 
 public class ProcessSpineJson
 {
@@ -24,12 +19,30 @@ public class ProcessSpineJson
     private void Init(ProcessImage processImage)
     {
         _spineJson.SpineSkeletons.ImagesPath = _imagesPath;
-        _spineJson.Bones.Add(new Spine.Bone() { Name = "root" });
-        for (var i = 0; i < processImage.SkinsCount; i++)
+        _spineJson.Bones.Add(new SpineBone { Name = "root" });
+        // for (var i = 0; i < processImage.SkinsCount; i++)
+        // {
+        //     _spineJson.Skins.Add(new Skin { Name = $"skin_{i}" });
+        //     for (var j = 0; j < processImage.ImageLayerData[0].Count; j++)
+        //     {
+        //         var layerData = processImage.ImageLayerData[i].ElementAt(j).Value;
+        //         if (layerData is null) continue;
+        //         SetBaseData(layerData, i, j);
+        //     }
+        // }
+
+        for (int i = 0; i < processImage.ImageData.Count; i++)
         {
-            _spineJson.Skins.Add(new Skin { Name = $"skin_{i}" });
-            for (var j = 0; j < processImage.ImagesData[0].Count; j++)
-                SetBaseData(processImage.ImagesData[i].ElementAt(j).Value, i, j);
+            for (int j = 0; j < processImage.ImageData[i].Count; j++)
+            {
+                _spineJson.Skins.Add(new Skin { Name = $"skins_{i}/skin_{j}" });
+                var guids = processImage.ImageData[i][j];
+                if(guids is null)continue;
+                for (int k = 0; k < guids.Count; k++)
+                {
+                    SetBaseData(guids.ElementAt(k).Value,i,j);
+                }
+            }
         }
     }
 
@@ -59,8 +72,8 @@ public class ProcessSpineJson
                 {
                     Name = slotName,
                     Type = "linkedmesh",
-                    Skin = "skin_0",
-                    Parent = _spineJson.Skins[0].Attachments[order].Value.Name,
+                    Skin = $"skins_0/skin_{order}",
+                    Parent = _spineJson.Skins[curSkin].Attachments[order].Value.Name,
                     CurrentType = typeof(LinkedMesh)
                 }
             });
@@ -80,7 +93,7 @@ public class ProcessSpineJson
         Console.WriteLine(output);
     }
 
-    private Dictionary<string, SpineAnimation> _spineAnimations { get; } = new();
+    private Dictionary<string, SpineAnimation> SpineAnimations { get; } = new();
 
     private void ProcessAnimation(QuadJson quad)
     {
@@ -91,9 +104,9 @@ public class ProcessSpineJson
 
     private void ConvertToJson()
     {
-        _spineJson.Animations = _spineAnimations;
+        _spineJson.Animations = SpineAnimations;
         WriteToJson();
-        _spineAnimations.Clear();
+        SpineAnimations.Clear();
     }
 
     private void SetKeyframesData(QuadJson quad, QuadSkeleton? skeleton)
@@ -140,7 +153,7 @@ public class ProcessSpineJson
 
         spineAnimation.Deform = deform;
         spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
-        _spineAnimations[skeleton.Name] = spineAnimation;
+        SpineAnimations[skeleton.Name] = spineAnimation;
     }
 
     private void AddKeyframe(List<KeyframeLayer> layers, float time, HashSet<string> keyframeLayerNames,

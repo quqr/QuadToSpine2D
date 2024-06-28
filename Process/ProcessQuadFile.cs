@@ -1,11 +1,8 @@
-﻿using QuadToSpine.Quad;
-using QuadToSpine.Tools;
-
-namespace QuadToSpine.Process;
+﻿namespace QuadToSpine.Process;
 
 public class ProcessQuadFile
 {
-    public QuadJson Quad;
+    public QuadJson Quad{ get; set; }
 
     public void Load(string quadPath, int scaleFactor)
     {

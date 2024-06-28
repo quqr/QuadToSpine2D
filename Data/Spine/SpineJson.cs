@@ -5,12 +5,12 @@ namespace QuadToSpine.Spine;
 public class SpineJson
 {
     public SpineSkeleton SpineSkeletons { get; set; } = new();
-    public List<Bone> Bones { get; set; } = [];
+    public List<SpineBone> Bones { get; set; } = [];
     public List<SpineSlot> Slots { get; set; } = [];
 
     public List<Skin> Skins { get; set; } = [];
 
-    //[JsonIgnore]
+    [JsonIgnore]
     public Dictionary<string, SpineAnimation> Animations { get; set; } = new();
 }
 
@@ -59,11 +59,12 @@ public class Mesh : BaseMesh
 public class LinkedMesh : BaseMesh
 {
     public string Type { get; set; }
+    //[JsonIgnore]
     public string Skin { get; set; }
     public string Parent { get; init; }
 }
 
-public class Bone
+public class SpineBone
 {
     public string Name { get; set; }
 }

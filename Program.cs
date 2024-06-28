@@ -2,25 +2,26 @@
 
 namespace QuadToSpine;
 
-internal class Program
+internal static class Program
 {
     private static void Main(string[] args)
     {
-        ReleaseMode();
-        //DebugMode();
+        //ReleaseMode();
+        DebugMode();
     }
 
     private static void DebugMode()
     {
-        List<List<string>> imagePath =
+        List<List<string?>> imagePath =
         [
             [
-                @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png",
                 @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png",
-                @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png"
+                @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png",
+                @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"
             ],
             [
-                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.0.tpl.png",
+                //@"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.0.tpl.png",
+                null,
                 @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.1.tpl.png",
                 @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.2.tpl.png"
             ]
@@ -51,7 +52,7 @@ internal class Program
 
     private static void ReleaseMode()
     {
-        List<List<string>> imagePath = [];
+        List<List<string?>> imagePath = [];
         var jsonOutputPath = Directory.GetCurrentDirectory();
         var imageSavePath = Path.Combine(Directory.GetCurrentDirectory(), "images");
         var scaleFactor = 1;
@@ -60,7 +61,7 @@ internal class Program
         Console.ReadLine();
     }
 
-    private static string LoadPaths(string imageSavePath, List<List<string>> imagePath, ref int scaleFactor)
+    private static string LoadPaths(string imageSavePath, List<List<string?>> imagePath, ref int scaleFactor)
     {
         if (!Directory.Exists(imageSavePath)) Directory.CreateDirectory(imageSavePath);
         string quadPath;
@@ -114,7 +115,7 @@ internal class Program
         return quadPath;
     }
 
-    private static void ProcessJson(string quadPath, List<List<string>> imageSrc, string imageSavePath,
+    private static void ProcessJson(string quadPath, List<List<string?>> imageSrc, string imageSavePath,
         string jsonOutputPath, int scaleFactor)
     {
         var quad = new ProcessQuadFile();

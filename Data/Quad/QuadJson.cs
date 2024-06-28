@@ -161,10 +161,10 @@ public class Attach
 public class QuadSkeleton
 {
     public string Name { get; set; }
-    public List<Bone>? Bone { get; set; }
+    public List<QuadBone>? Bone { get; set; }
 }
 
-public class Bone
+public class QuadBone
 {
     public Attach Attach { get; set; }
 }

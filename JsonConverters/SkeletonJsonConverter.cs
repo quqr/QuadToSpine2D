@@ -19,7 +19,7 @@ public class SkeletonJsonConverter : JsonConverter
         var skeleton = new QuadSkeleton
         {
             Name = jobj["name"]?.ToString(),
-            Bone = jobj["bone"]?.ToObject<List<Bone>>()
+            Bone = jobj["bone"]?.ToObject<List<QuadBone>>()
         };
         return skeleton;
     }

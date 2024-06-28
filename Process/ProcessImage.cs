@@ -1,24 +1,24 @@
-﻿using QuadToSpine.Quad;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
 namespace QuadToSpine.Process;
 
 public class ProcessImage
 {
-    public readonly Dictionary<int, Dictionary<string, LayerData>> ImagesData = new();
-    public string SavePath;
-    public int SkinsCount;
+    //private Dictionary<int, Dictionary<string, LayerData?>> ImageLayerData { get; } = new();
+    public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = new();
+    public string SavePath{ get; private set; }
+    private int SkinsCount{ get; set; }
     private int _imageIndex;
-    private Image[,] _images;
+    private Image?[,] _images;
     private bool _isCopy;
 
-    public void Process(List<List<string>> imagesSrc, QuadJson quad, string savePath)
+    public void Process(List<List<string?>> imagesSrc, QuadJson quad, string savePath)
     {
         Console.WriteLine("Clipping images...");
 
         SkinsCount = imagesSrc.Count;
-
+        //SortImagesSrc(imagesSrc);
         _images = new Image[imagesSrc.Count, imagesSrc[0].Count];
         SavePath = savePath;
         GetAllImages(imagesSrc);
@@ -37,23 +37,27 @@ public class ProcessImage
                 var rectangle = CalculateRectangle(layer);
                 for (var curSkin = 0; curSkin < SkinsCount; curSkin++)
                 {
-                    ImagesData.TryAdd(curSkin, new Dictionary<string, LayerData>());
+                    //ImageLayerData.TryAdd(curSkin, new Dictionary<string, LayerData?>());
                     //clip image.
                     //if image exist continue.
                     //Or if one keyframe has same layer, clip same image and rename.
-                    if (ImagesData[curSkin].TryGetValue(layer.LayerGuid, out var value))
+                    if(ImageData[curSkin][layer.TexID] is null)continue;
+                    if (ImageData[curSkin][layer.TexID].TryGetValue(layer.LayerGuid,out var value))
                     {
+                        //if (ImageLayerData[curSkin].TryGetValue(layer.LayerGuid, out var value))
+                        //if(value is null) continue;
                         layer.LayerName = curSkin == 0 ? value.ImageName : layer.LayerName;
                         var layerCount = layers.Count(x => x.LayerGuid.Equals(layer.LayerGuid));
                         if (layerCount < 2) continue;
                         layer.LayerName = curSkin == 0 ? $"{layer.LayerName}_COPY_{layerCount}" : layer.LayerName;
                         layer.LayerGuid = curSkin == 0 ? $"{layer.LayerGuid}_COPY_{layerCount}" : layer.LayerGuid;
-                        if (ImagesData[curSkin].ContainsKey(layer.LayerGuid)) continue;
+                        //if (ImageLayerData[curSkin].ContainsKey(layer.LayerGuid)) continue;
+                        if (ImageData[curSkin][layer.TexID].ContainsKey(layer.LayerGuid)) continue;
                         _isCopy = true;
                     }
-
-                    ImagesData[curSkin][layer.LayerGuid] =
-                        ClipImage(_images[curSkin, layer.TexID], rectangle, layer, curSkin);
+                    var layerData = ClipImage(_images[curSkin, layer.TexID], rectangle, layer, curSkin);
+                    //ImageLayerData[curSkin][layer.LayerGuid] = layerData;
+                    ImageData[curSkin][layer.TexID]?.TryAdd(layer.LayerGuid, layerData);
                 }
             }
         }
@@ -61,16 +65,37 @@ public class ProcessImage
         Console.WriteLine("Finish");
     }
 
-    private void GetAllImages(List<List<string>> images)
+    private void SortImagesSrc(List<List<string?>> imagesSrc)
+    {
+        foreach (var list in imagesSrc)
+        {
+            list.Sort();
+        }
+    }
+
+    private void GetAllImages(List<List<string?>> images)
     {
         for (var i = 0; i < images.Count; i++)
-        for (var j = 0; j < images[0].Count; j++)
-            _images[i, j] = Image.Load(images[i][j]);
+        {
+            ImageData[i] = new Dictionary<int, Dictionary<string, LayerData>?>();
+            for (var j = 0; j < images[0].Count; j++)
+            {
+                var src = images[i][j];
+                if (src is null)
+                {
+                    _images[i, j] = null;
+                    ImageData[i][j] = null;
+                    continue;
+                }
+                _images[i, j] = Image.Load(src);
+                ImageData[i][j] = new Dictionary<string, LayerData>();
+            }
+        }
     }
 
     private Rectangle CalculateRectangle(KeyframeLayer layer)
     {
-        return new Rectangle()
+        return new Rectangle
         {
             X = (int)layer.MinAndMaxSrcPoints[0],
             Y = (int)layer.MinAndMaxSrcPoints[1],
@@ -79,9 +104,13 @@ public class ProcessImage
         };
     }
 
-    private LayerData ClipImage(Image image, Rectangle rectangle, KeyframeLayer layer, int curSkin)
+    private LayerData? ClipImage(Image? image, Rectangle rectangle, KeyframeLayer layer, int curSkin)
     {
-        using var clipImage = image.Clone(x => { x.Crop(rectangle); });
+        if (image is null) return null;
+        using var clipImage = image.Clone(x =>
+        {
+            x.Crop(rectangle);
+        });
         string imageName;
         if (_isCopy)
         {
@@ -91,6 +120,7 @@ public class ProcessImage
         else
         {
             imageName = $"Slice {_imageIndex}_{layer.TexID}_{curSkin}";
+            //imageName = $"skins_{curSkin}/skin_{layer.TexID}";
             _imageIndex++;
         }
 
@@ -107,7 +137,7 @@ public class ProcessImage
 
 public class LayerData
 {
-    public float[] UVs { get; set; } = new float[8];
-    public string ImageName { get; set; } = string.Empty;
-    public float[] ZeroCenterPoints { get; set; } = new float[8];
+    public float[] UVs { get; init; } = new float[8];
+    public string ImageName { get; init; } = string.Empty;
+    public float[] ZeroCenterPoints { get; init; } = new float[8];
 }
