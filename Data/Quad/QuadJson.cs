@@ -1,8 +1,7 @@
 ﻿using System.Numerics;
 using QuadToSpine.JsonConverters;
-using QuadToSpine.Tools;
 
-namespace QuadToSpine.Quad;
+namespace QuadToSpine.Data.Quad;
 
 public class QuadJson
 {
@@ -41,7 +40,6 @@ public class Keyframe
 public class KeyframeLayer
 {
     private float[]? _dstquad = new float[8];
-
     public float[]? Dstquad
     {
         get => _dstquad;
@@ -62,9 +60,7 @@ public class KeyframeLayer
                 }
         }
     }
-
     private float[]? _srcquad;
-
     public float[]? Srcquad
     {
         get => _srcquad;
@@ -76,23 +72,21 @@ public class KeyframeLayer
             MinAndMaxSrcPoints = ProcessTools.FindMinAndMaxPoints(_srcquad);
             Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
             Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
-            LayerGuid = $"{TexID}_{_srcquad
+            LayerGuid = $"{TexId}_{_srcquad
                 .Select((t, i) => t * 3.7 / 7.3 + t * i * 97311397.135f / 773377.2746f)
                 .Sum()}";
             CalculateUVs(_srcquad);
         }
     }
-
     public int BlendId { get; set; }
-    public int TexID { get; set; }
+    public int TexId { get; set; }
     public string LayerGuid { get; set; } = "";
     public float Height { get; set; }
     public float Width { get; set; }
     public float[] MinAndMaxSrcPoints { get; set; }
     public float[] UVs { get; set; } = new float[8];
     public float[] ZeroCenterPoints { get; set; } = new float[8];
-    public string LayerName { get; set; } = string.Empty;
-
+    public string LayerName { get; set; }
     private void CalculateUVs(float[] src)
     {
         List<Vector3> points =
@@ -118,6 +112,7 @@ public class KeyframeLayer
             else
                 ZeroCenterPoints[i] = (UVs[i] * 2f - 1f) * Height / 8f;
     }
+
 }
 
 public class Animation

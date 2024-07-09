@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using QuadToSpine.Quad;
+using QuadToSpine.Data.Quad;
 using QuadToSpine.Tools;
 
 namespace QuadToSpine.JsonConverters;
@@ -22,7 +22,7 @@ public class KeyframeLayerJsonConverter : JsonConverter
             // layer.BlendID = jobj["blend_id"]?.ToObject<int>();
             // layer.Attribute = jobj["attribute"]?.ToString();
             // layer.Colorize = jobj["colorize"]?.ToString();
-            TexID = jObject["tex_id"]?.ToObject<int>() ?? 0,
+            TexId = jObject["tex_id"]?.ToObject<int>() ?? 0,
             Dstquad = ProcessTools.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
                 TransmissionData.Instance.ScaleFactor),
             Srcquad = ProcessTools.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),

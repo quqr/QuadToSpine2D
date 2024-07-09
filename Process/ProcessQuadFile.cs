@@ -1,4 +1,6 @@
-﻿namespace QuadToSpine.Process;
+﻿using QuadToSpine.Data.Quad;
+
+namespace QuadToSpine.Process;
 
 public class ProcessQuadFile
 {

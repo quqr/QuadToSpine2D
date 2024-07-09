@@ -20,8 +20,8 @@ internal static class Program
                 @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"
             ],
             [
-                //@"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.0.tpl.png",
-                null,
+                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.0.tpl.png",
+                //null,
                 @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.1.tpl.png",
                 @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.2.tpl.png"
             ]

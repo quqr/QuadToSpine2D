@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using QuadToSpine.Quad;
+using QuadToSpine.Data.Quad;
 
 namespace QuadToSpine.JsonConverters;
 

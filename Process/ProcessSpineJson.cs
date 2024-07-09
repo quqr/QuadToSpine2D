@@ -1,10 +1,15 @@
-﻿namespace QuadToSpine.Process;
+﻿using QuadToSpine.Data;
+using QuadToSpine.Data.Quad;
+using QuadToSpine.Data.Spine;
+
+namespace QuadToSpine.Process;
 
 public class ProcessSpineJson
 {
     private readonly SpineJson _spineJson = new();
     private string _imagesPath = string.Empty;
     private string _outputPath = string.Empty;
+    private ProcessImage _processedImageData { get; set; }
 
     public void Process(ProcessImage processImage, QuadJson quadJson, string outputPath)
     {
@@ -18,42 +23,34 @@ public class ProcessSpineJson
 
     private void Init(ProcessImage processImage)
     {
+        _processedImageData = processImage;
         _spineJson.SpineSkeletons.ImagesPath = _imagesPath;
         _spineJson.Bones.Add(new SpineBone { Name = "root" });
-        // for (var i = 0; i < processImage.SkinsCount; i++)
-        // {
-        //     _spineJson.Skins.Add(new Skin { Name = $"skin_{i}" });
-        //     for (var j = 0; j < processImage.ImageLayerData[0].Count; j++)
-        //     {
-        //         var layerData = processImage.ImageLayerData[i].ElementAt(j).Value;
-        //         if (layerData is null) continue;
-        //         SetBaseData(layerData, i, j);
-        //     }
-        // }
-
-        for (int i = 0; i < processImage.ImageData.Count; i++)
+        
+        for (int curFullSkinIndex = 0; curFullSkinIndex < processImage.ImageData.Count; curFullSkinIndex++)
         {
-            for (int j = 0; j < processImage.ImageData[i].Count; j++)
+            for (int texIdIndex = 0; texIdIndex < processImage.ImageData[curFullSkinIndex].Count; texIdIndex++)
             {
-                _spineJson.Skins.Add(new Skin { Name = $"skins_{i}/skin_{j}" });
-                var guids = processImage.ImageData[i][j];
+                var guids = processImage.ImageData[curFullSkinIndex][texIdIndex];
                 if(guids is null)continue;
-                for (int k = 0; k < guids.Count; k++)
+                _spineJson.Skins.Add(new Skin { Name = $"tex_id_{texIdIndex}/skin_{curFullSkinIndex}" });
+                for (int guidIndex = 0; guidIndex < guids.Count; guidIndex++)
                 {
-                    SetBaseData(guids.ElementAt(k).Value,i,j);
+                    SetBaseData(guids.ElementAt(guidIndex).Value,curFullSkinIndex,texIdIndex,guidIndex);
                 }
             }
         }
     }
 
-    private void SetBaseData(LayerData layerData, int curSkin, int order)
+    private void SetBaseData(LayerData layerData, int curFullSkin, int texIdIndex,int guidIndex)
     {
         var slotName = layerData.ImageName;
-        if (curSkin == 0)
+        layerData.SkinName = _spineJson.Skins.Last().Name;
+        if (curFullSkin == 0)
         {
             _spineJson.Slots.Add(new SpineSlot
-                { Name = slotName, Attachment = slotName, Bone = "root", Order = order });
-            _spineJson.Skins[curSkin].Attachments.Add(new Attachments
+                { Name = slotName, Attachment = slotName, Bone = "root", Order = texIdIndex });
+            _spineJson.Skins[texIdIndex].Attachments.Add(new Attachments
             {
                 Value = new Mesh
                 {
@@ -66,14 +63,14 @@ public class ProcessSpineJson
         }
         else
         {
-            _spineJson.Skins[curSkin].Attachments.Add(new Attachments()
+            _spineJson.Skins.Last().Attachments.Add(new Attachments
             {
                 Value = new LinkedMesh
                 {
                     Name = slotName,
                     Type = "linkedmesh",
-                    Skin = $"skins_0/skin_{order}",
-                    Parent = _spineJson.Skins[curSkin].Attachments[order].Value.Name,
+                    Skin = $"tex_id_{texIdIndex}/skin_0",
+                    Parent = _spineJson.Skins[texIdIndex].Attachments[guidIndex].Value.Name,
                     CurrentType = typeof(LinkedMesh)
                 }
             });
@@ -97,7 +94,14 @@ public class ProcessSpineJson
 
     private void ProcessAnimation(QuadJson quad)
     {
-        foreach (var skeleton in quad.Skeleton) SetKeyframesData(quad, skeleton);
+        for (var index = 0; index < quad.Skeleton.Count; index++)
+        {
+            if (!quad.Skeleton[index].Name.Equals("READY"))
+            {
+                continue;
+            }
+            SetKeyframesData(quad, quad.Skeleton[index]);
+        }
 
         ConvertToJson();
     }
@@ -178,7 +182,7 @@ public class ProcessSpineJson
         RemoveNotExistsLayer(keyframeLayerNames, layers, spineAnimation, time);
     }
 
-    private static void RemoveNotExistsLayer(HashSet<string> keyframeLayerNames,
+    private void RemoveNotExistsLayer(HashSet<string> keyframeLayerNames,
         List<KeyframeLayer?> layers,
         SpineAnimation spineAnimation,
         float time)
@@ -198,26 +202,33 @@ public class ProcessSpineJson
         }
     }
 
-    private static void AddAnimationVertices(float time, Deform deform, KeyframeLayer layer)
+    private void AddAnimationVertices(float time, Deform deform, KeyframeLayer layer)
     {
         AnimationVertices item = new()
         {
             Time = time
         };
-        if (!deform.Skin_0.TryGetValue(layer.LayerName, out var value))
+        if (!deform.Skins.TryGetValue(layer.LayerName, out var value))
         {
             value = new AnimationDefault
             {
                 Name = layer.LayerName
             };
-            deform.Skin_0[layer.LayerName] = value;
+            deform.Skins[layer.LayerName] = value;
         }
-
+        var skinName = _processedImageData.LayerDataDict[layer.LayerGuid].SkinName;
+        if (!deform.SkinName.TryGetValue(skinName,out var dict))
+        {
+            deform.SkinName[skinName] = new Dictionary<string, AnimationDefault>
+            {
+                [layer.LayerName] = value
+            };
+        }
         item.Vertices = ProcessTools.MinusFloats(layer.Dstquad, layer.ZeroCenterPoints);
         value.ImageVertices.Add(item);
     }
 
-    private static void AddAnimationAttachments(HashSet<string> keyframeLayerNames, string layerName,
+    private void AddAnimationAttachments(HashSet<string> keyframeLayerNames, string layerName,
         SpineAnimation spineAnimation,
         float time)
     {

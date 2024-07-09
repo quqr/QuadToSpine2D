@@ -1,4 +1,4 @@
-﻿using QuadToSpine.Spine;
+﻿using QuadToSpine.Data.Spine;
 
 namespace QuadToSpine.JsonConverters;
 

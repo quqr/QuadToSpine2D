@@ -1,6 +1,6 @@
 ﻿using QuadToSpine.JsonConverters;
 
-namespace QuadToSpine.Spine;
+namespace QuadToSpine.Data.Spine;
 
 public class SpineJson
 {
@@ -10,7 +10,7 @@ public class SpineJson
 
     public List<Skin> Skins { get; set; } = [];
 
-    [JsonIgnore]
+    //[JsonIgnore]
     public Dictionary<string, SpineAnimation> Animations { get; set; } = new();
 }
 
@@ -38,13 +38,13 @@ public class Skin
 
 public class Attachments
 {
-    public BaseMesh Value { get; init; }
+    public BaseMesh Value { get; set; }
 }
 
 public class BaseMesh
 {
-    public string Name { get; init; }
-    [JsonIgnore] public Type CurrentType { get; init; }
+    public string Name { get; set; }
+    [JsonIgnore] public Type CurrentType { get; set; }
 }
 
 public class Mesh : BaseMesh
@@ -61,7 +61,7 @@ public class LinkedMesh : BaseMesh
     public string Type { get; set; }
     //[JsonIgnore]
     public string Skin { get; set; }
-    public string Parent { get; init; }
+    public string Parent { get; set; }
 }
 
 public class SpineBone
@@ -71,12 +71,13 @@ public class SpineBone
 
 public class SpineAnimation
 {
+    //[JsonIgnore]
     public Dictionary<string, AnimationSlot> Slots { get; set; } = new();
 
     //[JsonIgnore]
     public Deform Deform { get; set; } = new();
 
-    //[JsonIgnore]
+    [JsonIgnore]
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public List<DrawOrder>? DrawOrder { get; set; } = [];
 }
@@ -104,16 +105,17 @@ public class AnimationAttachment
     public float Time { get; set; }
     public string? Name { get; set; }
 }
-
+[JsonConverter(typeof(SkinDeformConverter))]
 public class Deform
 {
-    public Dictionary<string, AnimationDefault> Skin_0 = new();
+    [JsonIgnore] public Dictionary<string, Dictionary<string, AnimationDefault>> SkinName { get; set; } = new();
+    public Dictionary<string, AnimationDefault> Skins{ get; set; } = new();
 }
 
 [JsonConverter(typeof(AnimationDefaultJsonConverter))]
 public class AnimationDefault
 {
-    public string Name { get; init; }
+    public string Name { get; set; }
     public List<AnimationVertices> ImageVertices { get; set; } = [];
 }
 

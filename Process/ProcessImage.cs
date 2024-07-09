@@ -1,12 +1,15 @@
-﻿using SixLabors.ImageSharp;
+﻿using QuadToSpine.Data;
+using QuadToSpine.Data.Quad;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
 namespace QuadToSpine.Process;
 
 public class ProcessImage
 {
-    //private Dictionary<int, Dictionary<string, LayerData?>> ImageLayerData { get; } = new();
+    //skin tex_id layer_id layer_data
     public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = new();
+    public Dictionary<string, LayerData> LayerDataDict{ get; } = new();
     public string SavePath{ get; private set; }
     private int SkinsCount{ get; set; }
     private int _imageIndex;
@@ -28,9 +31,9 @@ public class ProcessImage
             foreach (var layer in keyframe.Layer)
             {
                 layers.Add(layer);
-                if (layer.TexID > _images.Length)
+                if (layer.TexId > _images.Length)
                 {
-                    Console.WriteLine($"Missing image. TexID: {layer.TexID}");
+                    Console.WriteLine($"Missing image. TexID: {layer.TexId}");
                     continue;
                 }
 
@@ -41,8 +44,8 @@ public class ProcessImage
                     //clip image.
                     //if image exist continue.
                     //Or if one keyframe has same layer, clip same image and rename.
-                    if(ImageData[curSkin][layer.TexID] is null)continue;
-                    if (ImageData[curSkin][layer.TexID].TryGetValue(layer.LayerGuid,out var value))
+                    if(ImageData[curSkin][layer.TexId] is null)continue;
+                    if (ImageData[curSkin][layer.TexId].TryGetValue(layer.LayerGuid,out var value))
                     {
                         //if (ImageLayerData[curSkin].TryGetValue(layer.LayerGuid, out var value))
                         //if(value is null) continue;
@@ -52,25 +55,16 @@ public class ProcessImage
                         layer.LayerName = curSkin == 0 ? $"{layer.LayerName}_COPY_{layerCount}" : layer.LayerName;
                         layer.LayerGuid = curSkin == 0 ? $"{layer.LayerGuid}_COPY_{layerCount}" : layer.LayerGuid;
                         //if (ImageLayerData[curSkin].ContainsKey(layer.LayerGuid)) continue;
-                        if (ImageData[curSkin][layer.TexID].ContainsKey(layer.LayerGuid)) continue;
+                        if (ImageData[curSkin][layer.TexId].ContainsKey(layer.LayerGuid)) continue;
                         _isCopy = true;
                     }
-                    var layerData = ClipImage(_images[curSkin, layer.TexID], rectangle, layer, curSkin);
-                    //ImageLayerData[curSkin][layer.LayerGuid] = layerData;
-                    ImageData[curSkin][layer.TexID]?.TryAdd(layer.LayerGuid, layerData);
+                    var layerData = ClipImage(_images[curSkin, layer.TexId], rectangle, layer, curSkin);
+                    ImageData[curSkin][layer.TexId]?.TryAdd(layer.LayerGuid, layerData);
+                    LayerDataDict.TryAdd(layer.LayerGuid, layerData);
                 }
             }
         }
-
         Console.WriteLine("Finish");
-    }
-
-    private void SortImagesSrc(List<List<string?>> imagesSrc)
-    {
-        foreach (var list in imagesSrc)
-        {
-            list.Sort();
-        }
     }
 
     private void GetAllImages(List<List<string?>> images)
@@ -119,25 +113,17 @@ public class ProcessImage
         }
         else
         {
-            imageName = $"Slice {_imageIndex}_{layer.TexID}_{curSkin}";
-            //imageName = $"skins_{curSkin}/skin_{layer.TexID}";
+            imageName = $"Slice {_imageIndex}_{layer.TexId}_{curSkin}";
             _imageIndex++;
         }
-
         if (curSkin == 0) layer.LayerName = imageName;
         clipImage.SaveAsPngAsync(Path.Combine(SavePath, imageName + ".png"));
         return new LayerData
         {
             UVs = layer.UVs,
             ImageName = imageName,
-            ZeroCenterPoints = layer.ZeroCenterPoints
+            ZeroCenterPoints = layer.ZeroCenterPoints,
+            KeyframeLayer = layer
         };
     }
-}
-
-public class LayerData
-{
-    public float[] UVs { get; init; } = new float[8];
-    public string ImageName { get; init; } = string.Empty;
-    public float[] ZeroCenterPoints { get; init; } = new float[8];
 }
