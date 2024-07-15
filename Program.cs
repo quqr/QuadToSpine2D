@@ -14,21 +14,21 @@ internal static class Program
     {
         List<List<string?>> imagePath =
         [
-            [
-                @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png",
-                @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png",
-                @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"
-            ],
-            [
-                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.0.tpl.png",
-                //null,
-                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.1.tpl.png",
-                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.2.tpl.png"
-            ]
             // [
-            //     "D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\swi sent Fuyusaka00.0.nvt.png",
-            //     "D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\swi sent Fuyusaka00.1.nvt.png"
+            //     @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png",
+            //     @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png",
+            //     @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"
+            // ],
+            // [
+            //     @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.0.tpl.png",
+            //     //null,
+            //     @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.1.tpl.png",
+            //     @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.2.tpl.png"
             // ]
+            [
+                @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png",
+                @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png"
+            ]
             // [
             //     "D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\swi unic BlackKnight_HG_M00.0.nvt.png",
             //     "D:\\Download\\quad_mobile_v05_beta-20240404-2000\\quad_mobile_v05_beta\\data\\swi unic BlackKnight_HG_M00.1.nvt.png"
@@ -39,10 +39,8 @@ internal static class Program
         const string imageSavePath = @"E:\Asset\ttt\images";
         var quadPath =
             //@"E:\Asset\momohime\4k\00Files\file\Momohime_Katana_a.mbs.v55.quad";
-            @"E:\Asset\momohime\4k\00Files\file\Momohime_Battle.mbs.v55.quad";
-
-        //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
-
+            //@"E:\Asset\momohime\4k\00Files\file\Momohime_Battle.mbs.v55.quad";
+        @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
         //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
         //@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Amiguchi00.mbs.v55.quad";
         const int scaleFactor = 1;
@@ -121,10 +119,10 @@ internal static class Program
         var quad = new ProcessQuadFile();
         var imageQuad = new ProcessImage();
         var spineJson = new ProcessSpineJson();
-
-        quad.Load(quadPath, scaleFactor);
-        imageQuad.Process(imageSrc, quad.Quad, imageSavePath);
-        spineJson.Process(imageQuad, quad.Quad, jsonOutputPath);
+        GlobalData.ScaleFactor = scaleFactor > 1 ? scaleFactor : 1;
+        quad.Load(quadPath);
+        imageQuad.Process(imageSrc, quad.QuadData, imageSavePath);
+        spineJson.Process(imageQuad, quad.QuadData, jsonOutputPath);
 
         Console.WriteLine("Process Finish...");
     }

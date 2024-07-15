@@ -10,17 +10,18 @@ public class ProcessImage
     //skin tex_id layer_id layer_data
     public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = new();
     public Dictionary<string, LayerData> LayerDataDict{ get; } = new();
-    public string SavePath{ get; private set; }
-    private int SkinsCount{ get; set; }
+    public string SavePath { get; private set; }
+    private int _skinsCount;
     private int _imageIndex;
+    private int _currentImageIndex;
     private Image?[,] _images;
-    private bool _isCopy;
+    private bool IsCopy{ get; set; }
 
     public void Process(List<List<string?>> imagesSrc, QuadJson quad, string savePath)
     {
-        Console.WriteLine("Clipping images...");
+        Console.WriteLine("Cropping images...");
 
-        SkinsCount = imagesSrc.Count;
+        _skinsCount = imagesSrc.Count;
         //SortImagesSrc(imagesSrc);
         _images = new Image[imagesSrc.Count, imagesSrc[0].Count];
         SavePath = savePath;
@@ -38,7 +39,7 @@ public class ProcessImage
                 }
 
                 var rectangle = CalculateRectangle(layer);
-                for (var curSkin = 0; curSkin < SkinsCount; curSkin++)
+                for (var curSkin = 0; curSkin < _skinsCount; curSkin++)
                 {
                     //ImageLayerData.TryAdd(curSkin, new Dictionary<string, LayerData?>());
                     //clip image.
@@ -56,10 +57,10 @@ public class ProcessImage
                         layer.LayerGuid = curSkin == 0 ? $"{layer.LayerGuid}_COPY_{layerCount}" : layer.LayerGuid;
                         //if (ImageLayerData[curSkin].ContainsKey(layer.LayerGuid)) continue;
                         if (ImageData[curSkin][layer.TexId].ContainsKey(layer.LayerGuid)) continue;
-                        _isCopy = true;
+                        IsCopy = true;
                     }
                     var layerData = ClipImage(_images[curSkin, layer.TexId], rectangle, layer, curSkin);
-                    ImageData[curSkin][layer.TexId]?.TryAdd(layer.LayerGuid, layerData);
+                    ImageData[curSkin][layer.TexId].TryAdd(layer.LayerGuid, layerData);
                     LayerDataDict.TryAdd(layer.LayerGuid, layerData);
                 }
             }
@@ -106,10 +107,10 @@ public class ProcessImage
             x.Crop(rectangle);
         });
         string imageName;
-        if (_isCopy)
+        if (IsCopy)
         {
             imageName = layer.LayerName;
-            _isCopy = false;
+            IsCopy = false;
         }
         else
         {
@@ -118,12 +119,14 @@ public class ProcessImage
         }
         if (curSkin == 0) layer.LayerName = imageName;
         clipImage.SaveAsPngAsync(Path.Combine(SavePath, imageName + ".png"));
+        _currentImageIndex++;
         return new LayerData
         {
             UVs = layer.UVs,
             ImageName = imageName,
             ZeroCenterPoints = layer.ZeroCenterPoints,
-            KeyframeLayer = layer
+            KeyframeLayer = layer,
+            CurrentImageIndex = _currentImageIndex
         };
     }
 }

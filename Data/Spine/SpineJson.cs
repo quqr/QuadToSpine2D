@@ -77,7 +77,7 @@ public class SpineAnimation
     //[JsonIgnore]
     public Deform Deform { get; set; } = new();
 
-    [JsonIgnore]
+    //[JsonIgnore]
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public List<DrawOrder>? DrawOrder { get; set; } = [];
 }
@@ -108,8 +108,7 @@ public class AnimationAttachment
 [JsonConverter(typeof(SkinDeformConverter))]
 public class Deform
 {
-    [JsonIgnore] public Dictionary<string, Dictionary<string, AnimationDefault>> SkinName { get; set; } = new();
-    public Dictionary<string, AnimationDefault> Skins{ get; set; } = new();
+    public Dictionary<string, Dictionary<string, AnimationDefault>> SkinName { get; set; } = new();
 }
 
 [JsonConverter(typeof(AnimationDefaultJsonConverter))]

@@ -32,19 +32,6 @@ public static class ProcessTools
 
         return c;
     }
-
-    public static float[] PlusFloats(float[] a, float[] b)
-    {
-        var c = new float[a.Length];
-        for (var i = 0; i < a.Length; i++)
-        {
-            if (i > b.Length) break;
-            c[i] = a[i] + b[i];
-        }
-
-        return c;
-    }
-
     public static float[]? MulFloats(float[]? a, float b)
     {
         if (a is null) return null;

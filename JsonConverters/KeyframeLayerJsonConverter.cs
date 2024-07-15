@@ -24,9 +24,9 @@ public class KeyframeLayerJsonConverter : JsonConverter
             // layer.Colorize = jobj["colorize"]?.ToString();
             TexId = jObject["tex_id"]?.ToObject<int>() ?? 0,
             Dstquad = ProcessTools.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
-                TransmissionData.Instance.ScaleFactor),
+                GlobalData.ScaleFactor),
             Srcquad = ProcessTools.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
-                TransmissionData.Instance.ScaleFactor),
+                GlobalData.ScaleFactor),
             BlendId = jObject["blend_id"]?.ToObject<int>() ?? 0
         };
         return layer;
