@@ -15,7 +15,7 @@ public class ProcessImage
     private int _imageIndex;
     private int _currentImageIndex;
     private Image?[,] _images;
-    private bool IsCopy{ get; set; }
+    private bool _isCopy;
 
     public void Process(List<List<string?>> imagesSrc, QuadJson quad, string savePath)
     {
@@ -57,7 +57,7 @@ public class ProcessImage
                         layer.LayerGuid = curSkin == 0 ? $"{layer.LayerGuid}_COPY_{layerCount}" : layer.LayerGuid;
                         //if (ImageLayerData[curSkin].ContainsKey(layer.LayerGuid)) continue;
                         if (ImageData[curSkin][layer.TexId].ContainsKey(layer.LayerGuid)) continue;
-                        IsCopy = true;
+                        _isCopy = true;
                     }
                     var layerData = ClipImage(_images[curSkin, layer.TexId], rectangle, layer, curSkin);
                     ImageData[curSkin][layer.TexId].TryAdd(layer.LayerGuid, layerData);
@@ -107,10 +107,10 @@ public class ProcessImage
             x.Crop(rectangle);
         });
         string imageName;
-        if (IsCopy)
+        if (_isCopy)
         {
             imageName = layer.LayerName;
-            IsCopy = false;
+            _isCopy = false;
         }
         else
         {
