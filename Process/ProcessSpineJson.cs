@@ -7,26 +7,25 @@ namespace QuadToSpine.Process;
 public class ProcessSpineJson
 {
     private readonly SpineJson _spineJson = new();
-    private string _imagesPath = string.Empty;
-    private string _outputPath = string.Empty;
     private ProcessImage _processedImageData;
 
-    public void Process(ProcessImage processImage, QuadJson quadJson, string outputPath)
+    public void Process(ProcessImage processImage, QuadJson quadJson)
     {
         Console.WriteLine("Writing spine json...");
-        _imagesPath = processImage.SavePath;
-        _outputPath = outputPath;
-        Init(processImage);
+        GlobalData.LabelContent = "Writing spine json...";
+
+        InitData(processImage);
         ProcessAnimation(quadJson);
+        GlobalData.LabelContent = "Finish";
         Console.WriteLine("Finish");
     }
 
     private int _curSlotIndex;
 
-    private void Init(ProcessImage processImage)
+    private void InitData(ProcessImage processImage)
     {
         _processedImageData = processImage;
-        _spineJson.SpineSkeletons.ImagesPath = _imagesPath;
+        _spineJson.SpineSkeletons.ImagesPath = GlobalData.ImageSavePath;
         _spineJson.Bones.Add(new SpineBone { Name = "root" });
         for (int curFullSkinIndex = 0; curFullSkinIndex < processImage.ImageData.Count; curFullSkinIndex++)
         {
@@ -37,14 +36,14 @@ public class ProcessSpineJson
                 _spineJson.Skins.Add(new Skin { Name = $"tex_id_{texIdIndex}/skin_{curFullSkinIndex}" });
                 for (int guidIndex = 0; guidIndex < guids.Count; guidIndex++)
                 {
-                    SetBaseData(guids.ElementAt(guidIndex).Value,curFullSkinIndex,texIdIndex,guidIndex);
+                    InitBaseData(guids.ElementAt(guidIndex).Value,curFullSkinIndex,texIdIndex,guidIndex);
                     _curSlotIndex++;
                 }
             }
         }
     }
 
-    private void SetBaseData(LayerData layerData, int curFullSkin, int texIdIndex,int guidIndex)
+    private void InitBaseData(LayerData layerData, int curFullSkin, int texIdIndex,int guidIndex)
     {
         var slotName = layerData.ImageName;
         layerData.SkinName = _spineJson.Skins.Last().Name;
@@ -89,7 +88,7 @@ public class ProcessSpineJson
                 ContractResolver = new DefaultContractResolver
                     { NamingStrategy = new CamelCaseNamingStrategy() }
             });
-        var output = Path.Combine(_outputPath, "Result.json");
+        var output = Path.Combine(GlobalData.ResultSavePath, "Result.json");
         File.WriteAllText(output, spineJsonFile);
         Console.WriteLine(output);
     }
