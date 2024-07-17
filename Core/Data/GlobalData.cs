@@ -21,4 +21,5 @@ public static class GlobalData
     {
         set { Dispatcher.UIThread.Post(() => { Label.Content = $"State: {value}"; }); }
     }
+    public static bool IsReadableJson { get; set; }
 }

@@ -44,6 +44,15 @@
                          Name="ScaleFactorTextBox"
                          HorizontalContentAlignment="Center" />
             </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Label Content="Readable  Json"
+                       HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center" 
+                       Margin="0,0,20,0"></Label>
+                <CheckBox Margin="0,0,20,0"
+                          Name="ReadableCheckBox"></CheckBox>
+            </StackPanel>
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal"
@@ -59,7 +68,8 @@
                VerticalAlignment="Bottom"
                Margin="0,0,0,35"
                FontSize="15"
-               Name="StateLabel" />
+               Name="StateLabel"
+               />
         <Button Content="Process->"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"

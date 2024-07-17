@@ -29,6 +29,12 @@ public partial class MainWindow : Window
         UploadButton.Click += UploadButtonOnClick;
         AddNewButton.Click += AddNewButtonOnClick;
         ScaleFactorTextBox.TextChanged += ScaleFactorTextBoxOnTextChanged;
+        ReadableCheckBox.IsCheckedChanged += ReadableCheckBoxOnClick;
+    }
+
+    private void ReadableCheckBoxOnClick(object? sender, RoutedEventArgs e)
+    {
+        GlobalData.IsReadableJson = (bool)ReadableCheckBox.IsChecked!;
     }
 
     private void ScaleFactorTextBoxOnTextChanged(object? sender, TextChangedEventArgs e)
@@ -135,8 +141,8 @@ public partial class MainWindow : Window
 
     private void ProcessButtonOnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalData.ImageSavePath = Directory.GetCurrentDirectory();
-        GlobalData.ResultSavePath = Path.Combine(GlobalData.ImageSavePath, "images");
+        GlobalData.ResultSavePath = Directory.GetCurrentDirectory();
+        GlobalData.ImageSavePath = Path.Combine(GlobalData.ResultSavePath, "images");
         if (!Directory.Exists(GlobalData.ImageSavePath))
         {
             Directory.CreateDirectory(GlobalData.ImageSavePath);

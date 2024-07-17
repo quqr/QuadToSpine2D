@@ -77,12 +77,13 @@ public class ProcessSpineJson
 
     private void WriteToSpineJson()
     {
-        var spineJsonFile = JsonConvert.SerializeObject(_spineJson, Formatting.Indented,
-            new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver
-                    { NamingStrategy = new CamelCaseNamingStrategy() }
-            });
+        var setting = new JsonSerializerSettings
+        {
+            ContractResolver = new DefaultContractResolver
+                { NamingStrategy = new CamelCaseNamingStrategy() },
+            Formatting = GlobalData.IsReadableJson ? Formatting.Indented : Formatting.None
+        };
+        var spineJsonFile = JsonConvert.SerializeObject(_spineJson, setting);
         var output = Path.Combine(GlobalData.ResultSavePath, "Result.json");
         File.WriteAllText(output, spineJsonFile);
         Console.WriteLine(output);
