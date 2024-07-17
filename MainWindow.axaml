@@ -13,20 +13,21 @@
             <ExperimentalAcrylicBorder.Material>
                 <ExperimentalAcrylicMaterial
                     BackgroundSource="Digger"
-                    TintColor="DarkSlateBlue"
-                    TintOpacity="1"
-                    MaterialOpacity="0.65" />
+                    TintColor="SandyBrown"
+                    TintOpacity=".5"
+                    MaterialOpacity="0.7" />
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
         <StackPanel Margin="35">
             <StackPanel
                 Orientation="Horizontal"
                 HorizontalAlignment="Right">
-                <Label Content=""
+                <Label Margin="0,0,10,0"
                        Name="QuadFileNameLabel"
                        VerticalAlignment="Center" />
                 <CheckBox IsEnabled="False"
-                          Name="IsUploadedCheckBox" />
+                          Name="IsUploadedCheckBox"
+                          Margin="0,0,10,0"/>
                 <Button Content="Upload quad file"
                         Name="UploadButton" />
             </StackPanel>
@@ -42,13 +43,12 @@
             </StackPanel>
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                <ScrollViewer MaxHeight="500">
                     <StackPanel Orientation="Horizontal"
                                 Name="ImageBox">
-                        <Button Content="Add New" Margin="10"
+                        <Button Content="Add New"
+                                Margin="10"
                                 Name="AddNewButton" />
                     </StackPanel>
-                </ScrollViewer>
             </StackPanel>
         </StackPanel>
         <Label Content="State: "

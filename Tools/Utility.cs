@@ -37,20 +37,21 @@ public static class Utility
     public static List<List<string?>> ConvertImagePath(List<List<string?>?> imagePath)
     {
         List<List<string?>> result = [];
+        if (imagePath.Count == 0) return result;
         imagePath.RemoveAll(x => x is null);
         var maxCount = imagePath.MaxBy(x => x.Count).Count;
-        for (var i = 0; i < imagePath.Count; i++)
-        for (var j = 0; j < maxCount; j++)
-        {
-            if (result.Count < maxCount) result.Add([]);
-            if (j > imagePath[i].Count)
+        foreach (var path in imagePath)
+            for (var j = 0; j < maxCount; j++)
             {
-                result[j].Add(null);
-                continue;
-            }
+                if (result.Count < maxCount) result.Add([]);
+                if (j >= path.Count)
+                {
+                    result[j].Add(null);
+                    continue;
+                }
 
-            result[j].Add(imagePath[i][j]);
-        }
+                result[j].Add(path[j]);
+            }
 
         return result;
     }

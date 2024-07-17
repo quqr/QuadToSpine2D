@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using QuadToSpine2D.Core.Process;
 using QuadToSpine2D.Tools;
@@ -39,6 +40,8 @@ public partial class MainWindow : Window
     private void AddNewButtonOnClick(object? sender, RoutedEventArgs e)
     {
         _currentImageBoxPart++;
+        _imagePath.Add([]);
+
         var label = new Label()
         {
             Content = $"Part {_currentImageBoxPart}",
@@ -48,40 +51,52 @@ public partial class MainWindow : Window
         var scrollView = new ScrollViewer()
         {
             Content = stackPanel,
-            MaxHeight = 600,
+            MaxHeight = 300,
         };
         var addButton = new Button()
         {
             Content = "Add",
-            Width = 100
+            Width = 100,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
         };
         var deleteButton = new Button()
         {
             Content = "Delete",
-            Width = 100
+            Width = 100,
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
         };
         var content = new StackPanel()
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(10),
+            Background = new SolidColorBrush(new Color(100, 199, 165, 136)),
             Children =
             {
                 label, scrollView, addButton, deleteButton
             }
         };
         var bitmaps = new List<Bitmap>();
+
         ImageBox.Children.Insert(ImageBox.Children.Count - 1, content);
-        var imageIndex = _currentImageBoxPart - 2;
+        var imageIndex = _currentImageBoxPart - 1;
+
         addButton.Click += AddButtonClick;
         deleteButton.Click += DeleteButtonOnClick;
+
         return;
 
         void AddButtonClick(object? o, RoutedEventArgs routedEventArgs)
         {
             var files = Utility.OpenImageFilePicker(StorageProvider);
             if (files is null) return;
-            _imagePath.Add([]);
+            var imageIndex = _currentImageBoxPart - 1;
             foreach (var file in files)
             {
                 var bitmap = ImageLoader.LoadImage(file);
@@ -89,9 +104,10 @@ public partial class MainWindow : Window
                 {
                     Width = 100,
                     Height = 100,
-                    Source = bitmap
+                    Source = bitmap,
+                    Margin = new Thickness(10)
                 };
-                _imagePath.Last().Add(Utility.ConvertUriToPath(file.Path));
+                _imagePath[imageIndex].Add(Utility.ConvertUriToPath(file.Path));
                 stackPanel.Children.Add(image);
                 bitmaps.Add(bitmap);
                 file.Dispose();
@@ -119,6 +135,12 @@ public partial class MainWindow : Window
 
     private void ProcessButtonOnClick(object? sender, RoutedEventArgs e)
     {
+        GlobalData.ImageSavePath = Directory.GetCurrentDirectory();
+        GlobalData.ResultSavePath = Path.Combine(GlobalData.ImageSavePath, "images");
+#if DEBUG
+        GlobalData.ImageSavePath = @"E:\Asset\ttt\images";
+        GlobalData.ResultSavePath = @"E:\Asset\ttt";
+#endif
         Task.Run(() =>
         {
             Process
