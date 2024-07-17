@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "QuadToSpine": {
-      "commandName": "Project",
-      "hotReloadEnabled": true
-    }
-  }
-}

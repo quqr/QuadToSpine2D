@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-namespace UI;
+namespace QuadToSpine2D;
 
 public partial class App : Application
 {
@@ -14,7 +14,9 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
             desktop.MainWindow = new MainWindow();
+        }
 
         base.OnFrameworkInitializationCompleted();
     }
