@@ -4,6 +4,62 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="QuadToSpine2D.MainWindow"
-        Title="QuadToSpine2D">
-    Welcome to Avalonia!
+        Title="QuadToSpine"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="DarkSlateBlue"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        <StackPanel Margin="35">
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+                <Label Content=""
+                       Name="QuadFileNameLabel"
+                       VerticalAlignment="Center" />
+                <CheckBox IsEnabled="False"
+                          Name="IsUploadedCheckBox" />
+                <Button Content="Upload quad file"
+                        Name="UploadButton" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="10">
+                <Label Content="Scale Factor"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0" />
+                <TextBox Watermark="1"
+                         Name="ScaleFactorTextBox"
+                         HorizontalContentAlignment="Center" />
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <ScrollViewer MaxHeight="500">
+                    <StackPanel Orientation="Horizontal"
+                                Name="ImageBox">
+                        <Button Content="Add New" Margin="10"
+                                Name="AddNewButton" />
+                    </StackPanel>
+                </ScrollViewer>
+            </StackPanel>
+        </StackPanel>
+        <Label Content="State: "
+               HorizontalAlignment="Center"
+               VerticalAlignment="Bottom"
+               Margin="0,0,0,35"
+               FontSize="15"
+               Name="StateLabel" />
+        <Button Content="Process" HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="30"
+                Name="ProcessButton" />
+    </Panel>
 </Window>

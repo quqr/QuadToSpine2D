@@ -1,9 +1,7 @@
-﻿using QuadToSpine.Data;
-using QuadToSpine.Data.Quad;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-namespace QuadToSpine.Process;
+namespace QuadToSpine2D.Core.Process;
 
 public class ProcessImage
 {

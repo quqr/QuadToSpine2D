@@ -1,6 +1,4 @@
-using QuadToSpine.Data.Quad;
-
-namespace QuadToSpine.Data;
+namespace QuadToSpine2D.Core.Data;
 
 public class LayerData
 {

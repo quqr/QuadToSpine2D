@@ -1,8 +1,7 @@
-﻿using QuadToSpine.Data;
-using QuadToSpine.Data.Quad;
-using QuadToSpine.Data.Spine;
+﻿using QuadToSpine2D.Core.Data.Spine;
+using QuadToSpine2D.Core.Tools;
 
-namespace QuadToSpine.Process;
+namespace QuadToSpine2D.Core.Process;
 
 public class ProcessSpineJson
 {
@@ -29,17 +28,17 @@ public class ProcessSpineJson
         _spineJson.Bones.Add(new SpineBone { Name = "root" });
 
         for (var curFullSkinIndex = 0; curFullSkinIndex < processImage.ImageData.Count; curFullSkinIndex++)
-            for (var texIdIndex = 0; texIdIndex < processImage.ImageData[curFullSkinIndex].Count; texIdIndex++)
+        for (var texIdIndex = 0; texIdIndex < processImage.ImageData[curFullSkinIndex].Count; texIdIndex++)
+        {
+            var guids = processImage.ImageData[curFullSkinIndex][texIdIndex];
+            if (guids is null) continue;
+            _spineJson.Skins.Add(new Skin { Name = $"tex_id_{texIdIndex}/skin_{curFullSkinIndex}" });
+            for (var guidIndex = 0; guidIndex < guids.Count; guidIndex++)
             {
-                var guids = processImage.ImageData[curFullSkinIndex][texIdIndex];
-                if (guids is null) continue;
-                _spineJson.Skins.Add(new Skin { Name = $"tex_id_{texIdIndex}/skin_{curFullSkinIndex}" });
-                for (var guidIndex = 0; guidIndex < guids.Count; guidIndex++)
-                {
-                    InitBaseData(guids.ElementAt(guidIndex).Value, curFullSkinIndex, texIdIndex, guidIndex);
-                    _curSlotIndex++;
-                }
+                InitBaseData(guids.ElementAt(guidIndex).Value, curFullSkinIndex, texIdIndex, guidIndex);
+                _curSlotIndex++;
             }
+        }
     }
 
     private void InitBaseData(LayerData layerData, int curFullSkin, int texIdIndex, int guidIndex)
@@ -48,7 +47,7 @@ public class ProcessSpineJson
         layerData.SkinName = _spineJson.Skins.Last().Name;
 
         _spineJson.Slots.Add(new SpineSlot
-        { Name = slotName, Attachment = slotName, Bone = "root", Order = _curSlotIndex });
+            { Name = slotName, Attachment = slotName, Bone = "root", Order = _curSlotIndex });
         //the first is mesh and added animation
         if (curFullSkin == 0)
             _spineJson.Skins[texIdIndex].Attachments.Add(new Attachments
@@ -82,7 +81,7 @@ public class ProcessSpineJson
             new JsonSerializerSettings
             {
                 ContractResolver = new DefaultContractResolver
-                { NamingStrategy = new CamelCaseNamingStrategy() }
+                    { NamingStrategy = new CamelCaseNamingStrategy() }
             });
         var output = Path.Combine(GlobalData.ResultSavePath, "Result.json");
         File.WriteAllText(output, spineJsonFile);
@@ -119,22 +118,22 @@ public class ProcessSpineJson
             switch (timeline.Attach.Type)
             {
                 case "keyframe":
-                    {
-                        var timeline1 = timeline;
-                        var layers = quad.Keyframe.FirstOrDefault(x => x.ID == timeline1.Attach.ID)?.Layer;
-                        if (layers is null) break;
-                        AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
-                        break;
-                    }
+                {
+                    var timeline1 = timeline;
+                    var layers = quad.Keyframe.FirstOrDefault(x => x.ID == timeline1.Attach.ID)?.Layer;
+                    if (layers is null) break;
+                    AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+                    break;
+                }
                 case "slot":
-                    {
-                        var attach = quad.Slot[timeline.Attach.ID].Attaches?.FirstOrDefault(x => x.Type.Equals("keyframe"));
-                        if (attach is null) break;
-                        var layers = quad.Keyframe.FirstOrDefault(x => x.ID == attach.ID)?.Layer;
-                        if (layers is null) break;
-                        AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
-                        break;
-                    }
+                {
+                    var attach = quad.Slot[timeline.Attach.ID].Attaches?.FirstOrDefault(x => x.Type.Equals("keyframe"));
+                    if (attach is null) break;
+                    var layers = quad.Keyframe.FirstOrDefault(x => x.ID == attach.ID)?.Layer;
+                    if (layers is null) break;
+                    AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders);
+                    break;
+                }
             }
 
             time += timeline.Time / 60f;
@@ -244,6 +243,7 @@ public class ProcessSpineJson
             existLayer.Offset = offset;
             return;
         }
+
         // the offset 0 can be ignored
         if (offset == 0) return;
         drawOrder.Offsets.Add(new DrawOrderOffset

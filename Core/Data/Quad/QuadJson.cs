@@ -1,7 +1,7 @@
-﻿using QuadToSpine.JsonConverters;
-using System.Numerics;
+﻿using QuadToSpine2D.Core.JsonConverters;
+using QuadToSpine2D.Core.Tools;
 
-namespace QuadToSpine.Data.Quad;
+namespace QuadToSpine2D.Core.Data.Quad;
 
 public class QuadJson
 {

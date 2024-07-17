@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
-using QuadToSpine.Data;
-using QuadToSpine.Data.Quad;
+using QuadToSpine2D.Core.Tools;
 
-namespace QuadToSpine.JsonConverters;
+namespace QuadToSpine2D.Core.JsonConverters;
 
 public class KeyframeLayerJsonConverter : JsonConverter
 {

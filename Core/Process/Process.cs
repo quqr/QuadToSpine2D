@@ -1,6 +1,4 @@
-﻿using QuadToSpine.Data;
-
-namespace QuadToSpine.Process;
+﻿namespace QuadToSpine2D.Core.Process;
 
 public static class Process
 {

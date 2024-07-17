@@ -1,6 +1,6 @@
-﻿using QuadToSpine.Data.Spine;
+﻿using QuadToSpine2D.Core.Data.Spine;
 
-namespace QuadToSpine.JsonConverters;
+namespace QuadToSpine2D.Core.JsonConverters;
 
 public class AnimationDefaultJsonConverter : JsonConverter
 {

@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 
-namespace QuadToSpine.Data;
+namespace QuadToSpine2D.Core.Data;
 
 public static class GlobalData
 {

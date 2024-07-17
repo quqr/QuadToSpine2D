@@ -1,4 +1,4 @@
-﻿namespace QuadToSpine.Tools;
+﻿namespace QuadToSpine2D.Core.Tools;
 
 public static class ProcessTools
 {
