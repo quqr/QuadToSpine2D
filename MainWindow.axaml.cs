@@ -51,7 +51,7 @@ public partial class MainWindow : Window
         var scrollView = new ScrollViewer()
         {
             Content = stackPanel,
-            MaxHeight = 300,
+            MaxHeight = 300
         };
         var addButton = new Button()
         {
@@ -137,6 +137,10 @@ public partial class MainWindow : Window
     {
         GlobalData.ImageSavePath = Directory.GetCurrentDirectory();
         GlobalData.ResultSavePath = Path.Combine(GlobalData.ImageSavePath, "images");
+        if (!Directory.Exists(GlobalData.ImageSavePath))
+        {
+            Directory.CreateDirectory(GlobalData.ImageSavePath);
+        }
 #if DEBUG
         GlobalData.ImageSavePath = @"E:\Asset\ttt\images";
         GlobalData.ResultSavePath = @"E:\Asset\ttt";

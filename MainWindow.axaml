@@ -18,6 +18,9 @@
                     MaterialOpacity="0.7" />
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
+        <Label Content="QuadToSpine2D"
+               Margin="10"
+               FontSize="15" />
         <StackPanel Margin="35">
             <StackPanel
                 Orientation="Horizontal"
@@ -27,7 +30,7 @@
                        VerticalAlignment="Center" />
                 <CheckBox IsEnabled="False"
                           Name="IsUploadedCheckBox"
-                          Margin="0,0,10,0"/>
+                          Margin="0,0,10,0" />
                 <Button Content="Upload quad file"
                         Name="UploadButton" />
             </StackPanel>
@@ -43,12 +46,12 @@
             </StackPanel>
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal"
-                                Name="ImageBox">
-                        <Button Content="Add New"
-                                Margin="10"
-                                Name="AddNewButton" />
-                    </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Name="ImageBox">
+                    <Button Content="Add New"
+                            Margin="10"
+                            Name="AddNewButton" />
+                </StackPanel>
             </StackPanel>
         </StackPanel>
         <Label Content="State: "
@@ -57,9 +60,16 @@
                Margin="0,0,0,35"
                FontSize="15"
                Name="StateLabel" />
-        <Button Content="Process" HorizontalAlignment="Right"
+        <Button Content="Process->"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Margin="30"
-                Name="ProcessButton" />
+                Name="ProcessButton"
+                Width="100"
+                Height="50"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                FontSize="15"
+                FontWeight="Heavy" />
     </Panel>
 </Window>
