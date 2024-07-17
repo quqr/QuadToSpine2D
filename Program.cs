@@ -1,6 +1,4 @@
-﻿using QuadToSpine.Process;
-
-namespace QuadToSpine;
+﻿namespace QuadToSpine;
 
 internal static class Program
 {

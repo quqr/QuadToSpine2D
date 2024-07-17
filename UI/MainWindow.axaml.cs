@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform.Storage;
 using QuadToSpine.Data;
 using QuadToSpine.Process;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UI.Tools;
 
 namespace UI;
@@ -17,8 +16,9 @@ namespace UI;
 public partial class MainWindow : Window
 {
     private int _currentImageBoxPart;
-    private string _quadFilePath=string.Empty;
-    private List<List<string?>?> _imagePath=[];
+    private string _quadFilePath = string.Empty;
+    private List<List<string?>?> _imagePath = [];
+
     public MainWindow()
     {
         InitializeComponent();
@@ -78,8 +78,8 @@ public partial class MainWindow : Window
             }
         };
         var bitmaps = new List<Bitmap>();
-        ImageBox.Children.Insert(ImageBox.Children.Count-1,content);
-        var imageIndex = ImageBox.Children.Count-1;
+        ImageBox.Children.Insert(ImageBox.Children.Count - 1, content);
+        var imageIndex = ImageBox.Children.Count - 1;
         addButton.Click += AddButtonClick;
         deleteButton.Click += DeleteButtonOnClick;
         return;
@@ -94,7 +94,9 @@ public partial class MainWindow : Window
                 var bitmap = ImageLoader.LoadImage(file);
                 var image = new Image()
                 {
-                    Width = 100, Height = 100, Source = bitmap
+                    Width = 100,
+                    Height = 100,
+                    Source = bitmap
                 };
                 _imagePath.Last().Add(Utility.ConvertUriToPath(file.Path));
                 stackPanel.Children.Add(image);
@@ -105,9 +107,9 @@ public partial class MainWindow : Window
 
         void DeleteButtonOnClick(object? o, RoutedEventArgs routedEventArgs)
         {
-            bitmaps.ForEach(x=>x.Dispose());
+            bitmaps.ForEach(x => x.Dispose());
             bitmaps.Clear();
-            _imagePath[imageIndex]=null;
+            _imagePath[imageIndex] = null;
             ImageBox.Children.Remove(content);
         }
     }
@@ -130,5 +132,4 @@ public partial class MainWindow : Window
                 .ProcessJson(_quadFilePath, Utility.ConvertImagePath(_imagePath));
         });
     }
-
 }

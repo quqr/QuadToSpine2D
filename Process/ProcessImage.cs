@@ -9,6 +9,7 @@ public class ProcessImage
 {
     //skin tex_id layer_id layer_data
     public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = new();
+
     public Dictionary<string, LayerData> LayerDataDict { get; } = new();
     private int _skinsCount;
     private int _imageIndex;

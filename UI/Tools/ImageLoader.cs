@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Web;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using System.IO;
 
 namespace UI.Tools;
 
@@ -14,6 +11,7 @@ public static class ImageLoader
         using var file = File.Open(path, FileMode.Open);
         return new Bitmap(file);
     }
+
     public static Bitmap LoadImage(IStorageFile file)
     {
         var path = Utility.ConvertUriToPath(file.Path);

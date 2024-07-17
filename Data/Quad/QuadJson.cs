@@ -1,5 +1,5 @@
-﻿using System.Numerics;
-using QuadToSpine.JsonConverters;
+﻿using QuadToSpine.JsonConverters;
+using System.Numerics;
 
 namespace QuadToSpine.Data.Quad;
 
@@ -46,7 +46,7 @@ public class KeyframeLayer
         get => _dstquad;
         set
         {
-            //Y is down 
+            //Y is down
             if (value is null) _dstquad = value;
             else
                 for (var i = 0; i < 8; i++)

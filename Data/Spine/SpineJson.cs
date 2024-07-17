@@ -62,6 +62,7 @@ public class LinkedMesh : BaseMesh
 
     //[JsonIgnore]
     public string Skin { get; set; }
+
     public string Parent { get; set; }
 }
 

@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace UI.Tools;
@@ -17,10 +15,11 @@ public static class Utility
             Title = "Images",
             SuggestedStartLocation = null,
             AllowMultiple = true,
-            FileTypeFilter = [ FilePickerFileTypes.ImageAll ]
+            FileTypeFilter = [FilePickerFileTypes.ImageAll]
         }).Result;
         return files.Count == 0 ? null : files;
     }
+
     public static IReadOnlyList<IStorageFile>? OpenQuadFilePicker(IStorageProvider storageProvider)
     {
         var files = storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -32,6 +31,7 @@ public static class Utility
         }).Result;
         return files.Count == 0 ? null : files;
     }
+
     public static string ConvertUriToPath(Uri uri)
     {
         return HttpUtility.UrlDecode(uri.AbsolutePath);
