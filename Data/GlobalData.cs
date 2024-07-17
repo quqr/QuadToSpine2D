@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 
-namespace QuadToSpine.Tools;
+namespace QuadToSpine.Data;
 
 public static class GlobalData
 {
@@ -12,18 +12,13 @@ public static class GlobalData
         get => _scaleFactor;
         set => _scaleFactor = value > 1 ? value : 1;
     }
+
     public static string ImageSavePath { get; set; } = string.Empty;
     public static string ResultSavePath { get; set; } = string.Empty;
-    public static Label Label{ get; set; }
+    public static Label Label { get; set; }
 
     public static string LabelContent
     {
-        set
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                Label.Content = $"State: {value}";
-            });
-        }
+        set { Dispatcher.UIThread.Post(() => { Label.Content = $"State: {value}"; }); }
     }
 }

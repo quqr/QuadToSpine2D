@@ -32,6 +32,7 @@ public static class ProcessTools
 
         return c;
     }
+
     public static float[]? MulFloats(float[]? a, float b)
     {
         if (a is null) return null;

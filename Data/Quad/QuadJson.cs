@@ -40,6 +40,7 @@ public class Keyframe
 public class KeyframeLayer
 {
     private float[]? _dstquad = new float[8];
+
     public float[]? Dstquad
     {
         get => _dstquad;
@@ -60,7 +61,9 @@ public class KeyframeLayer
                 }
         }
     }
+
     private float[]? _srcquad;
+
     public float[]? Srcquad
     {
         get => _srcquad;
@@ -78,6 +81,7 @@ public class KeyframeLayer
             CalculateUVs(_srcquad);
         }
     }
+
     public int BlendId { get; set; }
     public int TexId { get; set; }
     public string LayerGuid { get; set; } = "";
@@ -87,6 +91,7 @@ public class KeyframeLayer
     public float[] UVs { get; set; } = new float[8];
     public float[] ZeroCenterPoints { get; set; } = new float[8];
     public string LayerName { get; set; }
+
     private void CalculateUVs(float[] src)
     {
         List<Vector3> points =
@@ -112,7 +117,6 @@ public class KeyframeLayer
             else
                 ZeroCenterPoints[i] = (UVs[i] * 2f - 1f) * Height / 8f;
     }
-
 }
 
 public class Animation

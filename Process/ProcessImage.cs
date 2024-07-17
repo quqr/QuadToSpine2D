@@ -9,7 +9,7 @@ public class ProcessImage
 {
     //skin tex_id layer_id layer_data
     public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = new();
-    public Dictionary<string, LayerData> LayerDataDict{ get; } = new();
+    public Dictionary<string, LayerData> LayerDataDict { get; } = new();
     private int _skinsCount;
     private int _imageIndex;
     private int _currentImageIndex;
@@ -43,8 +43,8 @@ public class ProcessImage
                     //clip image.
                     //if image exist continue.
                     //Or if one keyframe has same layer, clip same image and rename.
-                    if(ImageData[curSkin][layer.TexId] is null)continue;
-                    if (ImageData[curSkin][layer.TexId].TryGetValue(layer.LayerGuid,out var value))
+                    if (ImageData[curSkin][layer.TexId] is null) continue;
+                    if (ImageData[curSkin][layer.TexId].TryGetValue(layer.LayerGuid, out var value))
                     {
                         layer.LayerName = curSkin == 0 ? value.ImageName : layer.LayerName;
                         var layerCount = layers.Count(x => x.LayerGuid.Equals(layer.LayerGuid));
@@ -52,16 +52,18 @@ public class ProcessImage
 
                         layer.LayerName = curSkin == 0 ? $"{layer.LayerName}_COPY_{layerCount}" : layer.LayerName;
                         layer.LayerGuid = curSkin == 0 ? $"{layer.LayerGuid}_COPY_{layerCount}" : layer.LayerGuid;
-                        
+
                         if (ImageData[curSkin][layer.TexId].ContainsKey(layer.LayerGuid)) continue;
                         _isCopy = true;
                     }
+
                     var layerData = CropImage(_images[curSkin, layer.TexId], rectangle, layer, curSkin);
                     ImageData[curSkin][layer.TexId].TryAdd(layer.LayerGuid, layerData);
                     LayerDataDict.TryAdd(layer.LayerGuid, layerData);
                 }
             }
         }
+
         GlobalData.LabelContent = "Finish";
         Console.WriteLine("Finish");
     }
@@ -70,7 +72,7 @@ public class ProcessImage
     {
         for (var i = 0; i < images.Count; i++)
         {
-            ImageData[i] = new();
+            ImageData[i] = [];
             for (var j = 0; j < images[0].Count; j++)
             {
                 var src = images[i][j];
@@ -80,8 +82,9 @@ public class ProcessImage
                     ImageData[i][j] = null;
                     continue;
                 }
+
                 _images[i, j] = Image.Load(src);
-                ImageData[i][j] = new();
+                ImageData[i][j] = [];
             }
         }
     }
@@ -100,10 +103,7 @@ public class ProcessImage
     private LayerData? CropImage(Image? image, Rectangle rectangle, KeyframeLayer layer, int curSkin)
     {
         if (image is null) return null;
-        using var clipImage = image.Clone(x =>
-        {
-            x.Crop(rectangle);
-        });
+        using var clipImage = image.Clone(x => { x.Crop(rectangle); });
         string imageName;
         if (_isCopy)
         {
@@ -115,6 +115,7 @@ public class ProcessImage
             imageName = $"Slice {_imageIndex}_{layer.TexId}_{curSkin}";
             _imageIndex++;
         }
+
         if (curSkin == 0) layer.LayerName = imageName;
         clipImage.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, imageName + ".png"));
         _currentImageIndex++;

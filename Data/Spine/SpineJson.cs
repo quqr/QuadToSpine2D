@@ -59,6 +59,7 @@ public class Mesh : BaseMesh
 public class LinkedMesh : BaseMesh
 {
     public string Type { get; set; }
+
     //[JsonIgnore]
     public string Skin { get; set; }
     public string Parent { get; set; }
@@ -105,6 +106,7 @@ public class AnimationAttachment
     public float Time { get; set; }
     public string? Name { get; set; }
 }
+
 [JsonConverter(typeof(SkinDeformConverter))]
 public class Deform
 {

@@ -1,4 +1,5 @@
 ﻿using QuadToSpine.Process;
+
 namespace QuadToSpine;
 
 internal static class Program

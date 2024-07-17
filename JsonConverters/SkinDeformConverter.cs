@@ -2,7 +2,7 @@ using QuadToSpine.Data.Spine;
 
 namespace QuadToSpine.JsonConverters;
 
-public class SkinDeformConverter: JsonConverter
+public class SkinDeformConverter : JsonConverter
 {
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
@@ -13,10 +13,12 @@ public class SkinDeformConverter: JsonConverter
             writer.WritePropertyName(name.Key);
             serializer.Serialize(writer, name.Value);
         }
+
         writer.WriteEndObject();
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
+        JsonSerializer serializer)
     {
         throw new NotImplementedException();
     }
