@@ -6,16 +6,24 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <PublishAot>False</PublishAot>
+        <PublishTrimmed>False</PublishTrimmed>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <DebugType>embedded</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <DebugType>embedded</DebugType>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.0.10"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.0.10"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10"/>
+        <PackageReference Include="Avalonia" Version="11.0.10" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
     </ItemGroup>
 </Project>

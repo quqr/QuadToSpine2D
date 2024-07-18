@@ -143,14 +143,15 @@ public partial class MainWindow : Window
     {
         GlobalData.ResultSavePath = Directory.GetCurrentDirectory();
         GlobalData.ImageSavePath = Path.Combine(GlobalData.ResultSavePath, "images");
+
+#if DEBUG
+        GlobalData.ImageSavePath = @"E:\Asset\tt\images";
+        GlobalData.ResultSavePath = @"E:\Asset\tt";
+#endif
         if (!Directory.Exists(GlobalData.ImageSavePath))
         {
             Directory.CreateDirectory(GlobalData.ImageSavePath);
         }
-#if DEBUG
-        GlobalData.ImageSavePath = @"E:\Asset\ttt\images";
-        GlobalData.ResultSavePath = @"E:\Asset\ttt";
-#endif
         Task.Run(() =>
         {
             Process
