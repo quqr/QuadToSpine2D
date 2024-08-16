@@ -2,9 +2,9 @@
 
 public class ProcessQuadFile
 {
-    public QuadJson QuadData { get; private set; }
+    private QuadJson QuadData { get; set; }
 
-    public void Load(string quadPath)
+    public QuadJson LoadQuadJson(string quadPath)
     {
         Console.WriteLine("Loading quad file...");
         GlobalData.LabelContent = "Loading quad file...";
@@ -21,5 +21,6 @@ public class ProcessQuadFile
 
         GlobalData.LabelContent = "Quad file loaded";
         Console.WriteLine("Quad file loaded");
+        return QuadData;
     }
 }

@@ -13,7 +13,7 @@
             <ExperimentalAcrylicBorder.Material>
                 <ExperimentalAcrylicMaterial
                     BackgroundSource="Digger"
-                    TintColor="SandyBrown"
+                    TintColor="WhiteSmoke"
                     TintOpacity=".5"
                     MaterialOpacity="0.7" />
             </ExperimentalAcrylicBorder.Material>
@@ -46,7 +46,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
-                <Label Content="Readable  Json"
+                <Label Content="ReadableJson  "
                        HorizontalContentAlignment="Center"
                        VerticalContentAlignment="Center" 
                        Margin="0,0,20,0"></Label>
@@ -63,7 +63,7 @@
                 </StackPanel>
             </StackPanel>
         </StackPanel>
-        <Label Content="State: "
+        <Label Content=""
                HorizontalAlignment="Center"
                VerticalAlignment="Bottom"
                Margin="0,0,0,35"
@@ -79,7 +79,6 @@
                 Height="50"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
-                FontSize="15"
-                FontWeight="Heavy" />
+                FontSize="15"/>
     </Panel>
 </Window>

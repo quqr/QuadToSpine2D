@@ -1,24 +1,23 @@
 ﻿using QuadToSpine2D.Core.Data.Spine;
-using QuadToSpine2D.Core.Tools;
+using QuadToSpine2D.Core.Utility;
 
 namespace QuadToSpine2D.Core.Process;
 
 public class ProcessSpineJson
 {
-    private SpineJson _spineJson = new();
+    private readonly SpineJson _spineJson = new();
     private ProcessImage _processedImageData;
-    private readonly Dictionary<string, SpineAnimation> _spineAnimations = new();
+    private readonly Dictionary<string, SpineAnimation> _spineAnimations = [];
     private int _curSlotIndex;
 
-    public void Process(ProcessImage processImage, QuadJson quadJson)
+    public SpineJson Process(ProcessImage processImage, QuadJson quadJson)
     {
         Console.WriteLine("Writing spine json...");
         GlobalData.LabelContent = "Writing spine json...";
 
         InitData(processImage);
         ProcessAnimation(quadJson);
-        GlobalData.LabelContent = "Finish";
-        Console.WriteLine("Finish");
+        return _spineJson;
     }
 
     private void InitData(ProcessImage processImage)
@@ -75,26 +74,11 @@ public class ProcessSpineJson
             });
     }
 
-    private void WriteToSpineJson()
-    {
-        var setting = new JsonSerializerSettings
-        {
-            ContractResolver = new DefaultContractResolver
-                { NamingStrategy = new CamelCaseNamingStrategy() },
-            Formatting = GlobalData.IsReadableJson ? Formatting.Indented : Formatting.None
-        };
-        var spineJsonFile = JsonConvert.SerializeObject(_spineJson, setting);
-        var output = Path.Combine(GlobalData.ResultSavePath, "Result.json");
-        File.WriteAllText(output, spineJsonFile);
-        Console.WriteLine(output);
-    }
-
     private void ProcessAnimation(QuadJson quad)
     {
         foreach (var skeleton in quad.Skeleton)
             SetKeyframesData(quad, skeleton);
         _spineJson.Animations = _spineAnimations;
-        WriteToSpineJson();
     }
 
     private void SetKeyframesData(QuadJson quad, QuadSkeleton? skeleton)
@@ -210,7 +194,7 @@ public class ProcessSpineJson
             deform.SkinName[skinName][layer.LayerName] = value;
         }
 
-        item.Vertices = ProcessTools.MinusFloats(layer.Dstquad, layer.ZeroCenterPoints);
+        item.Vertices = ProcessUtility.MinusFloats(layer.Dstquad, layer.ZeroCenterPoints);
         value.ImageVertices.Add(item);
     }
 

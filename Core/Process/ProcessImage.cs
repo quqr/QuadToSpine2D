@@ -1,4 +1,4 @@
-﻿using QuadToSpine2D.Core.Tools;
+﻿using System.Collections.Frozen;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
@@ -8,7 +8,6 @@ public class ProcessImage
 {
     //skin tex_id layer_id layer_data
     public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = new();
-
     public Dictionary<string, LayerData> LayerDataDict { get; } = new();
     private int _skinsCount;
     private int _imageIndex;
@@ -22,6 +21,7 @@ public class ProcessImage
         GlobalData.LabelContent = "Cropping images...";
 
         _skinsCount = imagesSrc.Count;
+
         _images = new Image[imagesSrc.Count, imagesSrc[0].Count];
         GetAllImages(imagesSrc);
         foreach (var keyframe in quad.Keyframe)
@@ -63,7 +63,6 @@ public class ProcessImage
                 }
             }
         }
-
         GlobalData.LabelContent = "Finish";
         Console.WriteLine("Finish");
     }
@@ -103,7 +102,19 @@ public class ProcessImage
     private LayerData? CropImage(Image? image, Rectangle rectangle, KeyframeLayer layer, int curSkin)
     {
         if (image is null) return null;
-        using var clipImage = image.Clone(x => { x.Crop(rectangle); });
+        using var clipImage = image.Clone(x =>
+        {
+            try
+            {
+                x.Crop(rectangle);
+            }
+            catch (Exception e)
+            {
+                GlobalData.LabelContent = $"Incorrect images \n{e}";
+                Console.WriteLine(e);
+                throw;
+            }
+        });
         string imageName;
         if (_isCopy)
         {

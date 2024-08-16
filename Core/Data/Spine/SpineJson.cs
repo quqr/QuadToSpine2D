@@ -12,11 +12,24 @@ public class SpineJson
 
     //[JsonIgnore]
     public Dictionary<string, SpineAnimation> Animations { get; set; } = new();
+
+    public void WriteToJson()
+    {
+        var setting = new JsonSerializerSettings
+        {
+            ContractResolver = new DefaultContractResolver 
+                { NamingStrategy = new CamelCaseNamingStrategy() },
+            Formatting = GlobalData.IsReadableJson ? Formatting.Indented : Formatting.None
+        };
+        var spineJsonFile = JsonConvert.SerializeObject(this, setting);
+        var output = Path.Combine(GlobalData.ResultSavePath, "Result.json");
+        File.WriteAllText(output, spineJsonFile);
+    }
 }
 
 public class SpineSkeleton
 {
-    public string Spine = "3.8";
+    public const string Spine = "3.8";
     public string ImagesPath = "";
 }
 

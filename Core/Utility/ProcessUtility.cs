@@ -1,7 +1,12 @@
-﻿namespace QuadToSpine2D.Core.Tools;
+﻿namespace QuadToSpine2D.Core.Utility;
 
-public static class ProcessTools
+public static class ProcessUtility
 {
+    /// <summary>
+    /// Find min and max point in float[4]
+    /// </summary>
+    /// <param name="quad">If quad is null, return new float[4]</param>
+    /// <returns>return the min and max points: [minX, minY, maxX, maxY]</returns>
     public static float[] FindMinAndMaxPoints(float[]? quad)
     {
         if (quad is null) return new float[4];
@@ -20,7 +25,12 @@ public static class ProcessTools
 
         return [minX, minY, maxX, maxY];
     }
-
+    /// <summary>
+    /// float[] a - float[] b
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
     public static float[] MinusFloats(float[] a, float[] b)
     {
         var c = new float[a.Length];
@@ -32,7 +42,12 @@ public static class ProcessTools
 
         return c;
     }
-
+    /// <summary>
+    /// float[] a * float b
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
     public static float[]? MulFloats(float[]? a, float b)
     {
         if (a is null) return null;

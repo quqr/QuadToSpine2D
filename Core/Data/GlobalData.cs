@@ -19,7 +19,7 @@ public static class GlobalData
 
     public static string LabelContent
     {
-        set { Dispatcher.UIThread.Post(() => { Label.Content = $"State: {value}"; }); }
+        set { Dispatcher.UIThread.Post(() => { Label.Content = $">>> {value}"; }); }
     }
     public static bool IsReadableJson { get; set; }
 }

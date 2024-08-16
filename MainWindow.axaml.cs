@@ -3,10 +3,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using QuadToSpine2D.Core.Process;
-using QuadToSpine2D.Tools;
+using QuadToSpine2D.MyUtility;
 
 namespace QuadToSpine2D;
 
@@ -26,7 +25,7 @@ public partial class MainWindow : Window
     private void BindEvent()
     {
         ProcessButton.Click += ProcessButtonOnClick;
-        UploadButton.Click += UploadButtonOnClick;
+        UploadButton.Click += UploadQuadFileButtonOnClick;
         AddNewButton.Click += AddNewButtonOnClick;
         ScaleFactorTextBox.TextChanged += ScaleFactorTextBoxOnTextChanged;
         ReadableCheckBox.IsCheckedChanged += ReadableCheckBoxOnClick;
@@ -82,7 +81,7 @@ public partial class MainWindow : Window
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(10),
-            Background = new SolidColorBrush(new Color(100, 199, 165, 136)),
+            //Background = new SolidColorBrush(new Color(255,234, 238, 241)),
             Children =
             {
                 label, scrollView, addButton, deleteButton
@@ -129,7 +128,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void UploadButtonOnClick(object? sender, RoutedEventArgs e)
+    private void UploadQuadFileButtonOnClick(object? sender, RoutedEventArgs e)
     {
         var file = Utility.OpenQuadFilePicker(StorageProvider);
         if (file is null) return;
@@ -137,6 +136,11 @@ public partial class MainWindow : Window
         QuadFileNameLabel.Content = file[0].Name;
         _quadFilePath = Utility.ConvertUriToPath(file[0].Path);
         file[0].Dispose();
+        Task.Run(() =>
+        {
+            Console.WriteLine($"Loading {_quadFilePath}");
+            Process.LoadQuadJson(_quadFilePath);
+        });
     }
 
     private void ProcessButtonOnClick(object? sender, RoutedEventArgs e)
@@ -154,8 +158,7 @@ public partial class MainWindow : Window
         }
         Task.Run(() =>
         {
-            Process
-                .ProcessJson(_quadFilePath, Utility.ConvertImagePath(_imagePath));
+            Process.ProcessJson(Utility.ConvertImagePath(_imagePath));
         });
     }
 }
