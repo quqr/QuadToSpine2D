@@ -1,4 +1,4 @@
-# **QuadToSpine**
+# **QuadToSpine2D**
 
 ## Support
 
