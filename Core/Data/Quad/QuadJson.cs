@@ -28,11 +28,11 @@ public class Keyframe
         set
         {
             _name = value;
-            ID = Convert.ToInt32(_name.Split(' ').Last());
+            Id = Convert.ToInt32(_name.Split(' ').Last());
         }
     }
 
-    public int ID { get; set; }
+    public int Id { get; set; }
     public List<KeyframeLayer?>? Layer { get; set; }
 }
 
@@ -130,17 +130,13 @@ public class Animation
         {
             _name = value;
             var splitName = _name.Split(' ');
-            if (!splitName[0].Equals("animation"))
-            {
-                Console.WriteLine(value);
-                return;
-            }
+            if (!splitName[0].Equals("animation")) return;
 
-            ID = Convert.ToInt32(splitName.Last());
+            Id = Convert.ToInt32(splitName.Last());
         }
     }
 
-    public int ID { get; set; } = -1;
+    public int Id { get; set; } = -1;
     public List<Timeline> Timeline { get; set; }
 }
 
@@ -148,12 +144,19 @@ public class Timeline
 {
     public int Time { get; set; }
     public Attach? Attach { get; set; }
+    [JsonIgnore]
+    public bool IsKeyframeMix { get; private set; }
+    [JsonProperty]
+    private int KeyframeMix
+    {
+        set => IsKeyframeMix = value > 0;
+    }
 }
 
 public class Attach
 {
     public string Type { get; set; }
-    public int ID { get; set; }
+    public int Id { get; set; }
 }
 
 [JsonConverter(typeof(SkeletonJsonConverter))]

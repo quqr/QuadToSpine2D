@@ -39,7 +39,16 @@ public partial class MainWindow : Window
     private void ScaleFactorTextBoxOnTextChanged(object? sender, TextChangedEventArgs e)
     {
         if (ScaleFactorTextBox.Text is null || ScaleFactorTextBox.Text.Equals(string.Empty)) return;
-        GlobalData.ScaleFactor = Convert.ToInt32(ScaleFactorTextBox.Text);
+        try
+        {
+            GlobalData.ScaleFactor = Convert.ToInt32(ScaleFactorTextBox.Text);
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+            GlobalData.LabelContent = exception.Message;
+            ScaleFactorTextBox.Text = "1";
+        }
     }
 
     private void AddNewButtonOnClick(object? sender, RoutedEventArgs e)
@@ -132,25 +141,29 @@ public partial class MainWindow : Window
     {
         var file = Utility.OpenQuadFilePicker(StorageProvider);
         if (file is null) return;
-        IsUploadedCheckBox.IsChecked = true;
         QuadFileNameLabel.Content = file[0].Name;
         _quadFilePath = Utility.ConvertUriToPath(file[0].Path);
         file[0].Dispose();
-        Task.Run(() =>
-        {
-            Console.WriteLine($"Loading {_quadFilePath}");
-            Process.LoadQuadJson(_quadFilePath);
-        });
+        //Task.Run(() =>
+        //{
+        //    Console.WriteLine($"Loading {_quadFilePath}");
+        //    Process.LoadQuadJson(_quadFilePath);
+        //});
     }
 
     private void ProcessButtonOnClick(object? sender, RoutedEventArgs e)
     {
         GlobalData.ResultSavePath = Directory.GetCurrentDirectory();
         GlobalData.ImageSavePath = Path.Combine(GlobalData.ResultSavePath, "images");
-
 #if DEBUG
         GlobalData.ImageSavePath = @"E:\Asset\tt\images";
         GlobalData.ResultSavePath = @"E:\Asset\tt";
+        _quadFilePath = @"E:\Asset\momohime\4k\00Files\file\Momohime_Battle.mbs.v55.quad";
+        _imagePath = [
+            [@"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png"],
+            [@"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png"],
+            [@"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"]
+        ];
 #endif
         if (!Directory.Exists(GlobalData.ImageSavePath))
         {
@@ -158,6 +171,7 @@ public partial class MainWindow : Window
         }
         Task.Run(() =>
         {
+            Process.LoadQuadJson(_quadFilePath);
             Process.ProcessJson(Utility.ConvertImagePath(_imagePath));
         });
     }

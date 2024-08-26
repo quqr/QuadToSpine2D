@@ -13,7 +13,7 @@ public class ProcessQuadFile
         QuadData = JsonConvert.DeserializeObject<QuadJson>(json)!;
 
         QuadData.Skeleton.RemoveAll(x => x is null);
-        QuadData.Animation.RemoveAll(x => x is null || x.ID == -1);
+        QuadData.Animation.RemoveAll(x => x is null || x.Id == -1);
 
         foreach (var keyframe in QuadData.Keyframe)
             keyframe?.Layer?.RemoveAll(y => y is null || y.LayerGuid.Equals(string.Empty));

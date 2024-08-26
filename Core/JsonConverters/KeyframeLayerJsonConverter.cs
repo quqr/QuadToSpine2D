@@ -16,6 +16,7 @@ public class KeyframeLayerJsonConverter : JsonConverter
         var obj = serializer.Deserialize(reader);
         if (obj.GetType() != typeof(JObject)) return null;
         var jObject = obj as JObject;
+        var x = GlobalData.ScaleFactor;
         var layer = new KeyframeLayer
         {
             // layer.BlendID = jobj["blend_id"]?.ToObject<int>();

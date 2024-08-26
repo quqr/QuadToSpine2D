@@ -4,10 +4,15 @@ namespace QuadToSpine2D.Core.Data.Spine;
 
 public class SpineJson
 {
+    //[JsonIgnore]
     public SpineSkeleton SpineSkeletons { get; set; } = new();
+    //[JsonIgnore]
     public List<SpineBone> Bones { get; set; } = [];
+    //[JsonIgnore]
     public List<SpineSlot> Slots { get; set; } = [];
-
+    [JsonIgnore]
+    public Dictionary<string, SpineSlot> SlotsDict { get; set; } = [];
+    //[JsonIgnore]
     public List<Skin> Skins { get; set; } = [];
 
     //[JsonIgnore]

@@ -26,13 +26,12 @@ public static class ProcessUtility
         return [minX, minY, maxX, maxY];
     }
     /// <summary>
-    /// float[] a - float[] b
+    /// return a - b
     /// </summary>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
-    /// <returns></returns>
-    public static float[] MinusFloats(float[] a, float[] b)
+    /// <returns>return a - b. if a or b is null return [].</returns>
+    public static float[] MinusFloats(float[]? a, float[]? b)
     {
+        if (a is null || b is null) return [];
         var c = new float[a.Length];
         for (var i = 0; i < a.Length; i++)
         {
@@ -43,11 +42,9 @@ public static class ProcessUtility
         return c;
     }
     /// <summary>
-    /// float[] a * float b
+    /// float[] a *  b
     /// </summary>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
-    /// <returns></returns>
+    /// <returns>return a *  b, if a is null return null</returns>
     public static float[]? MulFloats(float[]? a, float b)
     {
         if (a is null) return null;

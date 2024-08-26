@@ -21,22 +21,14 @@
 + ### Select quad file path and images path.
   #### Make sure order of image is right
   #### If your image is larger than the original image, the scale factor = current image size ÷ original image size.
+  #### You will get **Result.json** and **images** folder.
   <img height="150" src="MD/1.png" width="200"/>
-+ ### You will get **Result.json** and **images** folder.
 
 + ### Open Spine and import "Result.json". (Ignore warning)
-
-+  <img height="300" src="MD/2.png" width="200"/>
+  <img height="300" src="MD/2.png" width="200"/>
 
 + ### Import images .
-
-+ <img height="300" src="MD/3.png" width="200"/>
-
-+ ### Set Playback.
-+ Open Views->Playback and set "Stepped"
-
-+ <img height="150" src="MD/5.png" width="300"/>
+  <img height="300" src="MD/3.png" width="200"/>
 
 + ### Check animation. (Make sure you have selected skin)
-
-+ <img height="150" src="MD/4.png" width="300"/>
+  <img height="150" src="MD/4.png" width="300"/>
