@@ -63,7 +63,6 @@ public class KeyframeLayer
     }
 
     private float[]? _srcquad;
-
     public float[]? Srcquad
     {
         get => _srcquad;
@@ -81,16 +80,17 @@ public class KeyframeLayer
             CalculateUVs(_srcquad);
         }
     }
-
     public int BlendId { get; set; }
     public int TexId { get; set; }
-    public string LayerGuid { get; set; } = "";
+    public string LayerGuid { get; set; } = string.Empty;
     public float Height { get; set; }
     public float Width { get; set; }
     public float[] MinAndMaxSrcPoints { get; set; }
     public float[] UVs { get; set; } = new float[8];
     public float[] ZeroCenterPoints { get; set; } = new float[8];
     public string LayerName { get; set; }
+    // public List<string>? Fog { get; set; }
+    // public List<string>? Attribute  { get; set; }
 
     private void CalculateUVs(float[] src)
     {
@@ -138,16 +138,21 @@ public class Animation
 
     public int Id { get; set; } = -1;
     public List<Timeline> Timeline { get; set; }
+    public bool IsLoop { get; set; }
+    [JsonProperty]
+    private int loop_id
+    {
+        set => IsLoop = value >= 0;
+    }
 }
 
 public class Timeline
 {
     public int Time { get; set; }
     public Attach? Attach { get; set; }
-    [JsonIgnore]
     public bool IsKeyframeMix { get; private set; }
     [JsonProperty]
-    private int KeyframeMix
+    private int keyframe_mix
     {
         set => IsKeyframeMix = value > 0;
     }
@@ -155,10 +160,18 @@ public class Timeline
 
 public class Attach
 {
-    public string Type { get; set; }
+    [JsonProperty]
+    private string Type {
+        set => AttachType = value.Equals("keyframe") ? 
+            AttachType.Keyframe : AttachType.Slot;
+    }
+    public AttachType AttachType { get; private set; }
     public int Id { get; set; }
 }
-
+public enum AttachType
+{
+    Keyframe,Slot,HitBox,Animation,Skeleton
+}
 [JsonConverter(typeof(SkeletonJsonConverter))]
 public class QuadSkeleton
 {

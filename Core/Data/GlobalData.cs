@@ -22,4 +22,5 @@ public static class GlobalData
         set { Dispatcher.UIThread.Post(() => { Label.Content = $">>> {value}"; }); }
     }
     public static bool IsReadableJson { get; set; }
+    public static bool IsRemoveUselessAnimations { get; set; }
 }

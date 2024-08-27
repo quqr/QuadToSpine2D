@@ -32,6 +32,16 @@
                 <Button Content="Upload quad file"
                         Name="UploadButton" />
             </StackPanel>
+			<StackPanel Orientation="Horizontal"
+						HorizontalAlignment="Right"
+						Margin="0,10,10,0">
+				<Label Content="Remove useless animations"
+					   HorizontalContentAlignment="Center"
+					   VerticalContentAlignment="Center"
+					   Margin="0,0,20,0"></Label>
+				<CheckBox Margin="0,0,10,0"
+						  Name="RemoveAnimationCheckBox"></CheckBox>
+			</StackPanel>
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Margin="0,10,10,0">

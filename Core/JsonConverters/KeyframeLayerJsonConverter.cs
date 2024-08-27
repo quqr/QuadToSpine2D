@@ -16,20 +16,52 @@ public class KeyframeLayerJsonConverter : JsonConverter
         var obj = serializer.Deserialize(reader);
         if (obj.GetType() != typeof(JObject)) return null;
         var jObject = obj as JObject;
-        var x = GlobalData.ScaleFactor;
-        var layer = new KeyframeLayer
+        
+        return new KeyframeLayer
         {
-            // layer.BlendID = jobj["blend_id"]?.ToObject<int>();
-            // layer.Attribute = jobj["attribute"]?.ToString();
-            // layer.Colorize = jobj["colorize"]?.ToString();
-            TexId = jObject["tex_id"]?.ToObject<int>() ?? 0,
+            TexId = jObject["tex_id"]?.ToObject<int>() ?? -1,
             Dstquad = ProcessUtility.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
                 GlobalData.ScaleFactor),
             Srcquad = ProcessUtility.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
                 GlobalData.ScaleFactor),
-            BlendId = jObject["blend_id"]?.ToObject<int>() ?? 0
+            BlendId = jObject["blend_id"]?.ToObject<int>() ?? -1,
+            // Fog = ConvertToFog(jObject),
+            // Attribute = ConvertToAttribute(jObject)
         };
-        return layer;
+    }
+
+    private List<string>? ConvertToAttribute(JObject? jObject)
+    {
+        var baseAttribute = jObject["attribute"];
+        List<string>? attribute = null;
+        switch (baseAttribute?.Type)
+        {
+            case JTokenType.Array:
+                attribute = baseAttribute.ToObject<List<string>>();
+                break;
+            case JTokenType.String:
+                attribute = [baseAttribute.ToString()];
+                break;
+        }
+
+        return attribute;
+    }
+
+    private List<string>? ConvertToFog(JObject? jObject)
+    {
+        var baseFog = jObject["fogquad"];
+        List<string>? fog = null;
+        switch (baseFog?.Type)
+        {
+            case JTokenType.Array:
+                fog = baseFog.ToObject<List<string>>();
+                break;
+            case JTokenType.String:
+                fog = [baseFog.ToString()];
+                break;
+        }
+
+        return fog;
     }
 
     public override bool CanConvert(Type objectType)

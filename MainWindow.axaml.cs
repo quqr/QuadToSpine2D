@@ -29,11 +29,19 @@ public partial class MainWindow : Window
         AddNewButton.Click += AddNewButtonOnClick;
         ScaleFactorTextBox.TextChanged += ScaleFactorTextBoxOnTextChanged;
         ReadableCheckBox.IsCheckedChanged += ReadableCheckBoxOnClick;
+        RemoveAnimationCheckBox.IsCheckedChanged += RemoveAnimationCheckBoxOnIsCheckedChanged;
+    }
+
+    private void RemoveAnimationCheckBoxOnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (RemoveAnimationCheckBox.IsChecked != null)
+            GlobalData.IsReadableJson = (bool)RemoveAnimationCheckBox.IsChecked;
     }
 
     private void ReadableCheckBoxOnClick(object? sender, RoutedEventArgs e)
     {
-        GlobalData.IsReadableJson = (bool)ReadableCheckBox.IsChecked!;
+        if (ReadableCheckBox.IsChecked != null) 
+            GlobalData.IsReadableJson = (bool)ReadableCheckBox.IsChecked;
     }
 
     private void ScaleFactorTextBoxOnTextChanged(object? sender, TextChangedEventArgs e)
@@ -89,8 +97,7 @@ public partial class MainWindow : Window
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(10),
-            //Background = new SolidColorBrush(new Color(255,234, 238, 241)),
+            Margin = new Thickness(10), 
             Children =
             {
                 label, scrollView, addButton, deleteButton
@@ -110,7 +117,6 @@ public partial class MainWindow : Window
         {
             var files = Utility.OpenImageFilePicker(StorageProvider);
             if (files is null) return;
-            var imageIndex = _currentImageBoxPart - 1;
             foreach (var file in files)
             {
                 var bitmap = ImageLoader.LoadImage(file);
@@ -144,11 +150,6 @@ public partial class MainWindow : Window
         QuadFileNameLabel.Content = file[0].Name;
         _quadFilePath = Utility.ConvertUriToPath(file[0].Path);
         file[0].Dispose();
-        //Task.Run(() =>
-        //{
-        //    Console.WriteLine($"Loading {_quadFilePath}");
-        //    Process.LoadQuadJson(_quadFilePath);
-        //});
     }
 
     private void ProcessButtonOnClick(object? sender, RoutedEventArgs e)
@@ -158,11 +159,17 @@ public partial class MainWindow : Window
 #if DEBUG
         GlobalData.ImageSavePath = @"E:\Asset\tt\images";
         GlobalData.ResultSavePath = @"E:\Asset\tt";
-        _quadFilePath = @"E:\Asset\momohime\4k\00Files\file\Momohime_Battle.mbs.v55.quad";
-        _imagePath = [
-            [@"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png"],
-            [@"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png"],
-            [@"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"]
+        // _quadFilePath = @"E:\Asset\momohime\4k\00Files\file\Momohime_Rest.mbs.v55.quad";
+        // _imagePath = [
+        //     [@"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png"],
+        //     [@"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png"],
+        //     [@"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"]
+        // ];
+        _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
+        _imagePath = 
+        [
+            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png"],
+            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png"],
         ];
 #endif
         if (!Directory.Exists(GlobalData.ImageSavePath))

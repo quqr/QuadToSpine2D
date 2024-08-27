@@ -1,4 +1,5 @@
-﻿using QuadToSpine2D.Core.JsonConverters;
+﻿using System.Collections.Frozen;
+using QuadToSpine2D.Core.JsonConverters;
 
 namespace QuadToSpine2D.Core.Data.Spine;
 
@@ -12,6 +13,7 @@ public class SpineJson
     public List<SpineSlot> Slots { get; set; } = [];
     [JsonIgnore]
     public Dictionary<string, SpineSlot> SlotsDict { get; set; } = [];
+    public FrozenDictionary<string, SpineSlot> FrozenSlotsDict { get; set; }
     //[JsonIgnore]
     public List<Skin> Skins { get; set; } = [];
 

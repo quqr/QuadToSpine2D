@@ -8,7 +8,8 @@ public class ProcessImage
 {
     //skin tex_id layer_id layer_data
     public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = new();
-    public Dictionary<string, LayerData> LayerDataDict { get; } = new();
+    private readonly Dictionary<string, LayerData> _layerDataDict = [];
+    public FrozenDictionary<string, LayerData> LayerDataDict { get; private set; }
     private int _skinsCount;
     private int _imageIndex;
     private int _currentImageIndex;
@@ -32,7 +33,7 @@ public class ProcessImage
                 layers.Add(layer);
                 if (layer.TexId > _images.Length)
                 {
-                    //Console.WriteLine($"Missing image. TexID: {layer.TexId}");
+                    Console.WriteLine($"Missing image. TexID: {layer.TexId}");
                     GlobalData.LabelContent = $"Missing image. TexID: {layer.TexId}";
                     continue;
                 }
@@ -41,7 +42,7 @@ public class ProcessImage
                 for (var curSkin = 0; curSkin < _skinsCount; curSkin++)
                 {
                     //clip image.
-                    //if image exist continue.
+                    //if image continue to exist in next keyframe
                     //Or if one keyframe has same layer, clip same image and rename.
                     if (ImageData[curSkin][layer.TexId] is null) continue;
                     if (ImageData[curSkin][layer.TexId].TryGetValue(layer.LayerGuid, out var value))
@@ -59,10 +60,13 @@ public class ProcessImage
 
                     var layerData = CropImage(_images[curSkin, layer.TexId], rectangle, layer, curSkin);
                     ImageData[curSkin][layer.TexId].TryAdd(layer.LayerGuid, layerData);
-                    LayerDataDict.TryAdd(layer.LayerGuid, layerData);
+                    _layerDataDict.TryAdd(layer.LayerGuid, layerData);
                 }
             }
         }
+
+        LayerDataDict = _layerDataDict.ToFrozenDictionary();
+        
         GlobalData.LabelContent = "Finish";
         Console.WriteLine("Finish");
     }
@@ -110,7 +114,7 @@ public class ProcessImage
             }
             catch (Exception e)
             {
-                GlobalData.LabelContent = $"Incorrect images \n{e}";
+                GlobalData.LabelContent = $"Incorrect images \n{e.Message}";
                 Console.WriteLine(e);
                 throw;
             }
