@@ -5,19 +5,19 @@ public static class Process
     private static QuadJson? _quadData;
     public static void ProcessJson(List<List<string?>> imagePath)
     {
-        //var quadData = new ProcessQuadFile().LoadQuadJson(quadPath);
-        var imageQuad = new ProcessImage();
-        var spineJson = new ProcessSpineJson();
         if (_quadData is null)
         {
-            GlobalData.LabelContent = "Please select Quad file";
-            return;
+            throw new ArgumentException("Please select correct Quad file");
         }
+        
         if (imagePath.Count == 0)
         {
-            GlobalData.LabelContent = "Please select correct image";
-            return;
+            throw new ArgumentException("Please select correct image");
         }
+        
+        var imageQuad = new ProcessImage();
+        var spineJson = new ProcessSpineJson();
+        
         imageQuad.Process(imagePath, _quadData);
         spineJson
             .Process(imageQuad, _quadData)

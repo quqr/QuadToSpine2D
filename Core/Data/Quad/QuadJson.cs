@@ -161,10 +161,34 @@ public class Timeline
 public class Attach
 {
     [JsonProperty]
-    private string Type {
-        set => AttachType = value.Equals("keyframe") ? 
-            AttachType.Keyframe : AttachType.Slot;
+    private string Type
+    {
+        set
+        {
+            switch (value)
+            {
+                case "keyframe":
+                    AttachType = AttachType.Keyframe;
+                    break;
+                case "slot":
+                    AttachType = AttachType.Slot;
+                    break;
+                case "animation":
+                    AttachType = AttachType.Animation;
+                    break;
+                case "skeleton":
+                    AttachType = AttachType.Skeleton;
+                    break;
+                case "hitbox":
+                    AttachType = AttachType.HitBox;
+                    break;
+                default:
+                    Console.WriteLine($"Can not process attach type : {value}");
+                    break;
+            }
+        }
     }
+
     public AttachType AttachType { get; private set; }
     public int Id { get; set; }
 }

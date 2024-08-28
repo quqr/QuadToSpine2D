@@ -29,11 +29,6 @@ public static class Utility
         }).Result;
         return files.Count == 0 ? null : files;
     }
-    
-    public static string ConvertUriToPath(Uri uri)
-    {
-        return HttpUtility.UrlDecode(uri.AbsolutePath);
-    }
     /// <summary>
     /// Flip image path to right format
     /// </summary>
@@ -42,11 +37,10 @@ public static class Utility
     public static List<List<string?>> ConvertImagePath(List<List<string?>?> imagePath)
     {
         List<List<string?>> result = [];
-        var nullCount = imagePath.Count(x => x is null || x.Count == 0);
-        if (imagePath.Count - nullCount == 0) return result;
-        imagePath.RemoveAll(x => x is null || x.Count == 0);
-        var maxCount = imagePath.MaxBy(x => x?.Count)?.Count;
-        foreach (var path in imagePath)
+        var temp = CopyList(imagePath);
+        if (temp.Count==0) return [];
+        var maxCount = temp.MaxBy(x => x.Count)?.Count;
+        foreach (var path in temp)
             for (var j = 0; j < maxCount; j++)
             {
                 if (result.Count < maxCount) result.Add([]);
@@ -55,10 +49,28 @@ public static class Utility
                     result[j].Add(null);
                     continue;
                 }
-
                 result[j].Add(path[j]);
             }
-
         return result;
+    }
+
+    private static List<List<string>> CopyList(List<List<string?>?> list)
+    {
+        var newList = new List<List<string>>();
+        foreach (var i in list)
+        {
+            if(i is null) continue;
+            newList.Add([]);
+            foreach (var j in i)
+            {
+                if(j is null) continue;
+                newList.Last().Add(j);
+            }
+        }
+        return newList;
+    }
+    public static string DecodePath(this Uri uri)
+    {
+        return HttpUtility.UrlDecode(uri.AbsolutePath);
     }
 }

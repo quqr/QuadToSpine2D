@@ -110,8 +110,11 @@ public class ProcessSpineJson
         List<DrawOrder> drawOrders)
     {
         // Combine animations
-        foreach (var animation in animations)
+        for (var index = 0; index < animations.Count; index++)
         {
+            // Combine animation tracks?
+            if (index >= 1) break;
+            var animation = animations[index];
             HashSet<string> keyframeLayerNames = [];
             var time = 0f;
             foreach (var timeline in animation.Timeline)
@@ -123,16 +126,20 @@ public class ProcessSpineJson
                 {
                     case AttachType.Keyframe:
                     {
-                        layers = quad.Keyframe.FirstOrDefault(x => x.Id == timeline.Attach.Id)?.Layer; 
+                        layers = quad.Keyframe.FirstOrDefault(x => x.Id == timeline.Attach.Id)?.Layer;
                         break;
                     }
                     case AttachType.Slot:
                     {
-                        var attach = quad.Slot[timeline.Attach.Id].Attaches?.FirstOrDefault(x => x.AttachType.Equals("keyframe"));
+                        var attach = quad.Slot[timeline.Attach.Id].Attaches
+                            ?.FirstOrDefault(x => x.AttachType == AttachType.Keyframe);
                         if (attach is null) break;
-                        layers = quad.Keyframe.FirstOrDefault(x => x.Id == attach.Id)?.Layer; 
+                        layers = quad.Keyframe.FirstOrDefault(x => x.Id == attach.Id)?.Layer;
                         break;
                     }
+                    default:
+                        Console.WriteLine($"Can Not Process Animation Attach Type : {timeline.Attach.AttachType}");
+                        break;
                 }
 
                 if (layers is not null)
@@ -144,24 +151,33 @@ public class ProcessSpineJson
         }
     }
 
-    private void SetAnimationData(QuadSkeleton skeleton, List<DrawOrder> drawOrders, SpineAnimation spineAnimation, Deform deform,
+    private void SetAnimationData(
+        QuadSkeleton skeleton, 
+        List<DrawOrder> drawOrders, 
+        SpineAnimation spineAnimation, 
+        Deform deform,
         List<Animation> animations)
     {
-        drawOrders.RemoveAll(x => x.Offsets.Count == 0);
-        spineAnimation.Deform = deform;
-        
-        // when write json ignore it if null 
-        spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
-        
         var animationName = skeleton.Name;
-        if (GlobalData.IsRemoveUselessAnimations && deform.SkinName.Count == 0)
-            return;
+        if (deform.SkinName.Count == 0)
+        {
+            if(!GlobalData.IsRemoveUselessAnimations)
+                animationName += "_USELESS";
+            else 
+                return;
+        }
         
         if (animations.Any(x => x.IsLoop))
             animationName += "_LOOP";
         
         if (animations.Any(x=>x.Timeline.Any(y=>y.IsKeyframeMix)))
             animationName += "_MIX";
+        
+        drawOrders.RemoveAll(x => x.Offsets.Count == 0);
+        spineAnimation.Deform = deform;
+        
+        // when write json ignore it if null 
+        spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
         
         _spineAnimations[animationName] = spineAnimation;
     }

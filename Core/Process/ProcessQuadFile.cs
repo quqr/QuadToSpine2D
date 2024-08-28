@@ -2,18 +2,20 @@
 
 public class ProcessQuadFile
 {
-    private QuadJson QuadData { get; set; }
+    private QuadJson? QuadData { get; set; }
     // private Dictionary<List<string>, KeyframeLayer> Attributes { get; set; } = [];
     // private Dictionary<List<string>, KeyframeLayer> Fogs { get; set; } = [];
 
-    public QuadJson LoadQuadJson(string quadPath)
+    public QuadJson? LoadQuadJson(string quadPath)
     {
         Console.WriteLine("Loading quad file...");
         GlobalData.LabelContent = "Loading quad file...";
 
         var json = File.ReadAllText(quadPath);
-        QuadData = JsonConvert.DeserializeObject<QuadJson>(json)!;
+        QuadData = JsonConvert.DeserializeObject<QuadJson>(json);
 
+        if (QuadData is null) return null;
+        
         QuadData.Skeleton.RemoveAll(x => x is null);
         QuadData.Animation.RemoveAll(x => x is null || x.Id == -1);
 

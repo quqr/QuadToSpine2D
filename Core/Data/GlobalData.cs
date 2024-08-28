@@ -19,7 +19,12 @@ public static class GlobalData
 
     public static string LabelContent
     {
-        set { Dispatcher.UIThread.Post(() => { Label.Content = $">>> {value}"; }); }
+        set
+        {
+            if (!value.Equals(string.Empty))
+                value = $">>> {value}";
+            Dispatcher.UIThread.Post(() => { Label.Content = value; });
+        }
     }
     public static bool IsReadableJson { get; set; }
     public static bool IsRemoveUselessAnimations { get; set; }

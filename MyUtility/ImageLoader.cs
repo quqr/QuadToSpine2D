@@ -13,7 +13,7 @@ public static class ImageLoader
 
     public static Bitmap LoadImage(IStorageFile file)
     {
-        var path = Utility.ConvertUriToPath(file.Path);
+        var path = file.Path.DecodePath();
         return LoadImage(path);
     }
 }

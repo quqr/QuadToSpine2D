@@ -31,12 +31,8 @@ public class ProcessImage
             foreach (var layer in keyframe.Layer)
             {
                 layers.Add(layer);
-                if (layer.TexId > _images.Length)
-                {
-                    Console.WriteLine($"Missing image. TexID: {layer.TexId}");
-                    GlobalData.LabelContent = $"Missing image. TexID: {layer.TexId}";
-                    continue;
-                }
+                if (layer.TexId > _images.Length) 
+                    throw new ArgumentException($"Missing image. TexID: {layer.TexId}");
 
                 var rectangle = CalculateRectangle(layer);
                 for (var curSkin = 0; curSkin < _skinsCount; curSkin++)
@@ -44,7 +40,14 @@ public class ProcessImage
                     //clip image.
                     //if image continue to exist in next keyframe
                     //Or if one keyframe has same layer, clip same image and rename.
-                    if (ImageData[curSkin][layer.TexId] is null) continue;
+                    try
+                    {
+                        if (ImageData[curSkin][layer.TexId] is null) continue;
+                    }
+                    catch (Exception)
+                    {        
+                        throw new ArgumentException($"Missing image. TexID: {layer.TexId}");
+                    }
                     if (ImageData[curSkin][layer.TexId].TryGetValue(layer.LayerGuid, out var value))
                     {
                         layer.LayerName = curSkin == 0 ? value.ImageName : layer.LayerName;
@@ -108,16 +111,7 @@ public class ProcessImage
         if (image is null) return null;
         using var clipImage = image.Clone(x =>
         {
-            try
-            {
-                x.Crop(rectangle);
-            }
-            catch (Exception e)
-            {
-                GlobalData.LabelContent = $"Incorrect images \n{e.Message}";
-                Console.WriteLine(e);
-                throw;
-            }
+            x.Crop(rectangle);
         });
         string imageName;
         if (_isCopy)
