@@ -25,7 +25,7 @@
   <img height="200" src="MD/1.png" width="350"/>
 
 + ### Open Spine and import "Result.json". (Ignore warning)
-  <img height="400" src="MD/2.png" width="200"/>
+  <img height="400" src="MD/2.png" width="250"/>
 
 + ### Import images .
   <img height="400" src="MD/3.png" width="200"/>
