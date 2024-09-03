@@ -1,5 +1,7 @@
 ﻿using System.Collections.Frozen;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
 namespace QuadToSpine2D.Core.Process;
@@ -7,14 +9,20 @@ namespace QuadToSpine2D.Core.Process;
 public class ProcessImage
 {
     //skin tex_id layer_id layer_data
-    public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = new();
-    private readonly Dictionary<string, LayerData> _layerDataDict = [];
+    public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; }
+    private readonly Dictionary<string, LayerData> _layerDataDict;
     public FrozenDictionary<string, LayerData> LayerDataDict { get; private set; }
     private int _skinsCount;
     private int _imageIndex;
     private int _currentImageIndex;
     private Image?[,] _images;
     private bool _isCopy;
+
+    public ProcessImage()
+    {
+        ImageData = [];
+        _layerDataDict = [];
+    }
 
     public void Process(List<List<string?>> imagesSrc, QuadJson quad)
     {
@@ -25,53 +33,60 @@ public class ProcessImage
 
         _images = new Image[imagesSrc.Count, imagesSrc[0].Count];
         GetAllImages(imagesSrc);
+        //Parallel.ForEach(quad.Keyframe, InitImageData);
         foreach (var keyframe in quad.Keyframe)
         {
-            List<KeyframeLayer> layers = [];
-            foreach (var layer in keyframe.Layer)
-            {
-                layers.Add(layer);
-                if (layer.TexId > _images.Length) 
-                    throw new ArgumentException($"Missing image. TexID: {layer.TexId}");
-
-                var rectangle = CalculateRectangle(layer);
-                for (var curSkin = 0; curSkin < _skinsCount; curSkin++)
-                {
-                    //clip image.
-                    //if image continue to exist in next keyframe
-                    //Or if one keyframe has same layer, clip same image and rename.
-                    try
-                    {
-                        if (ImageData[curSkin][layer.TexId] is null) continue;
-                    }
-                    catch (Exception)
-                    {        
-                        throw new ArgumentException($"Missing image. TexID: {layer.TexId}");
-                    }
-                    if (ImageData[curSkin][layer.TexId].TryGetValue(layer.LayerGuid, out var value))
-                    {
-                        layer.LayerName = curSkin == 0 ? value.ImageName : layer.LayerName;
-                        var layerCount = layers.Count(x => x.LayerGuid.Equals(layer.LayerGuid));
-                        if (layerCount < 2) continue;
-
-                        layer.LayerName = curSkin == 0 ? $"{layer.LayerName}_COPY_{layerCount}" : layer.LayerName;
-                        layer.LayerGuid = curSkin == 0 ? $"{layer.LayerGuid}_COPY_{layerCount}" : layer.LayerGuid;
-
-                        if (ImageData[curSkin][layer.TexId].ContainsKey(layer.LayerGuid)) continue;
-                        _isCopy = true;
-                    }
-
-                    var layerData = CropImage(_images[curSkin, layer.TexId], rectangle, layer, curSkin);
-                    ImageData[curSkin][layer.TexId].TryAdd(layer.LayerGuid, layerData);
-                    _layerDataDict.TryAdd(layer.LayerGuid, layerData);
-                }
-            }
+            InitImageData(keyframe);
         }
-
         LayerDataDict = _layerDataDict.ToFrozenDictionary();
-        
+
         GlobalData.LabelContent = "Finish";
         Console.WriteLine("Finish");
+    }
+
+    private void InitImageData(Keyframe? keyframe)
+    {
+        List<KeyframeLayer> layers = [];
+        foreach (var layer in keyframe.Layer)
+        {
+            layers.Add(layer);
+            if (layer.TexId > _images.Length)
+                throw new ArgumentException($"Missing image. TexID: {layer.TexId}");
+
+            var rectangle = CalculateRectangle(layer);
+            for (var curSkin = 0; curSkin < _skinsCount; curSkin++)
+            {
+                //clip image.
+                //if image continue to exist in next keyframe
+                //Or if one keyframe has same layer, clip same image and rename.
+                try
+                {
+                    if (ImageData[curSkin][layer.TexId] is null) continue;
+                }
+                catch (Exception)
+                {
+                    throw new ArgumentException($"Missing image. TexID: {layer.TexId}");
+                }
+
+                if (ImageData[curSkin][layer.TexId].TryGetValue(layer.LayerGuid, out var value))
+                {
+                    layer.LayerName = curSkin == 0 ? value.ImageName : layer.LayerName;
+                    var layerCount = layers.Count(x => x.LayerGuid.Equals(layer.LayerGuid));
+                    if (layerCount < 2) continue;
+
+                    layer.LayerName = curSkin == 0 ? $"{layer.LayerName}_COPY_{layerCount}" : layer.LayerName;
+                    layer.LayerGuid = curSkin == 0 ? $"{layer.LayerGuid}_COPY_{layerCount}" : layer.LayerGuid;
+
+                    if (ImageData[curSkin][layer.TexId].ContainsKey(layer.LayerGuid)) continue;
+                    _isCopy = true;
+                }
+
+                var layerData = CropImage(_images[curSkin, layer.TexId], rectangle, layer, curSkin);
+                if (layerData is null) continue;
+                ImageData[curSkin][layer.TexId].TryAdd(layer.LayerGuid, layerData);
+                _layerDataDict.TryAdd(layer.LayerGuid, layerData);
+            }
+        }
     }
 
     private void GetAllImages(List<List<string?>> images)
@@ -109,10 +124,7 @@ public class ProcessImage
     private LayerData? CropImage(Image? image, Rectangle rectangle, KeyframeLayer layer, int curSkin)
     {
         if (image is null) return null;
-        using var clipImage = image.Clone(x =>
-        {
-            x.Crop(rectangle);
-        });
+        using var clipImage = image.Clone(x => { x.Crop(rectangle); });
         string imageName;
         if (_isCopy)
         {
@@ -136,5 +148,27 @@ public class ProcessImage
             KeyframeLayer = layer,
             CurrentImageIndex = _currentImageIndex
         };
+    }
+
+    public Image DrawFogImage(int width, int height, string[] colors)
+    {
+        var image = new Image<Rgba32>(width, height);
+        PointF[] fs =
+        [
+            new PointF(0, image.Width),
+            new PointF(0, 0),
+            new PointF(image.Height, 0),
+            new PointF(image.Height, image.Width),
+        ];
+        Color[] cs =
+        [
+            Color.ParseHex(colors[0]),
+            Color.ParseHex(colors[1]),
+            Color.ParseHex(colors[2]),
+            Color.ParseHex(colors[3])
+        ];
+
+        image.Mutate(x => { x.Fill(new PathGradientBrush(fs, cs)); });
+        return image;
     }
 }

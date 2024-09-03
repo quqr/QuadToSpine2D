@@ -13,6 +13,7 @@ public class SpineJson
     public List<SpineSlot> Slots { get; set; } = [];
     [JsonIgnore]
     public Dictionary<string, SpineSlot> SlotsDict { get; set; } = [];
+    [JsonIgnore]
     public FrozenDictionary<string, SpineSlot> FrozenSlotsDict { get; set; }
     //[JsonIgnore]
     public List<Skin> Skins { get; set; } = [];

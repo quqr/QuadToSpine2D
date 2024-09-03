@@ -39,38 +39,35 @@ public class Keyframe
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
 public class KeyframeLayer
 {
-    private float[]? _dstquad = new float[8];
+    public KeyframeLayer? LastLayer { get; set; }
+    public KeyframeLayer? NextLayer { get; set; }
+    private float[] _dstquad;
 
-    public float[]? Dstquad
+    public float[] Dstquad
     {
         get => _dstquad;
         set
         {
             //Y is down
-            if (value is null) _dstquad = value;
-            else
-                for (var i = 0; i < 8; i++)
-                {
-                    if (i % 2 != 0)
-                    {
-                        _dstquad[i] = -value[i];
-                        continue;
-                    }
-
-                    _dstquad[i] = value[i];
-                }
+            _dstquad = value;
+            for (var i = 0; i < 8; i++)
+            {
+                if (i % 2 != 0) _dstquad[i] = -value[i];
+            }
+            DstMatrix = new Matrix(4, 2, _dstquad);
         }
     }
 
+    public Matrix DstMatrix { get; set; }
     private float[]? _srcquad;
+
     public float[]? Srcquad
     {
         get => _srcquad;
         set
         {
+            if (value is null) return;
             _srcquad = value;
-            LayerGuid = string.Empty;
-            if (_srcquad is null) return;
             MinAndMaxSrcPoints = ProcessUtility.FindMinAndMaxPoints(_srcquad);
             Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
             Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
@@ -80,17 +77,18 @@ public class KeyframeLayer
             CalculateUVs(_srcquad);
         }
     }
+
     public int BlendId { get; set; }
     public int TexId { get; set; }
     public string LayerGuid { get; set; } = string.Empty;
     public float Height { get; set; }
     public float Width { get; set; }
-    public float[] MinAndMaxSrcPoints { get; set; }
+    public float[] MinAndMaxSrcPoints { get; set; } = new float[8];
     public float[] UVs { get; set; } = new float[8];
     public float[] ZeroCenterPoints { get; set; } = new float[8];
-    public string LayerName { get; set; }
-    // public List<string>? Fog { get; set; }
-    // public List<string>? Attribute  { get; set; }
+    public string LayerName { get; set; } = string.Empty;
+    public List<string>? Fog { get; set; }
+    public List<string>? Attribute  { get; set; }
 
     private void CalculateUVs(float[] src)
     {
@@ -137,8 +135,25 @@ public class Animation
     }
 
     public int Id { get; set; } = -1;
-    public List<Timeline> Timeline { get; set; }
+    private List<Timeline> _timeline = [];
+
+    public List<Timeline> Timeline
+    {
+        get => _timeline;
+        set
+        {
+            for (var i = 0; i < value.Count; i++)
+            {
+                value[i].Last = i == 0 ? null : value[i - 1];
+                value[i].Next = i == value.Count - 1 ? null : value[i + 1];
+            }
+
+            _timeline = value;
+        }
+    }
+
     public bool IsLoop { get; set; }
+
     [JsonProperty]
     private int loop_id
     {
@@ -148,13 +163,39 @@ public class Animation
 
 public class Timeline
 {
+    public Timeline? Last;
+    public Timeline? Next;
     public int Time { get; set; }
     public Attach? Attach { get; set; }
     public bool IsKeyframeMix { get; private set; }
+
     [JsonProperty]
     private int keyframe_mix
     {
         set => IsKeyframeMix = value > 0;
+    }
+
+    public Matrix AnimationMatrix { get; set; } = Matrix.IdentityMatrixBy4X4;
+
+    [JsonProperty]
+    private double[]? matrix
+    {
+        set
+        {
+            if (value is null) return;
+            AnimationMatrix = new Matrix(4, 4, value);
+        }
+    }
+
+    public bool IsMatrixMix { get; private set; }
+
+    [JsonProperty]
+    private int matrix_mix
+    {
+        set
+        {
+            IsMatrixMix = value > 0;
+        }
     }
 }
 
@@ -192,10 +233,16 @@ public class Attach
     public AttachType AttachType { get; private set; }
     public int Id { get; set; }
 }
+
 public enum AttachType
 {
-    Keyframe,Slot,HitBox,Animation,Skeleton
+    Keyframe,
+    Slot,
+    HitBox,
+    Animation,
+    Skeleton
 }
+
 [JsonConverter(typeof(SkeletonJsonConverter))]
 public class QuadSkeleton
 {

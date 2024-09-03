@@ -1,4 +1,7 @@
-﻿namespace QuadToSpine2D.Core.Process;
+﻿using System.Threading.Tasks;
+using System.Xml.Linq;
+
+namespace QuadToSpine2D.Core.Process;
 
 public class ProcessQuadFile
 {
@@ -10,8 +13,9 @@ public class ProcessQuadFile
     {
         Console.WriteLine("Loading quad file...");
         GlobalData.LabelContent = "Loading quad file...";
-
+        
         var json = File.ReadAllText(quadPath);
+        
         QuadData = JsonConvert.DeserializeObject<QuadJson>(json);
 
         if (QuadData is null) return null;
@@ -30,7 +34,14 @@ public class ProcessQuadFile
         }
         
         QuadData.Keyframe.RemoveAll(x => x?.Layer is null || x.Layer.Count == 0);
-        
+        Parallel.ForEach(QuadData.Keyframe, keyframe =>
+        {
+            for (var i = 0; i < keyframe.Layer.Count; i++)
+            {
+                keyframe.Layer[i].LastLayer = i == 0 ? null : keyframe.Layer[i - 1];
+                keyframe.Layer[i].NextLayer = i == keyframe.Layer.Count - 1 ? null : keyframe.Layer[i + 1];
+            }
+        });
         // Attributes = QuadData.Keyframe
         //     .SelectMany(x => x.Layer.Where(y => y?.Attribute is not null))
         //     .ToDictionary(z=>z.Attribute);

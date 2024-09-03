@@ -22,13 +22,13 @@
   #### Make sure order of image is right
   #### If your image is larger than the original image, the scale factor = current image size ÷ original image size.
   #### You will get **Result.json** and **images** folder.
-  <img height="150" src="MD/1.png" width="200"/>
+  <img height="200" src="MD/1.png" width="350"/>
 
 + ### Open Spine and import "Result.json". (Ignore warning)
-  <img height="300" src="MD/2.png" width="200"/>
+  <img height="400" src="MD/2.png" width="200"/>
 
 + ### Import images .
-  <img height="300" src="MD/3.png" width="200"/>
+  <img height="400" src="MD/3.png" width="200"/>
 
 + ### Check animation. (Make sure you have selected skin)
-  <img height="150" src="MD/4.png" width="300"/>
+  <img height="200" src="MD/4.png" width="350"/>

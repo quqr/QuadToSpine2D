@@ -38,8 +38,9 @@ public static class Utility
     {
         List<List<string?>> result = [];
         var temp = CopyList(imagePath);
-        if (temp.Count==0) return [];
+        if (temp.Count == 0) return [];
         var maxCount = temp.MaxBy(x => x.Count)?.Count;
+        if (maxCount is null) return [];
         foreach (var path in temp)
             for (var j = 0; j < maxCount; j++)
             {

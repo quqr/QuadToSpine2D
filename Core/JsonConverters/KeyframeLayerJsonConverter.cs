@@ -14,23 +14,22 @@ public class KeyframeLayerJsonConverter : JsonConverter
         JsonSerializer serializer)
     {
         var obj = serializer.Deserialize(reader);
-        if (obj.GetType() != typeof(JObject)) return null;
-        var jObject = obj as JObject;
+        if (obj is not JObject jObject) return null;
         
         return new KeyframeLayer
         {
             TexId = jObject["tex_id"]?.ToObject<int>() ?? -1,
             Dstquad = ProcessUtility.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
-                GlobalData.ScaleFactor),
+                GlobalData.ScaleFactor)!,
             Srcquad = ProcessUtility.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
                 GlobalData.ScaleFactor),
             BlendId = jObject["blend_id"]?.ToObject<int>() ?? -1,
-            // Fog = ConvertToFog(jObject),
-            // Attribute = ConvertToAttribute(jObject)
+            Fog = ConvertToFog(jObject),
+            Attribute = ConvertToAttribute(jObject)
         };
     }
 
-    private List<string>? ConvertToAttribute(JObject? jObject)
+    private List<string>? ConvertToAttribute(JObject jObject)
     {
         var baseAttribute = jObject["attribute"];
         List<string>? attribute = null;
@@ -47,10 +46,10 @@ public class KeyframeLayerJsonConverter : JsonConverter
         return attribute;
     }
 
-    private List<string>? ConvertToFog(JObject? jObject)
+    private List<string>? ConvertToFog(JObject jObject)
     {
         var baseFog = jObject["fogquad"];
-        List<string>? fog = null;
+        List<string> fog = ["#ffffffff","#ffffffff","#ffffffff","#ffffffff"];
         switch (baseFog?.Type)
         {
             case JTokenType.Array:
@@ -60,7 +59,6 @@ public class KeyframeLayerJsonConverter : JsonConverter
                 fog = [baseFog.ToString()];
                 break;
         }
-
         return fog;
     }
 

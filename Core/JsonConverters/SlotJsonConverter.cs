@@ -13,11 +13,10 @@ public class SlotJsonConverter : JsonConverter
         JsonSerializer serializer)
     {
         var obj = serializer.Deserialize(reader);
-        if (obj?.GetType() != typeof(JArray)) return null;
-        var jArray = obj as JArray;
+        if (obj is not JArray jArray) return null;
         var slot = new Slot
         {
-            Attaches = jArray?.ToObject<List<Attach>>()
+            Attaches = jArray.ToObject<List<Attach>>()
         };
         return slot;
     }
