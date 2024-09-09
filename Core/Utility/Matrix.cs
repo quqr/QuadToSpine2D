@@ -2,17 +2,12 @@
 
 namespace QuadToSpine2D.Core.Utility;
 
-public static class MatrixUtility
-{
-}
-
 public struct Matrix : IEquatable<Matrix>,ICloneable
 {
     private int _rows, _cols;
     public int Rows => _rows;
     public int Cols => _cols;
     public double[,] Value { get; }
-
     public Matrix(int rows, int cols)
     {
         _rows = rows;
@@ -39,7 +34,11 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
         {
             for (var j = 0; j < cols; j++)
             {
-                Value[i, j] = source[i + j];
+                var index = i * cols + j;
+                if (index < source.Length)
+                    Value[i, j] = source[index];
+                else
+                    Value[i, j] = 1;
             }
         }
     }    
@@ -52,54 +51,59 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
         {
             for (var j = 0; j < cols; j++)
             {
-                Value[i, j] = source[i + j];
+                var index = i * cols + j;
+                if (index < source.Length)
+                    Value[i, j] = source[index];
+                else
+                    Value[i, j] = 1;
             }
         }
     }
 
     public static Matrix IdentityMatrixBy4X4 => new Matrix(4);
     public static Matrix IdentityMatrixBy3X3 => new Matrix(3);
-    
     /// <summary>
-    /// Mix matrix by rate
+    /// Lerp matrix between two matrices
     /// </summary>
     /// <exception cref="Exception">Non-conformable matrices in MatrixProduct</exception>
-    public static Matrix Mix(Matrix matrixA, Matrix matrixB, double rate)
+    public static Matrix Lerp(Matrix srcMatrix, Matrix dstMatrix, double rate)
     {
-        var aRows = matrixA.Rows; 
-        var aCols = matrixA.Cols;
-        var bRows = matrixB.Rows; 
-        var bCols = matrixB.Cols;
-        
-        if (aCols != bCols || aRows != bRows)
+        if (srcMatrix.Cols != dstMatrix.Cols || srcMatrix.Rows != dstMatrix.Rows)
             throw new Exception("Non-conformable matrices in MatrixProduct");
-        
-        return matrixA * (matrixB * rate);
-    }
-
-    public void Mix(Matrix matrixB, double rate)
-    {
-        this = Mix(this, matrixB, rate);
+        return srcMatrix * (1 - rate) + dstMatrix * rate;
     }
     public float[] ToFloats()
     {
         var floats = new float[Rows * Cols];
         var col = Cols;
         var value = Value;
-        Parallel.For(0, Rows, row =>
+        for (int i = 0; i < _rows; i++)
         {
-            for (var i = 0; i < col; i++)
+            for (int j = 0; j < col; j++)
             {
-                floats[row + i] = (float)value[row, i];
+                floats[i + j] = (float)value[i, j];
             }
-        });
+        }
         return floats;
     }
-
+    public double[] ToDoubles()
+    {
+        var floats = new double[Rows * Cols];
+        var col = Cols;
+        var value = Value;
+        for (int i = 0; i < _rows; i++)
+        {
+            for (int j = 0; j < col; j++)
+            {
+                floats[i + j] = (float)value[i, j];
+            }
+        }
+        return floats;
+    }
     public override string ToString()
     {
         var result = string.Empty;
-        result += "[";
+        result += "[ \n";
         for (var i = 0; i < Rows; i++)
         {
             result += "[";
@@ -107,13 +111,14 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
             {
                 result += $"{Value[i, j]}, ";
             }
-            result += "] ";
+            result = result.Remove(result.Length - 2);
+            result += "] \n";
         }
         result += "]";
 
         return result;
     }
-
+    
     public static Matrix operator *(Matrix matrixA, Matrix matrixB)
     {
         var aRows = matrixA.Rows; 

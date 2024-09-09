@@ -68,6 +68,12 @@ public class BaseMesh
     [JsonIgnore] public Type CurrentType { get; set; }
 }
 
+public class BoundingBox : BaseMesh
+{
+    public string Type { get; set; } = "boundingBox";
+    public int VertexCount { get; set; } = 4;
+    public float[] Vertices { get; set; } = new float[8];
+}
 public class Mesh : BaseMesh
 {
     public string Type { get; set; } = "mesh";

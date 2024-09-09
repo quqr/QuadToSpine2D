@@ -50,10 +50,10 @@ public class KeyframeLayer
         {
             //Y is down
             _dstquad = value;
-            for (var i = 0; i < 8; i++)
-            {
-                if (i % 2 != 0) _dstquad[i] = -value[i];
-            }
+            // for (var i = 0; i < 8; i++)
+            // {
+            //     if (i % 2 != 0) _dstquad[i] = -value[i];
+            // }
             DstMatrix = new Matrix(4, 2, _dstquad);
         }
     }
@@ -135,19 +135,17 @@ public class Animation
     }
 
     public int Id { get; set; } = -1;
-    private List<Timeline> _timeline = [];
+    private List<Timeline> _timeline { get; set; }
 
     public List<Timeline> Timeline
     {
         get => _timeline;
         set
         {
-            for (var i = 0; i < value.Count; i++)
+            for (int i = 0; i < value.Count; i++)
             {
-                value[i].Last = i == 0 ? null : value[i - 1];
-                value[i].Next = i == value.Count - 1 ? null : value[i + 1];
+                value[i].Next = i < value.Count - 1 ? value[i + 1] : null;
             }
-
             _timeline = value;
         }
     }
@@ -163,8 +161,7 @@ public class Animation
 
 public class Timeline
 {
-    public Timeline? Last;
-    public Timeline? Next;
+    public Timeline? Next { get; set; }
     public int Time { get; set; }
     public Attach? Attach { get; set; }
     public bool IsKeyframeMix { get; private set; }
@@ -176,7 +173,7 @@ public class Timeline
     }
 
     public Matrix AnimationMatrix { get; set; } = Matrix.IdentityMatrixBy4X4;
-
+    private double[]? _matrix { get; set; }
     [JsonProperty]
     private double[]? matrix
     {
@@ -184,6 +181,7 @@ public class Timeline
         {
             if (value is null) return;
             AnimationMatrix = new Matrix(4, 4, value);
+            _matrix = value;
         }
     }
 

@@ -35,21 +35,37 @@ public class ProcessSpineJson
         _processedImageData = processImage;
         _spineJson.SpineSkeletons.ImagesPath = GlobalData.ImageSavePath;
         _spineJson.Bones.Add(new SpineBone { Name = "root" });
-
+        //AddBoundingBox();
         for (var curFullSkinIndex = 0; curFullSkinIndex < processImage.ImageData.Count; curFullSkinIndex++)
-        for (var texIdIndex = 0; texIdIndex < processImage.ImageData[curFullSkinIndex].Count; texIdIndex++)
         {
-            var guids = processImage.ImageData[curFullSkinIndex][texIdIndex];
-            if (guids is null) continue;
-            _spineJson.Skins.Add(new Skin { Name = $"tex_id_{texIdIndex}/skin_{curFullSkinIndex}" });
-            for (var guidIndex = 0; guidIndex < guids.Count; guidIndex++)
+            for (var texIdIndex = 0; texIdIndex < processImage.ImageData[curFullSkinIndex].Count; texIdIndex++)
             {
-                InitBaseData(guids.ElementAt(guidIndex).Value, curFullSkinIndex, texIdIndex, guidIndex);
-                _curSlotIndex++;
+                var guids = processImage.ImageData[curFullSkinIndex][texIdIndex];
+                if (guids is null) continue;
+                _spineJson.Skins.Add(new Skin { Name = $"tex_id_{texIdIndex}/skin_{curFullSkinIndex}" });
+                for (var guidIndex = 0; guidIndex < guids.Count; guidIndex++)
+                {
+                    InitBaseData(guids.ElementAt(guidIndex).Value, curFullSkinIndex, texIdIndex, guidIndex);
+                    _curSlotIndex++;
+                }
             }
         }
 
         _spineJson.FrozenSlotsDict = _spineJson.SlotsDict.ToFrozenDictionary();
+    }
+
+    private void AddBoundingBox()
+    {
+        _spineJson.Skins.Add(new Skin { Name = "default",Attachments = [new Attachments
+            {
+                Value = new BoundingBox
+                {
+                    Name = "boundingbox",
+                    Type = "boundingbox",
+                    Vertices = [0,0, 0,0, 0,0, 0,0 ],
+                }
+            }
+        ]});
     }
 
     private void InitBaseData(LayerData layerData, int curFullSkin, int texIdIndex, int guidIndex)
@@ -91,12 +107,11 @@ public class ProcessSpineJson
 
     private void ProcessAnimation(QuadJson quad)
     {
-        // foreach (var skeleton in quad.Skeleton)
-        //     SetKeyframesData(quad, skeleton);
-        Parallel.ForEach(quad.Skeleton, skeleton => { SetKeyframesData(quad, skeleton); });
+        foreach (var skeleton in quad.Skeleton)
+            SetKeyframesData(quad, skeleton);
+        //Parallel.ForEach(quad.Skeleton, skeleton => { SetKeyframesData(quad, skeleton); });
         _spineJson.Animations = _spineAnimations.ToDictionary();
     }
-
     private void SetKeyframesData(QuadJson quad, QuadSkeleton? skeleton)
     {
         List<Animation> animations = [];
@@ -108,7 +123,6 @@ public class ProcessSpineJson
             .AddRange(skeleton.Bone
                 .Select(bone => quad.Animation
                     .First(x => x.Id == bone.Attach.Id)));
-
         CombineAnimations(quad, animations, spineAnimation, deform, drawOrders);
 
         SetAnimationData(skeleton, drawOrders, spineAnimation, deform, animations);
@@ -122,11 +136,8 @@ public class ProcessSpineJson
         List<DrawOrder> drawOrders)
     {
         // Combine animations
-        for (var index = 0; index < animations.Count; index++)
+        foreach (var animation in animations)
         {
-            // Combine animation tracks? Not now !
-            if (index >= 1) break;
-            var animation = animations[index];
             var keyframeLayerNames = new HashSet<string>();
             var time = 0f;
             foreach (var timeline in animation.Timeline)
@@ -162,7 +173,7 @@ public class ProcessSpineJson
                 break;
             }
             default:
-                Console.WriteLine($"Can Not Process Animation Attach Type : {timeline.Attach.AttachType}");
+                //Console.WriteLine($"Can Not Process Animation Attach Type : {timeline.Attach.AttachType}");
                 break;
         }
 
@@ -221,6 +232,7 @@ public class ProcessSpineJson
         Timeline timeline)
     {
         var drawOrder = new DrawOrder { Time = initTime };
+        //var boundingBoxVertices = new[]{0,0, float.MaxValue,float.MaxValue, 0,0, float.MinValue,float.MinValue};
         for (var index = 0; index < layers.Count; index++)
         {
             AddAnimationAttachments(keyframeLayerNames, layers[index].LayerName, spineAnimation, initTime);
@@ -228,13 +240,41 @@ public class ProcessSpineJson
             AddAnimationVertices(initTime, deform, layers[index], timeline);
 
             AddDrawOrderOffset(layers[index].LayerName, index, drawOrder);
+            //GetBoundingBoxVertices(layers[index],ref boundingBoxVertices);
         }
-
         // Order By Slot
         drawOrder.Offsets = drawOrder.Offsets.OrderBy(x => x.SlotNum).ToList();
         drawOrders.Add(drawOrder);
 
         RemoveNotExistsLayer(keyframeLayerNames, layers, spineAnimation, initTime);
+        
+        //SetBoundingBoxVertices(initTime, deform, boundingBoxVertices);
+    }
+
+    private void GetBoundingBoxVertices(KeyframeLayer layer, ref float[] boundingBoxVertices)
+    {
+        var minAndMaxSrcPoints = ProcessUtility.FindMinAndMaxPoints(layer.Dstquad).ToList();
+        minAndMaxSrcPoints.AddRange(boundingBoxVertices);
+        var minAndMaxPoints = ProcessUtility.FindMinAndMaxPoints(minAndMaxSrcPoints.ToArray());
+        var width = minAndMaxPoints[2] - minAndMaxPoints[0];
+        var height = minAndMaxPoints[3] - minAndMaxPoints[1];
+        boundingBoxVertices =
+        [
+            width+minAndMaxPoints[0], 0,
+            minAndMaxPoints[0], minAndMaxPoints[1],
+            0, 0,
+            minAndMaxPoints[2], minAndMaxPoints[3]
+        ];
+    }
+
+    private void SetBoundingBoxVertices(float time, Deform deform,float[] boundingBoxVertices)
+    {
+        deform.SkinName["default"]["boundingbox"].Name = "boundingbox";
+        deform.SkinName["default"]["boundingbox"].ImageVertices.Add(new AnimationVertices
+        {
+            Time = time,
+            Vertices = boundingBoxVertices,
+        });
     }
 
     /// <summary>
@@ -275,31 +315,32 @@ public class ProcessSpineJson
             };
             deform.SkinName[skinName][layer.LayerName] = value;
         }
-
+        
         InterpolateAnimation(initTime, layer, timeline, value, item);
     }
 
     private void InterpolateAnimation(float initTime, KeyframeLayer layer, Timeline timeline, AnimationDefault value,
         AnimationVertices item)
     {
-        LineInterpolateAnimation(layer, value, item);
+        LineInterpolateAnimation(timeline,layer, value, item);
 
         if (MixAnimationMatrix(initTime, layer, timeline, value)) return;
 
-        SteppedInterpolateAnimation(timeline, value, item);
+        SteppedInterpolateAnimation(layer, timeline, value, item);
     }
 
     /// <summary>
     /// Stepped animation
     /// </summary>
-    private void SteppedInterpolateAnimation(Timeline timeline, AnimationDefault value, AnimationVertices item)
+    private void SteppedInterpolateAnimation(KeyframeLayer layer, Timeline timeline, AnimationDefault value, AnimationVertices item)
     {
+        var vert = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
         if (!timeline.IsKeyframeMix)
         {
             value.ImageVertices.Add(new AnimationVertices
             {
                 Time = item.Time + timeline.Time / 60f,
-                Vertices = item.Vertices
+                Vertices = ProcessUtility.MinusFloats(vert.ToFloats(), layer.ZeroCenterPoints),
             });
         }
     }
@@ -309,7 +350,10 @@ public class ProcessSpineJson
     /// </summary>
     private bool MixAnimationMatrix(float initTime, KeyframeLayer layer, Timeline timeline, AnimationDefault value)
     {
-        if (timeline is not { IsMatrixMix: true, Next: not null }) return false;
+        if (!timeline.IsMatrixMix || timeline.Next is null)
+        {
+            return false;
+        }
         var dstMatrix = timeline.Next.AnimationMatrix;
         var srcMatrix = timeline.AnimationMatrix;
         var curTime = initTime;
@@ -317,12 +361,12 @@ public class ProcessSpineJson
         {
             curTime += Fps * i;
             var rate = (float)i / timeline.Time;
-            var curVert = srcMatrix * (1 - rate) + dstMatrix * rate;
-            curVert *= layer.DstMatrix;
+            //curVert *= layer.DstMatrix;
+            var vert = AnimationMatrixUtility.QuadMultiply(Matrix.Lerp(srcMatrix, dstMatrix, rate), layer.DstMatrix);
             value.ImageVertices.Add(new AnimationVertices
             {
                 Time = curTime,
-                Vertices = ProcessUtility.MinusFloats(curVert.ToFloats(), layer.ZeroCenterPoints),
+                Vertices = ProcessUtility.MinusFloats(vert.ToFloats(), layer.ZeroCenterPoints),
             });
         }
 
@@ -332,9 +376,10 @@ public class ProcessSpineJson
     /// <summary>
     /// Line interpolated by software, if step next can not continue
     /// </summary>
-    private void LineInterpolateAnimation(KeyframeLayer layer, AnimationDefault value, AnimationVertices item)
+    private void LineInterpolateAnimation(Timeline timeline ,KeyframeLayer layer, AnimationDefault value, AnimationVertices item)
     {
-        item.Vertices = ProcessUtility.MinusFloats(layer.Dstquad, layer.ZeroCenterPoints);
+        var vert = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
+        item.Vertices = ProcessUtility.MinusFloats(vert.ToFloats(), layer.ZeroCenterPoints);
         value.ImageVertices.Add(item);
     }
 
@@ -363,7 +408,7 @@ public class ProcessSpineJson
         var slotOrder = _spineJson.FrozenSlotsDict[layerName].Order;
         var offset = index - slotOrder;
         var existLayer = drawOrder.Offsets.FirstOrDefault(x => x.SlotNum == slotOrder);
-        if (existLayer != null)
+        if (existLayer is not null)
         {
             existLayer.Offset = offset;
             return;
