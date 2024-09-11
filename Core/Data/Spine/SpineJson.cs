@@ -38,7 +38,7 @@ public class SpineJson
 public class SpineSkeleton
 {
     public const string Spine = "3.8";
-    public string ImagesPath = "";
+    public string ImagesPath { get; set; } = "";
 }
 
 public class SpineSlot
@@ -47,6 +47,7 @@ public class SpineSlot
     public string Bone { get; set; }
     [JsonIgnore] public string Attachment { get; set; }
     [JsonIgnore] public int Order { get; set; }
+    [JsonIgnore] public int OrderId { get; set; }
 }
 
 public class Skin

@@ -1,7 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 
-namespace QuadToSpine2D.MyUtility;
+namespace QuadToSpine2D.AvaUtility;
 
 public static class ImageLoader
 {

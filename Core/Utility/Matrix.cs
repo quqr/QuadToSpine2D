@@ -7,46 +7,29 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
     private int _rows, _cols;
     public int Rows => _rows;
     public int Cols => _cols;
-    public double[,] Value { get; }
+    public float[,] Value { get; }
     public Matrix(int rows, int cols)
     {
         _rows = rows;
         _cols = cols;
-        Value = new double[_rows, _cols];
+        Value = new float[_rows, _cols];
     }
 
     public Matrix(int rowsAndCols, bool isIdentity = true)
     {
         _rows = rowsAndCols;
         _cols = rowsAndCols;
-        Value = new double[_rows, _cols];
+        Value = new float[_rows, _cols];
         for (var i = 0; i < rowsAndCols; i++)
         {
             Value[i, i] = 1;
         }
     }
-    public Matrix(int rows, int cols,double[] source)
-    {
-        _rows = rows;
-        _cols = cols;
-        Value = new double[_rows, _cols];
-        for (var i = 0; i < rows; i++)
-        {
-            for (var j = 0; j < cols; j++)
-            {
-                var index = i * cols + j;
-                if (index < source.Length)
-                    Value[i, j] = source[index];
-                else
-                    Value[i, j] = 1;
-            }
-        }
-    }    
     public Matrix(int rows, int cols,float[] source)
     {
         _rows = rows;
         _cols = cols;
-        Value = new double[_rows, _cols];
+        Value = new float[_rows, _cols];
         for (var i = 0; i < rows; i++)
         {
             for (var j = 0; j < cols; j++)
@@ -66,7 +49,7 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
     /// Lerp matrix between two matrices
     /// </summary>
     /// <exception cref="Exception">Non-conformable matrices in MatrixProduct</exception>
-    public static Matrix Lerp(Matrix srcMatrix, Matrix dstMatrix, double rate)
+    public static Matrix Lerp(Matrix srcMatrix, Matrix dstMatrix, float rate)
     {
         if (srcMatrix.Cols != dstMatrix.Cols || srcMatrix.Rows != dstMatrix.Rows)
             throw new Exception("Non-conformable matrices in MatrixProduct");
@@ -75,27 +58,11 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
     public float[] ToFloats()
     {
         var floats = new float[Rows * Cols];
-        var col = Cols;
-        var value = Value;
         for (int i = 0; i < _rows; i++)
         {
-            for (int j = 0; j < col; j++)
+            for (int j = 0; j < _cols; j++)
             {
-                floats[i + j] = (float)value[i, j];
-            }
-        }
-        return floats;
-    }
-    public double[] ToDoubles()
-    {
-        var floats = new double[Rows * Cols];
-        var col = Cols;
-        var value = Value;
-        for (int i = 0; i < _rows; i++)
-        {
-            for (int j = 0; j < col; j++)
-            {
-                floats[i + j] = (float)value[i, j];
+                floats[i + j] = Value[i, j];
             }
         }
         return floats;
@@ -139,7 +106,7 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
         );
         return result;
     }
-    public static Matrix operator *(Matrix matrixA, double value)
+    public static Matrix operator *(Matrix matrixA, float value)
     {
         for (var i = 0; i < matrixA.Rows; i++)
         {
@@ -171,7 +138,7 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
         }
         return result;
     }
-    public static Matrix operator +(Matrix value1, double value2)
+    public static Matrix operator +(Matrix value1, float value2)
     {
         var aRows = value1.Rows; 
         var aCols = value1.Cols;
@@ -203,7 +170,7 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
         }
         return result;
     }
-    public static Matrix operator -(Matrix value1, double value2)
+    public static Matrix operator -(Matrix value1, float value2)
     {
         var aRows = value1.Rows; 
         var aCols = value1.Cols;
@@ -218,14 +185,24 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
         return result;
     }
     
-    public double this[int row, int col]
+    public float this[int row, int col]
     {
         get => Value[row, col];
         set => Value[row, col] = value;
     }
     public bool Equals(Matrix other)
     {
-        return Value.Equals(other.Value);
+        if (Rows != other.Rows || Cols != other.Cols)
+            return false;
+        for (var i = 0; i < Rows; i++)
+        {
+            for (var j = 0; j < Cols; j++)
+            {
+                if (Math.Abs(Value[i, j] - other[i, j]) > .001f)
+                    return false;
+            }
+        }
+        return true;
     }
 
     public override bool Equals(object? obj)

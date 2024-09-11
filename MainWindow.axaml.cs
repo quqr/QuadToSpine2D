@@ -4,8 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using QuadToSpine2D.AvaUtility;
 using QuadToSpine2D.Core.Process;
-using QuadToSpine2D.MyUtility;
 
 namespace QuadToSpine2D;
 
