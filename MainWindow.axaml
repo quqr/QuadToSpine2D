@@ -57,6 +57,16 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Margin="0,10,10,0">
+                <Label Content="AddBoundingBox"
+                       HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center"
+                       Margin="0,0,20,0"></Label>
+                <CheckBox Margin="0,0,10,0"
+                          Name="AddBoundingBoxCheckBox"></CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0,10,10,0">
                 <Label Content=" Readable json "
                        HorizontalContentAlignment="Center"
                        VerticalContentAlignment="Center" 
@@ -75,19 +85,22 @@
                          HorizontalContentAlignment="Center"/>
             </StackPanel>
         </StackPanel>
-
-        <Label Content=""
-               HorizontalAlignment="Center"
-               VerticalAlignment="Bottom"
-               Margin="25"
-               FontSize="15"
-               Name="StateLabel"
-               />
+        <ProgressBar HorizontalAlignment="Center"
+                     VerticalAlignment="Bottom"
+                     Margin="25"
+                     Height="20"
+                     Width="600"
+                     ShowProgressText="True"
+                     Minimum="0"
+                     Maximum="100"
+                     Foreground="Teal"
+                     Name="ProcessBar"
+                     ></ProgressBar>
         <HyperlinkButton Content=""
                          IsEnabled="False"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Bottom"
-                         Margin="25"
+                         Margin="40"
                          FontSize="15"
                          Name="ResultJsonUriButton"></HyperlinkButton>
         <Button Content="Process->"

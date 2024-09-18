@@ -23,6 +23,8 @@ public class SpineJson
 
     public void WriteToJson()
     {
+        GlobalData.BarValue = 95;
+
         var setting = new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver 
@@ -45,7 +47,8 @@ public class SpineSlot
 {
     public string Name { get; set; }
     public string Bone { get; set; }
-    [JsonIgnore] public string Attachment { get; set; }
+    [JsonIgnore] 
+    public string Attachment { get; set; }
     [JsonIgnore] public int Order { get; set; }
     [JsonIgnore] public int OrderId { get; set; }
 }
@@ -65,8 +68,7 @@ public class Attachments
 
 public class BaseMesh
 {
-    public string Name { get; set; }
-    [JsonIgnore] public Type CurrentType { get; set; }
+    [JsonIgnore] public string Name { get; set; }
 }
 
 public class BoundingBox : BaseMesh

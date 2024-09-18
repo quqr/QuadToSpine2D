@@ -1,11 +1,12 @@
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Threading;
 using QuadToSpine2D.AvaUtility;
 using QuadToSpine2D.Core.Process;
+using System;
 
 namespace QuadToSpine2D;
 
@@ -18,9 +19,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        
         BindEvent();
-        GlobalData.Label = StateLabel;
+        GlobalData.ProcessBar = ProcessBar;
     }
 
     private void BindEvent()
@@ -31,6 +31,13 @@ public partial class MainWindow : Window
         ScaleFactorTextBox.TextChanged += ScaleFactorTextBoxOnTextChanged;
         ReadableCheckBox.IsCheckedChanged += ReadableCheckBoxOnClick;
         RemoveAnimationCheckBox.IsCheckedChanged += RemoveAnimationCheckBoxOnIsCheckedChanged;
+        AddBoundingBoxCheckBox.IsCheckedChanged += AddBoundingBoxCheckBoxOnIsCheckedChanged;
+    }
+
+    private void AddBoundingBoxCheckBoxOnIsCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (AddBoundingBoxCheckBox.IsChecked != null)
+            GlobalData.IsAddBoundingBox = (bool)AddBoundingBoxCheckBox.IsChecked;
     }
 
     private void RemoveAnimationCheckBoxOnIsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -55,7 +62,9 @@ public partial class MainWindow : Window
         catch (Exception exception)
         {
             Console.WriteLine(exception);
-            GlobalData.LabelContent = exception.Message;
+            GlobalData.BarValue = 100;
+            GlobalData.ProcessBar.Foreground = GlobalData.ProcessBarErrorBrush;
+            GlobalData.BarTextContent = exception.Message;
             ScaleFactorTextBox.Text = "1";
         }
     }
@@ -133,7 +142,7 @@ public partial class MainWindow : Window
                     NavigateUri = file.Path,
                 };
                 _imagePath[imageIndex] ??= [];
-                _imagePath[imageIndex].Add(file.Path.DecodePath());
+                _imagePath[imageIndex]?.Add(file.Path.DecodePath());
                 stackPanel.Children.Add(hyperLink);
                 //bitmaps.Add(bitmap);
                 file.Dispose();
@@ -166,25 +175,25 @@ public partial class MainWindow : Window
 #if DEBUG
         GlobalData.ImageSavePath = @"E:\Asset\tt\images";
         GlobalData.ResultSavePath = @"E:\Asset\tt";
-        // _quadFilePath = @"E:\Asset\momohime\4k\00Files\file\Momohime_Rest.mbs.v55.quad";
-        // _imagePath = [
-        //     [@"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png"],
-        //     [@"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png"],
-        //     [@"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"]
-        // ];
+        _quadFilePath = @"E:\Asset\momohime\4k\00Files\file\Momohime_Rest.mbs.v55.quad";
+        _imagePath = [
+            [@"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png"],
+            [@"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png"],
+            [@"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png"]
+        ];
         // _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
         // _imagePath = 
         // [
         //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png"],
         //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png"],
         // ];        
-        _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
-        _imagePath = 
-        [
-            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.0.gnf.png"],
-            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.1.gnf.png"],
-            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.2.gnf.png"],
-        ];
+        // _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
+        // _imagePath = 
+        // [
+        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.0.gnf.png"],
+        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.1.gnf.png"],
+        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.2.gnf.png"],
+        // ];
 #endif
         if (!Directory.Exists(GlobalData.ImageSavePath))
         {
@@ -192,15 +201,20 @@ public partial class MainWindow : Window
         }
         ResultJsonUriButton.Content = string.Empty;
         ResultJsonUriButton.IsEnabled = false;
+
+        ProcessBar.Value = 0;
+        ProcessBar.Foreground = GlobalData.ProcessBarNormalBrush;
+
         Task.Run(() =>
         {
             new ProcessQuadData()
                 .LoadQuadJson(_quadFilePath)
                 .ProcessJson(Utility.ConvertImagePath(_imagePath));
-
+            Console.WriteLine("Process Complete!");
             Dispatcher.UIThread.Post(() =>
             {
-                GlobalData.LabelContent = string.Empty;
+                GlobalData.BarTextContent = string.Empty;
+                GlobalData.BarValue = 100;
                 ResultJsonUriButton.IsEnabled = true;
                 ResultJsonUriButton.Content = GlobalData.ResultSavePath;
                 ResultJsonUriButton.NavigateUri = new Uri(GlobalData.ResultSavePath);
@@ -209,7 +223,10 @@ public partial class MainWindow : Window
         {
             if(task.Exception?.InnerException is null) return;
             Console.WriteLine(task.Exception.InnerException.Message);
-            GlobalData.LabelContent = task.Exception.InnerException.Message;
+
+            GlobalData.BarValue = 100;
+            GlobalData.ProcessBar.Foreground = GlobalData.ProcessBarErrorBrush;
+            GlobalData.BarTextContent = task.Exception.InnerException.Message;
         });
     }
 }

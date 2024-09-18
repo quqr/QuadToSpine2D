@@ -19,9 +19,6 @@ public class ProcessQuadData
         spineJson
             .Process(imageQuad, _quadData)
             .WriteToJson();
-
-        GlobalData.LabelContent = GlobalData.ResultSavePath;
-        Console.WriteLine(GlobalData.ResultSavePath);
     }
 
     public ProcessQuadData LoadQuadJson(string quadPath)

@@ -161,8 +161,16 @@ public class Animation
 
 public class Timeline
 {
+    private const float Fps = 1 / 60f;
     public Timeline? Next { get; set; }
-    public int Time { get; set; }
+    private float _time;
+
+    public float Time
+    {
+        get => _time;
+        set => _time = value;
+    }
+
     public Attach? Attach { get; set; }
     public bool IsKeyframeMix { get; private set; }
 

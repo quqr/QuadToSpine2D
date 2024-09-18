@@ -9,24 +9,18 @@ namespace QuadToSpine2D.Core.Process;
 public class ProcessImage
 {
     //skin tex_id layer_id layer_data
-    public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; }
-    private readonly Dictionary<string, LayerData> _layerDataDict;
+    public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = [];
+    private readonly Dictionary<string, LayerData> _layerDataDict = [];
     public FrozenDictionary<string, LayerData> LayerDataDict { get; private set; }
     private int _skinsCount;
     private int _imageIndex;
     private int _currentImageIndex;
     private Image?[,] _images;
 
-    public ProcessImage()
-    {
-        ImageData = [];
-        _layerDataDict = [];
-    }
-
     public void Process(List<List<string?>> imagesSrc, QuadJson quad)
     {
         Console.WriteLine("Cropping images...");
-        GlobalData.LabelContent = "Cropping images...";
+        GlobalData.BarTextContent = "Cropping images...";
 
         _skinsCount = imagesSrc.Count;
 
@@ -37,10 +31,9 @@ public class ProcessImage
             InitImageData(keyframe);
         }
 
-        LayerDataDict = _layerDataDict.ToFrozenDictionary();
+        GlobalData.BarValue = 50;
 
-        GlobalData.LabelContent = "Finish";
-        Console.WriteLine("Finish");
+        LayerDataDict = _layerDataDict.ToFrozenDictionary();
     }
 
     private void InitImageData(Keyframe keyframe)

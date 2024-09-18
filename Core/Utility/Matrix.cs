@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace QuadToSpine2D.Core.Utility;
+﻿namespace QuadToSpine2D.Core.Utility;
 
 public struct Matrix : IEquatable<Matrix>,ICloneable
 {

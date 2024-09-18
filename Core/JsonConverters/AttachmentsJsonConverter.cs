@@ -16,7 +16,7 @@ public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
         foreach (var v in value)
         {
             var attachment = v as Attachments;
-            if (attachment.Value.CurrentType == typeof(Mesh))
+            if (attachment.Value.GetType() == typeof(Mesh))
             {
                 writer.WritePropertyName(attachment.Value.Name);
                 writer.WriteStartObject();
@@ -24,12 +24,21 @@ public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
                 serializer.Serialize(writer, attachment.Value);
                 writer.WriteEndObject();
             }
-            else
+            else if(attachment.Value.GetType() == typeof(LinkedMesh))
             {
                 var parent = (attachment.Value as LinkedMesh).Parent;
                 writer.WritePropertyName(parent);
                 writer.WriteStartObject();
                 writer.WritePropertyName(parent);
+                serializer.Serialize(writer, attachment.Value);
+                writer.WriteEndObject();
+            }
+            else
+            {
+                var cnt = attachment.Value as BoundingBox;
+                writer.WritePropertyName(cnt.Name);
+                writer.WriteStartObject();
+                writer.WritePropertyName(cnt.Name);
                 serializer.Serialize(writer, attachment.Value);
                 writer.WriteEndObject();
             }
