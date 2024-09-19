@@ -9,8 +9,19 @@ public class QuadJson
     public List<Animation?> Animation { get; set; }
     public List<QuadSkeleton?> Skeleton { get; set; }
     public List<Slot> Slot { get; set; }
+    public List<Hitbox> Hitbox { get; set; }
 }
 
+public class Hitbox
+{
+    public string  Name { get; set; }
+    public List<HitboxLayer> Layer { get; set; }
+}
+
+public class HitboxLayer
+{
+    public float[] Hitquad { get; set; }
+}
 [JsonConverter(typeof(SlotJsonConverter))]
 public class Slot
 {
@@ -163,13 +174,8 @@ public class Timeline
 {
     private const float Fps = 1 / 60f;
     public Timeline? Next { get; set; }
-    private float _time;
 
-    public float Time
-    {
-        get => _time;
-        set => _time = value;
-    }
+    public float Time { get; set; }
 
     public Attach? Attach { get; set; }
     public bool IsKeyframeMix { get; private set; }
@@ -180,10 +186,10 @@ public class Timeline
         set => IsKeyframeMix = value > 0;
     }
 
-    public Matrix AnimationMatrix { get; set; } = Matrix.IdentityMatrixBy4X4;
+    public Matrix AnimationMatrix { get; set; } = Utility.Matrix.IdentityMatrixBy4X4;
     private float[]? _matrix { get; set; }
     [JsonProperty]
-    private float[]? matrix
+    private float[]? Matrix
     {
         set
         {
@@ -198,10 +204,7 @@ public class Timeline
     [JsonProperty]
     private int matrix_mix
     {
-        set
-        {
-            IsMatrixMix = value > 0;
-        }
+        set => IsMatrixMix = value > 0;
     }
 }
 

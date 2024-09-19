@@ -35,14 +35,16 @@ public static class GlobalData
         set
         {
             if (!value.Equals(string.Empty))
-                value += "{1}%";
-            Dispatcher.UIThread.Post(() =>
-            {
-                ProcessBar.ProgressTextFormat = value;
-            });
+                //value += "{1}%";
+                Dispatcher.UIThread.Post(() =>
+                {
+                    ProcessBar.ProgressTextFormat = value;
+                });
         }
     }
     public static bool IsReadableJson { get; set; }
     public static bool IsRemoveUselessAnimations { get; set; }
+
     public static bool IsAddBoundingBox { get; set; }
+    public static bool IsAddHitBox { get; set; }
 }

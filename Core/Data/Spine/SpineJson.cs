@@ -40,7 +40,7 @@ public class SpineJson
 public class SpineSkeleton
 {
     public const string Spine = "3.8";
-    public string ImagesPath { get; set; } = "";
+    public string ImagesPath { get; set; } = string.Empty;
 }
 
 public class SpineSlot

@@ -1,0 +1,82 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:QuadToSpine2D.Core.Data"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
+        x:Class="QuadToSpine2D.Pages.Settings"
+        Title="QuadToSpine"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        Width="500"
+        Height="300"
+        WindowStartupLocation="CenterOwner">
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="WhiteSmoke"
+                    TintOpacity=".3"
+                    MaterialOpacity="0.7" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <CheckBox
+                    Name="RemoveAnimationCheckBox"
+                    IsCheckedChanged="RemoveUselessAnimationsChanged"
+                    IsChecked="{Binding 
+                          Source = {x:Static local:GlobalData.IsRemoveUselessAnimations }}">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                           Content="Remove useless animations" />
+                </CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <CheckBox
+                    Name="AddBoundingBoxCheckBox"
+                    IsCheckedChanged="AddBoundingBoxChanged"
+                    IsChecked="{Binding 
+                          Source = {x:Static local:GlobalData.IsAddBoundingBox }}">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                           Content="Add BoundingBox" />
+                </CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <CheckBox Name="AddHitBox"
+                          IsCheckedChanged="AddHitBoxChanged"
+                          IsChecked="{Binding 
+                          Source = {x:Static local:GlobalData.IsAddHitBox }}">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Add HitBox" />
+                </CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <CheckBox Name="ReadableCheckBox"
+                          IsCheckedChanged="JsonReadableChanged"
+                          IsChecked="{Binding 
+                          Source = {x:Static local:GlobalData.IsReadableJson }}">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                           Content="Readable json" />
+                </CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBox Watermark="1"
+                         Name="ScaleFactorTextBox"
+                         TextChanged="ScaleFactorChanged" 
+                         HorizontalContentAlignment="Center"
+                         VerticalContentAlignment="Center"
+                         Text ="{Binding 
+                          Source = {x:Static local:GlobalData.ScaleFactor }}"/>
+                <Label HorizontalAlignment="Center" VerticalAlignment="Center"
+                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Scale factor" 
+                       Margin="10,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </Panel>
+</Window>

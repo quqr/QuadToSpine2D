@@ -13,7 +13,8 @@ public class ProcessQuadFile
         GlobalData.BarValue = 0;
 
         var json = File.ReadAllText(quadPath);
-        
+        GlobalData.BarValue = 5;
+
         QuadData = JsonConvert.DeserializeObject<QuadJson>(json);
 
         GlobalData.BarValue = 15;

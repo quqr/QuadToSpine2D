@@ -68,7 +68,7 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
     public override string ToString()
     {
         var result = string.Empty;
-        result += "[ \n";
+        result += "[ ";
         for (var i = 0; i < Rows; i++)
         {
             result += "[";
@@ -77,7 +77,7 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
                 result += $"{Value[i, j]}, ";
             }
             result = result.Remove(result.Length - 2);
-            result += "] \n";
+            result += "] ";
         }
         result += "]";
 

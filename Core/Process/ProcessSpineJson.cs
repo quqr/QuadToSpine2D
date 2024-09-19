@@ -115,7 +115,6 @@ public class ProcessSpineJson
                 Type = "linkedmesh",
                 Skin = $"tex_id_{texIdIndex}/skin_0",
                 Parent = _spineJson.Skins[texIdIndex].Attachments[guidIndex].Value.Name,
-                //CurrentType = typeof(LinkedMesh)
             }
         });
     }
@@ -130,7 +129,6 @@ public class ProcessSpineJson
                 Name = slotName,
                 Uvs = layerData.KeyframeLayer.UVs,
                 Vertices = layerData.KeyframeLayer.ZeroCenterPoints,
-                //CurrentType = typeof(Mesh)
             }
         });
         // Just once 
@@ -140,9 +138,14 @@ public class ProcessSpineJson
 
     private void ProcessAnimation(QuadJson quad)
     {
+#if DEBUG
         foreach (var skeleton in quad.Skeleton)
             SetKeyframesData(quad, skeleton);
-        //Parallel.ForEach(quad.Skeleton, skeleton => { SetKeyframesData(quad, skeleton); });
+#endif
+
+#if RELEASE
+        Parallel.ForEach(quad.Skeleton, skeleton => { SetKeyframesData(quad, skeleton); });
+#endif
         _spineJson.Animations = _spineAnimations.ToDictionary();
     }
 
@@ -172,6 +175,7 @@ public class ProcessSpineJson
         for (var index = 0; index < animations.Count; index++)
         {
             var animation = animations[index];
+            //Animation tracks
             if (index >= 1) break;
             var keyframeLayerNames = new HashSet<string>();
             var time = 0f;
@@ -284,13 +288,8 @@ public class ProcessSpineJson
         drawOrder.Offsets = drawOrder.Offsets.OrderBy(x => x.SlotNum).ToList();
         drawOrders.Add(drawOrder);
         _isResetOffsetList.Clear();
-        // drawOrders.Add(new DrawOrder
-        // {
-        //     Time = initTime + timeline.Time * Fps, Offsets = drawOrder.Offsets
-        // });
+        
         RemoveNotExistsLayer(keyframeLayerNames, layers, spineAnimation, initTime);
-
-        //SetBoundingBoxVertices(initTime, deform, boundingBoxVertices);
     }
 
     private void SetBoundingBoxVertices(HashSet<string> keyframeLayerNames, SpineAnimation spineAnimation, float time,
@@ -327,12 +326,15 @@ public class ProcessSpineJson
     {
         //remove layers if they are not display next time
         var notContainsLayers = new List<string>();
-        for (int i = 0; i < layers.Count; i++)
+        if (GlobalData.IsAddBoundingBox)
         {
-            var boundingBoxName = $"boundingbox_{i}";
-            if (!keyframeLayerNames.Contains(boundingBoxName))
+            for (int i = 0; i < layers.Count; i++)
             {
-                notContainsLayers.Add(boundingBoxName);
+                var boundingBoxName = $"boundingbox_{i}";
+                if (!keyframeLayerNames.Contains(boundingBoxName))
+                {
+                    notContainsLayers.Add(boundingBoxName);
+                }
             }
         }
 
@@ -343,7 +345,7 @@ public class ProcessSpineJson
         {
             keyframeLayerNames.Remove(layerName);
             var attachment = spineAnimation.Slots[layerName].Attachment;
-            //if (attachment.Last().Name is null) return;
+            if (attachment.Last().Name is null) return;
             attachment.Add(new AnimationAttachment
             {
                 Time = initTime,
@@ -420,15 +422,14 @@ public class ProcessSpineJson
 
         var dstMatrix = timeline.Next.AnimationMatrix;
         var srcMatrix = timeline.AnimationMatrix;
-        var curTime = initTime;
         for (var i = 1; i < timeline.Time; i++)
         {
-            var rate = (float)i / timeline.Time;
+            var rate = i / timeline.Time;
             var vert = AnimationMatrixUtility.QuadMultiply(Matrix.Lerp(srcMatrix, dstMatrix, rate), layer.DstMatrix);
             //vert = AnimationMatrixUtility.GetPerspectiveQuad(vert);
             value.ImageVertices.Add(new AnimationVertices
             {
-                Time = curTime,
+                Time = initTime,
                 Vertices = ProcessUtility.MinusFloats(vert.ToFloats(), layer.ZeroCenterPoints),
                 //Vertices = vert.ToFloats(),
             });
@@ -471,7 +472,7 @@ public class ProcessSpineJson
         });
     }
 
-    private readonly List<bool> _isResetOffsetList = new(50);
+    private readonly List<bool> _isResetOffsetList = [];
 
     private void AddDrawOrderOffset(string layerName, int index, DrawOrder drawOrder)
     {
