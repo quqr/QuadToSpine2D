@@ -9,9 +9,9 @@ public class QuadJson
     public List<Animation?> Animation { get; set; }
     public List<QuadSkeleton?> Skeleton { get; set; }
     public List<Slot> Slot { get; set; }
-    public List<Hitbox> Hitbox { get; set; }
+    public List<Hitbox?> Hitbox { get; set; }
 }
-
+[JsonConverter(typeof(HitBoxJsonConverter))]
 public class Hitbox
 {
     public string  Name { get; set; }

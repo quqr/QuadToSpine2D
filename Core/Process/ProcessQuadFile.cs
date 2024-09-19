@@ -1,4 +1,6 @@
-﻿namespace QuadToSpine2D.Core.Process;
+﻿using System.Threading.Tasks;
+
+namespace QuadToSpine2D.Core.Process;
 
 public class ProcessQuadFile
 {

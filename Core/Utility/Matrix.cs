@@ -1,4 +1,6 @@
-﻿namespace QuadToSpine2D.Core.Utility;
+﻿using System.Threading.Tasks;
+
+namespace QuadToSpine2D.Core.Utility;
 
 public struct Matrix : IEquatable<Matrix>,ICloneable
 {

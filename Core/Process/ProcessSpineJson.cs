@@ -44,7 +44,8 @@ public class ProcessSpineJson
         }
 
         OrderSlots();
-        _spineJson.Skins.AddRange(_boundingBoxSkins);
+        if (GlobalData.IsAddBoundingBox) _spineJson.Skins.AddRange(_boundingBoxSkins);
+        if (GlobalData.IsAddHitBox) _spineJson.Skins.Add(new Skin { Name = "HitBox", Attachments = [] });
         _spineJson.FrozenSlotsDict = _spineJson.SlotsDict.ToFrozenDictionary();
     }
 
@@ -175,21 +176,50 @@ public class ProcessSpineJson
         for (var index = 0; index < animations.Count; index++)
         {
             var animation = animations[index];
-            //Animation tracks
+            
+            // TODO : implement animation tracks
             if (index >= 1) break;
+            
             var keyframeLayerNames = new HashSet<string>();
             var time = 0f;
             foreach (var timeline in animation.Timeline)
             {
                 if (timeline.Attach is null) continue;
                 var layers = GetKeyframeLayers(quad, timeline);
+                var hitboxes = GetHitBoxes(quad,timeline);
                 if (layers is not null)
-                    AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders,
-                        timeline);
+                    AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders, timeline);
+                if (hitboxes is not null)
+                    AddHitBox(hitboxes, time, keyframeLayerNames, spineAnimation, deform, drawOrders, timeline);
                 // FPS : 60
                 time += (timeline.Time + 1) / 60f;
             }
         }
+    }
+
+    private void AddHitBox(List<HitboxLayer> hitboxes, float time, HashSet<string> keyframeLayerNames, SpineAnimation spineAnimation, Deform deform, List<DrawOrder> drawOrders, Timeline timeline)
+    {
+        // TODO : implement hitbox animation
+        
+        throw new NotImplementedException();
+    }
+
+    private List<HitboxLayer>? GetHitBoxes(QuadJson quad, Timeline timeline)
+    {
+        List<HitboxLayer>? hitboxes = null;
+
+        switch (timeline.Attach.AttachType)
+        {
+            case AttachType.HitBox:
+            {
+                hitboxes = quad.Hitbox[timeline.Attach.Id]?.Layer;
+                break;
+            }
+            default:
+                Console.WriteLine($"Can Not Process Animation Attach Type : {timeline.Attach.AttachType}");
+                break;
+        }
+        return hitboxes;
     }
 
     private List<KeyframeLayer>? GetKeyframeLayers(QuadJson quad, Timeline timeline)
@@ -211,8 +241,12 @@ public class ProcessSpineJson
                 layers = quad.Keyframe.FirstOrDefault(x => x.Id == attach.Id)?.Layer;
                 break;
             }
+            case AttachType.HitBox:
+            {
+                break;
+            }
             default:
-                //Console.WriteLine($"Can Not Process Animation Attach Type : {timeline.Attach.AttachType}");
+                Console.WriteLine($"Can Not Process Animation Attach Type : {timeline.Attach.AttachType}");
                 break;
         }
 
@@ -339,7 +373,8 @@ public class ProcessSpineJson
         }
 
         notContainsLayers.AddRange(keyframeLayerNames
-            .Where(x => !layers.Exists(y => y.LayerName.Equals(x)) && !x.Contains("boundingbox")));
+            .Where(x => !layers
+                .Exists(y => y.LayerName.Equals(x)) && !x.Contains("boundingbox")));
 
         foreach (var layerName in notContainsLayers)
         {

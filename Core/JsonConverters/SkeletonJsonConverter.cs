@@ -13,11 +13,11 @@ public class SkeletonJsonConverter : JsonConverter
         JsonSerializer serializer)
     {
         var obj = serializer.Deserialize(reader);
-        if (obj is not JObject jObj) return null;
+        if (obj is not JObject jObject) return null;
         var skeleton = new QuadSkeleton
         {
-            Name = jObj["name"]?.ToString(),
-            Bone = jObj["bone"]?.ToObject<List<QuadBone>>()
+            Name = jObject["name"]?.ToString(),
+            Bone = jObject["bone"]?.ToObject<List<QuadBone>>()
         };
         return skeleton;
     }

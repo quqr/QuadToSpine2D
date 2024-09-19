@@ -23,6 +23,6 @@ public class SlotJsonConverter : JsonConverter
 
     public override bool CanConvert(Type objectType)
     {
-        return typeof(Keyframe) == objectType;
+        return typeof(Slot) == objectType;
     }
 }
