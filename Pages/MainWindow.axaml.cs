@@ -165,8 +165,9 @@ public partial class MainWindow : Window
             Console.WriteLine("Process Complete!");
             Dispatcher.UIThread.Post(() =>
             {
-                GlobalData.BarTextContent = string.Empty;
                 GlobalData.BarValue = 100;
+                GlobalData.BarTextContent = "completed !";
+
                 ResultJsonUriButton.IsEnabled = true;
                 ResultJsonUriButton.Content = GlobalData.ResultSavePath;
                 ResultJsonUriButton.NavigateUri = new Uri(GlobalData.ResultSavePath);
