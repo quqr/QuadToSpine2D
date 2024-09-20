@@ -115,7 +115,8 @@ public partial class MainWindow : Window
 
     private void ProcessData(object? sender, RoutedEventArgs e)
     {
-        
+        ProcessButton.IsEnabled = false;
+
         GlobalData.ResultSavePath = Directory.GetCurrentDirectory();
         GlobalData.ImageSavePath = Path.Combine(GlobalData.ResultSavePath, "images");
 #if DEBUG
@@ -133,24 +134,28 @@ public partial class MainWindow : Window
         //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png"],
         //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png"],
         // ];        
-        // _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
-        // _imagePath = 
-        // [
-        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.0.gnf.png"],
-        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.1.gnf.png"],
-        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.2.gnf.png"],
-        // ];
-        _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
+        _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
         _imagePath = 
         [
-            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.0.nvt.png"],
-            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.1.nvt.png"],
+            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.0.gnf.png"],
+            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.1.gnf.png"],
+            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.2.gnf.png"],
         ];
+        // _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
+        // _imagePath = 
+        // [
+        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.0.nvt.png"],
+        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.1.nvt.png"],
+        // ];
 #endif
         if (!Directory.Exists(GlobalData.ImageSavePath))
         {
             Directory.CreateDirectory(GlobalData.ImageSavePath);
         }
+#if DEBUG
+        Directory.Delete(GlobalData.ImageSavePath, true);
+        Directory.CreateDirectory(GlobalData.ImageSavePath);
+#endif
         ResultJsonUriButton.Content = string.Empty;
         ResultJsonUriButton.IsEnabled = false;
 
@@ -171,6 +176,7 @@ public partial class MainWindow : Window
                 ResultJsonUriButton.IsEnabled = true;
                 ResultJsonUriButton.Content = GlobalData.ResultSavePath;
                 ResultJsonUriButton.NavigateUri = new Uri(GlobalData.ResultSavePath);
+                ProcessButton.IsEnabled = true;
             });
         }).ContinueWith((task) =>
         {
@@ -180,6 +186,10 @@ public partial class MainWindow : Window
             GlobalData.BarValue = 100;
             GlobalData.ProcessBar.Foreground = GlobalData.ProcessBarErrorBrush;
             GlobalData.BarTextContent = task.Exception.InnerException.Message;
+            Dispatcher.UIThread.Post(() =>
+            {
+                ProcessButton.IsEnabled = true;
+            });
         });
     }
 

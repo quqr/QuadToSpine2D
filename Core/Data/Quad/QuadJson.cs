@@ -168,11 +168,22 @@ public class Animation
     {
         set => IsLoop = value >= 0;
     }
+
+    public Animation Clone()
+    {
+        var animation = new Animation
+        {
+            Name = Name,
+            Id = Id,
+            Timeline = Timeline,
+            IsLoop = IsLoop
+        };
+        return animation;
+    }
 }
 
 public class Timeline
 {
-    private const float Fps = 1 / 60f;
     public Timeline? Next { get; set; }
 
     public float Time { get; set; }
@@ -240,6 +251,8 @@ public class Attach
     }
 
     public AttachType AttachType { get; private set; }
+    public Keyframe? Keyframe { get; set; }
+    public Hitbox? Hitbox { get; set; }
     public int Id { get; set; }
 }
 

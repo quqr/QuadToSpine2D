@@ -104,7 +104,7 @@ public class SpineBone
 public class SpineAnimation
 {
     //[JsonIgnore]
-    public Dictionary<string, AnimationSlot> Slots { get; set; } = new();
+    public Dictionary<string, AnimationSlot> Slots { get; set; } = [];
 
     //[JsonIgnore]
     public Deform Deform { get; set; } = new();
@@ -118,6 +118,44 @@ public class DrawOrder
 {
     public float Time { get; set; }
     public List<DrawOrderOffset> Offsets { get; set; } = [];
+    
+    [JsonIgnore]
+    public List<LayerOffset> LayerOffsets { get; set; } = [];
+    public class LayerOffset
+    {
+        public string LayerName { get; set; }
+        public int LayerSlotOrder { get; set; }
+        public int LayerIndex { get; set; }
+    }
+
+    public void SortOffset()
+    { 
+        List<bool> isResetOffsetList = [];
+        foreach (var layerOffset in LayerOffsets)
+        {
+            var slotOrder = layerOffset.LayerSlotOrder;
+            var offset = layerOffset.LayerIndex - slotOrder;
+
+            if (offset >= 0)
+            {
+                if (slotOrder - isResetOffsetList.Count == 0) offset = 0;
+                isResetOffsetList.Add(true);
+                if (offset == 0) break;
+            }
+            else if (layerOffset.LayerIndex == 0 || isResetOffsetList[^1])
+            {
+                isResetOffsetList.Add(false);
+            }
+
+            Offsets.Add(new DrawOrderOffset
+            {
+                Slot = layerOffset.LayerName,
+                Offset = offset,
+                SlotNum = slotOrder
+            });
+        }
+        Offsets = Offsets.OrderBy(x => x.SlotNum).ToList();
+    }
 }
 
 public class DrawOrderOffset

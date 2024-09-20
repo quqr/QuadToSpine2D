@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Frozen;
+using System.Threading.Tasks;
 using QuadToSpine2D.Core.Data.Spine;
 using QuadToSpine2D.Core.Utility;
 
@@ -22,7 +23,7 @@ public class ProcessSpineJson
         GlobalData.BarValue = 90;
         return _spineJson;
     }
-
+    
     private void InitData(ProcessImage processImage)
     {
         _processedImageData = processImage;
@@ -44,6 +45,7 @@ public class ProcessSpineJson
         }
 
         OrderSlots();
+        
         if (GlobalData.IsAddBoundingBox) _spineJson.Skins.AddRange(_boundingBoxSkins);
         if (GlobalData.IsAddHitBox) _spineJson.Skins.Add(new Skin { Name = "HitBox", Attachments = [] });
         _spineJson.FrozenSlotsDict = _spineJson.SlotsDict.ToFrozenDictionary();
@@ -160,102 +162,93 @@ public class ProcessSpineJson
             .AddRange(skeleton.Bone
                 .Select(bone => quad.Animation
                     .First(x => x.Id == bone.Attach.Id)));
-        CombineAnimations(quad, animations, spineAnimation, deform, drawOrders);
 
-        SetAnimationData(skeleton, drawOrders, spineAnimation, deform, animations);
+        ProcessAnimations(animations, spineAnimation, deform, drawOrders);
+
+        SetAnimationData(skeleton, spineAnimation, deform, animations);
     }
 
-    private void CombineAnimations(
-        QuadJson quad,
+
+    private void ProcessAnimations(
         List<Animation> animations,
         SpineAnimation spineAnimation,
         Deform deform,
         List<DrawOrder> drawOrders)
     {
         // Combine animations
-        for (var index = 0; index < animations.Count; index++)
+        foreach (var animation in animations)
         {
-            var animation = animations[index];
-            
-            // TODO : implement animation tracks
-            if (index >= 1) break;
-            
             var keyframeLayerNames = new HashSet<string>();
             var time = 0f;
             foreach (var timeline in animation.Timeline)
             {
                 if (timeline.Attach is null) continue;
-                var layers = GetKeyframeLayers(quad, timeline);
-                var hitboxes = GetHitBoxes(quad,timeline);
+                var layers = GetKeyframeLayers(timeline);
+                var hitBoxes = GetHitBoxes(timeline);
                 if (layers is not null)
                     AddKeyframe(layers, time, keyframeLayerNames, spineAnimation, deform, drawOrders, timeline);
-                if (hitboxes is not null)
-                    AddHitBox(hitboxes, time, keyframeLayerNames, spineAnimation, deform, drawOrders, timeline);
+                else if (hitBoxes is not null)
+                    AddHitBox(hitBoxes, time, keyframeLayerNames, spineAnimation, deform, drawOrders, timeline);
                 // FPS : 60
                 time += (timeline.Time + 1) / 60f;
             }
         }
+
+        SortDrawOrderAsync(spineAnimation, drawOrders);
     }
 
-    private void AddHitBox(List<HitboxLayer> hitboxes, float time, HashSet<string> keyframeLayerNames, SpineAnimation spineAnimation, Deform deform, List<DrawOrder> drawOrders, Timeline timeline)
+    private void SortDrawOrderAsync(SpineAnimation spineAnimation, List<DrawOrder> drawOrders)
+    {
+    #if RELEASE
+        Task.Run(() =>
+        {
+            foreach (var drawOrder in drawOrders)
+            {
+                drawOrder.SortOffset();
+            }
+            drawOrders.RemoveAll(x => x.Offsets.Count == 0);
+            spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
+        });
+    #endif
+    #if DEBUG
+        foreach (var drawOrder in drawOrders)
+        {
+            drawOrder.SortOffset();
+        }
+        drawOrders.RemoveAll(x => x.Offsets.Count == 0);
+        spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
+    #endif
+    }
+
+    private void AddHitBox(List<HitboxLayer> hitBoxes, float time, HashSet<string> keyframeLayerNames,
+        SpineAnimation spineAnimation, Deform deform, List<DrawOrder> drawOrders, Timeline timeline)
     {
         // TODO : implement hitbox animation
-        
-        throw new NotImplementedException();
     }
 
-    private List<HitboxLayer>? GetHitBoxes(QuadJson quad, Timeline timeline)
+    private List<HitboxLayer>? GetHitBoxes(Timeline timeline)
     {
-        List<HitboxLayer>? hitboxes = null;
-
-        switch (timeline.Attach.AttachType)
+        return timeline.Attach?.AttachType switch
         {
-            case AttachType.HitBox:
-            {
-                hitboxes = quad.Hitbox[timeline.Attach.Id]?.Layer;
-                break;
-            }
-            default:
-                Console.WriteLine($"Can Not Process Animation Attach Type : {timeline.Attach.AttachType}");
-                break;
-        }
-        return hitboxes;
+            AttachType.HitBox => timeline.Attach.Hitbox?.Layer,
+            _ => null
+        };
     }
 
-    private List<KeyframeLayer>? GetKeyframeLayers(QuadJson quad, Timeline timeline)
+    private List<KeyframeLayer>? GetKeyframeLayers(Timeline timeline)
     {
-        List<KeyframeLayer>? layers = null;
-
-        switch (timeline.Attach.AttachType)
+        return timeline.Attach?.AttachType switch
         {
-            case AttachType.Keyframe:
-            {
-                layers = quad.Keyframe.FirstOrDefault(x => x.Id == timeline.Attach.Id)?.Layer;
-                break;
-            }
-            case AttachType.Slot:
-            {
-                var attach = quad.Slot[timeline.Attach.Id].Attaches
-                    ?.FirstOrDefault(x => x.AttachType == AttachType.Keyframe);
-                if (attach is null) break;
-                layers = quad.Keyframe.FirstOrDefault(x => x.Id == attach.Id)?.Layer;
-                break;
-            }
-            case AttachType.HitBox:
-            {
-                break;
-            }
-            default:
-                Console.WriteLine($"Can Not Process Animation Attach Type : {timeline.Attach.AttachType}");
-                break;
-        }
-
-        return layers;
+            AttachType.Keyframe =>
+                timeline.Attach.Keyframe?.Layer!,
+            AttachType.Slot =>
+                timeline.Attach.Keyframe?.Layer!,
+            _ => null
+        };
     }
 
     private void SetAnimationData(
         QuadSkeleton skeleton,
-        List<DrawOrder> drawOrders,
         SpineAnimation spineAnimation,
         Deform deform,
         List<Animation> animations)
@@ -286,11 +279,8 @@ public class ProcessSpineJson
             })))
             animationName += mixInfo;
 
-        drawOrders.RemoveAll(x => x.Offsets.Count == 0);
         spineAnimation.Deform = deform;
-
         // when write json, ignore it if null 
-        spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
 
         _spineAnimations[animationName] = spineAnimation;
     }
@@ -304,25 +294,38 @@ public class ProcessSpineJson
         List<DrawOrder> drawOrders,
         Timeline timeline)
     {
-        var drawOrder = new DrawOrder
+        var drawOrder = new DrawOrder() { Time = initTime };
+        var existDrawOrder = drawOrders.Find(x => Math.Abs(x.Time - initTime) < .01f);
+        DrawOrder.LayerOffset? lastLayerOffset = null;
+        if (existDrawOrder is not null)
         {
-            Time = initTime,
-            Offsets = drawOrders.Find(x => Math.Abs(x.Time - initTime) < .01f)?.Offsets ?? []
-        };
+            drawOrder = existDrawOrder;
+            lastLayerOffset = drawOrder.LayerOffsets.Last();
+        }
+
         for (var index = 0; index < layers.Count; index++)
         {
             AddAnimationAttachments(keyframeLayerNames, layers[index].LayerName, spineAnimation, initTime);
 
             AddAnimationVertices(keyframeLayerNames, spineAnimation, initTime, deform, layers[index], index, timeline);
 
-            AddDrawOrderOffset(layers[index].LayerName, index, drawOrder);
+            drawOrder.LayerOffsets.Add(new DrawOrder.LayerOffset
+            {
+                LayerName = layers[index].LayerName,
+                LayerSlotOrder = _spineJson.FrozenSlotsDict[layers[index].LayerName].Order,
+                LayerIndex = existDrawOrder is null ? index : lastLayerOffset.LayerIndex + index + 1,
+            });
+
+            //AddDrawOrderOffset(layers[index].LayerName, index, drawOrder);
         }
 
         // Order By Slot
-        drawOrder.Offsets = drawOrder.Offsets.OrderBy(x => x.SlotNum).ToList();
-        drawOrders.Add(drawOrder);
-        _isResetOffsetList.Clear();
-        
+        // drawOrder.Offsets = drawOrder.Offsets.OrderBy(x => x.SlotNum).ToList();
+
+        if (existDrawOrder is null) drawOrders.Add(drawOrder);
+
+        // _isResetOffsetList.Clear();
+
         RemoveNotExistsLayer(keyframeLayerNames, layers, spineAnimation, initTime);
     }
 

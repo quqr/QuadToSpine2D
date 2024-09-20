@@ -45,6 +45,26 @@ public class ProcessQuadFile
                 keyframe.Layer[i].NextLayer = i == keyframe.Layer.Count - 1 ? null : keyframe.Layer[i + 1];
             }
         });
+        Parallel.ForEach(QuadData.Animation, animation =>
+        {
+            foreach (var timeline in animation.Timeline)
+            {
+                switch (timeline.Attach?.AttachType)
+                {
+                    case AttachType.Keyframe:
+                        timeline.Attach.Keyframe = QuadData.Keyframe.Find(x => x.Id == timeline.Attach.Id);
+                        break;
+                    case AttachType.Slot:
+                        var attach = QuadData.Slot[timeline.Attach.Id].Attaches
+                            ?.Find(x => x.AttachType == AttachType.Keyframe);
+                        timeline.Attach.Keyframe = QuadData.Keyframe.Find(x => x.Id == attach?.Id);
+                        break;
+                    case AttachType.HitBox:
+                        timeline.Attach.Hitbox = QuadData.Hitbox[timeline.Attach.Id];
+                        break;
+                }
+            }
+        });
         // Attributes = QuadData.Keyframe
         //     .SelectMany(x => x.Layer.Where(y => y?.Attribute is not null))
         //     .ToDictionary(z=>z.Attribute);
