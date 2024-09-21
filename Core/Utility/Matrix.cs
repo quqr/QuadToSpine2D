@@ -57,12 +57,12 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
     }
     public float[] ToFloats()
     {
-        var floats = new float[Rows * Cols];
+        var floats = new float[_rows * _cols];
         for (int i = 0; i < _rows; i++)
         {
             for (int j = 0; j < _cols; j++)
             {
-                floats[i + j] = Value[i, j];
+                floats[j + i * _cols] = Value[i, j];
             }
         }
         return floats;

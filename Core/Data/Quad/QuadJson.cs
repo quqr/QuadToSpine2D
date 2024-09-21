@@ -59,13 +59,9 @@ public class KeyframeLayer
         get => _dstquad;
         set
         {
-            //Y is down
+            DstMatrix = new Matrix(4, 2, value);
+            //Y is down, so we need to flip it to up
             _dstquad = value;
-            for (var i = 0; i < 8; i++)
-            {
-                if (i % 2 != 0) _dstquad[i] = -value[i];
-            }
-            DstMatrix = new Matrix(4, 2, _dstquad);
         }
     }
 

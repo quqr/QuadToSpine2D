@@ -40,5 +40,26 @@
         <DependentUpon>MainWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Remove="TestProject1\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaXaml Remove="TestProject1\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="TestProject1\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Remove="TestProject1\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaResource Remove="TestProject1\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="TestProject1\**" />
     </ItemGroup>
 </Project>

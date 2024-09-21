@@ -25,6 +25,7 @@ public static class ProcessUtility
 
         return [minX, minY, maxX, maxY];
     }
+
     /// <summary>
     /// return a - b
     /// </summary>
@@ -41,6 +42,20 @@ public static class ProcessUtility
 
         return c;
     }
+
+    public static double[] MinusDoubles(double[]? a, double[]? b)
+    {
+        if (a is null || b is null) return [];
+        var c = new double[a.Length];
+        for (var i = 0; i < a.Length; i++)
+        {
+            if (i > b.Length) break;
+            c[i] = a[i] - b[i];
+        }
+
+        return c;
+    }
+
     /// <summary>
     /// float[] a *  b
     /// </summary>

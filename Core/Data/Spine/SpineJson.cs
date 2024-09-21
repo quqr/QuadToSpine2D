@@ -99,6 +99,7 @@ public class LinkedMesh : BaseMesh
 public class SpineBone
 {
     public string Name { get; set; }
+    public int ScaleY { get; set; } = -1;
 }
 
 public class SpineAnimation
@@ -111,7 +112,7 @@ public class SpineAnimation
 
     //[JsonIgnore]
     [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-    public List<DrawOrder>? DrawOrder { get; set; } = [];
+    public List<DrawOrder>? DrawOrder { get; set; }
 }
 
 public class DrawOrder
@@ -154,7 +155,8 @@ public class DrawOrder
                 SlotNum = slotOrder
             });
         }
-        Offsets = Offsets.OrderBy(x => x.SlotNum).ToList();
+        // Offsets = Offsets.OrderBy(x => x.SlotNum).ToList();
+        // Offsets.Sort((x, y) => x.SlotNum.CompareTo(y.SlotNum));
     }
 }
 

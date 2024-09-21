@@ -152,7 +152,7 @@ public class ProcessSpineJson
         _spineJson.Animations = _spineAnimations.ToDictionary();
     }
 
-    private void SetKeyframesData(QuadJson quad, QuadSkeleton? skeleton)
+    private void SetKeyframesData(QuadJson quad, QuadSkeleton skeleton)
     {
         List<Animation> animations = [];
         List<DrawOrder> drawOrders = [];
@@ -191,10 +191,11 @@ public class ProcessSpineJson
                     AddHitBox(hitBoxes, time, keyframeLayerNames, spineAnimation, deform, drawOrders, timeline);
                 // FPS : 60
                 time += (timeline.Time + 1) / 60f;
+
             }
         }
 
-        SortDrawOrderAsync(spineAnimation, drawOrders);
+        // SortDrawOrderAsync(spineAnimation, drawOrders);
     }
 
     private void SortDrawOrderAsync(SpineAnimation spineAnimation, List<DrawOrder> drawOrders)
@@ -208,6 +209,7 @@ public class ProcessSpineJson
             }
             drawOrders.RemoveAll(x => x.Offsets.Count == 0);
             spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
+            drawOrders.Sort((x, y) => x.Time.CompareTo(y.Time));
         });
     #endif
     #if DEBUG
@@ -217,6 +219,7 @@ public class ProcessSpineJson
         }
         drawOrders.RemoveAll(x => x.Offsets.Count == 0);
         spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
+        drawOrders.Sort((x, y) => x.Time.CompareTo(y.Time));
     #endif
     }
 
@@ -280,7 +283,6 @@ public class ProcessSpineJson
             animationName += mixInfo;
 
         spineAnimation.Deform = deform;
-        // when write json, ignore it if null 
 
         _spineAnimations[animationName] = spineAnimation;
     }
@@ -418,13 +420,14 @@ public class ProcessSpineJson
         SpineAnimation spineAnimation, KeyframeLayer layer, Timeline timeline, AnimationDefault value,
         AnimationVertices item, int layerIndex, Deform deform, float initTime)
     {
-        var vert = LineInterpolateAnimation(layer, value, item);
+        var vert = LineInterpolateAnimation(layer, value, item,timeline);
         var time = initTime;
         SetBoundingBoxVertices(keyframeLayerNames, spineAnimation, time, layerIndex, deform, vert);
 
+        // bugs
         //if (MixAnimationMatrix(initTime, layer, timeline, value)) return;
 
-        vert = SteppedInterpolateAnimation(layer, timeline, value, item);
+        SteppedInterpolateAnimation(layer, timeline, value, item);
         time = initTime + timeline.Time / 60f;
         SetBoundingBoxVertices(keyframeLayerNames, spineAnimation, time, layerIndex, deform, vert);
     }
@@ -432,20 +435,14 @@ public class ProcessSpineJson
     /// <summary>
     /// Stepped animation
     /// </summary>
-    private float[]? SteppedInterpolateAnimation(KeyframeLayer layer, Timeline timeline, AnimationDefault value,
+    private void SteppedInterpolateAnimation(KeyframeLayer layer, Timeline timeline, AnimationDefault value,
         AnimationVertices item)
     {
-        //var vert = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
-        //vert = AnimationMatrixUtility.GetPerspectiveQuad(vert);
-        if (timeline.IsKeyframeMix) return null;
-        var vert = ProcessUtility.MinusFloats(layer.Dstquad, layer.ZeroCenterPoints);
         value.ImageVertices.Add(new AnimationVertices
         {
             Time = item.Time + timeline.Time / 60f,
-            Vertices = vert
-            //Vertices = layer.Dstquad,
+            Vertices = value.ImageVertices.Last().Vertices,
         });
-        return vert;
     }
 
     /// <summary>
@@ -464,12 +461,10 @@ public class ProcessSpineJson
         {
             var rate = i / timeline.Time;
             var vert = AnimationMatrixUtility.QuadMultiply(Matrix.Lerp(srcMatrix, dstMatrix, rate), layer.DstMatrix);
-            //vert = AnimationMatrixUtility.GetPerspectiveQuad(vert);
             value.ImageVertices.Add(new AnimationVertices
             {
-                Time = initTime,
+                Time = initTime + i / 60f,
                 Vertices = ProcessUtility.MinusFloats(vert.ToFloats(), layer.ZeroCenterPoints),
-                //Vertices = vert.ToFloats(),
             });
         }
 
@@ -480,12 +475,11 @@ public class ProcessSpineJson
     /// Line interpolated by software, if step next can not continue
     /// </summary>
     private float[] LineInterpolateAnimation(KeyframeLayer layer, AnimationDefault value,
-        AnimationVertices item)
+        AnimationVertices item,Timeline timeline)
     {
-        //var vert = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
-        //vert = AnimationMatrixUtility.GetPerspectiveQuad(vert);
-        //item.Vertices = layer.Dstquad;
-        item.Vertices = ProcessUtility.MinusFloats(layer.Dstquad, layer.ZeroCenterPoints);
+        var vert = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
+        // Make sure the image to center
+        item.Vertices = ProcessUtility.MinusFloats(vert.ToFloats(), layer.ZeroCenterPoints);
         value.ImageVertices.Add(item);
         return item.Vertices;
     }

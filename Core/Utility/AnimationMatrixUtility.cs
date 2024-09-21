@@ -2,9 +2,7 @@
 
 public static class AnimationMatrixUtility
 {
-    /// <summary>
-    /// I don't know what this is doing, but it seems to be related to perspective projection.
-    /// </summary>
+    
     public static Matrix GetPerspectiveQuad(Matrix dstMatrix)
     {
         var h = PerspectiveMatrix3X3(dstMatrix);
@@ -37,9 +35,6 @@ public static class AnimationMatrixUtility
         
         return result;
     }
-    /// <summary>
-    /// 
-    /// </summary>
     private static Matrix PerspectiveMatrix3X3(Matrix dstMatrix)
     {
         var v0 = new Vector3(dstMatrix[0, 0], dstMatrix[0, 1], 1);
