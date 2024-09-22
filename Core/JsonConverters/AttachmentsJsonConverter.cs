@@ -35,7 +35,7 @@ public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
             }
             else
             {
-                var cnt = attachment.Value as Boundingbox;
+                var cnt = attachment.Value as BoundingBox;
                 writer.WritePropertyName(cnt.Name);
                 writer.WriteStartObject();
                 writer.WritePropertyName(cnt.Name);

@@ -3,7 +3,7 @@ using QuadToSpine2D.Core.JsonConverters;
 
 namespace QuadToSpine2D.Core.Data.Spine;
 
-public class SpineJsonData
+public class SpineJson
 {
     //[JsonIgnore]
     public SpineSkeleton SpineSkeletons { get; set; } = new();
@@ -71,7 +71,7 @@ public class BaseMesh
     [JsonIgnore] public string Name { get; set; }
 }
 
-public class Boundingbox : BaseMesh
+public class BoundingBox : BaseMesh
 {
     public string Type { get; set; } = "boundingBox";
     public int VertexCount { get; set; } = 4;

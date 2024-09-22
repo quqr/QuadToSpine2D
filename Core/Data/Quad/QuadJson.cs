@@ -3,7 +3,7 @@ using QuadToSpine2D.Core.Utility;
 
 namespace QuadToSpine2D.Core.Data.Quad;
 
-public class QuadJsonData
+public class QuadJson
 {
     public List<Keyframe?> Keyframe { get; set; }
     public List<Animation?> Animation { get; set; }
@@ -11,7 +11,7 @@ public class QuadJsonData
     public List<Slot> Slot { get; set; }
     public List<Hitbox?> Hitbox { get; set; }
 }
-[JsonConverter(typeof(HitboxJsonConverter))]
+[JsonConverter(typeof(HitBoxJsonConverter))]
 public class Hitbox
 {
     public string  Name { get; set; }

@@ -2,13 +2,13 @@
 
 namespace QuadToSpine2D.Core.Process;
 
-public class ProcessQuadJsonFile
+public class ProcessQuadFile
 {
-    private QuadJsonData? QuadData { get; set; }
+    private QuadJson? QuadData { get; set; }
     // private Dictionary<List<string>, KeyframeLayer> Attributes { get; set; } = [];
     // private Dictionary<List<string>, KeyframeLayer> Fogs { get; set; } = [];
 
-    public QuadJsonData? LoadQuadJson(string quadPath)
+    public QuadJson? LoadQuadJson(string quadPath)
     {
         Console.WriteLine("Loading quad file...");
         GlobalData.BarTextContent = "Loading quad file...";
@@ -17,7 +17,7 @@ public class ProcessQuadJsonFile
         var json = File.ReadAllText(quadPath);
         GlobalData.BarValue = 5;
 
-        QuadData = JsonConvert.DeserializeObject<QuadJsonData>(json);
+        QuadData = JsonConvert.DeserializeObject<QuadJson>(json);
 
         GlobalData.BarValue = 15;
 
@@ -65,7 +65,6 @@ public class ProcessQuadJsonFile
                 }
             }
         });
-        QuadData.Hitbox.RemoveAll(x => x is null);
         // Attributes = QuadData.Keyframe
         //     .SelectMany(x => x.Layer.Where(y => y?.Attribute is not null))
         //     .ToDictionary(z=>z.Attribute);

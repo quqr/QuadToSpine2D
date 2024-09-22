@@ -2,7 +2,7 @@
 
 namespace QuadToSpine2D.Core.JsonConverters;
 
-public class HitboxJsonConverter: JsonConverter
+public class HitBoxJsonConverter: JsonConverter
 {
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
