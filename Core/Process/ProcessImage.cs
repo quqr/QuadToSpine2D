@@ -17,7 +17,7 @@ public class ProcessImage
     private int _currentImageIndex;
     private Image?[,] _images;
 
-    public void Process(List<List<string?>> imagesSrc, QuadJson quad)
+    public void Process(List<List<string?>> imagesSrc, QuadJsonData quad)
     {
         Console.WriteLine("Cropping images...");
         GlobalData.BarTextContent = "Cropping images...";

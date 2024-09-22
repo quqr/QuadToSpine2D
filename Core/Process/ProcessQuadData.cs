@@ -2,7 +2,7 @@
 
 public class ProcessQuadData
 {
-    private QuadJson? _quadData;
+    private QuadJsonData? _quadData;
 
     public void ProcessJson(List<List<string?>> imagePath)
     {
@@ -23,7 +23,7 @@ public class ProcessQuadData
 
     public ProcessQuadData LoadQuadJson(string quadPath)
     {
-        _quadData = new ProcessQuadFile().LoadQuadJson(quadPath);
+        _quadData = new ProcessQuadJsonFile().LoadQuadJson(quadPath);
         return this;
     }
 }

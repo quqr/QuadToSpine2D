@@ -13,13 +13,13 @@ public partial class Settings : Window
     private void AddHitBoxChanged(object? sender, RoutedEventArgs e)
     {
         if (AddHitBox?.IsChecked != null)
-            GlobalData.IsAddHitBox = (bool)AddHitBox.IsChecked;
+            GlobalData.IsAddHitbox = (bool)AddHitBox.IsChecked;
     }
 
     private void AddBoundingBoxChanged(object? sender, RoutedEventArgs e)
     {
         if (AddBoundingBoxCheckBox?.IsChecked != null)
-            GlobalData.IsAddBoundingBox = (bool)AddBoundingBoxCheckBox.IsChecked;
+            GlobalData.IsAddBoundingbox = (bool)AddBoundingBoxCheckBox.IsChecked;
     }
 
     private void RemoveUselessAnimationsChanged(object? sender, RoutedEventArgs e)
