@@ -44,7 +44,5 @@ public static class GlobalData
     }
     public static bool IsReadableJson { get; set; }
     public static bool IsRemoveUselessAnimations { get; set; }
-
-    public static bool IsAddBoundingbox { get; set; }
     public static bool IsAddHitbox { get; set; }
 }

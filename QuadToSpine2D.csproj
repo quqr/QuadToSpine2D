@@ -41,25 +41,31 @@
         <SubType>Code</SubType>
       </Compile>
       <Compile Remove="TestProject1\**" />
+      <Compile Remove="UnitTest\**" />
     </ItemGroup>
 
     <ItemGroup>
       <AvaloniaXaml Remove="TestProject1\**" />
+      <AvaloniaXaml Remove="UnitTest\**" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Remove="TestProject1\**" />
+      <EmbeddedResource Remove="UnitTest\**" />
     </ItemGroup>
 
     <ItemGroup>
       <AdditionalFiles Remove="TestProject1\**" />
+      <AdditionalFiles Remove="UnitTest\**" />
     </ItemGroup>
 
     <ItemGroup>
       <AvaloniaResource Remove="TestProject1\**" />
+      <AvaloniaResource Remove="UnitTest\**" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="TestProject1\**" />
+      <None Remove="UnitTest\**" />
     </ItemGroup>
 </Project>

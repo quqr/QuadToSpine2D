@@ -36,33 +36,13 @@
                 </CheckBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="10">
-                <CheckBox
-                    Name="AddBoundingBoxCheckBox"
-                    IsCheckedChanged="AddBoundingBoxChanged"
-                    IsChecked="{Binding 
-                          Source = {x:Static local:GlobalData.IsAddBoundingbox }}">
-                    <Label HorizontalAlignment="Center" VerticalAlignment="Center"
-                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                           Content="Add BoundingBox (NOT Recommend)" />
-                </CheckBox>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <CheckBox Name="AddHitBox"
-                          IsCheckedChanged="AddHitBoxChanged"
-                          IsChecked="{Binding 
-                          Source = {x:Static local:GlobalData.IsAddHitbox }}">
-                    <Label HorizontalAlignment="Center" VerticalAlignment="Center"
-                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Add HitBox" />
-                </CheckBox>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="10">
                 <CheckBox Name="ReadableCheckBox"
                           IsCheckedChanged="JsonReadableChanged"
                           IsChecked="{Binding 
                           Source = {x:Static local:GlobalData.IsReadableJson }}">
                     <Label HorizontalAlignment="Center" VerticalAlignment="Center"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                           Content="Readable json" />
+                           Content="Pretty json" />
                 </CheckBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="10">

@@ -13,7 +13,7 @@ public class HitboxJsonConverter: JsonConverter
     {
         var obj = serializer.Deserialize(reader);
         if (obj is not JObject jObject) return null;
-        return new Hitbox()
+        return new Hitbox
         {
             Name = jObject["name"]?.ToString(),
             Layer = jObject["layer"]?.ToObject<List<HitboxLayer?>>()!

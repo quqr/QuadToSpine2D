@@ -47,8 +47,7 @@ public class SpineSlot
 {
     public string Name { get; set; }
     public string Bone { get; set; }
-    [JsonIgnore] 
-    public string Attachment { get; set; }
+    [JsonIgnore] public string Attachment { get; set; }
     [JsonIgnore] public int Order { get; set; }
     [JsonIgnore] public int OrderId { get; set; }
 }
@@ -130,8 +129,8 @@ public class DrawOrder
     }
 
     public void SortOffset()
-    { 
-        List<bool> isResetOffsetList = [];
+    {
+        var isResetOffsetList = new List<bool>();
         foreach (var layerOffset in LayerOffsets)
         {
             var slotOrder = layerOffset.LayerSlotOrder;
@@ -155,14 +154,13 @@ public class DrawOrder
                 SlotNum = slotOrder
             });
         }
-        // Offsets = Offsets.OrderBy(x => x.SlotNum).ToList();
-        // Offsets.Sort((x, y) => x.SlotNum.CompareTo(y.SlotNum));
+        Offsets.Sort((x, y) => x.SlotNum.CompareTo(y.SlotNum));
     }
 }
 
 public class DrawOrderOffset
 {
-    [JsonIgnore] public int SlotNum { get; set; } = 0;
+    [JsonIgnore] public int SlotNum { get; set; }
     public string Slot { get; set; } = string.Empty;
     public int Offset { get; set; }
 }

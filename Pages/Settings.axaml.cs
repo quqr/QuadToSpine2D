@@ -10,18 +10,6 @@ public partial class Settings : Window
         InitializeComponent();
     }
 
-    private void AddHitBoxChanged(object? sender, RoutedEventArgs e)
-    {
-        if (AddHitBox?.IsChecked != null)
-            GlobalData.IsAddHitbox = (bool)AddHitBox.IsChecked;
-    }
-
-    private void AddBoundingBoxChanged(object? sender, RoutedEventArgs e)
-    {
-        if (AddBoundingBoxCheckBox?.IsChecked != null)
-            GlobalData.IsAddBoundingbox = (bool)AddBoundingBoxCheckBox.IsChecked;
-    }
-
     private void RemoveUselessAnimationsChanged(object? sender, RoutedEventArgs e)
     {
         if (RemoveAnimationCheckBox?.IsChecked != null)

@@ -2,24 +2,25 @@
 
 namespace QuadToSpine2D.Core.Utility;
 
-public struct Matrix : IEquatable<Matrix>,ICloneable
+public readonly struct Matrix : IEquatable<Matrix>
 {
-    private int _rows, _cols;
-    public int Rows => _rows;
-    public int Cols => _cols;
+    public int Rows { get; }
+
+    public int Cols { get; }
+
     public float[,] Value { get; }
     public Matrix(int rows, int cols)
     {
-        _rows = rows;
-        _cols = cols;
-        Value = new float[_rows, _cols];
+        Rows = rows;
+        Cols = cols;
+        Value = new float[Rows, Cols];
     }
 
     public Matrix(int rowsAndCols, bool isIdentity = true)
     {
-        _rows = rowsAndCols;
-        _cols = rowsAndCols;
-        Value = new float[_rows, _cols];
+        Rows = rowsAndCols;
+        Cols = rowsAndCols;
+        Value = new float[Rows, Cols];
         for (var i = 0; i < rowsAndCols; i++)
         {
             Value[i, i] = 1;
@@ -27,9 +28,9 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
     }
     public Matrix(int rows, int cols,float[] source)
     {
-        _rows = rows;
-        _cols = cols;
-        Value = new float[_rows, _cols];
+        Rows = rows;
+        Cols = cols;
+        Value = new float[Rows, Cols];
         for (var i = 0; i < rows; i++)
         {
             for (var j = 0; j < cols; j++)
@@ -44,7 +45,6 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
     }
 
     public static Matrix IdentityMatrixBy4X4 => new Matrix(4);
-    public static Matrix IdentityMatrixBy3X3 => new Matrix(3);
     /// <summary>
     /// Lerp matrix between two matrices
     /// </summary>
@@ -57,12 +57,12 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
     }
     public float[] ToFloats()
     {
-        var floats = new float[_rows * _cols];
-        for (int i = 0; i < _rows; i++)
+        var floats = new float[Rows * Cols];
+        for (int i = 0; i < Rows; i++)
         {
-            for (int j = 0; j < _cols; j++)
+            for (int j = 0; j < Cols; j++)
             {
-                floats[j + i * _cols] = Value[i, j];
+                floats[j + i * Cols] = Value[i, j];
             }
         }
         return floats;
@@ -142,7 +142,7 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
     {
         var aRows = value1.Rows; 
         var aCols = value1.Cols;
-        var result = new Matrix(aRows, aCols);
+        var result = new Matrix(aRows,aCols);
         for (var i = 0; i < value1.Rows; i++)
         {
             for (var j = 0; j < value1.Cols; j++)
@@ -212,11 +212,11 @@ public struct Matrix : IEquatable<Matrix>,ICloneable
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_rows, _cols, Value);
+        return HashCode.Combine(Rows, Cols, Value);
     }
 
-    public object Clone()
+    public Matrix Clone()
     {
-        return Value.Clone();
+        return new Matrix(Rows, Cols, ToFloats());
     }
 }

@@ -1,27 +1,82 @@
-﻿using QuadToSpine2D.Core.JsonConverters;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using QuadToSpine2D.Core.JsonConverters;
 using QuadToSpine2D.Core.Utility;
 
 namespace QuadToSpine2D.Core.Data.Quad;
 
 public class QuadJsonData
 {
-    public List<Keyframe?> Keyframe { get; set; }
-    public List<Animation?> Animation { get; set; }
-    public List<QuadSkeleton?> Skeleton { get; set; }
-    public List<Slot> Slot { get; set; }
-    public List<Hitbox?> Hitbox { get; set; }
+    public List<Keyframe?> Keyframe { get; set; } = [];
+    public List<Animation?> Animation { get; set; } = [];
+    public List<QuadSkeleton?> Skeleton { get; set; } = [];
+    public List<Slot> Slot { get; set; } = [];
+    public List<Hitbox?> Hitbox { get; set; } = [];
+
+    [MemberNotNull]
+    public void RemoveAllNull()
+    {
+        Skeleton.RemoveAll(x => x is null);
+        Animation.RemoveAll(x => x is null || x.Id == -1);
+
+        foreach (var keyframe in Keyframe)
+        {
+            keyframe?.Layer?.RemoveAll(y => y is null ||
+                                            y.LayerGuid.Equals(string.Empty) ||
+                                            y.TexId == -1 ||
+                                            y.BlendId != 0);
+        }
+
+        Keyframe.RemoveAll(x => x?.Layer is null || x.Layer.Count == 0);
+        Parallel.ForEach(Keyframe, keyframe =>
+        {
+            for (var i = 0; i < keyframe.Layer.Count; i++)
+            {
+                keyframe.Layer[i].LastLayer = i == 0 ? null : keyframe.Layer[i - 1];
+                keyframe.Layer[i].NextLayer = i == keyframe.Layer.Count - 1 ? null : keyframe.Layer[i + 1];
+            }
+        });
+        Parallel.ForEach(Animation, animation =>
+        {
+            foreach (var timeline in animation.Timeline)
+            {
+                switch (timeline.Attach?.AttachType)
+                {
+                    case AttachType.Keyframe:
+                        timeline.Attach.Keyframe = Keyframe.Find(x => x.Id == timeline.Attach.Id);
+                        break;
+                    case AttachType.Slot:
+                        var attach = Slot[timeline.Attach.Id].Attaches
+                            ?.Find(x => x.AttachType == AttachType.Keyframe);
+                        timeline.Attach.Keyframe = Keyframe.Find(x => x.Id == attach?.Id);
+                        break;
+                    case AttachType.HitBox:
+                        timeline.Attach.Hitbox = Hitbox[timeline.Attach.Id];
+                        break;
+                }
+            }
+        });
+        Hitbox.RemoveAll(x => x is null);
+        
+        // Attributes = QuadData.Keyframe
+        //     .SelectMany(x => x.Layer.Where(y => y?.Attribute is not null))
+        //     .ToDictionary(z=>z.Attribute);
+    }
 }
+
 [JsonConverter(typeof(HitboxJsonConverter))]
 public class Hitbox
 {
-    public string  Name { get; set; }
+    public string Name { get; set; }
     public List<HitboxLayer> Layer { get; set; }
 }
 
 public class HitboxLayer
 {
+    public string Name { get; set; }
     public float[] Hitquad { get; set; }
 }
+
 [JsonConverter(typeof(SlotJsonConverter))]
 public class Slot
 {
@@ -84,6 +139,7 @@ public class KeyframeLayer
             CalculateUVs(_srcquad);
         }
     }
+
     public int OrderId { get; set; }
     public int BlendId { get; set; }
     public int TexId { get; set; }
@@ -95,7 +151,7 @@ public class KeyframeLayer
     public float[] ZeroCenterPoints { get; set; } = new float[8];
     public string LayerName { get; set; } = string.Empty;
     public List<string>? Fog { get; set; }
-    public List<string>? Attribute  { get; set; }
+    public List<string>? Attribute { get; set; }
 
     private void CalculateUVs(float[] src)
     {
@@ -153,6 +209,7 @@ public class Animation
             {
                 value[i].Next = i < value.Count - 1 ? value[i + 1] : null;
             }
+
             _timeline = value;
         }
     }
@@ -195,6 +252,7 @@ public class Timeline
 
     public Matrix AnimationMatrix { get; set; } = Utility.Matrix.IdentityMatrixBy4X4;
     private float[]? _matrix { get; set; }
+
     [JsonProperty]
     private float[]? Matrix
     {

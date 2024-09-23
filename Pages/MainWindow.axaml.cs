@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -5,8 +6,6 @@ using Avalonia.Layout;
 using Avalonia.Threading;
 using QuadToSpine2D.AvaUtility;
 using QuadToSpine2D.Core.Process;
-using System;
-using System.Threading.Tasks;
 using QuadToSpine2D.Pages;
 
 namespace QuadToSpine2D;
@@ -33,18 +32,18 @@ public partial class MainWindow : Window
         _currentImageBoxPart++;
         _imagePath.Add([]);
 
-        var label = new Label()
+        var label = new Label
         {
             Content = $"Part {_currentImageBoxPart}",
             HorizontalAlignment = HorizontalAlignment.Center
         };
         var stackPanel = new StackPanel();
-        var scrollView = new ScrollViewer()
+        var scrollView = new ScrollViewer
         {
             Content = stackPanel,
             MaxHeight = 300
         };
-        var addButton = new Button()
+        var addButton = new Button
         {
             Content = "Add",
             Width = 100,
@@ -53,7 +52,7 @@ public partial class MainWindow : Window
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
-        var deleteButton = new Button()
+        var deleteButton = new Button
         {
             Content = "Delete",
             Width = 100,
@@ -62,7 +61,7 @@ public partial class MainWindow : Window
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
-        var content = new StackPanel()
+        var content = new StackPanel
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
@@ -178,7 +177,7 @@ public partial class MainWindow : Window
                 ResultJsonUriButton.NavigateUri = new Uri(GlobalData.ResultSavePath);
                 ProcessButton.IsEnabled = true;
             });
-        }).ContinueWith((task) =>
+        }).ContinueWith(task =>
         {
             if(task.Exception?.InnerException is null) return;
             Console.WriteLine(task.Exception.InnerException.Message);
