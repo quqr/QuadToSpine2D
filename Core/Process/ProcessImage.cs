@@ -13,7 +13,6 @@ public class ProcessImage
     private readonly Dictionary<string, LayerData> _layerDataDict = [];
     public FrozenDictionary<string, LayerData> LayerDataDict { get; private set; }
     private int _skinsCount;
-    private int _imageIndex;
     private int _currentImageIndex;
     private Image?[,] _images;
 
@@ -26,6 +25,7 @@ public class ProcessImage
 
         _images = new Image[imagesSrc.Count, imagesSrc[0].Count];
         GetAllImages(imagesSrc);
+        // TODO : Need add animation track supports. Cause a full track may contain many keyframes
         foreach (var keyframe in quad.Keyframe)
         {
             InitImageData(keyframe);
@@ -63,12 +63,6 @@ public class ProcessImage
                 var sameLayers = layers.Where(x => x.LayerGuid.Equals(layer.LayerGuid)).ToArray();
                 for (int copyIndex = 0; copyIndex < sameLayers.Length; copyIndex++)
                 {
-                    // if (ImageData[curSkin][layer.TexId].TryGetValue(layer.LayerGuid, out var value) && copyIndex == 0)
-                    // {
-                    //     layer.LayerName = value.KeyframeLayer.LayerName;
-                    //     continue;
-                    // }
-
                     if (ImageNumData.TryGetValue(layer.LayerGuid, out var num))
                     {
                         if (num.TryGetValue(copyIndex, out var layerName))
@@ -133,16 +127,19 @@ public class ProcessImage
     {
         if (image is null) return null;
         using var clipImage = image.Clone(x => { x.Crop(rectangle); });
-        var imageName = $"Slice {_imageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
+        var order = _currentImageIndex;
+        var imageName = $"Slice_{_currentImageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
         if (ImageNumData.TryGetValue(layer.LayerGuid, out var dict))
         {
             imageName = dict[0].Remove(dict[0].Length - 1) + copyIndex;
-        }
-        _imageIndex++;
+            order = int.Parse(dict[0].Split("_")[1]);
+        } else _currentImageIndex++;
+        
         layer.LayerName = imageName;
         clipImage.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, imageName + ".png"));
-        _currentImageIndex++;
-        layer.OrderId = _currentImageIndex;
+        
+        layer.OrderId = order * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
+        
         return new LayerData
         {
             ImageName = imageName,

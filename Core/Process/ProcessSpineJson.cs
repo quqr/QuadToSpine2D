@@ -150,7 +150,8 @@ public class ProcessSpineJson
 #if DEBUG
         foreach (var skeleton in quad.Skeleton)
         {
-            SetKeyframesData(quad, skeleton);
+            // if(skeleton.Name.Equals("J_SKILL_G"))
+                SetKeyframesData(quad, skeleton);
         }
 #endif
 
@@ -205,7 +206,7 @@ public class ProcessSpineJson
                 time += (timeline.Time + 1) / Fps;
             }
         }
-        // SortDrawOrderAsync(spineAnimation, drawOrders);
+        SortDrawOrderAsync(spineAnimation, drawOrders);
     }
 
     private void SortDrawOrderAsync(SpineAnimation spineAnimation, List<DrawOrder> drawOrders)
@@ -333,6 +334,8 @@ public class ProcessSpineJson
         var drawOrder = new DrawOrder { Time = initTime };
         var existDrawOrder = drawOrders.Find(x => Math.Abs(x.Time - initTime) < .01f);
         DrawOrder.LayerOffset? lastLayerOffset = null;
+        // existDrawOrder may have same layers,  and it is an error.
+        // Maybe the process image have bugs, which just process a layer, not a full track. 
         if (existDrawOrder is not null)
         {
             drawOrder = existDrawOrder;
@@ -365,6 +368,12 @@ public class ProcessSpineJson
     private void AddLayerOffsets(DrawOrder drawOrder, List<KeyframeLayer?> layers, int index, DrawOrder? existDrawOrder,
         DrawOrder.LayerOffset? lastLayerOffset)
     {
+        var existLayerOffset = existDrawOrder?.LayerOffsets.Find(x => x.LayerName.Equals(layers[index].LayerName));
+        if (existLayerOffset is not null)
+        {
+            Console.WriteLine($"{layers[index].LayerName} already exist in drawOrder");
+            return;
+        }
         drawOrder.LayerOffsets.Add(new DrawOrder.LayerOffset
         {
             LayerName = layers[index].LayerName,
