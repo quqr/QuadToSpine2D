@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using QuadToSpine2D.Core.JsonConverters;
+using QuadToSpine2D.Core.Process;
 using QuadToSpine2D.Core.Utility;
 
 namespace QuadToSpine2D.Core.Data.Quad;
@@ -12,56 +13,6 @@ public class QuadJsonData
     public List<QuadSkeleton?> Skeleton { get; set; } = [];
     public List<Slot> Slot { get; set; } = [];
     public List<Hitbox?> Hitbox { get; set; } = [];
-
-    [MemberNotNull]
-    public void RemoveAllNull()
-    {
-        Skeleton.RemoveAll(x => x is null);
-        Animation.RemoveAll(x => x is null || x.Id == -1);
-
-        foreach (var keyframe in Keyframe)
-        {
-            keyframe?.Layer?.RemoveAll(y => y is null ||
-                                            y.LayerGuid.Equals(string.Empty) ||
-                                            y.TexId == -1 ||
-                                            y.BlendId != 0);
-        }
-
-        Keyframe.RemoveAll(x => x?.Layer is null || x.Layer.Count == 0);
-        Parallel.ForEach(Keyframe, keyframe =>
-        {
-            for (var i = 0; i < keyframe.Layer.Count; i++)
-            {
-                keyframe.Layer[i].LastLayer = i == 0 ? null : keyframe.Layer[i - 1];
-                keyframe.Layer[i].NextLayer = i == keyframe.Layer.Count - 1 ? null : keyframe.Layer[i + 1];
-            }
-        });
-        Parallel.ForEach(Animation, animation =>
-        {
-            foreach (var timeline in animation.Timeline)
-            {
-                switch (timeline.Attach?.AttachType)
-                {
-                    case AttachType.Keyframe:
-                        timeline.Attach.Keyframe = Keyframe.Find(x => x.Id == timeline.Attach.Id);
-                        break;
-                    case AttachType.Slot:
-                        var attach = Slot[timeline.Attach.Id].Attaches
-                            ?.Find(x => x.AttachType == AttachType.Keyframe);
-                        timeline.Attach.Keyframe = Keyframe.Find(x => x.Id == attach?.Id);
-                        break;
-                    case AttachType.HitBox:
-                        timeline.Attach.Hitbox = Hitbox[timeline.Attach.Id];
-                        break;
-                }
-            }
-        });
-        Hitbox.RemoveAll(x => x is null);
-        
-        // Attributes = QuadData.Keyframe
-        //     .SelectMany(x => x.Layer.Where(y => y?.Attribute is not null))
-        //     .ToDictionary(z=>z.Attribute);
-    }
 }
 
 [JsonConverter(typeof(HitboxJsonConverter))]
@@ -107,8 +58,8 @@ public class KeyframeLayer
 {
     public KeyframeLayer? LastLayer { get; set; }
     public KeyframeLayer? NextLayer { get; set; }
+    public PoolData PoolData { get; set; }
     private float[] _dstquad;
-
     public float[] Dstquad
     {
         get => _dstquad;
@@ -119,10 +70,8 @@ public class KeyframeLayer
             _dstquad = value;
         }
     }
-
     public Matrix DstMatrix { get; set; }
     private float[]? _srcquad;
-
     public float[]? Srcquad
     {
         get => _srcquad;
@@ -183,7 +132,6 @@ public class KeyframeLayer
 public class Animation
 {
     private string _name;
-
     public string Name
     {
         get => _name;
@@ -196,7 +144,6 @@ public class Animation
             Id = Convert.ToInt32(splitName.Last());
         }
     }
-
     public int Id { get; set; } = -1;
     private List<Timeline> _timeline { get; set; }
 
@@ -205,11 +152,11 @@ public class Animation
         get => _timeline;
         set
         {
-            for (int i = 0; i < value.Count; i++)
+            for (var i = 0; i < value.Count; i++)
             {
+                value[i].Last = i > 0 ? value[i - 1] : null;
                 value[i].Next = i < value.Count - 1 ? value[i + 1] : null;
             }
-
             _timeline = value;
         }
     }
@@ -237,10 +184,27 @@ public class Animation
 
 public class Timeline
 {
+    private Timeline? _last;
+
+    public Timeline? Last
+    {
+        get => _last;
+        set
+        {
+            _last = value;
+            StartFrame = _last?.EndFrame ?? 0;
+            EndFrame = StartFrame + Frames;
+        }
+    }
+
     public Timeline? Next { get; set; }
-
-    public float Time { get; set; }
-
+    public float Frames { get; set; }
+    public float Time { 
+        get=>Frames;
+        set => Frames = value;
+    }
+    public float StartFrame { get; set; }
+    public float EndFrame { get; set; }
     public Attach? Attach { get; set; }
     public bool IsKeyframeMix { get; private set; }
 
@@ -324,6 +288,7 @@ public class QuadSkeleton
 {
     public string Name { get; set; }
     public List<QuadBone>? Bone { get; set; }
+    public AnimationData CombineAnimation { get; set; }
 }
 
 public class QuadBone

@@ -155,6 +155,8 @@ public partial class MainWindow : Window
         Directory.Delete(GlobalData.ImageSavePath, true);
         Directory.CreateDirectory(GlobalData.ImageSavePath);
 #endif
+        // GlobalData.ImagePath = _imagePath;
+        
         ResultJsonUriButton.Content = string.Empty;
         ResultJsonUriButton.IsEnabled = false;
 
@@ -166,6 +168,9 @@ public partial class MainWindow : Window
             new ProcessQuadData()
                 .LoadQuadJson(_quadFilePath)
                 .ProcessJson(Utility.ConvertImagePath(_imagePath));
+            // new ProcessQuadData()
+            //     .LoadQuadJson(_quadFilePath)
+            //     .ProcessJson(GlobalData.ImagePath);
             Console.WriteLine("Process Complete!");
             Dispatcher.UIThread.Post(() =>
             {

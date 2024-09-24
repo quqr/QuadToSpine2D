@@ -58,9 +58,9 @@ public readonly struct Matrix : IEquatable<Matrix>
     public float[] ToFloats()
     {
         var floats = new float[Rows * Cols];
-        for (int i = 0; i < Rows; i++)
+        for (var i = 0; i < Rows; i++)
         {
-            for (int j = 0; j < Cols; j++)
+            for (var j = 0; j < Cols; j++)
             {
                 floats[j + i * Cols] = Value[i, j];
             }

@@ -150,7 +150,6 @@ public class ProcessSpineJson
 #if DEBUG
         foreach (var skeleton in quad.Skeleton)
         {
-            // if(skeleton.Name.Equals("J_SKILL_G"))
                 SetKeyframesData(quad, skeleton);
         }
 #endif
@@ -203,7 +202,7 @@ public class ProcessSpineJson
                         AddHitbox(hitbox, time, allHitboxLayerNames, deform, spineAnimation);
                 }
                 // FPS : 60
-                time += (timeline.Time + 1) / Fps;
+                time += (timeline.Frames + 1) / Fps;
             }
         }
         SortDrawOrderAsync(spineAnimation, drawOrders);
@@ -456,7 +455,7 @@ public class ProcessSpineJson
     {
         value.ImageVertices.Add(new AnimationVertices
         {
-            Time = item.Time + timeline.Time / Fps,
+            Time = item.Time + timeline.Frames / Fps,
             Vertices = value.ImageVertices.Last().Vertices,
         });
     }
@@ -468,9 +467,9 @@ public class ProcessSpineJson
     {
         var srcMatrix = timeline.AnimationMatrix;
         var dstMatrix = timeline.Next?.AnimationMatrix ?? srcMatrix;
-        for (var i = 0; i < timeline.Time; i++)
+        for (var i = 0; i < timeline.Frames; i++)
         {
-            var rate = i / timeline.Time;
+            var rate = i / timeline.Frames;
             var vert = AnimationMatrixUtility.QuadMultiply(Matrix.Lerp(srcMatrix, dstMatrix, rate), layer.DstMatrix);
             value.ImageVertices.Add(new AnimationVertices
             {

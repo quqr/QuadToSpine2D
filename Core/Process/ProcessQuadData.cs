@@ -2,11 +2,11 @@
 
 public class ProcessQuadData
 {
-    private QuadJsonData? _quadData;
+    public QuadJsonData? QuadData { get; set; }
 
     public void ProcessJson(List<List<string?>> imagePath)
     {
-        if (_quadData is null)
+        if (QuadData is null)
             throw new ArgumentException("Please select correct Quad file");
 
         if (imagePath.Count == 0)
@@ -14,16 +14,17 @@ public class ProcessQuadData
 
         var imageQuad = new ProcessImage();
         var spineJson = new ProcessSpineJson();
-
-        imageQuad.Process(imagePath, _quadData);
+        // var spineJson = new NewProcessSpine2DJson(QuadData);
+        imageQuad.Process(imagePath, QuadData);
         spineJson
-            .Process(imageQuad, _quadData)
+            .Process(imageQuad, QuadData)
             .WriteToJson();
+        // spineJson.Process().WriteToJson();
     }
 
     public ProcessQuadData LoadQuadJson(string quadPath)
     {
-        _quadData = new ProcessQuadJsonFile().LoadQuadJson(quadPath);
+        QuadData = new ProcessQuadJsonFile().LoadQuadJson(quadPath);
         return this;
     }
 }

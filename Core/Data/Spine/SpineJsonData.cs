@@ -34,6 +34,7 @@ public class SpineJsonData
         var spineJsonFile = JsonConvert.SerializeObject(this, setting);
         var output = Path.Combine(GlobalData.ResultSavePath, "Result.json");
         File.WriteAllText(output, spineJsonFile);
+        Console.WriteLine("Complete!");
     }
 }
 
@@ -46,7 +47,7 @@ public class SpineSkeleton
 public class SpineSlot
 {
     public string Name { get; set; }
-    public string Bone { get; set; }
+    public string Bone { get; set; } = "root";
     [JsonIgnore] public string Attachment { get; set; }
     [JsonIgnore] public int Order { get; set; }
     [JsonIgnore] public int OrderId { get; set; }

@@ -61,7 +61,7 @@ public class ProcessImage
                 }
 
                 var sameLayers = layers.Where(x => x.LayerGuid.Equals(layer.LayerGuid)).ToArray();
-                for (int copyIndex = 0; copyIndex < sameLayers.Length; copyIndex++)
+                for (var copyIndex = 0; copyIndex < sameLayers.Length; copyIndex++)
                 {
                     if (ImageNumData.TryGetValue(layer.LayerGuid, out var num))
                     {
@@ -123,6 +123,14 @@ public class ProcessImage
         };
     }
 
+    public void GetImage(KeyframeLayer layer)
+    {
+        for (var skinIndex = 0; skinIndex < _skinsCount; skinIndex++)
+        {
+            var rectangle = CalculateRectangle(layer);
+            CropImage(_images[skinIndex, layer.TexId], rectangle, layer, skinIndex, 0);
+        }
+    }
     private LayerData? CropImage(Image? image, Rectangle rectangle, KeyframeLayer layer, int curSkin, int copyIndex)
     {
         if (image is null) return null;
@@ -144,6 +152,10 @@ public class ProcessImage
         {
             ImageName = imageName,
             KeyframeLayer = layer,
+            SkinIndex = curSkin,
+            ImageIndex = _currentImageIndex,
+            TexId = layer.TexId,
+            CopyIndex = copyIndex
         };
     }
 

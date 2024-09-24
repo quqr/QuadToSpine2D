@@ -1,4 +1,7 @@
-﻿namespace QuadToSpine2D.Core.Utility;
+﻿using System.Threading.Tasks;
+using QuadToSpine2D.Core.Process;
+
+namespace QuadToSpine2D.Core.Utility;
 
 public static class ProcessUtility
 {
@@ -67,5 +70,35 @@ public static class ProcessUtility
         var c = new float[a.Length];
         for (var i = 0; i < a.Length; i++) c[i] = a[i] * b;
         return c;
+    }
+    public static AnimationData CombineAnimations(List<Animation> animations)
+    {
+        var newAnimation = new AnimationData{Name = "AnimationCombine_"};
+        foreach (var animation in animations)
+        {
+            newAnimation.Name += $"{animation.Name.Last()}_";
+            newAnimation.IsLoop = animation.IsLoop | newAnimation.IsLoop;
+            foreach (var timeline in animation.Timeline)
+            {
+                newAnimation.IsMix = timeline.IsKeyframeMix | timeline.IsMatrixMix | newAnimation.IsMix;
+                if (!newAnimation.Data.TryGetValue(timeline.StartFrame, out var displayData))
+                {
+                    displayData = new Attachment();
+                    newAnimation.Data[timeline.StartFrame] = displayData;
+                }
+
+                if (!newAnimation.Data.TryGetValue(timeline.EndFrame, out var concealData))
+                {
+                    concealData = new Attachment();
+                    newAnimation.Data[timeline.EndFrame] = concealData;
+                }
+                displayData.DisplayAttachments.Add(timeline);
+                concealData.ConcealAttachments.Add(timeline);
+            }
+
+            newAnimation.Data = newAnimation.Data.OrderBy(x => x.Key).ToDictionary();
+        }
+
+        return newAnimation;
     }
 }
