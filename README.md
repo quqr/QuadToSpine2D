@@ -20,7 +20,7 @@
 ### **Setup**
 
 * [How to get quad files](https://github.com/rufaswan/Web2D_Games/blob/master/docs/psxtools-steps.adoc)
-
+* [Details](https://www.vg-resource.com/thread-38430.html)
 + ### Select quad file path and images path.
   #### Make sure order of image is right
   #### If your image is larger than the original image, the scale factor = current image size ÷ original image size.
