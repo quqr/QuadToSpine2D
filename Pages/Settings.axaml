@@ -48,14 +48,14 @@
             <StackPanel Orientation="Horizontal" Margin="10">
                 <TextBox Watermark="1"
                          Name="ScaleFactorTextBox"
-                         TextChanged="ScaleFactorChanged" 
+                         TextChanged="ScaleFactorChanged"
                          HorizontalContentAlignment="Center"
                          VerticalContentAlignment="Center"
-                         Text ="{Binding 
-                          Source = {x:Static local:GlobalData.ScaleFactor }}"/>
+                         Text="{Binding 
+                          Source = {x:Static local:GlobalData.ScaleFactor }}" />
                 <Label HorizontalAlignment="Center" VerticalAlignment="Center"
-                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Scale factor" 
-                       Margin="10,0,0,0"/>
+                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Scale factor"
+                       Margin="10,0,0,0" />
             </StackPanel>
         </StackPanel>
     </Panel>

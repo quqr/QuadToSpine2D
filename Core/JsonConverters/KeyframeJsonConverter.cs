@@ -10,14 +10,14 @@ public class KeyframeJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+        JsonSerializer                          serializer)
     {
         var obj = serializer.Deserialize(reader);
         if (obj is not JObject jObject) return null;
         return new Keyframe
         {
-            Name = jObject["name"]?.ToString(),
-            Layer = jObject["layer"]?.ToObject<List<KeyframeLayer?>>(),
+            Name   = jObject["name"]?.ToString(),
+            Layers = jObject["layer"]?.ToObject<List<KeyframeLayer?>>()
         };
     }
 

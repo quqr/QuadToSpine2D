@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
-using QuadToSpine2D.Core.Process;
+﻿using QuadToSpine2D.Core.Process;
+using SixLabors.ImageSharp;
 
 namespace QuadToSpine2D.Core.Utility;
 
 public static class ProcessUtility
 {
     /// <summary>
-    /// Find min and max point in float[4]
+    ///     Find min and max point in float[4]
     /// </summary>
     /// <param name="quad">If quad is null, return new float[4]</param>
     /// <returns>return the min and max points: [minX, minY, maxX, maxY]</returns>
@@ -30,7 +30,7 @@ public static class ProcessUtility
     }
 
     /// <summary>
-    /// return a - b
+    ///     return a - b
     /// </summary>
     /// <returns>return a - b. if a or b is null return [].</returns>
     public static float[] MinusFloats(float[]? a, float[]? b)
@@ -60,38 +60,41 @@ public static class ProcessUtility
     }
 
     /// <summary>
-    /// float[] a *  b
+    ///     float[] a *  b
     /// </summary>
     /// <returns>return a *  b, if a is null return null</returns>
     public static float[]? MulFloats(float[]? a, float b)
     {
         if (a is null) return null;
         if (Math.Abs(b - 1) < .1f) return a;
-        var c = new float[a.Length];
+        var c                                   = new float[a.Length];
         for (var i = 0; i < a.Length; i++) c[i] = a[i] * b;
         return c;
     }
+
     public static AnimationData CombineAnimations(List<Animation> animations)
     {
-        var newAnimation = new AnimationData{Name = "AnimationCombine_"};
+        var newAnimation = new AnimationData { Name = "AnimationCombine_" };
         foreach (var animation in animations)
         {
-            newAnimation.Name += $"{animation.Name.Last()}_";
-            newAnimation.IsLoop = animation.IsLoop | newAnimation.IsLoop;
+            newAnimation.Name   += $"{animation.Name.Last()}_";
+            newAnimation.IsLoop =  animation.IsLoop | newAnimation.IsLoop;
             foreach (var timeline in animation.Timeline)
             {
                 newAnimation.IsMix = timeline.IsKeyframeMix | timeline.IsMatrixMix | newAnimation.IsMix;
                 if (!newAnimation.Data.TryGetValue(timeline.StartFrame, out var displayData))
                 {
-                    displayData = new Attachment();
+                    displayData                            = new Attachment();
                     newAnimation.Data[timeline.StartFrame] = displayData;
                 }
 
                 if (!newAnimation.Data.TryGetValue(timeline.EndFrame, out var concealData))
                 {
-                    concealData = new Attachment();
+                    concealData                          = new Attachment();
                     newAnimation.Data[timeline.EndFrame] = concealData;
                 }
+
+                if (timeline.Attach is null) continue;
                 displayData.DisplayAttachments.Add(timeline);
                 concealData.ConcealAttachments.Add(timeline);
             }
@@ -100,5 +103,16 @@ public static class ProcessUtility
         }
 
         return newAnimation;
+    }
+
+    public static Rectangle CalculateRectangle(KeyframeLayer layer)
+    {
+        return new Rectangle
+        {
+            X      = (int)layer.MinAndMaxSrcPoints[0],
+            Y      = (int)layer.MinAndMaxSrcPoints[1],
+            Width  = (int)layer.Width,
+            Height = (int)layer.Height
+        };
     }
 }

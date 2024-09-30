@@ -20,41 +20,40 @@
         </ExperimentalAcrylicBorder>
         <StackPanel HorizontalAlignment="Center"
                     VerticalAlignment="Center">
-            <ScrollViewer MaxWidth="800" 
-                          AllowAutoHide="True" 
+            <ScrollViewer MaxWidth="800"
+                          AllowAutoHide="True"
                           HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Disabled"
-                          >
+                          VerticalScrollBarVisibility="Disabled">
                 <StackPanel Orientation="Horizontal"
                             Name="ImageBox">
                     <Button Content="Add New"
                             Margin="10"
                             Name="AddNewButton"
-                            Click="AddNewElement"/>
+                            Click="AddNewElement" />
                 </StackPanel>
             </ScrollViewer>
-		</StackPanel>
-		<StackPanel Margin="25">
+        </StackPanel>
+        <StackPanel Margin="25">
             <StackPanel
                 Orientation="Horizontal"
                 HorizontalAlignment="Right"
                 Margin="0,10,10,0">
                 <Button Content="Open quad file"
-                        Name="UploadButton" 
+                        Name="UploadButton"
                         Click="OpenQuadFile"
                         Width="120"
-                        HorizontalContentAlignment="Center"/>
+                        HorizontalContentAlignment="Center" />
             </StackPanel>
-			<StackPanel
-				Orientation="Horizontal"
-				HorizontalAlignment="Right"
-				Margin="0,10,10,0">
-				<Button Content="Setting"
-				        Name="SettingButton"
-				        Click="OpenSettingWindow"
-				        Width="120"
-				        HorizontalContentAlignment="Center"/>
-			</StackPanel>
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Margin="0,10,10,0">
+                <Button Content="Setting"
+                        Name="SettingButton"
+                        Click="OpenSettingWindow"
+                        Width="120"
+                        HorizontalContentAlignment="Center" />
+            </StackPanel>
         </StackPanel>
         <HyperlinkButton Content=""
                          IsEnabled="False"
@@ -62,17 +61,17 @@
                          VerticalAlignment="Bottom"
                          Margin="40"
                          FontSize="15"
-                         Name="ResultJsonUriButton"/>
-	    <ProgressBar HorizontalAlignment="Center"
-	                 VerticalAlignment="Bottom"
-	                 Margin="25"
-	                 Height="20"
-	                 Width="600"
-	                 ShowProgressText="True"
-	                 Minimum="0"
-	                 Maximum="100"
-	                 Foreground="Teal"
-	                 Name="ProcessBar"/>
+                         Name="ResultJsonUriButton" />
+        <ProgressBar HorizontalAlignment="Center"
+                     VerticalAlignment="Bottom"
+                     Margin="25"
+                     Height="20"
+                     Width="600"
+                     ShowProgressText="True"
+                     Minimum="0"
+                     Maximum="100"
+                     Foreground="Teal"
+                     Name="ProcessBar" />
 
         <Button Content="Process->"
                 HorizontalAlignment="Right"
@@ -84,6 +83,6 @@
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 FontSize="15"
-                Click="ProcessData"/>
+                Click="ProcessData" />
     </Panel>
 </Window>

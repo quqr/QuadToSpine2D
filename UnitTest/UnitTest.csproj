@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\QuadToSpine2D.csproj" />
+        <ProjectReference Include="..\QuadToSpine2D.csproj"/>
     </ItemGroup>
 
 </Project>

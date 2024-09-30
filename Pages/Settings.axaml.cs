@@ -32,10 +32,10 @@ public partial class Settings : Window
         catch (Exception exception)
         {
             Console.WriteLine(exception);
-            GlobalData.BarValue = 100;
+            GlobalData.BarValue              = 100;
             GlobalData.ProcessBar.Foreground = GlobalData.ProcessBarErrorBrush;
-            GlobalData.BarTextContent = exception.Message;
-            ScaleFactorTextBox.Text = "1";
+            GlobalData.BarTextContent        = exception.Message;
+            ScaleFactorTextBox.Text          = "1";
         }
     }
 }

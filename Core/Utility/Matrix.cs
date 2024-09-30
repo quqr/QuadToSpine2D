@@ -9,27 +9,26 @@ public readonly struct Matrix : IEquatable<Matrix>
     public int Cols { get; }
 
     public float[,] Value { get; }
+
     public Matrix(int rows, int cols)
     {
-        Rows = rows;
-        Cols = cols;
+        Rows  = rows;
+        Cols  = cols;
         Value = new float[Rows, Cols];
     }
 
     public Matrix(int rowsAndCols, bool isIdentity = true)
     {
-        Rows = rowsAndCols;
-        Cols = rowsAndCols;
+        Rows  = rowsAndCols;
+        Cols  = rowsAndCols;
         Value = new float[Rows, Cols];
-        for (var i = 0; i < rowsAndCols; i++)
-        {
-            Value[i, i] = 1;
-        }
+        for (var i = 0; i < rowsAndCols; i++) Value[i, i] = 1;
     }
-    public Matrix(int rows, int cols,float[] source)
+
+    public Matrix(int rows, int cols, float[] source)
     {
-        Rows = rows;
-        Cols = cols;
+        Rows  = rows;
+        Cols  = cols;
         Value = new float[Rows, Cols];
         for (var i = 0; i < rows; i++)
         {
@@ -44,9 +43,10 @@ public readonly struct Matrix : IEquatable<Matrix>
         }
     }
 
-    public static Matrix IdentityMatrixBy4X4 => new Matrix(4);
+    public static Matrix IdentityMatrixBy4X4 => new(4);
+
     /// <summary>
-    /// Lerp matrix between two matrices
+    ///     Lerp matrix between two matrices
     /// </summary>
     /// <exception cref="Exception">Non-conformable matrices in MatrixProduct</exception>
     public static Matrix Lerp(Matrix srcMatrix, Matrix dstMatrix, float rate)
@@ -55,18 +55,18 @@ public readonly struct Matrix : IEquatable<Matrix>
             throw new Exception("Non-conformable matrices in MatrixProduct");
         return srcMatrix * (1 - rate) + dstMatrix * rate;
     }
+
     public float[] ToFloats()
     {
         var floats = new float[Rows * Cols];
         for (var i = 0; i < Rows; i++)
         {
-            for (var j = 0; j < Cols; j++)
-            {
-                floats[j + i * Cols] = Value[i, j];
-            }
+            for (var j = 0; j < Cols; j++) floats[j + i * Cols] = Value[i, j];
         }
+
         return floats;
     }
+
     public override string ToString()
     {
         var result = string.Empty;
@@ -74,122 +74,123 @@ public readonly struct Matrix : IEquatable<Matrix>
         for (var i = 0; i < Rows; i++)
         {
             result += "[";
-            for (var j = 0; j < Cols; j++)
-            {
-                result += $"{Value[i, j]}, ";
-            }
-            result = result.Remove(result.Length - 2);
+            for (var j = 0; j < Cols; j++) result += $"{Value[i, j]}, ";
+            result =  result.Remove(result.Length - 2);
             result += "] ";
         }
+
         result += "]";
 
         return result;
     }
-    
+
     public static Matrix operator *(Matrix matrixA, Matrix matrixB)
     {
-        var aRows = matrixA.Rows; 
+        var aRows = matrixA.Rows;
         var aCols = matrixA.Cols;
-        var bRows = matrixB.Rows; 
+        var bRows = matrixB.Rows;
         var bCols = matrixB.Cols;
-        
+
         if (aCols != bRows)
             throw new Exception("Non-conformable matrices in MatrixProduct");
-        
+
         var result = new Matrix(aRows, bCols);
         Parallel.For(0, aRows, i =>
             {
                 for (var j = 0; j < bCols; ++j)
-                for (var k = 0; k < aCols; ++k)
-                    result[i,j] += matrixA[i,k] * matrixB[k,j];
+                    for (var k = 0; k < aCols; ++k)
+                        result[i, j] += matrixA[i, k] * matrixB[k, j];
             }
         );
         return result;
     }
+
     public static Matrix operator *(Matrix matrixA, float value)
     {
         for (var i = 0; i < matrixA.Rows; i++)
         {
-            for (var j = 0; j < matrixA.Cols; j++)
-            {
-                matrixA[i, j] *= value;
-            }
+            for (var j = 0; j < matrixA.Cols; j++) matrixA[i, j] *= value;
         }
+
         return matrixA;
     }
-    public static bool operator ==(Matrix value1, Matrix value2) => value1.Equals(value2);
-    public static bool operator !=(Matrix value1, Matrix value2) => !value1.Equals(value2);
+
+    public static bool operator ==(Matrix value1, Matrix value2)
+    {
+        return value1.Equals(value2);
+    }
+
+    public static bool operator !=(Matrix value1, Matrix value2)
+    {
+        return !value1.Equals(value2);
+    }
 
     public static Matrix operator +(Matrix value1, Matrix value2)
     {
-        var aRows = value1.Rows; 
+        var aRows = value1.Rows;
         var aCols = value1.Cols;
-        var bRows = value2.Rows; 
+        var bRows = value2.Rows;
         var bCols = value2.Cols;
         if (aCols != bCols || aRows != bRows)
             throw new Exception("Non-conformable matrices in MatrixProduct");
         var result = new Matrix(aRows, aCols);
         for (var i = 0; i < value1.Rows; i++)
         {
-            for (var j = 0; j < value1.Cols; j++)
-            {
-               result[i,j] = value1[i, j] + value2[i,j];
-            }
+            for (var j = 0; j < value1.Cols; j++) result[i, j] = value1[i, j] + value2[i, j];
         }
+
         return result;
     }
+
     public static Matrix operator +(Matrix value1, float value2)
     {
-        var aRows = value1.Rows; 
-        var aCols = value1.Cols;
-        var result = new Matrix(aRows,aCols);
+        var aRows  = value1.Rows;
+        var aCols  = value1.Cols;
+        var result = new Matrix(aRows, aCols);
         for (var i = 0; i < value1.Rows; i++)
         {
-            for (var j = 0; j < value1.Cols; j++)
-            {
-                result[i,j] = value1[i, j] + value2;
-            }
+            for (var j = 0; j < value1.Cols; j++) result[i, j] = value1[i, j] + value2;
         }
+
         return result;
     }
+
     public static Matrix operator -(Matrix value1, Matrix value2)
     {
-        var aRows = value1.Rows; 
+        var aRows = value1.Rows;
         var aCols = value1.Cols;
-        var bRows = value2.Rows; 
+        var bRows = value2.Rows;
         var bCols = value2.Cols;
         if (aCols != bCols || aRows != bRows)
             throw new Exception("Non-conformable matrices in MatrixProduct");
         var result = new Matrix(aRows, aCols);
         for (var i = 0; i < value1.Rows; i++)
         {
-            for (var j = 0; j < value1.Cols; j++)
-            {
-                result[i,j] = value1[i, j] - value2[i,j];
-            }
+            for (var j = 0; j < value1.Cols; j++) result[i, j] = value1[i, j] - value2[i, j];
         }
+
         return result;
     }
+
     public static Matrix operator -(Matrix value1, float value2)
     {
-        var aRows = value1.Rows; 
-        var aCols = value1.Cols;
+        var aRows  = value1.Rows;
+        var aCols  = value1.Cols;
         var result = new Matrix(aRows, aCols);
         for (var i = 0; i < value1.Rows; i++)
         {
-            for (var j = 0; j < value1.Cols; j++)
-            {
-                result[i,j] = value1[i, j] - value2;
-            }
+            for (var j = 0; j < value1.Cols; j++) result[i, j] = value1[i, j] - value2;
         }
+
         return result;
     }
-    
+
     public float this[int row, int col]
     {
         get => Value[row, col];
         set => Value[row, col] = value;
     }
+
     public bool Equals(Matrix other)
     {
         if (Rows != other.Rows || Cols != other.Cols)
@@ -197,11 +198,10 @@ public readonly struct Matrix : IEquatable<Matrix>
         for (var i = 0; i < Rows; i++)
         {
             for (var j = 0; j < Cols; j++)
-            {
                 if (Math.Abs(Value[i, j] - other[i, j]) > .001f)
                     return false;
-            }
         }
+
         return true;
     }
 

@@ -7,14 +7,17 @@ public class SpineJsonData
 {
     //[JsonIgnore]
     public SpineSkeleton SpineSkeletons { get; set; } = new();
+
     //[JsonIgnore]
     public List<SpineBone> Bones { get; set; } = [];
+
     //[JsonIgnore]
     public List<SpineSlot> Slots { get; set; } = [];
-    [JsonIgnore]
-    public Dictionary<string, SpineSlot> SlotsDict { get; set; } = [];
-    [JsonIgnore]
-    public FrozenDictionary<string, SpineSlot> FrozenSlotsDict { get; set; }
+
+    [JsonIgnore] public Dictionary<string, SpineSlot> SlotsDict { get; set; } = [];
+
+    [JsonIgnore] public FrozenDictionary<string, SpineSlot> FrozenSlotsDict { get; set; }
+
     //[JsonIgnore]
     public List<Skin> Skins { get; set; } = [];
 
@@ -27,12 +30,12 @@ public class SpineJsonData
 
         var setting = new JsonSerializerSettings
         {
-            ContractResolver = new DefaultContractResolver 
+            ContractResolver = new DefaultContractResolver
                 { NamingStrategy = new CamelCaseNamingStrategy() },
             Formatting = GlobalData.IsReadableJson ? Formatting.Indented : Formatting.None
         };
         var spineJsonFile = JsonConvert.SerializeObject(this, setting);
-        var output = Path.Combine(GlobalData.ResultSavePath, "Result.json");
+        var output        = Path.Combine(GlobalData.ResultSavePath, "Result.json");
         File.WriteAllText(output, spineJsonFile);
         Console.WriteLine("Complete!");
     }
@@ -40,30 +43,30 @@ public class SpineJsonData
 
 public class SpineSkeleton
 {
-    public const string Spine = "3.8";
+    public string Spine      { get; set; } = "3.8";
     public string ImagesPath { get; set; } = string.Empty;
 }
 
 public class SpineSlot
 {
-    public string Name { get; set; }
-    public string Bone { get; set; } = "root";
+    public              string Name       { get; set; }
+    public              string Bone       { get; set; } = "root";
     [JsonIgnore] public string Attachment { get; set; }
-    [JsonIgnore] public int Order { get; set; }
-    [JsonIgnore] public int OrderId { get; set; }
+    [JsonIgnore] public int    Order      { get; set; }
+    [JsonIgnore] public int    OrderId    { get; set; }
 }
 
 public class Skin
 {
-    public string Name = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     [JsonConverter(typeof(AttachmentsJsonConverter<Attachments>))]
-    public List<Attachments> Attachments = [];
+    public List<Attachments> Attachments { get; set; } = [];
 }
 
 public class Attachments
 {
-    public BaseMesh Value { get; set; }
+    public BaseMesh Mesh { get; set; }
 }
 
 public class BaseMesh
@@ -73,17 +76,18 @@ public class BaseMesh
 
 public class Boundingbox : BaseMesh
 {
-    public string Type { get; set; } = "boundingBox";
-    public int VertexCount { get; set; } = 4;
-    public float[] Vertices { get; set; } = new float[8];
+    public string  Type        { get; set; } = "boundingbox";
+    public int     VertexCount { get; set; } = 4;
+    public float[] Vertices    { get; set; } = new float[8];
 }
+
 public class Mesh : BaseMesh
 {
-    public string Type { get; set; } = "mesh";
-    public float[] Uvs { get; set; } = new float[8];
+    public string  Type      { get; set; } = "mesh";
+    public float[] Uvs       { get; set; } = new float[8];
     public float[] Triangles { get; set; } = [1, 2, 3, 1, 3, 0];
-    public float[] Vertices { get; set; } = new float[8];
-    public int Hull { get; set; } = 4;
+    public float[] Vertices  { get; set; } = new float[8];
+    public int     Hull      { get; set; } = 4;
 }
 
 public class LinkedMesh : BaseMesh
@@ -98,8 +102,8 @@ public class LinkedMesh : BaseMesh
 
 public class SpineBone
 {
-    public string Name { get; set; }
-    public int ScaleY { get; set; } = -1;
+    public string Name   { get; set; }
+    public int    ScaleY { get; set; } = -1;
 }
 
 public class SpineAnimation
@@ -117,17 +121,10 @@ public class SpineAnimation
 
 public class DrawOrder
 {
-    public float Time { get; set; }
+    public float                 Time    { get; set; }
     public List<DrawOrderOffset> Offsets { get; set; } = [];
-    
-    [JsonIgnore]
-    public List<LayerOffset> LayerOffsets { get; set; } = [];
-    public class LayerOffset
-    {
-        public string LayerName { get; set; }
-        public int LayerSlotOrder { get; set; }
-        public int LayerIndex { get; set; }
-    }
+
+    [JsonIgnore] public List<LayerOffset> LayerOffsets { get; set; } = [];
 
     public void SortOffset()
     {
@@ -135,7 +132,7 @@ public class DrawOrder
         foreach (var layerOffset in LayerOffsets)
         {
             var slotOrder = layerOffset.LayerSlotOrder;
-            var offset = layerOffset.LayerIndex - slotOrder;
+            var offset    = layerOffset.LayerIndex - slotOrder;
 
             if (offset >= 0)
             {
@@ -150,30 +147,38 @@ public class DrawOrder
 
             Offsets.Add(new DrawOrderOffset
             {
-                Slot = layerOffset.LayerName,
-                Offset = offset,
+                Slot    = layerOffset.LayerName,
+                Offset  = offset,
                 SlotNum = slotOrder
             });
         }
+
         Offsets.Sort((x, y) => x.SlotNum.CompareTo(y.SlotNum));
+    }
+
+    public class LayerOffset
+    {
+        public string LayerName      { get; set; }
+        public int    LayerSlotOrder { get; set; }
+        public int    LayerIndex     { get; set; }
     }
 }
 
 public class DrawOrderOffset
 {
-    [JsonIgnore] public int SlotNum { get; set; }
-    public string Slot { get; set; } = string.Empty;
-    public int Offset { get; set; }
+    [JsonIgnore] public int    SlotNum { get; set; }
+    public              string Slot    { get; set; } = string.Empty;
+    public              int    Offset  { get; set; }
 }
 
 public class AnimationSlot
 {
-    public List<AnimationAttachment> Attachment = [];
+    public List<AnimationAttachment> Attachment { get; set; } = [];
 }
 
 public class AnimationAttachment
 {
-    public float Time { get; set; }
+    public float   Time { get; set; }
     public string? Name { get; set; }
 }
 
@@ -186,12 +191,12 @@ public class Deform
 [JsonConverter(typeof(AnimationDefaultJsonConverter))]
 public class AnimationDefault
 {
-    public string Name { get; set; }
+    public string                  Name          { get; set; }
     public List<AnimationVertices> ImageVertices { get; set; } = [];
 }
 
 public class AnimationVertices
 {
-    public float Time { get; set; }
+    public float   Time     { get; set; }
     public float[] Vertices { get; set; } = new float[8];
 }

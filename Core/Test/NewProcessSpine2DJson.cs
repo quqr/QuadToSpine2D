@@ -6,44 +6,52 @@ namespace QuadToSpine2D.Core.Process;
 
 public class NewProcessSpine2DJson
 {
-    private readonly SpineJsonData _spineJsonData = new();
-    private readonly ConcurrentDictionary<string, SpineAnimation> _spineAnimations = [];
+    private const    float Fps = 1 / 60f;
     private readonly Skin _hitboxSkin = new() { Name = "Hitbox", Attachments = [] };
-    private QuadJsonData _quadJsonData;
-    private const float Fps = 1 / 60f;
-    private LayerDataPool _layerDataPool = new();
-    
+    private readonly Pool _pool = new();
+    private readonly QuadJsonData _quadJsonData;
+    private readonly ConcurrentDictionary<string, SpineAnimation> _spineAnimations = [];
+    private readonly SpineJsonData _spineJsonData = new();
+
     public NewProcessSpine2DJson(QuadJsonData quadJsonData)
     {
-        _quadJsonData = quadJsonData;
+        GlobalData.BarTextContent                = "Processing...";
+        _quadJsonData                            = quadJsonData;
         _spineJsonData.SpineSkeletons.ImagesPath = GlobalData.ImageSavePath;
         _spineJsonData.Bones.Add(new SpineBone { Name = "root" });
-        InitHitboxSlot(quadJsonData);
-        _spineJsonData.Skins.Add(_hitboxSkin);
+        // InitHitboxSlot(quadJsonData);
+        // _spineJsonData.Skins.Add(_hitboxSkin);
     }
 
     public SpineJsonData Process()
     {
+        var bar = 65f / _quadJsonData.Skeleton.Count;
         foreach (var skeleton in _quadJsonData.Skeleton)
         {
-            var time = 0f;
-            foreach (var animation in skeleton.CombineAnimation.Data)
-            {
-                AddAttachments(animation, time);
-
-                RemoveAttachments(animation);
-                
-                time += animation.Key * Fps;
-            }
+            GlobalData.BarTextContent = $"Processing animation : {skeleton.Name}";
+            SetAnimation(skeleton);
+            GlobalData.BarValue += bar;
         }
 
         return _spineJsonData;
     }
 
+    private void SetAnimation(QuadSkeleton skeleton)
+    {
+        var time = 0f;
+        foreach (var animation in skeleton.CombineAnimation.Data)
+        {
+            AddAttachments(animation, time);
+
+            RemoveAttachments(animation);
+
+            time += animation.Key;
+        }
+    }
+
     private void RemoveAttachments(KeyValuePair<float, Attachment> animation)
     {
         foreach (var concealAttachment in animation.Value.ConcealAttachments)
-        {
             switch (concealAttachment.Attach?.AttachType)
             {
                 case AttachType.Keyframe:
@@ -56,13 +64,11 @@ public class NewProcessSpine2DJson
                     ReleaseHitbox(concealAttachment.Attach.Hitbox!);
                     break;
             }
-        }
     }
 
     private void AddAttachments(KeyValuePair<float, Attachment> animation, float time)
     {
         foreach (var displayAttachment in animation.Value.DisplayAttachments)
-        {
             switch (displayAttachment.Attach?.AttachType)
             {
                 case AttachType.Keyframe:
@@ -75,7 +81,6 @@ public class NewProcessSpine2DJson
                     GetHitbox(displayAttachment.Attach.Hitbox, time);
                     break;
             }
-        }
     }
 
     private void ReleaseHitbox(Hitbox attachHitbox)
@@ -84,106 +89,104 @@ public class NewProcessSpine2DJson
 
     private void ReleaseKeyframe(Keyframe? attachKeyframe)
     {
-        if(attachKeyframe is null) return;
-        foreach (var layer in attachKeyframe.Layer!)
-        {
-            _layerDataPool.Release(layer.PoolData);
-        }
+        if (attachKeyframe is null) return;
+        foreach (var layer in attachKeyframe.Layers) _pool.Release(layer);
     }
 
     private void GetHitbox(Hitbox attachHitbox, float time)
     {
         // throw new NotImplementedException();
     }
+
+
     private void GetKeyframe(Keyframe? attachKeyframe, float time)
     {
-        if(attachKeyframe is null) return;
-        foreach (var layer in attachKeyframe.Layer)
+        // Remove
+        if (attachKeyframe is null) return;
+        foreach (var layer in attachKeyframe.Layers)
         {
-            var poolData = _layerDataPool.Get(layer!);
-            layer.PoolData = poolData;
+            var poolData = _pool.Get(layer);
             AddSlots(poolData);
         }
     }
-    
+
     private void AddSlots(PoolData poolData)
     {
-        foreach (var data in poolData.LayersData)
+        for (var index = 0; index < poolData.LayersData.Count; index++)
         {
-            for (var index = 0; index < data.Value.Count; index++)
+            var layerData = poolData.LayersData[index];
+            var skinName  = $"tex_id_{layerData.TexId}/skin_{index}";
+
+            var isAdded = _spineJsonData.SlotsDict.TryAdd(layerData.ImageName, new SpineSlot
             {
-                var layerData = data.Value[index];
-                if (_spineJsonData.Slots.Exists(x => x.Name.Equals(layerData.ImageName)))
-                    continue;
-                _spineJsonData.Slots.Add(new SpineSlot
-                {
-                    Name = layerData.ImageName,
-                    Attachment = layerData.ImageName,
-                    OrderId = layerData.KeyframeLayer.OrderId
-                });
-                _spineJsonData.SlotsDict[layerData.ImageName] = _spineJsonData.Slots[^1];
-                var skinIndex = index * layerData.KeyframeLayer.TexId;
-                var skinName = $"tex_id_{layerData.TexId}/skin_{skinIndex}";
-                if(!_spineJsonData.Skins.Exists(x=>x.Name.Equals(skinName)))
-                    _spineJsonData.Skins.Add(new Skin { Name = skinName,Attachments = []});
-                if (TryInitBaseMesh(layerData, skinIndex))
-                    continue;
-                InitLinkedMesh(layerData, skinIndex, index);
+                Name       = layerData.ImageName,
+                Attachment = layerData.ImageName,
+                OrderId    = layerData.KeyframeLayer.OrderId
+            });
+            if (!isAdded) continue;
+            _spineJsonData.Slots.Add(_spineJsonData.SlotsDict[layerData.ImageName]);
+
+            var skin = _spineJsonData.Skins.Find(x => x.Name.Equals(skinName));
+            if (skin is null)
+            {
+                skin = new Skin { Name = skinName, Attachments = [] };
+                _spineJsonData.Skins.Add(skin);
             }
+
+            if (index == 0)
+                InitBaseMesh(layerData, skin);
+            else
+                InitLinkedMesh(layerData, skin);
         }
     }
-    private bool TryInitBaseMesh(LayerData layerData, int skinIndex)
+
+    private void InitBaseMesh(LayerData layerData, Skin skin)
     {
-        if (skinIndex != 0) return false;
-        _spineJsonData.Skins[skinIndex].Attachments.Add(new Attachments
+        skin.Attachments.Add(new Attachments
         {
-            Value = new Mesh
+            Mesh = new Mesh
             {
-                Name = layerData.ImageName,
-                Uvs = layerData.KeyframeLayer.UVs,
-                Vertices = layerData.KeyframeLayer.ZeroCenterPoints,
-            }
-        });
-        return true;
-    }
-    private void InitLinkedMesh(LayerData layerData, int skinIndex,int meshIndex)
-    {
-        var skin = _spineJsonData.Skins.Find(x => x.Name == $"tex_id_{layerData.KeyframeLayer.TexId}/skin_0");
-        skin?.Attachments.Add(new Attachments
-        {
-            Value = new LinkedMesh
-            {
-                Name = layerData.ImageName,
-                Type = "linkedmesh",
-                Skin = $"tex_id_{layerData.KeyframeLayer.TexId}/skin_0",
-                Parent = _spineJsonData.Skins[skinIndex].Attachments[meshIndex].Value.Name,
+                Name     = layerData.ImageName,
+                Uvs      = layerData.KeyframeLayer.UVs,
+                Vertices = layerData.KeyframeLayer.ZeroCenterPoints
             }
         });
     }
+
+    private void InitLinkedMesh(LayerData layerData, Skin skin)
+    {
+        skin.Attachments.Add(new Attachments
+        {
+            Mesh = new LinkedMesh
+            {
+                Name   = layerData.ImageName,
+                Type   = "linkedmesh",
+                Skin   = $"tex_id_{layerData.KeyframeLayer.TexId}/skin_0",
+                Parent = layerData.BaseSkinAttackmentName
+            }
+        });
+    }
+
     private void InitHitboxSlot(QuadJsonData quadJsonData)
     {
         foreach (var hitbox in quadJsonData.Hitbox)
-        {
             for (var i = 0; i < hitbox.Layer.Count; i++)
             {
                 var hitboxLayerName = $"{hitbox.Name}_{i}";
                 hitbox.Layer[i].Name = hitboxLayerName;
                 _spineJsonData.Slots.Add(new SpineSlot
                 {
-                    Name = hitboxLayerName,
-                    Bone = "root",
+                    Name       = hitboxLayerName,
                     Attachment = "boundingbox",
-                    OrderId = int.MaxValue,
+                    OrderId    = int.MaxValue
                 });
                 _hitboxSkin.Attachments.Add(new Attachments
                 {
-                    Value = new Boundingbox
+                    Mesh = new Boundingbox
                     {
-                        Name = hitboxLayerName,
-                        Type = "boundingbox",
+                        Name = hitboxLayerName
                     }
                 });
             }
-        }
     }
 }

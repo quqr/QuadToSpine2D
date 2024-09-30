@@ -17,7 +17,7 @@ public class AnimationDefaultJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+        JsonSerializer                          serializer)
     {
         throw new NotImplementedException();
     }

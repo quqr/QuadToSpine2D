@@ -10,7 +10,7 @@ public class SlotJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+        JsonSerializer                          serializer)
     {
         var obj = serializer.Deserialize(reader);
         if (obj is not JArray jArray) return null;

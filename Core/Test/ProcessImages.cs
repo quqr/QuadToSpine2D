@@ -1,4 +1,6 @@
-﻿using QuadToSpine2D.Core.Utility;
+﻿using System.Collections.Concurrent;
+using System.Threading.Tasks;
+using QuadToSpine2D.Core.Utility;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -8,20 +10,21 @@ namespace QuadToSpine2D.Core.Process;
 
 public class ProcessImages
 {
-    // { tex_id: { layer_guid: pool_data } }
-    // pool_data: { skin_id: [layer_data] };
-    public Dictionary<int, Dictionary<string, PoolData>> LayersDataDict { get; } = [];
-    private int _currentImageIndex;
-    private readonly int _skinsCount;
     private readonly Image?[,] _images;
+    private readonly int       _skinsCount;
+    private          int       _currentImageIndex;
+
     public ProcessImages(List<List<string?>> imagesSrc)
     {
         _skinsCount = imagesSrc[0].Count;
-        _images = new Image[imagesSrc.Count, _skinsCount];
-        GetAllImages(imagesSrc);
+        _images     = new Image[imagesSrc.Count, _skinsCount];
+        GetImages(imagesSrc);
     }
 
-    private void GetAllImages(List<List<string?>> images)
+    // { tex_id: { skin_id: {layer_guid: [layer_data, ...] } }
+    public ConcurrentDictionary<int, Dictionary<int, Dictionary<string, List<LayerData>>>> LayersDataDict { get; } = [];
+
+    private void GetImages(List<List<string?>> images)
     {
         for (var i = 0; i < images.Count; i++)
         {
@@ -33,80 +36,104 @@ public class ProcessImages
                     _images[i, j] = null;
                     continue;
                 }
+
                 _images[i, j] = Image.Load(src);
             }
         }
     }
 
-    private Rectangle CalculateRectangle(KeyframeLayer layer)
+    public List<LayerData> GetLayerData(KeyframeLayer layer, int copyIndex)
     {
-        return new Rectangle
-        {
-            X = (int)layer.MinAndMaxSrcPoints[0],
-            Y = (int)layer.MinAndMaxSrcPoints[1],
-            Width = (int)layer.Width,
-            Height = (int)layer.Height
-        };
-    }
-
-    public PoolData GetLayerData(KeyframeLayer layer, int copyIndex)
-    {
+        var layersData = new List<LayerData>();
         for (var skinIndex = 0; skinIndex < _skinsCount; skinIndex++)
         {
-            var rectangle = CalculateRectangle(layer);
-            var image = _images[layer.TexId, skinIndex];
-            if (image is null) 
-                continue;
-            var data = CropImage(image, rectangle, layer, skinIndex, copyIndex);
-            
-            if(!LayersDataDict.ContainsKey(layer.TexId))
-                LayersDataDict[layer.TexId] = [];
-            if (!LayersDataDict[layer.TexId].TryGetValue(layer.LayerGuid, out var poolData))
+            LayerData data;
+            if (layer.Srcquad is not null)
             {
-                poolData = new PoolData();
-                LayersDataDict[layer.TexId][layer.LayerGuid] = poolData;
+                var image = _images[layer.TexId, skinIndex];
+                if (image is null)
+                    continue;
+                var rectangle = ProcessUtility.CalculateRectangle(layer);
+                data = CropImage(image, rectangle, layer, skinIndex, copyIndex);
+            }
+            else
+            {
+                data = CropImage(layer, skinIndex, copyIndex);
             }
 
-            if (!poolData.LayersData.TryGetValue(skinIndex, out var layerData))
+            if (!LayersDataDict.ContainsKey(layer.TexId))
+                LayersDataDict[layer.TexId] = [];
+            if (!LayersDataDict[layer.TexId].TryGetValue(skinIndex, out _))
+                LayersDataDict[layer.TexId][skinIndex] = [];
+            if (!LayersDataDict[layer.TexId][skinIndex].TryGetValue(layer.Guid, out var curLayerData))
             {
-                layerData = [];
-                poolData.LayersData[skinIndex] = layerData;
+                curLayerData                                       = [];
+                LayersDataDict[layer.TexId][skinIndex][layer.Guid] = curLayerData;
             }
-            layerData.Add(data);
+
+            curLayerData.Add(data);
+            layersData.Add(data);
         }
 
         _currentImageIndex = copyIndex == 0 ? _currentImageIndex + 1 : _currentImageIndex;
-        return LayersDataDict[layer.TexId][layer.LayerGuid];
+        return layersData;
     }
 
     private LayerData CropImage(Image image, Rectangle rectangle, KeyframeLayer layer, int curSkin, int copyIndex)
     {
-        using var clipImage = image.Clone(x => { x.Crop(rectangle); });
         var imageName = $"Slice_{_currentImageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
-        clipImage.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png"));
         layer.OrderId = _currentImageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
+
+        Task.Run(() =>
+        {
+            using var clipImage = image.Clone(x => { x.Crop(rectangle); });
+            clipImage.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png"));
+        });
 
         return new LayerData
         {
-            ImageName = imageName,
-            KeyframeLayer = layer,
-            SkinIndex = curSkin,
-            ImageIndex = _currentImageIndex,
-            TexId = layer.TexId,
-            CopyIndex = copyIndex,
-            ImageNameData = [_currentImageIndex, curSkin, layer.TexId, copyIndex],
+            ImageName              = imageName,
+            KeyframeLayer          = layer,
+            SkinIndex              = curSkin,
+            ImageIndex             = _currentImageIndex,
+            TexId                  = layer.TexId,
+            CopyIndex              = copyIndex,
+            BaseSkinAttackmentName = $"Slice_{_currentImageIndex}_{layer.TexId}_0_{copyIndex}"
         };
     }
 
-    public Image DrawFogImage(int width, int height, string[] colors)
+    private LayerData CropImage(KeyframeLayer layer, int curSkin, int copyIndex)
+    {
+        var imageName = $"Slice_{_currentImageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
+        layer.OrderId = _currentImageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
+
+        Task.Run(() =>
+        {
+            using var fog = DrawFogImage(100, 100, layer.Fog);
+            fog.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png"));
+        });
+
+        return new LayerData
+        {
+            ImageName              = imageName,
+            KeyframeLayer          = layer,
+            SkinIndex              = curSkin,
+            ImageIndex             = _currentImageIndex,
+            TexId                  = layer.TexId,
+            CopyIndex              = copyIndex,
+            BaseSkinAttackmentName = $"Slice_{_currentImageIndex}_{layer.TexId}_0_{copyIndex}"
+        };
+    }
+
+    private Image DrawFogImage(int width, int height, List<string> colors)
     {
         var image = new Image<Rgba32>(width, height);
         PointF[] fs =
         [
-            new PointF(0, image.Width),
-            new PointF(0, 0),
-            new PointF(image.Height, 0),
-            new PointF(image.Height, image.Width),
+            new(0, image.Width),
+            new(0, 0),
+            new(image.Height, 0),
+            new(image.Height, image.Width)
         ];
         Color[] cs =
         [
