@@ -185,12 +185,14 @@ public class AnimationAttachment
 [JsonConverter(typeof(SkinDeformConverter))]
 public class Deform
 {
+    // {skinName:{slotName:{value}}}
     public Dictionary<string, Dictionary<string, AnimationDefault>> SkinName { get; set; } = new();
 }
 
 [JsonConverter(typeof(AnimationDefaultJsonConverter))]
 public class AnimationDefault
 {
+    // mesh name
     public string                  Name          { get; set; }
     public List<AnimationVertices> ImageVertices { get; set; } = [];
 }

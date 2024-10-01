@@ -49,7 +49,9 @@ public class ProcessQuadJsonFile
         QuadData.Animation.RemoveAll(x => x is null || x.Id == -1);
 
         foreach (var keyframe in QuadData.Keyframe) keyframe?.Layers?.RemoveAll(y => y is null);
+        
         QuadData.Keyframe.RemoveAll(x => x?.Layers is null || x.Layers.Count == 0);
+        
         Parallel.ForEach(QuadData.Animation, animation =>
         {
             foreach (var timeline in animation.Timeline)
@@ -72,6 +74,7 @@ public class ProcessQuadJsonFile
                         break;
                 }
         });
+        
         QuadData.Hitbox.RemoveAll(x => x is null);
 
         // Attributes = QuadData.Keyframe

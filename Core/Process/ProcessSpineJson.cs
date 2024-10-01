@@ -86,7 +86,7 @@ public class ProcessSpineJson
 
     private void InitBaseData(LayerData layerData, int skinIndex, int texIdIndex, int guidIndex)
     {
-        var slotName = layerData.ImageName;
+        var slotName = layerData.SlotAndImageName;
         layerData.SkinName = _spineJsonData.Skins.Last().Name;
         var spineSlot = new SpineSlot
         {

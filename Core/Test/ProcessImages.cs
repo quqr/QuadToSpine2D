@@ -42,7 +42,7 @@ public class ProcessImages
         }
     }
 
-    public List<LayerData> GetLayerData(KeyframeLayer layer, int copyIndex)
+    public List<LayerData> GetLayerData(KeyframeLayer layer,PoolData? poolData, int copyIndex)
     {
         var layersData = new List<LayerData>();
         for (var skinIndex = 0; skinIndex < _skinsCount; skinIndex++)
@@ -54,11 +54,11 @@ public class ProcessImages
                 if (image is null)
                     continue;
                 var rectangle = ProcessUtility.CalculateRectangle(layer);
-                data = CropImage(image, rectangle, layer, skinIndex, copyIndex);
+                data = CropImage(image, rectangle, layer, poolData, skinIndex, copyIndex);
             }
             else
             {
-                data = CropImage(layer, skinIndex, copyIndex);
+                data = CropImage(layer, poolData, skinIndex, copyIndex);
             }
 
             if (!LayersDataDict.ContainsKey(layer.TexId))
@@ -79,10 +79,10 @@ public class ProcessImages
         return layersData;
     }
 
-    private LayerData CropImage(Image image, Rectangle rectangle, KeyframeLayer layer, int curSkin, int copyIndex)
+    private LayerData CropImage(Image image, Rectangle rectangle, KeyframeLayer layer,PoolData? poolData ,int curSkin, int copyIndex)
     {
-        var imageName = $"Slice_{_currentImageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
-        layer.OrderId = _currentImageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
+        var imageName = GerImageName(layer, poolData, curSkin, copyIndex,out var imageIndex);
+
 
         Task.Run(() =>
         {
@@ -92,21 +92,28 @@ public class ProcessImages
 
         return new LayerData
         {
-            ImageName              = imageName,
+            SlotAndImageName       = imageName,
             KeyframeLayer          = layer,
             SkinIndex              = curSkin,
             ImageIndex             = _currentImageIndex,
             TexId                  = layer.TexId,
             CopyIndex              = copyIndex,
-            BaseSkinAttackmentName = $"Slice_{_currentImageIndex}_{layer.TexId}_0_{copyIndex}"
+            BaseSkinAttackmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
         };
     }
 
-    private LayerData CropImage(KeyframeLayer layer, int curSkin, int copyIndex)
+    private string GerImageName(KeyframeLayer layer,PoolData? poolData, int curSkin, int copyIndex,out int imageIndex)
     {
-        var imageName = $"Slice_{_currentImageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
-        layer.OrderId = _currentImageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
+        imageIndex = poolData?.LayersData[curSkin].ImageIndex ?? _currentImageIndex;
+        var imageName  = $"Slice_{imageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
+        layer.OrderId = imageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
+        return imageName;
+    }
 
+    private LayerData CropImage(KeyframeLayer layer,PoolData? poolData, int curSkin, int copyIndex)
+    {
+        var imageName = GerImageName(layer, poolData, curSkin, copyIndex,out var imageIndex);
+        
         Task.Run(() =>
         {
             using var fog = DrawFogImage(100, 100, layer.Fog);
@@ -115,13 +122,13 @@ public class ProcessImages
 
         return new LayerData
         {
-            ImageName              = imageName,
+            SlotAndImageName       = imageName,
             KeyframeLayer          = layer,
             SkinIndex              = curSkin,
             ImageIndex             = _currentImageIndex,
             TexId                  = layer.TexId,
             CopyIndex              = copyIndex,
-            BaseSkinAttackmentName = $"Slice_{_currentImageIndex}_{layer.TexId}_0_{copyIndex}"
+            BaseSkinAttackmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
         };
     }
 

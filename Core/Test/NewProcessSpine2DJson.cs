@@ -6,11 +6,10 @@ namespace QuadToSpine2D.Core.Process;
 
 public class NewProcessSpine2DJson
 {
-    private const    float Fps = 1 / 60f;
-    private readonly Skin _hitboxSkin = new() { Name = "Hitbox", Attachments = [] };
-    private readonly Pool _pool = new();
-    private readonly QuadJsonData _quadJsonData;
-    private readonly ConcurrentDictionary<string, SpineAnimation> _spineAnimations = [];
+    private const    float         Fps         = 1 / 60f;
+    private readonly Skin          _hitboxSkin = new() { Name = "Hitbox", Attachments = [] };
+    private readonly Pool          _pool       = new();
+    private readonly QuadJsonData  _quadJsonData;
     private readonly SpineJsonData _spineJsonData = new();
 
     public NewProcessSpine2DJson(QuadJsonData quadJsonData)
@@ -38,68 +37,130 @@ public class NewProcessSpine2DJson
 
     private void SetAnimation(QuadSkeleton skeleton)
     {
-        var time = 0f;
+        Dictionary<string, AnimationSlot> spineAnimationSlots = [];
+        List<DrawOrder>                   drawOrders          = [];
+        Deform                            deform              = new();
+        float                             time                = 0f;
+
+
         foreach (var animation in skeleton.CombineAnimation.Data)
         {
-            AddAttachments(animation, time);
+            AddAttachments(animation, spineAnimationSlots, deform, time);
+            RemoveAttachments(animation, spineAnimationSlots, deform, time);
 
-            RemoveAttachments(animation);
-
-            time += animation.Key;
+            time = animation.Key * Fps;
         }
+
+        _spineJsonData.Animations[skeleton.Name] = new SpineAnimation
+        {
+            Slots     = spineAnimationSlots,
+            Deform    = deform,
+            DrawOrder = drawOrders
+        };
     }
 
-    private void RemoveAttachments(KeyValuePair<float, Attachment> animation)
+    private void AddVertices(PoolData poolData, KeyframeLayer keyframeLayer, Deform deform, Timeline timeline,
+        float                         time)
     {
-        foreach (var concealAttachment in animation.Value.ConcealAttachments)
-            switch (concealAttachment.Attach?.AttachType)
+        AnimationVertices vert = new() { Time = time };
+        var animationDefaultValue =
+            GetAnimationDefaultValue(deform, poolData.LayersData[0].SlotAndImageName, poolData.LayersData[0].SkinName);
+        InterpolateAnimation(keyframeLayer, timeline, animationDefaultValue, vert);
+    }
+
+    private void InterpolateAnimation(KeyframeLayer layer, Timeline timeline, AnimationDefault animationDefault,
+        AnimationVertices                           animationVert)
+    {
+        LineInterpolateAnimation(layer, animationDefault, animationVert, timeline);
+    }
+    
+    private void LineInterpolateAnimation(KeyframeLayer layer,         AnimationDefault animationDefault,
+        AnimationVertices                               animationVert, Timeline         timeline)
+    {
+        var vert = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
+        // Make sure the image to center
+        animationVert.Vertices = ProcessUtility.MinusFloats(vert.ToFloats(), layer.ZeroCenterPoints);
+        animationDefault.ImageVertices.Add(animationVert);
+    }
+
+    private void RemoveAttachments(KeyValuePair<float, Attachment> animation,
+        Dictionary<string, AnimationSlot>                          animationSlots,
+        Deform                                                     deform,
+        float                                                      time)
+    {
+        foreach (var timeline in animation.Value.ConcealAttachments)
+            switch (timeline.Attach?.AttachType)
             {
                 case AttachType.Keyframe:
-                    ReleaseKeyframe(concealAttachment.Attach.Keyframe!);
+                    ReleaseKeyframe(timeline.Attach.Keyframe, animationSlots, time);
                     break;
                 case AttachType.Slot:
-                    ReleaseKeyframe(concealAttachment.Attach.Keyframe!);
+                    ReleaseKeyframe(timeline.Attach.Keyframe, animationSlots, time);
                     break;
                 case AttachType.HitBox:
-                    ReleaseHitbox(concealAttachment.Attach.Hitbox!);
+                    ReleaseHitbox(timeline.Attach.Hitbox!);
                     break;
             }
     }
 
-    private void AddAttachments(KeyValuePair<float, Attachment> animation, float time)
+    private void AddAttachments(KeyValuePair<float, Attachment> animation,
+        Dictionary<string, AnimationSlot>                       animationSlots, Deform deform, float time)
     {
-        foreach (var displayAttachment in animation.Value.DisplayAttachments)
-            switch (displayAttachment.Attach?.AttachType)
+        foreach (var timeline in animation.Value.DisplayAttachments)
+        {
+            switch (timeline.Attach?.AttachType)
             {
                 case AttachType.Keyframe:
-                    GetKeyframe(displayAttachment.Attach.Keyframe, time);
+                    GetKeyframe(timeline.Attach.Keyframe, animationSlots, deform, timeline, time);
                     break;
                 case AttachType.Slot:
-                    GetKeyframe(displayAttachment.Attach.Keyframe, time);
+                    GetKeyframe(timeline.Attach.Keyframe, animationSlots, deform, timeline, time);
                     break;
                 case AttachType.HitBox:
-                    GetHitbox(displayAttachment.Attach.Hitbox, time);
+                    GetHitbox(timeline.Attach.Hitbox);
                     break;
             }
+        }
     }
 
     private void ReleaseHitbox(Hitbox attachHitbox)
     {
     }
 
-    private void ReleaseKeyframe(Keyframe? attachKeyframe)
+    private void ReleaseKeyframe(Keyframe? attachKeyframe,
+        Dictionary<string, AnimationSlot>  animationSlots,
+        float                              time)
     {
         if (attachKeyframe is null) return;
-        foreach (var layer in attachKeyframe.Layers) _pool.Release(layer);
+        foreach (var layer in attachKeyframe.Layers)
+        {
+            var poolData = _pool.FindPoolData(layer);
+            RemoveAnimationSlots(poolData, animationSlots, time);
+            _pool.Release(poolData);
+        }
     }
 
-    private void GetHitbox(Hitbox attachHitbox, float time)
+    private void RemoveAnimationSlots(PoolData poolData, Dictionary<string, AnimationSlot> animationSlots, float time)
+    {
+        var slot = animationSlots[poolData.LayersData[0].SlotAndImageName];
+        slot.Attachment.Add(new AnimationAttachment
+        {
+            Time = time,
+            Name = null
+        });
+    }
+
+    private void GetHitbox(Hitbox attachHitbox)
     {
         // throw new NotImplementedException();
     }
 
 
-    private void GetKeyframe(Keyframe? attachKeyframe, float time)
+    private void GetKeyframe(Keyframe?    attachKeyframe,
+        Dictionary<string, AnimationSlot> animationSlots,
+        Deform                            deform,
+        Timeline                          timeline,
+        float                             time)
     {
         // Remove
         if (attachKeyframe is null) return;
@@ -107,7 +168,25 @@ public class NewProcessSpine2DJson
         {
             var poolData = _pool.Get(layer);
             AddSlots(poolData);
+            AddAnimationSlots(poolData, animationSlots, time);
+            AddVertices(poolData, layer, deform, timeline, time);
         }
+    }
+
+    private void AddAnimationSlots(PoolData poolData, Dictionary<string, AnimationSlot> slots, float time)
+    {
+        var slotName = poolData.LayersData[0].SlotAndImageName;
+        if (!slots.TryGetValue(slotName, out var value))
+        {
+            value           = new AnimationSlot();
+            slots[slotName] = value;
+        }
+
+        value.Attachment.Add(new AnimationAttachment
+        {
+            Time = time,
+            Name = slotName
+        });
     }
 
     private void AddSlots(PoolData poolData)
@@ -116,17 +195,21 @@ public class NewProcessSpine2DJson
         {
             var layerData = poolData.LayersData[index];
             var skinName  = $"tex_id_{layerData.TexId}/skin_{index}";
-
-            var isAdded = _spineJsonData.SlotsDict.TryAdd(layerData.ImageName, new SpineSlot
+            
+            layerData.SkinName                = skinName;
+            layerData.KeyframeLayer.LayerName = layerData.SlotAndImageName;
+            
+            var isAdded = _spineJsonData.SlotsDict.TryAdd(layerData.SlotAndImageName, new SpineSlot
             {
-                Name       = layerData.ImageName,
-                Attachment = layerData.ImageName,
+                Name       = layerData.SlotAndImageName,
+                Attachment = layerData.SlotAndImageName,
                 OrderId    = layerData.KeyframeLayer.OrderId
             });
             if (!isAdded) continue;
-            _spineJsonData.Slots.Add(_spineJsonData.SlotsDict[layerData.ImageName]);
-
+            
+            _spineJsonData.Slots.Add(_spineJsonData.SlotsDict[layerData.SlotAndImageName]);
             var skin = _spineJsonData.Skins.Find(x => x.Name.Equals(skinName));
+            
             if (skin is null)
             {
                 skin = new Skin { Name = skinName, Attachments = [] };
@@ -140,13 +223,26 @@ public class NewProcessSpine2DJson
         }
     }
 
+    private AnimationDefault GetAnimationDefaultValue(Deform deform, string slotName, string skinName)
+    {
+        if (!deform.SkinName.ContainsKey(skinName))
+            deform.SkinName[skinName] = [];
+        if (!deform.SkinName[skinName].TryGetValue(slotName, out var value))
+        {
+            value                               = new AnimationDefault { Name = slotName };
+            deform.SkinName[skinName][slotName] = value;
+        }
+
+        return value;
+    }
+
     private void InitBaseMesh(LayerData layerData, Skin skin)
     {
         skin.Attachments.Add(new Attachments
         {
             Mesh = new Mesh
             {
-                Name     = layerData.ImageName,
+                Name     = layerData.SlotAndImageName,
                 Uvs      = layerData.KeyframeLayer.UVs,
                 Vertices = layerData.KeyframeLayer.ZeroCenterPoints
             }
@@ -159,7 +255,7 @@ public class NewProcessSpine2DJson
         {
             Mesh = new LinkedMesh
             {
-                Name   = layerData.ImageName,
+                Name   = layerData.SlotAndImageName,
                 Type   = "linkedmesh",
                 Skin   = $"tex_id_{layerData.KeyframeLayer.TexId}/skin_0",
                 Parent = layerData.BaseSkinAttackmentName

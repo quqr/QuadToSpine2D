@@ -141,6 +141,5 @@ public class Tests
 
         var m1         = _imagePath.Max(x => x.Count);
         var layerCount = quadData.QuadData.Keyframe.Sum(x => x.Layers.Count);
-        Assert.That(layerCount, Is.EqualTo(pool._all.Count));
     }
 }

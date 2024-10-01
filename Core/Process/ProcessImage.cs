@@ -150,7 +150,7 @@ public class ProcessImage
 
         return new LayerData
         {
-            ImageName     = imageName,
+            SlotAndImageName     = imageName,
             KeyframeLayer = layer,
             SkinIndex     = curSkin,
             ImageIndex    = _currentImageIndex,

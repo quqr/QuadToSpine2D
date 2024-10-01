@@ -3,7 +3,7 @@ namespace QuadToSpine2D.Core.Data;
 public class LayerData
 {
     public KeyframeLayer KeyframeLayer          { get; set; }
-    public string        ImageName              { get; set; }
+    public string        SlotAndImageName       { get; set; }
     public string        BaseSkinAttackmentName { get; set; }
     public string        SkinName               { get; set; }
     public int           ImageIndex             { get; set; }
