@@ -66,7 +66,7 @@ public static class ProcessUtility
     public static float[]? MulFloats(float[]? a, float b)
     {
         if (a is null) return null;
-        if (Math.Abs(b - 1) < .1f) return a;
+        if (ApproximatelyEqual(b, 1f)) return a;
         var c                                   = new float[a.Length];
         for (var i = 0; i < a.Length; i++) c[i] = a[i] * b;
         return c;
@@ -93,9 +93,12 @@ public static class ProcessUtility
                     concealData                          = new Attachment();
                     newAnimation.Data[timeline.EndFrame] = concealData;
                 }
-
                 if (timeline.Attach is null) continue;
+                
+                timeline.FramePoint = new FramePoint(timeline.StartFrame, timeline.EndFrame);
+                
                 displayData.DisplayAttachments.Add(timeline);
+                // if(timeline.Last?.EndFrame!=timeline.StartFrame)
                 concealData.ConcealAttachments.Add(timeline);
             }
 
@@ -114,5 +117,11 @@ public static class ProcessUtility
             Width  = (int)layer.Width,
             Height = (int)layer.Height
         };
+    }
+
+    public static bool ApproximatelyEqual(float? a, float? b, float epsilon = 0.01f)
+    {
+        if (a is null || b is null) return false;
+        return Math.Abs((float)(a - b)) < epsilon;
     }
 }

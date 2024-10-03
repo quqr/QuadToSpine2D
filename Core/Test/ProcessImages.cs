@@ -12,7 +12,7 @@ public class ProcessImages
 {
     private readonly Image?[,] _images;
     private readonly int       _skinsCount;
-    private          int       _currentImageIndex;
+    private          int       _currentImageIndex { get; set; }
 
     public ProcessImages(List<List<string?>> imagesSrc)
     {
@@ -95,7 +95,7 @@ public class ProcessImages
             SlotAndImageName       = imageName,
             KeyframeLayer          = layer,
             SkinIndex              = curSkin,
-            ImageIndex             = _currentImageIndex,
+            ImageIndex             = imageIndex,
             TexId                  = layer.TexId,
             CopyIndex              = copyIndex,
             BaseSkinAttackmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
@@ -125,7 +125,7 @@ public class ProcessImages
             SlotAndImageName       = imageName,
             KeyframeLayer          = layer,
             SkinIndex              = curSkin,
-            ImageIndex             = _currentImageIndex,
+            ImageIndex             = imageIndex,
             TexId                  = layer.TexId,
             CopyIndex              = copyIndex,
             BaseSkinAttackmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"

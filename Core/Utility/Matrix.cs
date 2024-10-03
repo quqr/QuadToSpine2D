@@ -198,7 +198,7 @@ public readonly struct Matrix : IEquatable<Matrix>
         for (var i = 0; i < Rows; i++)
         {
             for (var j = 0; j < Cols; j++)
-                if (Math.Abs(Value[i, j] - other[i, j]) > .001f)
+                if (ProcessUtility.ApproximatelyEqual(Value[i, j], other.Value[i, j]))
                     return false;
         }
 

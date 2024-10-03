@@ -8,32 +8,43 @@ public class Pool
     private readonly Dictionary<string, List<PoolData>> _poolDictionary = new();
 
     private readonly ProcessImages  _processImages = new(GlobalData.ImagePath);
-    private readonly List<PoolData> _unused        = [];
-    private readonly List<PoolData> _used          = [];
-
+    private readonly Dictionary<string, List<PoolData>> _usedPoolDictionary = new();
+    private readonly Dictionary<string, List<PoolData>> _unusedPoolDictionary = new();
     public PoolData Get(KeyframeLayer layer)
     {
         _poolDictionary.TryGetValue(layer.Guid, out var poolsData);
-        PoolData? usedPoolData   = null;
-        PoolData? unusedPoolData = null;
-
-        for (var index = 0; index < poolsData?.Count; index++)
+        if (!_usedPoolDictionary.TryGetValue(layer.Guid, out var usedPoolsData))
         {
-            unusedPoolData ??= _unused.Find(x => x == poolsData[index]);
-            usedPoolData   ??= _used.Find(x => x   == poolsData[index]);
-            if (unusedPoolData is not null && usedPoolData is not null) break;
+            _usedPoolDictionary.Add(layer.Guid, usedPoolsData = []);
+        }
+        if (!_unusedPoolDictionary.TryGetValue(layer.Guid, out var unusedPoolsData))
+        {
+            _unusedPoolDictionary.Add(layer.Guid, unusedPoolsData = []);
         }
 
-        var poolData = unusedPoolData ?? Create(layer, usedPoolData);
-        _used.Add(poolData);
+        var unusedPoolData = unusedPoolsData.FirstOrDefault();
+        
+        PoolData poolData;
+        if (unusedPoolData is null)
+        {
+            poolData = Create(layer, usedPoolsData);
+        }
+        else
+        {
+            poolData = unusedPoolData;
+            unusedPoolsData.Remove(poolData);
+        }
+
+        usedPoolsData.Add(poolData);
         return poolData;
     }
 
-    private PoolData Create(KeyframeLayer layer, PoolData? usedPoolData)
+    private PoolData Create(KeyframeLayer layer, List<PoolData> usedPoolsData)
     {
-        var copyIndex = 0;
-        if (usedPoolData is not null)
-            copyIndex = usedPoolData.LayersData.Count;
+        var       copyIndex    = usedPoolsData.Count;
+        PoolData? usedPoolData =null;
+        if(usedPoolsData.Count != 0)
+            usedPoolData = usedPoolsData[0];
         var data     = _processImages.GetLayerData(layer, usedPoolData, copyIndex);
         
         var poolData = new PoolData { LayersData = data };
@@ -45,35 +56,20 @@ public class Pool
     
         return poolData;
     }
-
-    public void Release(KeyframeLayer layer)
+    public void Release(KeyframeLayer layer,PoolData poolData)
     {
-        var poolData = FindPoolData(layer);
-        _used.Remove(poolData);
-        _unused.Add(poolData);
-    }
-    public void Release(PoolData poolData)
-    {
-        _used.Remove(poolData);
-        _unused.Add(poolData);
+        poolData.FramePoint = new FramePoint(-1);
+        _usedPoolDictionary[layer.Guid].Remove(poolData);
+        _unusedPoolDictionary[layer.Guid].Add(poolData);
     }
 
-    public PoolData FindPoolData(KeyframeLayer layer)
+    public PoolData FindPoolData(KeyframeLayer layer, FramePoint framePoint)
     {
-        // bugs: if there are multiple layers with the same guid, this method will return the first one it finds
-        var poolsData = _poolDictionary[layer.Guid];
-        foreach (var poolData in poolsData)
+        foreach (var poolData in _poolDictionary[layer.Guid])
         {
-            if (_used.Contains(poolData))
+            if (_usedPoolDictionary[layer.Guid].Contains(poolData) && poolData.FramePoint == framePoint)
                 return poolData;
         }
-
         throw new ArgumentException("Pool data not found for layer " + layer.Guid);
-    }
-
-    public void ReleaseAll()
-    {
-        _unused.AddRange(_used);
-        _used.Clear();
     }
 }

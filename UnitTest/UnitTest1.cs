@@ -109,37 +109,5 @@ public class Tests
 
     private void MainTest()
     {
-        Directory.Delete(GlobalData.ImageSavePath, true);
-        Directory.CreateDirectory(GlobalData.ImageSavePath);
-        GlobalData.ImagePath = _imagePath;
-        var quadData = new ProcessQuadData().LoadQuadJson(_quadFilePath);
-        var pool     = new Pool();
-        var quad     = quadData.QuadData;
-        foreach (var skeleton in quad.Skeleton)
-        {
-            List<Animation> animations = [];
-            animations
-               .AddRange(skeleton.Bone
-                                 .Select(bone => quad.Animation
-                                                     .First(x => x.Id == bone.Attach.Id)));
-            foreach (var animation in animations)
-            {
-                var time = 0f;
-                foreach (var timeline in animation.Timeline)
-                {
-                    time += timeline.Frames;
-                    if (timeline.Attach?.Keyframe?.Layers is null) continue;
-                    foreach (var layer in timeline.Attach.Keyframe.Layers)
-                    {
-                        var data = pool.Get(layer);
-                    }
-                }
-            }
-
-            pool.ReleaseAll();
-        }
-
-        var m1         = _imagePath.Max(x => x.Count);
-        var layerCount = quadData.QuadData.Keyframe.Sum(x => x.Layers.Count);
     }
 }

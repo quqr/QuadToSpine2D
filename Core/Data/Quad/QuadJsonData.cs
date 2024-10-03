@@ -14,7 +14,7 @@ public class QuadJsonData
 }
 
 [JsonConverter(typeof(HitboxJsonConverter))]
-public class Hitbox
+public class Hitbox : Attach
 {
     public string            Name  { get; set; }
     public List<HitboxLayer> Layer { get; set; }
@@ -27,13 +27,13 @@ public class HitboxLayer
 }
 
 [JsonConverter(typeof(SlotJsonConverter))]
-public class Slot
+public class Slot : Attach
 {
     public List<Attach>? Attaches { get; set; }
 }
 
 [JsonConverter(typeof(KeyframeJsonConverter))]
-public class Keyframe
+public class Keyframe : Attach
 {
     private string _name;
 
@@ -46,8 +46,6 @@ public class Keyframe
             Id    = Convert.ToInt32(_name.Split(' ').Last());
         }
     }
-
-    public int                   Id     { get; set; }
     public List<KeyframeLayer?>? Layers { get; set; }
 }
 
@@ -155,7 +153,7 @@ public class KeyframeLayer
     }
 }
 
-public class Animation
+public class Animation : Attach
 {
     private string _name;
 
@@ -168,11 +166,10 @@ public class Animation
             var splitName = _name.Split(' ');
             if (!splitName[0].Equals("animation")) return;
 
-            Id = Convert.ToInt32(splitName.Last());
+            Id         = Convert.ToInt32(splitName.Last());
+            AttachType = AttachType.Animation;
         }
     }
-
-    public  int            Id        { get; set; } = -1;
     private List<Timeline> _timeline { get; set; }
 
     public List<Timeline> Timeline
@@ -197,18 +194,6 @@ public class Animation
     {
         set => IsLoop = value >= 0;
     }
-
-    public Animation Clone()
-    {
-        var animation = new Animation
-        {
-            Name     = Name,
-            Id       = Id,
-            Timeline = Timeline,
-            IsLoop   = IsLoop
-        };
-        return animation;
-    }
 }
 
 public class Timeline
@@ -227,16 +212,17 @@ public class Timeline
     }
 
     public Timeline? Next   { get; set; }
-    public float     Frames { get; set; }
+    public int     Frames { get; set; }
 
     public float Time
     {
         get => Frames;
-        set => Frames = value;
+        set => Frames = (int)value;
     }
-
-    public float   StartFrame    { get; set; }
-    public float   EndFrame      { get; set; }
+    
+    public int     StartFrame    { get; set; }
+    public int     EndFrame      { get; set; }
+    public FramePoint       FramePoint             { get; set; }
     public Attach? Attach        { get; set; }
     public bool    IsKeyframeMix { get; private set; }
 
@@ -299,13 +285,9 @@ public class Attach
             }
         }
     }
-
-    public AttachType AttachType { get; private set; }
-    public Keyframe?  Keyframe   { get; set; }
-    public Hitbox?    Hitbox     { get; set; }
-    public int        Id         { get; set; }
+    public AttachType AttachType { get; set; }
+    public int        Id         { get; set; } = -1;
 }
-
 public enum AttachType
 {
     Keyframe,
@@ -316,7 +298,7 @@ public enum AttachType
 }
 
 [JsonConverter(typeof(SkeletonJsonConverter))]
-public class QuadSkeleton
+public class QuadSkeleton : Attach
 {
     public string          Name             { get; set; }
     public List<QuadBone>? Bone             { get; set; }

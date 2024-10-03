@@ -248,23 +248,26 @@ public class ProcessSpineJson
 
     private Hitbox? GetHitBox(Timeline timeline)
     {
+        var hitbox = timeline.Attach as Hitbox;
         return timeline.Attach?.AttachType switch
         {
-            AttachType.HitBox => timeline.Attach.Hitbox,
+            AttachType.HitBox => hitbox,
             _                 => null
         };
     }
 
     private Keyframe? GetKeyframe(Timeline timeline)
     {
-        return timeline.Attach?.AttachType switch
+        switch (timeline.Attach?.AttachType)
         {
-            AttachType.Keyframe =>
-                timeline.Attach.Keyframe,
-            AttachType.Slot =>
-                timeline.Attach.Keyframe,
-            _ => null
-        };
+            case AttachType.Keyframe:
+                return timeline.Attach as Keyframe;
+            case AttachType.Slot:
+                var slot = timeline.Attach as Slot;
+                return slot.Attaches.Find(x => x.AttachType == AttachType.Keyframe) as Keyframe;
+            default:
+                return null;
+        }
     }
 
     private void SetAnimationData(
@@ -316,7 +319,7 @@ public class ProcessSpineJson
     {
         var                    layers          = keyframe.Layers;
         var                    drawOrder       = new DrawOrder { Time = initTime };
-        var                    existDrawOrder  = drawOrders.Find(x => Math.Abs(x.Time - initTime) < .01f);
+        var                    existDrawOrder  = drawOrders.Find(x => ProcessUtility.ApproximatelyEqual(x.Time, initTime));
         DrawOrder.LayerOffset? lastLayerOffset = null;
         // existDrawOrder may have same layers,  and it is an error.
         // Maybe the process image have bugs, which just process a layer, not a full track. 

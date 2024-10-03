@@ -17,7 +17,8 @@ public class KeyframeJsonConverter : JsonConverter
         return new Keyframe
         {
             Name   = jObject["name"]?.ToString(),
-            Layers = jObject["layer"]?.ToObject<List<KeyframeLayer?>>()
+            Layers = jObject["layer"]?.ToObject<List<KeyframeLayer?>>(),
+            AttachType = AttachType.Keyframe
         };
     }
 

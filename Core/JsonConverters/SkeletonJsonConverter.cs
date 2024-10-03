@@ -17,7 +17,8 @@ public class SkeletonJsonConverter : JsonConverter
         var skeleton = new QuadSkeleton
         {
             Name = jObject["name"]?.ToString(),
-            Bone = jObject["bone"]?.ToObject<List<QuadBone>>()
+            Bone = jObject["bone"]?.ToObject<List<QuadBone>>(),
+            AttachType = AttachType.Skeleton
         };
         return skeleton;
     }

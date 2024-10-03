@@ -17,7 +17,8 @@ public class HitboxJsonConverter : JsonConverter
         return new Hitbox
         {
             Name  = jObject["name"]?.ToString(),
-            Layer = jObject["layer"]?.ToObject<List<HitboxLayer?>>()!
+            Layer = jObject["layer"]?.ToObject<List<HitboxLayer?>>(),
+            AttachType = AttachType.HitBox
         };
     }
 

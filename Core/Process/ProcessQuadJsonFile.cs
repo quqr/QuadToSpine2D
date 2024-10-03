@@ -5,7 +5,7 @@ namespace QuadToSpine2D.Core.Process;
 
 public class ProcessQuadJsonFile
 {
-    private QuadJsonData? QuadData { get; set; }
+    private QuadJsonData QuadData { get; set; }
 
     public QuadJsonData? LoadQuadJson(string quadPath)
     {
@@ -15,13 +15,13 @@ public class ProcessQuadJsonFile
 
         var json = File.ReadAllText(quadPath);
         GlobalData.BarValue = 5;
-        QuadData            = JsonConvert.DeserializeObject<QuadJsonData>(json);
-        if (QuadData is null) return null;
+        
+        QuadData = JsonConvert.DeserializeObject<QuadJsonData>(json) ??
+                   throw new ArgumentException("Invalid quad file");
 
         GlobalData.BarValue = 15;
 
-        RemoveAllNull();
-
+        InitData();
         CombineAnimations();
 
         GlobalData.BarTextContent = "Quad file loaded";
@@ -43,42 +43,49 @@ public class ProcessQuadJsonFile
         });
     }
 
-    private void RemoveAllNull()
+    private void InitData()
     {
+        Parallel.ForEach(QuadData.Animation, SetAttaches);
+        
         QuadData.Skeleton.RemoveAll(x => x is null);
         QuadData.Animation.RemoveAll(x => x is null || x.Id == -1);
-
+        
         foreach (var keyframe in QuadData.Keyframe) keyframe?.Layers?.RemoveAll(y => y is null);
         
         QuadData.Keyframe.RemoveAll(x => x?.Layers is null || x.Layers.Count == 0);
-        
-        Parallel.ForEach(QuadData.Animation, animation =>
-        {
-            foreach (var timeline in animation.Timeline)
-                switch (timeline.Attach?.AttachType)
-                {
-                    case AttachType.Keyframe:
-                        timeline.Attach.Keyframe =
-                            QuadData.Keyframe
-                                    .Find(x => x.Id == timeline.Attach.Id);
-                        break;
-                    case AttachType.Slot:
-                        var attach = QuadData.Slot[timeline.Attach.Id].Attaches
-                                            ?.Find(x => x.AttachType == AttachType.Keyframe);
-                        timeline.Attach.Keyframe =
-                            QuadData.Keyframe.Find(x => x.Id == attach?.Id);
-                        break;
-                    case AttachType.HitBox:
-                        timeline.Attach.Hitbox =
-                            QuadData.Hitbox[timeline.Attach.Id];
-                        break;
-                }
-        });
         
         QuadData.Hitbox.RemoveAll(x => x is null);
 
         // Attributes = QuadData.Keyframe
         //     .SelectMany(x => x.Layer.Where(y => y?.Attribute is not null))
         //     .ToDictionary(z=>z.Attribute);
+    }
+
+    private void SetAttaches(Animation? animation)
+    {
+        if(animation is null) return;
+        foreach (var timeline in animation.Timeline)
+        {
+            if (timeline.Attach is null) continue;
+            timeline.Attach = GetAttach(timeline.Attach.AttachType, timeline.Attach.Id);
+        }
+    }
+    private Attach? GetAttach(AttachType attachType, int targetId)
+    {
+        switch (attachType)
+        {
+            case AttachType.Keyframe:
+                return QuadData.Keyframe[targetId];
+            case AttachType.Slot: 
+                return QuadData.Slot[targetId];
+            case AttachType.HitBox:
+                return QuadData.Hitbox[targetId];
+            case AttachType.Animation:
+                return QuadData.Animation[targetId];
+            case AttachType.Skeleton:
+                return QuadData.Skeleton[targetId];
+            default:
+                throw new ArgumentOutOfRangeException(nameof(attachType), attachType, null);
+        }
     }
 }
