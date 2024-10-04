@@ -52,8 +52,8 @@ public class SpineSlot
     public              string Name       { get; set; }
     public              string Bone       { get; set; } = "root";
     [JsonIgnore] public string Attachment { get; set; }
-    [JsonIgnore] public int    Order      { get; set; }
-    [JsonIgnore] public int    OrderId    { get; set; }
+    [JsonIgnore] public int    SlotOrder      { get; set; }
+    [JsonIgnore] public int    OrderByImageSlot    { get; set; }
 }
 
 public class Skin
@@ -138,7 +138,7 @@ public class DrawOrder
             {
                 if (slotOrder - isResetOffsetList.Count == 0) offset = 0;
                 isResetOffsetList.Add(true);
-                if (offset == 0) break;
+                if (offset == 0) continue;
             }
             else if (layerOffset.LayerIndex == 0 || isResetOffsetList[^1])
             {
@@ -152,14 +152,14 @@ public class DrawOrder
                 SlotNum = slotOrder
             });
         }
-
         Offsets.Sort((x, y) => x.SlotNum.CompareTo(y.SlotNum));
     }
 
     public class LayerOffset
     {
-        public string LayerName      { get; set; }
-        public int    LayerSlotOrder { get; set; }
+        public              string    LayerName      { get; set; }
+        [JsonIgnore] public SpineSlot Slot           { get; set; }
+        public              int       LayerSlotOrder => Slot.SlotOrder;
         public int    LayerIndex     { get; set; }
     }
 }

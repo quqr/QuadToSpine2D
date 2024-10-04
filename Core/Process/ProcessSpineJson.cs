@@ -51,7 +51,7 @@ public class ProcessSpineJson
                 {
                     Name       = hitboxLayerName,
                     Attachment = "boundingbox",
-                    OrderId    = int.MaxValue
+                    OrderByImageSlot    = int.MaxValue
                 });
                 _hitboxSkin.Attachments.Add(new Attachments
                 {
@@ -79,8 +79,8 @@ public class ProcessSpineJson
 
     private void SortSlots()
     {
-        _spineJsonData.Slots.Sort((x, y) => x.OrderId.CompareTo(y.OrderId));
-        for (var index = 0; index < _spineJsonData.Slots.Count; index++) _spineJsonData.Slots[index].Order = index;
+        _spineJsonData.Slots.Sort((x, y) => x.OrderByImageSlot.CompareTo(y.OrderByImageSlot));
+        for (var index = 0; index < _spineJsonData.Slots.Count; index++) _spineJsonData.Slots[index].SlotOrder = index;
     }
 
 
@@ -91,7 +91,7 @@ public class ProcessSpineJson
         var spineSlot = new SpineSlot
         {
             Name    = slotName, Attachment = slotName,
-            OrderId = layerData.KeyframeLayer.OrderId
+            OrderByImageSlot = layerData.KeyframeLayer.ImageNameOrder
         };
         _spineJsonData.Slots.Add(spineSlot);
         _spineJsonData.SlotsDict[slotName] = spineSlot;
@@ -370,7 +370,8 @@ public class ProcessSpineJson
         drawOrder.LayerOffsets.Add(new DrawOrder.LayerOffset
         {
             LayerName      = layers[index].LayerName,
-            LayerSlotOrder = _spineJsonData.FrozenSlotsDict[layers[index].LayerName].Order,
+            Slot = _spineJsonData.FrozenSlotsDict[layers[index].LayerName],
+            // LayerSlotOrder = _spineJsonData.FrozenSlotsDict[layers[index].LayerName].SlotOrder,
             LayerIndex = existDrawOrder is null
                              ? index
                              : lastLayerOffset.LayerIndex + index + 1

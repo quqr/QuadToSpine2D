@@ -106,7 +106,7 @@ public class ProcessImages
     {
         imageIndex = poolData?.LayersData[curSkin].ImageIndex ?? _currentImageIndex;
         var imageName  = $"Slice_{imageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
-        layer.OrderId = imageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
+        layer.ImageNameOrder = imageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
         return imageName;
     }
 

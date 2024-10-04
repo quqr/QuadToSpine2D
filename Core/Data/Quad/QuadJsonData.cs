@@ -87,7 +87,7 @@ public class KeyframeLayer
         }
     }
 
-    public int OrderId { get; set; }
+    public int ImageNameOrder { get; set; }
     public int BlendId { get; set; }
 
     public int TexId

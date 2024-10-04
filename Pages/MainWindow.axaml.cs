@@ -122,27 +122,27 @@ public partial class MainWindow : Window
         GlobalData.ImageSavePath  = @"E:\Asset\tt\images";
         GlobalData.ResultSavePath = @"E:\Asset\tt";
 
-        // _quadFilePath = @"E:\Asset\momohime\4k\00Files\file\Momohime_Rest.mbs.v55.quad";
-        // _imagePath =
-        // [
-        //     [
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png"
-        //     ],
-        //     [
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png",
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.1.tpl.png"
-        //     ],
-        //     [
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png",
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.2.tpl.png"
-        //     ]
-        // ];
-        _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
-        _imagePath = 
+        _quadFilePath = @"E:\Asset\momohime\4k\00Files\file\Momohime_Rest.mbs.v55.quad";
+        _imagePath =
         [
-            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png"],
-            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png"],
-        ];        
+            [
+                @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png"
+            ],
+            [
+                @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png",
+                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.1.tpl.png"
+            ],
+            [
+                @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png",
+                @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.2.tpl.png"
+            ]
+        ];
+        // _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
+        // _imagePath = 
+        // [
+        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png"],
+        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png"],
+        // ];        
         // _quadFilePath =
         //     @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
         // _imagePath =

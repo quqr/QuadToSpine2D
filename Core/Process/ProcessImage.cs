@@ -146,7 +146,7 @@ public class ProcessImage
         layer.LayerName = imageName;
         clipImage.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, imageName + ".png"));
 
-        layer.OrderId = order * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
+        layer.ImageNameOrder = order * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
 
         return new LayerData
         {
