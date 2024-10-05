@@ -12,7 +12,6 @@ public class ProcessImages
 {
     private readonly Image?[,] _images;
     private readonly int       _skinsCount;
-    private          int       _currentImageIndex { get; set; }
 
     public ProcessImages(List<List<string?>> imagesSrc)
     {
@@ -20,6 +19,8 @@ public class ProcessImages
         _images     = new Image[imagesSrc.Count, _skinsCount];
         GetImages(imagesSrc);
     }
+
+    private int _currentImageIndex { get; set; }
 
     // { tex_id: { skin_id: {layer_guid: [layer_data, ...] } }
     public ConcurrentDictionary<int, Dictionary<int, Dictionary<string, List<LayerData>>>> LayersDataDict { get; } = [];
@@ -42,7 +43,7 @@ public class ProcessImages
         }
     }
 
-    public List<LayerData> GetLayerData(KeyframeLayer layer,PoolData? poolData, int copyIndex)
+    public List<LayerData> GetLayerData(KeyframeLayer layer, PoolData? poolData, int copyIndex)
     {
         var layersData = new List<LayerData>();
         for (var skinIndex = 0; skinIndex < _skinsCount; skinIndex++)
@@ -79,9 +80,10 @@ public class ProcessImages
         return layersData;
     }
 
-    private LayerData CropImage(Image image, Rectangle rectangle, KeyframeLayer layer,PoolData? poolData ,int curSkin, int copyIndex)
+    private LayerData CropImage(Image image, Rectangle rectangle, KeyframeLayer layer, PoolData? poolData, int curSkin,
+        int                           copyIndex)
     {
-        var imageName = GerImageName(layer, poolData, curSkin, copyIndex,out var imageIndex);
+        var imageName = GerImageName(layer, poolData, curSkin, copyIndex, out var imageIndex);
 
 
         Task.Run(() =>
@@ -96,24 +98,25 @@ public class ProcessImages
             KeyframeLayer          = layer,
             SkinIndex              = curSkin,
             ImageIndex             = imageIndex,
-            TexId                  = layer.TexId,
+            TexId                  = layer.TexId.ToString(),
             CopyIndex              = copyIndex,
-            BaseSkinAttackmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
+            BaseSkinAttachmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
         };
     }
 
-    private string GerImageName(KeyframeLayer layer,PoolData? poolData, int curSkin, int copyIndex,out int imageIndex)
+    private string GerImageName(KeyframeLayer layer, PoolData? poolData, int curSkin, int copyIndex, out int imageIndex)
     {
         imageIndex = poolData?.LayersData[curSkin].ImageIndex ?? _currentImageIndex;
-        var imageName  = $"Slice_{imageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
+        var isFog     = layer.TexId == GlobalData.FogTexId ? "Fog" : layer.TexId.ToString();
+        var imageName = $"Slice_{imageIndex}_{isFog}_{curSkin}_{copyIndex}";
         layer.ImageNameOrder = imageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
         return imageName;
     }
 
-    private LayerData CropImage(KeyframeLayer layer,PoolData? poolData, int curSkin, int copyIndex)
+    private LayerData CropImage(KeyframeLayer layer, PoolData? poolData, int curSkin, int copyIndex)
     {
-        var imageName = GerImageName(layer, poolData, curSkin, copyIndex,out var imageIndex);
-        
+        var imageName = GerImageName(layer, poolData, curSkin, copyIndex, out var imageIndex);
+
         Task.Run(() =>
         {
             using var fog = DrawFogImage(100, 100, layer.Fog);
@@ -122,13 +125,12 @@ public class ProcessImages
 
         return new LayerData
         {
-            SlotAndImageName       = imageName,
-            KeyframeLayer          = layer,
-            SkinIndex              = curSkin,
-            ImageIndex             = imageIndex,
-            TexId                  = layer.TexId,
-            CopyIndex              = copyIndex,
-            BaseSkinAttackmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
+            SlotAndImageName = imageName,
+            KeyframeLayer    = layer,
+            SkinIndex        = curSkin,
+            ImageIndex       = imageIndex,
+            CopyIndex        = copyIndex,
+            TexId            = layer.TexId.ToString()
         };
     }
 

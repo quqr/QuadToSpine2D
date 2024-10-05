@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 using QuadToSpine2D.Core.Utility;
 
-namespace QuadToSpine2D.Core.Process;
+namespace QuadToSpine2D.Core.Process_Useless_;
 
 public class ProcessQuadJsonFile
 {
     private QuadJsonData QuadData { get; set; }
 
-    public QuadJsonData? LoadQuadJson(string quadPath)
+    public QuadJsonData LoadQuadJson(string quadPath)
     {
         Console.WriteLine("Loading quad file...");
         GlobalData.BarTextContent = "Loading quad file...";
@@ -15,7 +15,7 @@ public class ProcessQuadJsonFile
 
         var json = File.ReadAllText(quadPath);
         GlobalData.BarValue = 5;
-        
+
         QuadData = JsonConvert.DeserializeObject<QuadJsonData>(json) ??
                    throw new ArgumentException("Invalid quad file");
 
@@ -46,14 +46,14 @@ public class ProcessQuadJsonFile
     private void InitData()
     {
         Parallel.ForEach(QuadData.Animation, SetAttaches);
-        
+
         QuadData.Skeleton.RemoveAll(x => x is null);
         QuadData.Animation.RemoveAll(x => x is null || x.Id == -1);
-        
+
         foreach (var keyframe in QuadData.Keyframe) keyframe?.Layers?.RemoveAll(y => y is null);
-        
+
         QuadData.Keyframe.RemoveAll(x => x?.Layers is null || x.Layers.Count == 0);
-        
+
         QuadData.Hitbox.RemoveAll(x => x is null);
 
         // Attributes = QuadData.Keyframe
@@ -63,20 +63,25 @@ public class ProcessQuadJsonFile
 
     private void SetAttaches(Animation? animation)
     {
-        if(animation is null) return;
+        if (animation is null) return;
         foreach (var timeline in animation.Timeline)
         {
             if (timeline.Attach is null) continue;
             timeline.Attach = GetAttach(timeline.Attach.AttachType, timeline.Attach.Id);
         }
     }
+
     private Attach? GetAttach(AttachType attachType, int targetId)
     {
         switch (attachType)
         {
             case AttachType.Keyframe:
                 return QuadData.Keyframe[targetId];
-            case AttachType.Slot: 
+            case AttachType.Slot:
+                for (var index = 0; index < QuadData.Slot[targetId].Attaches.Count; index++)
+                    QuadData.Slot[targetId].Attaches[index] = GetAttach(
+                        QuadData.Slot[targetId].Attaches[index].AttachType,
+                        QuadData.Slot[targetId].Attaches[index].Id);
                 return QuadData.Slot[targetId];
             case AttachType.HitBox:
                 return QuadData.Hitbox[targetId];

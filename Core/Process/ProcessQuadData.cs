@@ -1,4 +1,6 @@
-﻿namespace QuadToSpine2D.Core.Process;
+﻿using QuadToSpine2D.Core.Process_Useless_;
+
+namespace QuadToSpine2D.Core.Process;
 
 public class ProcessQuadData
 {

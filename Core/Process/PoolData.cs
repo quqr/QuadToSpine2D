@@ -1,27 +1,27 @@
-﻿namespace QuadToSpine2D.Core.Utility;
+﻿namespace QuadToSpine2D.Core.Process;
 
 public class PoolData
 {
-    public  List<LayerData> LayersData { get; set; }
     private FramePoint      _framePoint = new(-1);
+    public  List<LayerData> LayersData { get; set; }
+
     public FramePoint FramePoint
     {
         get => _framePoint;
         set
         {
             if (_framePoint.EndFrame != -1 && value.EndFrame != -1)
-            {
                 throw new InvalidOperationException("FramePoint is already set.");
-            }
             _framePoint = value;
         }
     }
 }
 
-public struct FramePoint: IEquatable<FramePoint>
+public struct FramePoint : IEquatable<FramePoint>
 {
-    public int StartFrame { get; private set; }
-    public int EndFrame   { get; private set; }
+    public int StartFrame { get; }
+    public int EndFrame   { get; }
+
     public FramePoint(int startFrame, int endFrame)
     {
         StartFrame = startFrame;
@@ -38,7 +38,8 @@ public struct FramePoint: IEquatable<FramePoint>
     {
         return left.Equals(right);
     }
-    public static bool operator!=(FramePoint left, FramePoint right)
+
+    public static bool operator !=(FramePoint left, FramePoint right)
     {
         return !left.Equals(right);
     }

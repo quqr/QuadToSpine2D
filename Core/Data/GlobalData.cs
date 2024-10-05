@@ -6,11 +6,12 @@ namespace QuadToSpine2D.Core.Data;
 
 public static class GlobalData
 {
+    public const   float               Fps          = 1 / 60f;
     private static int                 _scaleFactor = 1;
     private static List<List<string?>> _imagePath   = [];
 
     private static double _barValue;
-    public static  int    FogTexId { get; set; } = 999;
+    public static  int    FogTexId => 1000;
 
     public static int ScaleFactor
     {
@@ -61,6 +62,5 @@ public static class GlobalData
         }
     }
 
-    public static bool IsReadableJson            { get; set; }
-    public static bool IsRemoveUselessAnimations { get; set; }
+    public static bool IsReadableJson { get; set; }
 }

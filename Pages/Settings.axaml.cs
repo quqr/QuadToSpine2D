@@ -10,12 +10,6 @@ public partial class Settings : Window
         InitializeComponent();
     }
 
-    private void RemoveUselessAnimationsChanged(object? sender, RoutedEventArgs e)
-    {
-        if (RemoveAnimationCheckBox?.IsChecked != null)
-            GlobalData.IsRemoveUselessAnimations = (bool)RemoveAnimationCheckBox.IsChecked;
-    }
-
     private void JsonReadableChanged(object? sender, RoutedEventArgs e)
     {
         if (ReadableCheckBox?.IsChecked != null)

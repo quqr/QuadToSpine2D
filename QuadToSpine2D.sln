@@ -5,8 +5,6 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuadToSpine2D", "QuadToSpine2D.csproj", "{919B0BAD-0D12-4E7F-95C3-763E9598883B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{3390D185-5BC1-433D-9006-5E0EB84F6689}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{919B0BAD-0D12-4E7F-95C3-763E9598883B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{919B0BAD-0D12-4E7F-95C3-763E9598883B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{919B0BAD-0D12-4E7F-95C3-763E9598883B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3390D185-5BC1-433D-9006-5E0EB84F6689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3390D185-5BC1-433D-9006-5E0EB84F6689}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3390D185-5BC1-433D-9006-5E0EB84F6689}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3390D185-5BC1-433D-9006-5E0EB84F6689}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

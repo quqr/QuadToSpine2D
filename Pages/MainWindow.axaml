@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
-        x:Class="QuadToSpine2D.MainWindow"
+        x:Class="QuadToSpine2D.Pages.MainWindow"
         Title="QuadToSpine"
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
@@ -38,6 +38,13 @@
                 Orientation="Horizontal"
                 HorizontalAlignment="Right"
                 Margin="0,10,10,0">
+                <Label Name="QuadFileNameLabel" Content=""
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0,0,20,0"
+                       Foreground="DarkCyan"
+                       FontWeight="Bold">
+                </Label>
                 <Button Content="Open quad file"
                         Name="UploadButton"
                         Click="OpenQuadFile"

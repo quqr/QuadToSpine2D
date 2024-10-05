@@ -93,10 +93,9 @@ public static class ProcessUtility
                     concealData                          = new Attachment();
                     newAnimation.Data[timeline.EndFrame] = concealData;
                 }
+
                 if (timeline.Attach is null) continue;
-                
                 timeline.FramePoint = new FramePoint(timeline.StartFrame, timeline.EndFrame);
-                
                 displayData.DisplayAttachments.Add(timeline);
                 // if(timeline.Last?.EndFrame!=timeline.StartFrame)
                 concealData.ConcealAttachments.Add(timeline);

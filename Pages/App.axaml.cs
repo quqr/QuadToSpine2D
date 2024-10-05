@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-namespace QuadToSpine2D;
+namespace QuadToSpine2D.Pages;
 
 public class App : Application
 {

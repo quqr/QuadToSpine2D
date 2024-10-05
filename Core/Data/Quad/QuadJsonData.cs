@@ -35,17 +35,8 @@ public class Slot : Attach
 [JsonConverter(typeof(KeyframeJsonConverter))]
 public class Keyframe : Attach
 {
-    private string _name;
+    public string Name { get; set; }
 
-    public string Name
-    {
-        get => _name;
-        set
-        {
-            _name = value;
-            Id    = Convert.ToInt32(_name.Split(' ').Last());
-        }
-    }
     public List<KeyframeLayer?>? Layers { get; set; }
 }
 
@@ -88,7 +79,7 @@ public class KeyframeLayer
     }
 
     public int ImageNameOrder { get; set; }
-    public int BlendId { get; set; }
+    public int BlendId        { get; set; }
 
     public int TexId
     {
@@ -164,12 +155,13 @@ public class Animation : Attach
         {
             _name = value;
             var splitName = _name.Split(' ');
+            // avoid "ALL KEYFRAMES"
             if (!splitName[0].Equals("animation")) return;
-
             Id         = Convert.ToInt32(splitName.Last());
             AttachType = AttachType.Animation;
         }
     }
+
     private List<Timeline> _timeline { get; set; }
 
     public List<Timeline> Timeline
@@ -211,20 +203,14 @@ public class Timeline
         }
     }
 
-    public Timeline? Next   { get; set; }
-    public int     Frames { get; set; }
-
-    public float Time
-    {
-        get => Frames;
-        set => Frames = (int)value;
-    }
-    
-    public int     StartFrame    { get; set; }
-    public int     EndFrame      { get; set; }
-    public FramePoint       FramePoint             { get; set; }
-    public Attach? Attach        { get; set; }
-    public bool    IsKeyframeMix { get; private set; }
+    public Timeline?  Next          { get; set; }
+    public int        Frames        => Time;
+    public int        Time          { get; set; }
+    public int        StartFrame    { get; set; }
+    public int        EndFrame      { get; set; }
+    public FramePoint FramePoint    { get; set; }
+    public Attach?    Attach        { get; set; }
+    public bool       IsKeyframeMix { get; private set; }
 
     [JsonProperty]
     private int keyframe_mix
@@ -285,9 +271,11 @@ public class Attach
             }
         }
     }
+
     public AttachType AttachType { get; set; }
     public int        Id         { get; set; } = -1;
 }
+
 public enum AttachType
 {
     Keyframe,

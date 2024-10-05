@@ -49,11 +49,12 @@ public class SpineSkeleton
 
 public class SpineSlot
 {
-    public              string Name       { get; set; }
-    public              string Bone       { get; set; } = "root";
-    [JsonIgnore] public string Attachment { get; set; }
-    [JsonIgnore] public int    SlotOrder      { get; set; }
-    [JsonIgnore] public int    OrderByImageSlot    { get; set; }
+    public              string Name             { get; set; }
+    public              string Bone             { get; set; } = "root";
+    public              string Blend            { get; set; }
+    [JsonIgnore] public string Attachment       { get; set; }
+    [JsonIgnore] public int    SlotOrder        { get; set; }
+    [JsonIgnore] public int    OrderByImageSlot { get; set; }
 }
 
 public class Skin
@@ -152,16 +153,21 @@ public class DrawOrder
                 SlotNum = slotOrder
             });
         }
+
         Offsets.Sort((x, y) => x.SlotNum.CompareTo(y.SlotNum));
     }
+
+#region Nested type: LayerOffset
 
     public class LayerOffset
     {
         public              string    LayerName      { get; set; }
         [JsonIgnore] public SpineSlot Slot           { get; set; }
         public              int       LayerSlotOrder => Slot.SlotOrder;
-        public int    LayerIndex     { get; set; }
+        public              int       LayerIndex     { get; set; }
     }
+
+#endregion
 }
 
 public class DrawOrderOffset
@@ -187,6 +193,14 @@ public class Deform
 {
     // {skinName:{slotName:{value}}}
     public Dictionary<string, Dictionary<string, AnimationDefault>> SkinName { get; set; } = new();
+
+    public Deform Clone()
+    {
+        return new Deform
+        {
+            SkinName = new Dictionary<string, Dictionary<string, AnimationDefault>>(SkinName)
+        };
+    }
 }
 
 [JsonConverter(typeof(AnimationDefaultJsonConverter))]

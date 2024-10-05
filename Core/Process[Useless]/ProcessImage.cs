@@ -4,7 +4,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace QuadToSpine2D.Core.Process;
+namespace QuadToSpine2D.Core.Process_Useless_;
 
 public class ProcessImage
 {
@@ -150,12 +150,12 @@ public class ProcessImage
 
         return new LayerData
         {
-            SlotAndImageName     = imageName,
-            KeyframeLayer = layer,
-            SkinIndex     = curSkin,
-            ImageIndex    = _currentImageIndex,
-            TexId         = layer.TexId,
-            CopyIndex     = copyIndex
+            SlotAndImageName = imageName,
+            KeyframeLayer    = layer,
+            SkinIndex        = curSkin,
+            ImageIndex       = _currentImageIndex,
+            TexId            = layer.TexId.ToString(),
+            CopyIndex        = copyIndex
         };
     }
 

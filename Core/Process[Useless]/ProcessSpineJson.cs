@@ -1,9 +1,10 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Frozen;
+using System.Threading.Tasks;
 using QuadToSpine2D.Core.Data.Spine;
 using QuadToSpine2D.Core.Utility;
 
-namespace QuadToSpine2D.Core.Process;
+namespace QuadToSpine2D.Core.Process_Useless_;
 
 public class ProcessSpineJson
 {
@@ -49,9 +50,9 @@ public class ProcessSpineJson
                 hitbox.Layer[i].Name = hitboxLayerName;
                 _spineJsonData.Slots.Add(new SpineSlot
                 {
-                    Name       = hitboxLayerName,
-                    Attachment = "boundingbox",
-                    OrderByImageSlot    = int.MaxValue
+                    Name             = hitboxLayerName,
+                    Attachment       = "boundingbox",
+                    OrderByImageSlot = int.MaxValue
                 });
                 _hitboxSkin.Attachments.Add(new Attachments
                 {
@@ -90,7 +91,7 @@ public class ProcessSpineJson
         layerData.SkinName = _spineJsonData.Skins.Last().Name;
         var spineSlot = new SpineSlot
         {
-            Name    = slotName, Attachment = slotName,
+            Name             = slotName, Attachment = slotName,
             OrderByImageSlot = layerData.KeyframeLayer.ImageNameOrder
         };
         _spineJsonData.Slots.Add(spineSlot);
@@ -277,13 +278,6 @@ public class ProcessSpineJson
         List<Animation> animations)
     {
         var animationName = skeleton.Name;
-        if (deform.SkinName.Count == 0)
-        {
-            if (!GlobalData.IsRemoveUselessAnimations)
-                animationName += "_USELESS";
-            else
-                return;
-        }
 
         if (animations.Any(x => x.IsLoop))
             animationName += "_LOOP";
@@ -317,9 +311,9 @@ public class ProcessSpineJson
         List<DrawOrder> drawOrders,
         Timeline        timeline)
     {
-        var                    layers          = keyframe.Layers;
-        var                    drawOrder       = new DrawOrder { Time = initTime };
-        var                    existDrawOrder  = drawOrders.Find(x => ProcessUtility.ApproximatelyEqual(x.Time, initTime));
+        var layers = keyframe.Layers;
+        var drawOrder = new DrawOrder { Time = initTime };
+        var existDrawOrder = drawOrders.Find(x => ProcessUtility.ApproximatelyEqual(x.Time, initTime));
         DrawOrder.LayerOffset? lastLayerOffset = null;
         // existDrawOrder may have same layers,  and it is an error.
         // Maybe the process image have bugs, which just process a layer, not a full track. 
@@ -369,8 +363,8 @@ public class ProcessSpineJson
 
         drawOrder.LayerOffsets.Add(new DrawOrder.LayerOffset
         {
-            LayerName      = layers[index].LayerName,
-            Slot = _spineJsonData.FrozenSlotsDict[layers[index].LayerName],
+            LayerName = layers[index].LayerName,
+            Slot      = _spineJsonData.FrozenSlotsDict[layers[index].LayerName],
             // LayerSlotOrder = _spineJsonData.FrozenSlotsDict[layers[index].LayerName].SlotOrder,
             LayerIndex = existDrawOrder is null
                              ? index
