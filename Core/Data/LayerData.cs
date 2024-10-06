@@ -9,6 +9,7 @@ public class LayerData
     public           string        SkinName               { get; set; }
     public           int           ImageIndex             { get; init; }
     public           int           SkinIndex              { get; set; }
+    public           int           CopyIndex              { get; init; }
     public           int           BlendId                => KeyframeLayer.BlendId;
 
     public string TexId
@@ -21,5 +22,4 @@ public class LayerData
         }
     }
 
-    public int CopyIndex { get; init; }
 }

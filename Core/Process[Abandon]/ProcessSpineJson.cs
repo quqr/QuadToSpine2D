@@ -1,10 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Frozen;
-using System.Threading.Tasks;
 using QuadToSpine2D.Core.Data.Spine;
 using QuadToSpine2D.Core.Utility;
 
-namespace QuadToSpine2D.Core.Process_Useless_;
+namespace QuadToSpine2D.Core.Process_Abandon_;
 
 public class ProcessSpineJson
 {
@@ -463,7 +462,7 @@ public class ProcessSpineJson
             value.ImageVertices.Add(new AnimationVertices
             {
                 Time     = initTime + i / Fps,
-                Vertices = ProcessUtility.MinusFloats(vert.ToFloats(), layer.ZeroCenterPoints)
+                Vertices = ProcessUtility.MinusFloats(vert.ToFloatArray(), layer.ZeroCenterPoints)
             });
         }
     }
@@ -476,7 +475,7 @@ public class ProcessSpineJson
     {
         var vert = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
         // Make sure the image to center
-        item.Vertices = ProcessUtility.MinusFloats(vert.ToFloats(), layer.ZeroCenterPoints);
+        item.Vertices = ProcessUtility.MinusFloats(vert.ToFloatArray(), layer.ZeroCenterPoints);
         value.ImageVertices.Add(item);
     }
 

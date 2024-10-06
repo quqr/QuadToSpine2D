@@ -143,18 +143,18 @@ public partial class MainWindow : Window
         //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png"],
         //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png"],
         // ];        
-        // _quadFilePath =
-        //     @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
-        // _imagePath =
-        // [
-        //     [
-        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.0.gnf.png"
-        //     ],
-        //     [
-        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.1.gnf.png"
-        //     ],
-        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.2.gnf.png"]
-        // ];
+        _quadFilePath =
+            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
+        _imagePath =
+        [
+            [
+                @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.0.gnf.png"
+            ],
+            [
+                @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.1.gnf.png"
+            ],
+            [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.2.gnf.png"]
+        ];
         // _quadFilePath =
         //     @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
         // _imagePath =
@@ -166,20 +166,20 @@ public partial class MainWindow : Window
         //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.1.nvt.png"
         //     ]
         // ];
-        _quadFilePath =
-            @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Alice.mbs.v55.quad";
-        _imagePath =
-        [
-            [
-                @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Alice.0.gnf.png"
-            ],
-            [
-                @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Alice.1.gnf.png"
-            ],
-            [
-                @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Alice.2.gnf.png"
-            ]
-        ];
+        // _quadFilePath =
+        //     @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Alice.mbs.v55.quad";
+        // _imagePath =
+        // [
+        //     [
+        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Alice.0.gnf.png"
+        //     ],
+        //     [
+        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Alice.1.gnf.png"
+        //     ],
+        //     [
+        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Alice.2.gnf.png"
+        //     ]
+        // ];
 #endif
         if (!Directory.Exists(GlobalData.ImageSavePath)) Directory.CreateDirectory(GlobalData.ImageSavePath);
 #if DEBUG

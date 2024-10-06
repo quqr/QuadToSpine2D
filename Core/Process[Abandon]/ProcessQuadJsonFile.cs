@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using QuadToSpine2D.Core.Utility;
 
-namespace QuadToSpine2D.Core.Process_Useless_;
+namespace QuadToSpine2D.Core.Process_Abandon_;
 
 public class ProcessQuadJsonFile
 {

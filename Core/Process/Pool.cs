@@ -7,6 +7,7 @@ public class Pool
     private readonly ProcessImages                      _processImages        = new(GlobalData.ImagePath);
     private readonly Dictionary<string, List<PoolData>> _unusedPoolDictionary = new();
     private readonly Dictionary<string, List<PoolData>> _usedPoolDictionary   = new();
+    // public  Dictionary<string, List<PoolData>> UsedPoolDictionary   => _usedPoolDictionary;
 
     public PoolData Get(KeyframeLayer layer)
     {

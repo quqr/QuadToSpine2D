@@ -56,15 +56,15 @@ public readonly struct Matrix : IEquatable<Matrix>
         return srcMatrix * (1 - rate) + dstMatrix * rate;
     }
 
-    public float[] ToFloats()
+    public float[] ToFloatArray()
     {
-        var floats = new float[Rows * Cols];
+        var array = new float[Rows * Cols];
         for (var i = 0; i < Rows; i++)
         {
-            for (var j = 0; j < Cols; j++) floats[j + i * Cols] = Value[i, j];
+            for (var j = 0; j < Cols; j++) array[j + i * Cols] = Value[i, j];
         }
 
-        return floats;
+        return array;
     }
 
     public override string ToString()
@@ -217,6 +217,6 @@ public readonly struct Matrix : IEquatable<Matrix>
 
     public Matrix Clone()
     {
-        return new Matrix(Rows, Cols, ToFloats());
+        return new Matrix(Rows, Cols, ToFloatArray());
     }
 }

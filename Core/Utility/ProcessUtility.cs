@@ -32,7 +32,6 @@ public static class ProcessUtility
     /// <summary>
     ///     return a - b
     /// </summary>
-    /// <returns>return a - b. if a or b is null return [].</returns>
     public static float[] MinusFloats(float[]? a, float[]? b)
     {
         if (a is null || b is null) return [];
@@ -46,23 +45,9 @@ public static class ProcessUtility
         return c;
     }
 
-    public static double[] MinusDoubles(double[]? a, double[]? b)
-    {
-        if (a is null || b is null) return [];
-        var c = new double[a.Length];
-        for (var i = 0; i < a.Length; i++)
-        {
-            if (i > b.Length) break;
-            c[i] = a[i] - b[i];
-        }
-
-        return c;
-    }
-
     /// <summary>
     ///     float[] a *  b
     /// </summary>
-    /// <returns>return a *  b, if a is null return null</returns>
     public static float[]? MulFloats(float[]? a, float b)
     {
         if (a is null) return null;
@@ -71,40 +56,78 @@ public static class ProcessUtility
         for (var i = 0; i < a.Length; i++) c[i] = a[i] * b;
         return c;
     }
-
+    
+    /// <summary>
+    /// Combine animations into one animation data.
+    /// new animation data = animation 1 + animation 2 + animation 3 + ...
+    /// </summary>
     public static AnimationData CombineAnimations(List<Animation> animations)
     {
         var newAnimation = new AnimationData { Name = "AnimationCombine_" };
+        var endFrame     = animations.Select(x => x.Timeline[^1].EndFrame);
+        var gcd          = LCM(endFrame);
         foreach (var animation in animations)
         {
             newAnimation.Name   += $"{animation.Name.Last()}_";
             newAnimation.IsLoop =  animation.IsLoop | newAnimation.IsLoop;
+
             foreach (var timeline in animation.Timeline)
             {
                 newAnimation.IsMix = timeline.IsKeyframeMix | timeline.IsMatrixMix | newAnimation.IsMix;
-                if (!newAnimation.Data.TryGetValue(timeline.StartFrame, out var displayData))
-                {
-                    displayData                            = new Attachment();
-                    newAnimation.Data[timeline.StartFrame] = displayData;
-                }
+                SetAttachmentsData(newAnimation, timeline, timeline.FramePoint.StartFrame,
+                    timeline.FramePoint.EndFrame);
+            }
 
-                if (!newAnimation.Data.TryGetValue(timeline.EndFrame, out var concealData))
+            int times = gcd / (animation.Timeline[^1].EndFrame - animation.Timeline[animation.LoopId].StartFrame);
+            var lastTimeline = animation.Timeline.Last();
+            for (int i = 1; i <= times; i++)
+            {
+                for (int j = animation.LoopId; j < animation.Timeline.Count; j++)
                 {
-                    concealData                          = new Attachment();
-                    newAnimation.Data[timeline.EndFrame] = concealData;
+                    var newTimeline = lastTimeline.Clone();
+                    lastTimeline.Next      = newTimeline;
+                    
+                    newTimeline.StartFrame = animation.Timeline[j].EndFrame * i;
+                    newTimeline.EndFrame   = animation.Timeline[j].EndFrame * i;
+                    SetAttachmentsData(newAnimation, newTimeline, newTimeline.StartFrame, newTimeline.EndFrame);
+                    lastTimeline = newTimeline;
                 }
-
-                if (timeline.Attach is null) continue;
-                timeline.FramePoint = new FramePoint(timeline.StartFrame, timeline.EndFrame);
-                displayData.DisplayAttachments.Add(timeline);
-                // if(timeline.Last?.EndFrame!=timeline.StartFrame)
-                concealData.ConcealAttachments.Add(timeline);
             }
 
             newAnimation.Data = newAnimation.Data.OrderBy(x => x.Key).ToDictionary();
         }
 
         return newAnimation;
+    }
+
+    private static void SetAttachmentsData(
+        AnimationData newAnimation,
+        Timeline timeline,
+        int startFrame,
+        int endFrame)
+    {
+        var displayData = GetAttachmentData(newAnimation, startFrame);
+        var concealData = GetAttachmentData(newAnimation, endFrame);
+        
+        if (timeline.Attach is null) return;
+        timeline.FramePoint = new FramePoint(startFrame, endFrame);
+        
+        displayData.DisplayAttachments.Add(timeline);
+        concealData.ConcealAttachments.Add(timeline);
+        
+        // if (animation.IsLoop && frames >= animation.LoopId && endFrame < gcd)
+        // {
+        //     var nextStartFrame = startFrame * (endFrame / gcd);
+        //     var nextEndFrame   = endFrame * (endFrame / gcd);
+        //     SetAttachmentsData(animation, newAnimation, newTimeline, frames, gcd, nextStartFrame, nextEndFrame);
+        // }
+    }
+
+    private static Attachment GetAttachmentData(AnimationData newAnimation, int frame)
+    {
+        if (!newAnimation.Data.TryGetValue(frame, out var data)) 
+            newAnimation.Data.Add(frame, data = new Attachment());
+        return data;
     }
 
     public static Rectangle CalculateRectangle(KeyframeLayer layer)
@@ -122,5 +145,13 @@ public static class ProcessUtility
     {
         if (a is null || b is null) return false;
         return Math.Abs((float)(a - b)) < epsilon;
+    }
+    private static int _GCD(int x, int y)
+    {
+        return y == 0 ? x : _GCD(y, x % y);
+    }
+    public static int LCM(IEnumerable<int> nums)
+    {
+        return nums.Aggregate((x, y) => (x * y) / _GCD(x, y));
     }
 }

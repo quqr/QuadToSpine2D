@@ -23,10 +23,10 @@ public static class AnimationMatrixUtility
         ];
 
         List<float> t  = [];
-        var         t1 = matrices[0].ToFloats();
-        var         t2 = matrices[1].ToFloats();
-        var         t3 = matrices[2].ToFloats();
-        var         t4 = matrices[3].ToFloats();
+        var         t1 = matrices[0].ToFloatArray();
+        var         t2 = matrices[1].ToFloatArray();
+        var         t3 = matrices[2].ToFloatArray();
+        var         t4 = matrices[3].ToFloatArray();
         t.AddRange(t1[..2]);
         t.AddRange(t2[..2]);
         t.AddRange(t3[..2]);

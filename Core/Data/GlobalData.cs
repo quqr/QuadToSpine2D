@@ -6,7 +6,8 @@ namespace QuadToSpine2D.Core.Data;
 
 public static class GlobalData
 {
-    public const   float               Fps          = 1 / 60f;
+    public const   float               Fps = 1 / 60f;
+    public static  int                 LoopTimes { get; set; }
     private static int                 _scaleFactor = 1;
     private static List<List<string?>> _imagePath   = [];
 

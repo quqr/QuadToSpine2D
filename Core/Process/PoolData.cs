@@ -3,7 +3,7 @@
 public class PoolData
 {
     private FramePoint      _framePoint = new(-1);
-    public  List<LayerData> LayersData { get; set; }
+    public  List<LayerData> LayersData { get; init; }
 
     public FramePoint FramePoint
     {
@@ -17,7 +17,7 @@ public class PoolData
     }
 }
 
-public struct FramePoint : IEquatable<FramePoint>
+public readonly struct FramePoint : IEquatable<FramePoint>
 {
     public int StartFrame { get; }
     public int EndFrame   { get; }

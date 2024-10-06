@@ -171,7 +171,7 @@ public class Animation : Attach
         {
             for (var i = 0; i < value.Count; i++)
             {
-                value[i].Last = i > 0 ? value[i               - 1] : null;
+                value[i].Prev = i > 0 ? value[i - 1] : null;
                 value[i].Next = i < value.Count - 1 ? value[i + 1] : null;
             }
 
@@ -180,29 +180,32 @@ public class Animation : Attach
     }
 
     public bool IsLoop { get; set; }
+    public int    LoopId      { get; set; }
 
     [JsonProperty]
     private int loop_id
     {
-        set => IsLoop = value >= 0;
+        set
+        {
+            IsLoop = value >= 0;
+            LoopId = value;
+        }
     }
 }
 
 public class Timeline
 {
-    private Timeline? _last;
-
-    public Timeline? Last
+    private Timeline? _prev;
+    public Timeline? Prev
     {
-        get => _last;
+        get => _prev;
         set
         {
-            _last      = value;
-            StartFrame = _last?.EndFrame ?? 0;
+            _prev      = value;
+            StartFrame = _prev?.EndFrame ?? 0;
             EndFrame   = StartFrame + Frames;
         }
     }
-
     public Timeline?  Next          { get; set; }
     public int        Frames        => Time;
     public int        Time          { get; set; }
@@ -219,7 +222,6 @@ public class Timeline
     }
 
     public  Matrix   AnimationMatrix { get; set; } = Utility.Matrix.IdentityMatrixBy4X4;
-    private float[]? _matrix         { get; set; }
 
     [JsonProperty]
     private float[]? Matrix
@@ -228,7 +230,6 @@ public class Timeline
         {
             if (value is null) return;
             AnimationMatrix = new Matrix(4, 4, value);
-            _matrix         = value;
         }
     }
 
@@ -238,6 +239,23 @@ public class Timeline
     private int matrix_mix
     {
         set => IsMatrixMix = value > 0;
+    }
+
+    public Timeline Clone()
+    {
+        return new Timeline
+        {
+            Prev            = Prev,
+            Next            = Next,
+            Time            = Time,
+            StartFrame      = StartFrame,
+            EndFrame        = EndFrame,
+            FramePoint      = FramePoint,
+            Attach          = Attach,
+            IsKeyframeMix   = IsKeyframeMix,
+            AnimationMatrix = AnimationMatrix,
+            IsMatrixMix = IsMatrixMix,
+        };
     }
 }
 
