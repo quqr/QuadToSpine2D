@@ -4,7 +4,7 @@ namespace QuadToSpine2D.Core.JsonConverters;
 
 public class HitboxJsonConverter : JsonConverter
 {
-    private int _id = -1;
+    public static int IdCount = -1;
 
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
@@ -14,14 +14,14 @@ public class HitboxJsonConverter : JsonConverter
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
         JsonSerializer                          serializer)
     {
-        _id++;
+        IdCount++;
         var obj = serializer.Deserialize(reader);
         if (obj is not JObject jObject) return null;
         var json = new Hitbox
         {
             Name       = jObject["name"]?.ToString(),
             Layer      = jObject["layer"]?.ToObject<List<HitboxLayer?>>(),
-            Id         = _id,
+            Id         = IdCount,
             AttachType = AttachType.HitBox
         };
         return json;

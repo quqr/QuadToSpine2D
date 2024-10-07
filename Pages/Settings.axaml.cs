@@ -32,4 +32,10 @@ public partial class Settings : Window
             ScaleFactorTextBox.Text          = "1";
         }
     }
+
+    private void IsSetLoopAnimationsChanged(object? sender, RoutedEventArgs e)
+    {
+        if (IsSetLoopCheckBox?.IsChecked != null)
+            GlobalData.IsSetLoopAnimation = (bool)IsSetLoopCheckBox.IsChecked;
+    }
 }

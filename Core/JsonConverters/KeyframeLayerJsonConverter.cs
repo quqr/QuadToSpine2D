@@ -5,8 +5,6 @@ namespace QuadToSpine2D.Core.JsonConverters;
 
 public class KeyframeLayerJsonConverter : JsonConverter
 {
-    private int _count;
-
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         throw new NotImplementedException();
@@ -15,7 +13,6 @@ public class KeyframeLayerJsonConverter : JsonConverter
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
         JsonSerializer                          serializer)
     {
-        _count++;
         var obj = serializer.Deserialize(reader);
         if (obj is not JObject jObject) return null;
         return new KeyframeLayer
@@ -26,9 +23,8 @@ public class KeyframeLayerJsonConverter : JsonConverter
                 GlobalData.ScaleFactor)!,
             Srcquad = ProcessUtility.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
                 GlobalData.ScaleFactor),
-            BlendId    = jObject["blend_id"]?.ToObject<int>() ?? -1,
-            Attribute  = ConvertToAttribute(jObject),
-            InstanceId = _count
+            BlendId   = jObject["blend_id"]?.ToObject<int>() ?? -1,
+            Attribute = ConvertToAttribute(jObject)
         };
     }
 

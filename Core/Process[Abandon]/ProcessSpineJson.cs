@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Frozen;
+using System.Threading.Tasks;
 using QuadToSpine2D.Core.Data.Spine;
 using QuadToSpine2D.Core.Utility;
 
@@ -87,7 +88,7 @@ public class ProcessSpineJson
     private void InitBaseData(LayerData layerData, int skinIndex, int texIdIndex, int guidIndex)
     {
         var slotName = layerData.SlotAndImageName;
-        layerData.SkinName = _spineJsonData.Skins.Last().Name;
+        layerData.SkinName = _spineJsonData.Skins[^1].Name;
         var spineSlot = new SpineSlot
         {
             Name             = slotName, Attachment = slotName,
@@ -105,7 +106,7 @@ public class ProcessSpineJson
 
     private void InitLinkedMesh(int texIdIndex, int guidIndex, string slotName)
     {
-        _spineJsonData.Skins.Last().Attachments.Add(new Attachments
+        _spineJsonData.Skins[^1].Attachments.Add(new Attachments
         {
             Mesh = new LinkedMesh
             {
@@ -201,10 +202,7 @@ public class ProcessSpineJson
 #if RELEASE
         Task.Run(() =>
         {
-            foreach (var drawOrder in drawOrders)
-            {
-                drawOrder.SortOffset();
-            }
+            foreach (var drawOrder in drawOrders) drawOrder.SortOffset();
             drawOrders.RemoveAll(x => x.Offsets.Count == 0);
             spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
             drawOrders.Sort((x, y) => x.Time.CompareTo(y.Time));
@@ -319,7 +317,7 @@ public class ProcessSpineJson
         if (existDrawOrder is not null)
         {
             drawOrder       = existDrawOrder;
-            lastLayerOffset = drawOrder.LayerOffsets.Last();
+            lastLayerOffset = drawOrder.LayerOffsets[^1];
         }
 
         var currentKeyframeLayerNames = new List<string>();
@@ -386,7 +384,7 @@ public class ProcessSpineJson
         {
             allLayerNames.Remove(layerName);
             var slot = spineAnimation.Slots[layerName];
-            if (slot.Attachment.Last().Name is null) continue;
+            if (slot.Attachment[^1].Name is null) continue;
             slot.Attachment.Add(new AnimationAttachment
             {
                 Time = initTime,
@@ -444,7 +442,7 @@ public class ProcessSpineJson
         value.ImageVertices.Add(new AnimationVertices
         {
             Time     = item.Time + timeline.Frames / Fps,
-            Vertices = value.ImageVertices.Last().Vertices
+            Vertices = value.ImageVertices[^1].Vertices
         });
     }
 

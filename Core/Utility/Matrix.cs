@@ -214,9 +214,4 @@ public readonly struct Matrix : IEquatable<Matrix>
     {
         return HashCode.Combine(Rows, Cols, Value);
     }
-
-    public Matrix Clone()
-    {
-        return new Matrix(Rows, Cols, ToFloatArray());
-    }
 }

@@ -69,7 +69,7 @@ public static class Utility
             foreach (var j in i)
             {
                 if (j is null) continue;
-                newList.Last().Add(j);
+                newList[^1].Add(j);
             }
         }
 

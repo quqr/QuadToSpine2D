@@ -42,36 +42,36 @@
         </Compile>
         <Compile Remove="TestProject1\**"/>
         <Compile Remove="UnitTest\**"/>
-        <Compile Remove="NUnitTest\**" />
+        <Compile Remove="NUnitTest\**"/>
     </ItemGroup>
 
     <ItemGroup>
         <AvaloniaXaml Remove="TestProject1\**"/>
         <AvaloniaXaml Remove="UnitTest\**"/>
-        <AvaloniaXaml Remove="NUnitTest\**" />
+        <AvaloniaXaml Remove="NUnitTest\**"/>
     </ItemGroup>
 
     <ItemGroup>
         <EmbeddedResource Remove="TestProject1\**"/>
         <EmbeddedResource Remove="UnitTest\**"/>
-        <EmbeddedResource Remove="NUnitTest\**" />
+        <EmbeddedResource Remove="NUnitTest\**"/>
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Remove="TestProject1\**"/>
         <AdditionalFiles Remove="UnitTest\**"/>
-        <AdditionalFiles Remove="NUnitTest\**" />
+        <AdditionalFiles Remove="NUnitTest\**"/>
     </ItemGroup>
 
     <ItemGroup>
         <AvaloniaResource Remove="TestProject1\**"/>
         <AvaloniaResource Remove="UnitTest\**"/>
-        <AvaloniaResource Remove="NUnitTest\**" />
+        <AvaloniaResource Remove="NUnitTest\**"/>
     </ItemGroup>
 
     <ItemGroup>
         <None Remove="TestProject1\**"/>
         <None Remove="UnitTest\**"/>
-        <None Remove="NUnitTest\**" />
+        <None Remove="NUnitTest\**"/>
     </ItemGroup>
 </Project>

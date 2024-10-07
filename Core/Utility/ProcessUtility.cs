@@ -56,76 +56,85 @@ public static class ProcessUtility
         for (var i = 0; i < a.Length; i++) c[i] = a[i] * b;
         return c;
     }
-    
+
     /// <summary>
-    /// Combine animations into one animation data.
-    /// new animation data = animation 1 + animation 2 + animation 3 + ...
+    ///     Combine animations into one animation data.
+    ///     new animation data = animation 1 + animation 2 + animation 3 + ...
     /// </summary>
     public static AnimationData CombineAnimations(List<Animation> animations)
     {
-        var newAnimation = new AnimationData { Name = "AnimationCombine_" };
-        var endFrame     = animations.Select(x => x.Timeline[^1].EndFrame);
-        var gcd          = LCM(endFrame);
+        var newAnimation = new AnimationData();
+
+        var maxFrame = animations.Max(x => x.Timeline.Max(y => y.EndFrame));
+
         foreach (var animation in animations)
         {
-            newAnimation.Name   += $"{animation.Name.Last()}_";
-            newAnimation.IsLoop =  animation.IsLoop | newAnimation.IsLoop;
+            newAnimation.IsLoop = animation.IsLoop | newAnimation.IsLoop;
 
             foreach (var timeline in animation.Timeline)
             {
                 newAnimation.IsMix = timeline.IsKeyframeMix | timeline.IsMatrixMix | newAnimation.IsMix;
-                SetAttachmentsData(newAnimation, timeline, timeline.FramePoint.StartFrame,
-                    timeline.FramePoint.EndFrame);
+                SetAttachmentsData(newAnimation, timeline, timeline.StartFrame,
+                    timeline.EndFrame);
             }
 
-            int times = gcd / (animation.Timeline[^1].EndFrame - animation.Timeline[animation.LoopId].StartFrame);
-            var lastTimeline = animation.Timeline.Last();
-            for (int i = 1; i <= times; i++)
-            {
-                for (int j = animation.LoopId; j < animation.Timeline.Count; j++)
-                {
-                    var newTimeline = lastTimeline.Clone();
-                    lastTimeline.Next      = newTimeline;
-                    
-                    newTimeline.StartFrame = animation.Timeline[j].EndFrame * i;
-                    newTimeline.EndFrame   = animation.Timeline[j].EndFrame * i;
-                    SetAttachmentsData(newAnimation, newTimeline, newTimeline.StartFrame, newTimeline.EndFrame);
-                    lastTimeline = newTimeline;
-                }
-            }
-
+            if (GlobalData.IsSetLoopAnimation) SetLoopData(animation, newAnimation, maxFrame);
             newAnimation.Data = newAnimation.Data.OrderBy(x => x.Key).ToDictionary();
         }
 
         return newAnimation;
     }
 
+    private static void SetLoopDataByFrame(Animation animation, AnimationData newAnimation, int maxFrame)
+    {
+        if (!animation.IsLoop || animation.Timeline[^1].EndFrame == maxFrame) return;
+        SetAttachmentsData(newAnimation, animation.Timeline[^1], animation.Timeline[^1].EndFrame, maxFrame);
+    }
+
+    private static void SetLoopData(Animation animation, AnimationData newAnimation, int maxFrame)
+    {
+        if (!animation.IsLoop || animation.Timeline[^1].EndFrame == maxFrame) return;
+        var lastTimeline = animation.Timeline[^1];
+        while (true)
+            for (var j = animation.LoopId; j < animation.Timeline.Count; j++)
+            {
+                var newTimeline = animation.Timeline[animation.LoopId].Clone();
+
+                lastTimeline.Next = newTimeline;
+                newTimeline.Prev  = lastTimeline;
+
+                if (newTimeline.EndFrame >= maxFrame)
+                {
+                    newTimeline.EndFrame = maxFrame;
+                    SetAttachmentsData(newAnimation, newTimeline, newTimeline.StartFrame, newTimeline.EndFrame);
+                    return;
+                }
+
+                SetAttachmentsData(newAnimation, newTimeline, newTimeline.StartFrame, newTimeline.EndFrame);
+                lastTimeline = newTimeline;
+            }
+    }
+
     private static void SetAttachmentsData(
         AnimationData newAnimation,
-        Timeline timeline,
-        int startFrame,
-        int endFrame)
+        Timeline      timeline,
+        int           startFrame,
+        int           endFrame)
     {
+        if (timeline.Attach is null) return; // draw nothing
+
         var displayData = GetAttachmentData(newAnimation, startFrame);
         var concealData = GetAttachmentData(newAnimation, endFrame);
-        
-        if (timeline.Attach is null) return;
+
         timeline.FramePoint = new FramePoint(startFrame, endFrame);
-        
+
         displayData.DisplayAttachments.Add(timeline);
         concealData.ConcealAttachments.Add(timeline);
-        
-        // if (animation.IsLoop && frames >= animation.LoopId && endFrame < gcd)
-        // {
-        //     var nextStartFrame = startFrame * (endFrame / gcd);
-        //     var nextEndFrame   = endFrame * (endFrame / gcd);
-        //     SetAttachmentsData(animation, newAnimation, newTimeline, frames, gcd, nextStartFrame, nextEndFrame);
-        // }
     }
 
     private static Attachment GetAttachmentData(AnimationData newAnimation, int frame)
     {
-        if (!newAnimation.Data.TryGetValue(frame, out var data)) 
+        if (!newAnimation.Data.TryGetValue(frame, out var data))
             newAnimation.Data.Add(frame, data = new Attachment());
         return data;
     }
@@ -145,13 +154,5 @@ public static class ProcessUtility
     {
         if (a is null || b is null) return false;
         return Math.Abs((float)(a - b)) < epsilon;
-    }
-    private static int _GCD(int x, int y)
-    {
-        return y == 0 ? x : _GCD(y, x % y);
-    }
-    public static int LCM(IEnumerable<int> nums)
-    {
-        return nums.Aggregate((x, y) => (x * y) / _GCD(x, y));
     }
 }

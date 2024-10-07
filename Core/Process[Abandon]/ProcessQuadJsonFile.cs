@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using QuadToSpine2D.Core.JsonConverters;
 using QuadToSpine2D.Core.Utility;
 
 namespace QuadToSpine2D.Core.Process_Abandon_;
@@ -15,7 +16,7 @@ public class ProcessQuadJsonFile
 
         var json = File.ReadAllText(quadPath);
         GlobalData.BarValue = 5;
-
+        ClearConverter();
         QuadData = JsonConvert.DeserializeObject<QuadJsonData>(json) ??
                    throw new ArgumentException("Invalid quad file");
 
@@ -30,8 +31,17 @@ public class ProcessQuadJsonFile
         return QuadData;
     }
 
+    private void ClearConverter()
+    {
+        HitboxJsonConverter.IdCount   = -1;
+        SlotJsonConverter.IdCount     = -1;
+        SkeletonJsonConverter.IdCount = -1;
+        KeyframeJsonConverter.IdCount = -1;
+    }
+
     private void CombineAnimations()
     {
+#if RELEASE
         Parallel.ForEach(QuadData.Skeleton, skeleton =>
         {
             var animations = new List<Animation>();
@@ -41,6 +51,18 @@ public class ProcessQuadJsonFile
                                                          .First(x => x.Id == bone.Attach.Id)));
             skeleton.CombineAnimation = ProcessUtility.CombineAnimations(animations);
         });
+#endif
+#if DEBUG
+        foreach (var skeleton in QuadData.Skeleton)
+        {
+            var animations = new List<Animation>();
+            animations
+               .AddRange(skeleton.Bone
+                                 .Select(bone => QuadData.Animation
+                                                         .First(x => x.Id == bone.Attach.Id)));
+            skeleton.CombineAnimation = ProcessUtility.CombineAnimations(animations);
+        }
+#endif
     }
 
     private void InitData()

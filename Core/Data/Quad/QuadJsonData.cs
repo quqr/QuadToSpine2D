@@ -46,7 +46,6 @@ public class KeyframeLayer
     private float[]  _dstquad;
     private float[]? _srcquad;
     private int      _texId;
-    public  int      InstanceId { get; set; }
 
     public float[] Dstquad
     {
@@ -157,7 +156,7 @@ public class Animation : Attach
             var splitName = _name.Split(' ');
             // avoid "ALL KEYFRAMES"
             if (!splitName[0].Equals("animation")) return;
-            Id         = Convert.ToInt32(splitName.Last());
+            Id         = Convert.ToInt32(splitName[^1]);
             AttachType = AttachType.Animation;
         }
     }
@@ -171,7 +170,7 @@ public class Animation : Attach
         {
             for (var i = 0; i < value.Count; i++)
             {
-                value[i].Prev = i > 0 ? value[i - 1] : null;
+                value[i].Prev = i > 0 ? value[i               - 1] : null;
                 value[i].Next = i < value.Count - 1 ? value[i + 1] : null;
             }
 
@@ -180,7 +179,7 @@ public class Animation : Attach
     }
 
     public bool IsLoop { get; set; }
-    public int    LoopId      { get; set; }
+    public int  LoopId { get; set; }
 
     [JsonProperty]
     private int loop_id
@@ -196,16 +195,18 @@ public class Animation : Attach
 public class Timeline
 {
     private Timeline? _prev;
+
     public Timeline? Prev
     {
         get => _prev;
         set
         {
             _prev      = value;
-            StartFrame = _prev?.EndFrame ?? 0;
+            StartFrame = value?.EndFrame ?? 0;
             EndFrame   = StartFrame + Frames;
         }
     }
+
     public Timeline?  Next          { get; set; }
     public int        Frames        => Time;
     public int        Time          { get; set; }
@@ -221,7 +222,7 @@ public class Timeline
         set => IsKeyframeMix = value > 0;
     }
 
-    public  Matrix   AnimationMatrix { get; set; } = Utility.Matrix.IdentityMatrixBy4X4;
+    public Matrix AnimationMatrix { get; private set; } = Utility.Matrix.IdentityMatrixBy4X4;
 
     [JsonProperty]
     private float[]? Matrix
@@ -254,7 +255,7 @@ public class Timeline
             Attach          = Attach,
             IsKeyframeMix   = IsKeyframeMix,
             AnimationMatrix = AnimationMatrix,
-            IsMatrixMix = IsMatrixMix,
+            IsMatrixMix     = IsMatrixMix
         };
     }
 }

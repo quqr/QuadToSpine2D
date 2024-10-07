@@ -11,9 +11,9 @@ namespace QuadToSpine2D.Pages;
 
 public partial class MainWindow : Window
 {
-    private int                  _currentImageBoxPart;
-    private List<List<string?>?> _imagePath    = [];
-    private string               _quadFilePath = string.Empty;
+    private          int                                   _currentImageBoxPart;
+    private          string                                _quadFilePath = string.Empty;
+    private readonly Dictionary<StackPanel, List<string?>> _buttonStatus  = new();
 
     public MainWindow()
     {
@@ -29,7 +29,6 @@ public partial class MainWindow : Window
     private void AddNewElement(object? sender, RoutedEventArgs e)
     {
         _currentImageBoxPart++;
-        _imagePath.Add([]);
 
         var label = new Label
         {
@@ -71,10 +70,10 @@ public partial class MainWindow : Window
             }
         };
         ImageBox.Children.Insert(ImageBox.Children.Count - 1, content);
-        var imageIndex = _currentImageBoxPart            - 1;
 
-        addButton.Click    += AddButtonClick;
-        deleteButton.Click += DeleteButtonOnClick;
+        _buttonStatus[content] =  [];
+        addButton.Click       += AddButtonClick;
+        deleteButton.Click    += DeleteButtonOnClick;
 
         return;
 
@@ -89,8 +88,7 @@ public partial class MainWindow : Window
                     Content     = file.Name,
                     NavigateUri = file.Path
                 };
-                _imagePath[imageIndex] ??= [];
-                _imagePath[imageIndex]?.Add(file.Path.DecodePath());
+                _buttonStatus[content].Add(file.Path.DecodePath());
                 stackPanel.Children.Add(hyperLink);
                 file.Dispose();
             }
@@ -98,8 +96,8 @@ public partial class MainWindow : Window
 
         void DeleteButtonOnClick(object? o, RoutedEventArgs routedEventArgs)
         {
-            _imagePath[imageIndex] = null;
             ImageBox.Children.Remove(content);
+            _buttonStatus.Remove(content);
         }
     }
 
@@ -119,7 +117,7 @@ public partial class MainWindow : Window
         GlobalData.ResultSavePath = Directory.GetCurrentDirectory();
         GlobalData.ImageSavePath  = Path.Combine(GlobalData.ResultSavePath, "images");
 #if DEBUG
-        GlobalData.ImageSavePath  = @"E:\Asset\tt\images";
+        GlobalData.ImageSavePath = @"E:\Asset\tt\images";
         GlobalData.ResultSavePath = @"E:\Asset\tt";
 
         // _quadFilePath = @"E:\Asset\momohime\4k\00Files\file\Momohime_Rest.mbs.v55.quad";
@@ -186,31 +184,38 @@ public partial class MainWindow : Window
         Directory.Delete(GlobalData.ImageSavePath, true);
         Directory.CreateDirectory(GlobalData.ImageSavePath);
 #endif
-        _imagePath.RemoveAll(x => x is null);
-        GlobalData.ImagePath = _imagePath;
-
         ResultJsonUriButton.Content   = string.Empty;
         ResultJsonUriButton.IsEnabled = false;
-
-        ProcessBar.Value      = 0;
-        ProcessBar.Foreground = GlobalData.ProcessBarNormalBrush;
-
+        
+        ProcessBar.Value       = 0;
+        ProcessBar.Foreground  = GlobalData.ProcessBarNormalBrush;
+        GlobalData.IsCompleted = true;
         Task.Run(() =>
         {
-            // new ProcessQuadData()
-            //    .LoadQuadJson(_quadFilePath)
-            //    .ProcessJson(Utility.ConvertImagePath(_imagePath));
+            var imagePath = new List<List<string?>>();
+            foreach (var part in _buttonStatus)
+            {
+                var imageList = new List<string?>();
+                foreach (var image in part.Value) imageList.Add(image);
+                imagePath.Add(imageList);
+            }
+            GlobalData.ImagePath = imagePath;
             
             new ProcessQuadData()
                .LoadQuadJson(_quadFilePath)
                .ProcessJson(GlobalData.ImagePath);
 
             Console.WriteLine("Process Complete!");
+            if (!GlobalData.IsCompleted)
+            {
+                throw new InvalidOperationException("Process is not completed.");
+            }
             Dispatcher.UIThread.Post(() =>
             {
+                
                 GlobalData.BarValue       = 100;
                 GlobalData.BarTextContent = "completed !";
-                
+
                 ResultJsonUriButton.IsEnabled   = true;
                 ResultJsonUriButton.Content     = GlobalData.ResultSavePath;
                 ResultJsonUriButton.NavigateUri = new Uri(GlobalData.ResultSavePath);
@@ -220,11 +225,13 @@ public partial class MainWindow : Window
         {
             if (task.Exception?.InnerException is null) return;
             Console.WriteLine(task.Exception.InnerException.Message);
-
-            GlobalData.BarValue              = 100;
-            GlobalData.ProcessBar.Foreground = GlobalData.ProcessBarErrorBrush;
-            GlobalData.BarTextContent        = task.Exception.InnerException.Message;
-            Dispatcher.UIThread.Post(() => { ProcessButton.IsEnabled = true; });
+            Dispatcher.UIThread.Post(() =>
+            {
+                GlobalData.BarValue              = 100;
+                GlobalData.ProcessBar.Foreground = GlobalData.ProcessBarErrorBrush;
+                GlobalData.BarTextContent        = task.Exception.InnerException.Message;
+                ProcessButton.IsEnabled          = true;
+            });
         });
     }
 }

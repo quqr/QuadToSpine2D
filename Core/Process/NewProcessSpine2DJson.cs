@@ -6,14 +6,15 @@ namespace QuadToSpine2D.Core.Process;
 
 public class NewProcessSpine2DJson
 {
-    private readonly List<DrawOrder> _drawOrders = [];
-    private readonly Skin            _hitboxSkin = new() { Name = "Hitbox", Attachments = [] };
-    private readonly Pool            _pool       = new();
+    private readonly List<DrawOrder> _drawOrders       = [];
+    private readonly List<PoolData>  _existAttachments = [];
+    private readonly Skin            _hitboxSkin       = new() { Name = "Hitbox", Attachments = [] };
+    private readonly Pool            _pool             = new();
     private readonly QuadJsonData    _quadJsonData;
 
     private readonly Dictionary<string, AnimationSlot> _spineAnimationSlots = [];
     private readonly SpineJsonData                     _spineJsonData       = new();
-    private          Deform                            _deform = new();
+    private          Deform                            _deform              = new();
     private          float                             _time;
 
     public NewProcessSpine2DJson(QuadJsonData quadJsonData)
@@ -40,7 +41,7 @@ public class NewProcessSpine2DJson
         SortSlotsAndDrawOrder();
         return _spineJsonData;
     }
-    
+
     private void SortSlotsAndDrawOrder()
     {
         _spineJsonData.Slots = _spineJsonData.Slots
@@ -54,7 +55,7 @@ public class NewProcessSpine2DJson
         foreach (var animation in _spineJsonData.Animations)
             SortDrawOrderAsync(animation.Value, animation.Value.DrawOrder);
     }
-    private readonly List<PoolData> _existAttachments = [];
+
     private void SetAnimation(QuadSkeleton skeleton)
     {
         _spineAnimationSlots.Clear();
@@ -62,16 +63,17 @@ public class NewProcessSpine2DJson
         _existAttachments.Clear();
         _deform = new Deform();
         _time   = 0f;
+
         foreach (var animation in skeleton.CombineAnimation.Data)
         {
-            AddAttachments(animation);
             RemoveAttachments(animation);
-            
+            AddAttachments(animation);
+
             var drawOrder = new DrawOrder { Time = _time };
             _drawOrders.Add(drawOrder);
             AddLayerOffsets(_existAttachments, drawOrder);
-            
-            _time              = (animation.Key + 1) * GlobalData.Fps;
+
+            _time = (animation.Key + 1) * GlobalData.Fps;
         }
 
         var animationName                                   = skeleton.Name;
@@ -80,9 +82,9 @@ public class NewProcessSpine2DJson
 
         _spineJsonData.Animations[animationName] = new SpineAnimation
         {
-            Slots     = new (_spineAnimationSlots),
+            Slots     = new Dictionary<string, AnimationSlot>(_spineAnimationSlots),
             Deform    = _deform.Clone(),
-            DrawOrder = new (_drawOrders)
+            DrawOrder = new List<DrawOrder>(_drawOrders)
         };
     }
 
@@ -117,13 +119,13 @@ public class NewProcessSpine2DJson
         AnimationVertices                           animationVert)
     {
         LineInterpolateAnimation(layer, animationDefault, animationVert, timeline);
-        TryInterpolateAnimationByMatrix(layer, animationDefault, animationVert, timeline);
-        TrySteppedInterpolateAnimation(animationDefault, timeline);
+        // TryInterpolateAnimationByMatrix(layer, animationDefault, timeline);
+        // TrySteppedInterpolateAnimation(animationDefault, timeline);
     }
 
-    private void TryInterpolateAnimationByMatrix(KeyframeLayer layer, AnimationDefault animationDefault, AnimationVertices animationVert, Timeline timeline)
+    private void TryInterpolateAnimationByMatrix(KeyframeLayer layer, AnimationDefault animationDefault, Timeline timeline)
     {
-        if(!timeline.IsMatrixMix) return;
+        if (!timeline.IsMatrixMix) return;
         var srcMatrix = timeline.AnimationMatrix;
         var dstMatrix = timeline.Next?.AnimationMatrix ?? srcMatrix;
         for (var i = 1; i < timeline.Frames; i++)
@@ -140,10 +142,10 @@ public class NewProcessSpine2DJson
 
     private void TrySteppedInterpolateAnimation(AnimationDefault animationDefault, Timeline timeline)
     {
-        if(timeline.IsKeyframeMix || timeline.IsMatrixMix) return;
+        if (timeline.IsKeyframeMix || timeline.IsMatrixMix) return;
         animationDefault.ImageVertices.Add(new AnimationVertices
         {
-            Time = _time + timeline.Frames * GlobalData.Fps,
+            Time     = _time + timeline.Frames * GlobalData.Fps,
             Vertices = animationDefault.ImageVertices[^1].Vertices
         });
     }
@@ -293,17 +295,15 @@ public class NewProcessSpine2DJson
         }
     }
 
-    private void AddLayerOffsets(List<PoolData> existAttachments,DrawOrder drawOrder)
+    private void AddLayerOffsets(List<PoolData> existAttachments, DrawOrder drawOrder)
     {
         for (var index = 0; index < existAttachments.Count; index++)
-        {
             drawOrder.LayerOffsets.Add(new DrawOrder.LayerOffset
             {
                 LayerName  = existAttachments[index].LayersData[0].SlotAndImageName,
                 Slot       = _spineJsonData.SlotsDict[existAttachments[index].LayersData[0].SlotAndImageName],
                 LayerIndex = index
             });
-        }
     }
 
     private void AddAnimationSlots(PoolData poolData)

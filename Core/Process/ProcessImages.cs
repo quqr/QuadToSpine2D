@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using QuadToSpine2D.Core.Utility;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -90,7 +91,7 @@ public class ProcessImages
         {
             using var clipImage = image.Clone(x => { x.Crop(rectangle); });
             clipImage.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png"));
-        });
+        }).ContinueWith(CatchErrors);
 
         return new LayerData
         {
@@ -102,6 +103,19 @@ public class ProcessImages
             CopyIndex              = copyIndex,
             BaseSkinAttachmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
         };
+    }
+
+    private static void CatchErrors(Task task)
+    {
+        if (task.Exception?.InnerException is null) return;
+        Console.WriteLine(task.Exception.InnerException.Message);
+        GlobalData.IsCompleted = false;
+        Dispatcher.UIThread.Post(() =>
+        {
+            GlobalData.BarValue              = 100;
+            GlobalData.ProcessBar.Foreground = GlobalData.ProcessBarErrorBrush;
+            GlobalData.BarTextContent        = task.Exception.InnerException.Message;
+        });
     }
 
     private string GerImageName(KeyframeLayer layer, PoolData? poolData, int curSkin, int copyIndex, out int imageIndex)
@@ -121,7 +135,7 @@ public class ProcessImages
         {
             using var fog = DrawFogImage(100, 100, layer.Fog);
             fog.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png"));
-        });
+        }).ContinueWith(CatchErrors);
 
         return new LayerData
         {

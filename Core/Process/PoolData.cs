@@ -24,6 +24,7 @@ public readonly struct FramePoint : IEquatable<FramePoint>
 
     public FramePoint(int startFrame, int endFrame)
     {
+        if (startFrame > endFrame) throw new ArgumentException("End frame must be greater than start frame.");
         StartFrame = startFrame;
         EndFrame   = endFrame;
     }

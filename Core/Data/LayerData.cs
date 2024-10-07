@@ -21,5 +21,4 @@ public class LayerData
             BaseSkinAttachmentName = $"Slice_{ImageIndex}_{_texId}_0_{CopyIndex}";
         }
     }
-
 }

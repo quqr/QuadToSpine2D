@@ -25,6 +25,16 @@
         <StackPanel HorizontalAlignment="Center"
                     VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal" Margin="10">
+                <CheckBox Name="IsSetLoopCheckBox"
+                          IsCheckedChanged="IsSetLoopAnimationsChanged"
+                          IsChecked="{Binding 
+                          Source = {x:Static local:GlobalData.IsSetLoopAnimation }}">
+                    <Label HorizontalAlignment="Center" VerticalAlignment="Center"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                           Content="Set loop animations" />
+                </CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
                 <CheckBox Name="ReadableCheckBox"
                           IsCheckedChanged="JsonReadableChanged"
                           IsChecked="{Binding 

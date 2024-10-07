@@ -6,13 +6,12 @@ public class Pool
 
     private readonly ProcessImages                      _processImages        = new(GlobalData.ImagePath);
     private readonly Dictionary<string, List<PoolData>> _unusedPoolDictionary = new();
-    private readonly Dictionary<string, List<PoolData>> _usedPoolDictionary   = new();
-    // public  Dictionary<string, List<PoolData>> UsedPoolDictionary   => _usedPoolDictionary;
+    public           Dictionary<string, List<PoolData>> UsedPoolDictionary { get; } = new();
 
     public PoolData Get(KeyframeLayer layer)
     {
-        if (!_usedPoolDictionary.TryGetValue(layer.Guid, out var usedPoolsData))
-            _usedPoolDictionary.Add(layer.Guid, usedPoolsData = []);
+        if (!UsedPoolDictionary.TryGetValue(layer.Guid, out var usedPoolsData))
+            UsedPoolDictionary.Add(layer.Guid, usedPoolsData = []);
         if (!_unusedPoolDictionary.TryGetValue(layer.Guid, out var unusedPoolsData))
             _unusedPoolDictionary.Add(layer.Guid, unusedPoolsData = []);
 
@@ -39,6 +38,8 @@ public class Pool
         PoolData? usedPoolData = null;
         if (usedPoolsData.Count != 0)
             usedPoolData = usedPoolsData[0];
+        if (copyIndex > 150)
+            throw new InvalidOperationException("Too many copies of layer data. Please increase the limit.");
         var data = _processImages.GetLayerData(layer, usedPoolData, copyIndex);
 
         var poolData = new PoolData { LayersData = data };
@@ -54,14 +55,14 @@ public class Pool
     public void Release(KeyframeLayer layer, PoolData poolData)
     {
         poolData.FramePoint = new FramePoint(-1);
-        _usedPoolDictionary[layer.Guid].Remove(poolData);
+        UsedPoolDictionary[layer.Guid].Remove(poolData);
         _unusedPoolDictionary[layer.Guid].Add(poolData);
     }
 
     public PoolData FindPoolData(KeyframeLayer layer, FramePoint framePoint)
     {
         foreach (var poolData in _poolDictionary[layer.Guid])
-            if (_usedPoolDictionary[layer.Guid].Contains(poolData) && poolData.FramePoint == framePoint)
+            if (UsedPoolDictionary[layer.Guid].Contains(poolData) && poolData.FramePoint == framePoint)
                 return poolData;
         throw new ArgumentException("Pool data not found for layer " + layer.Guid);
     }

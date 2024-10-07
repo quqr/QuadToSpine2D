@@ -7,9 +7,6 @@
 ## Known issues
 
 1. **Some animations are displayed in the wrong order.**
-2. **Animation tracks are not displayed correctly.**
-
-# <img height="300" src="README/5.png" width="200"/>
 
 ## **How to use**
 

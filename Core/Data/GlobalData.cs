@@ -6,13 +6,14 @@ namespace QuadToSpine2D.Core.Data;
 
 public static class GlobalData
 {
-    public const   float               Fps = 1 / 60f;
-    public static  int                 LoopTimes { get; set; }
+    public const   float               Fps          = 1 / 60f;
     private static int                 _scaleFactor = 1;
     private static List<List<string?>> _imagePath   = [];
+    public static  bool                IsCompleted { get; set; }
 
     private static double _barValue;
-    public static  int    FogTexId => 1000;
+    public static  bool   IsSetLoopAnimation { get; set; }
+    public static  int    FogTexId           => 1000;
 
     public static int ScaleFactor
     {

@@ -66,11 +66,11 @@ public static class AnimationMatrixUtility
         for (var i = 0; i < 4; i++)
         {
             result[i, 0] =
-                matrixA[0, 0] * matrixB[i, 0]                 + matrixA[0, 1] * matrixB[i, 1]
-                                                              + matrixA[0, 2] + matrixA[0, 3];
+                matrixA[0, 0] * matrixB[i, 0] + matrixA[0, 1] * matrixB[i, 1]
+                + matrixA[0, 2]               + matrixA[0, 3];
             result[i, 1] =
-                matrixA[1, 0] * matrixB[i, 0]                 + matrixA[1, 1] * matrixB[i, 1]
-                                                              + matrixA[1, 2] + matrixA[1, 3];
+                matrixA[1, 0] * matrixB[i, 0] + matrixA[1, 1] * matrixB[i, 1]
+                + matrixA[1, 2]               + matrixA[1, 3];
         }
 
         return result;

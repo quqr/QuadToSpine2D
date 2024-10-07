@@ -4,7 +4,8 @@ namespace QuadToSpine2D.Core.JsonConverters;
 
 public class SlotJsonConverter : JsonConverter
 {
-    private int _id = 1;
+    public static int IdCount = -1;
+
 
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
@@ -14,13 +15,13 @@ public class SlotJsonConverter : JsonConverter
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
         JsonSerializer                          serializer)
     {
-        _id++;
+        IdCount++;
         var obj = serializer.Deserialize(reader);
         if (obj is not JArray jArray) return null;
         var slot = new Slot
         {
             Attaches   = jArray.ToObject<List<Attach>>(),
-            Id         = _id,
+            Id         = IdCount,
             AttachType = AttachType.Slot
         };
         return slot;
