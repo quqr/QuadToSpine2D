@@ -2,8 +2,7 @@
 using QuadToSpine2D.Core.JsonConverters;
 using QuadToSpine2D.Core.Utility;
 
-namespace QuadToSpine2D.Core.Process_Abandon_;
-
+namespace QuadToSpine2D.Core.Process;
 public class ProcessQuadJsonFile
 {
     private QuadJsonData QuadData { get; set; }
@@ -12,7 +11,7 @@ public class ProcessQuadJsonFile
     {
         Console.WriteLine("Loading quad file...");
         GlobalData.BarTextContent = "Loading quad file...";
-        GlobalData.BarValue       = 0;
+        GlobalData.BarValue = 0;
 
         var json = File.ReadAllText(quadPath);
         GlobalData.BarValue = 5;
@@ -33,8 +32,8 @@ public class ProcessQuadJsonFile
 
     private void ClearConverter()
     {
-        HitboxJsonConverter.IdCount   = -1;
-        SlotJsonConverter.IdCount     = -1;
+        HitboxJsonConverter.IdCount = -1;
+        SlotJsonConverter.IdCount = -1;
         SkeletonJsonConverter.IdCount = -1;
         KeyframeJsonConverter.IdCount = -1;
     }
@@ -57,9 +56,9 @@ public class ProcessQuadJsonFile
         {
             var animations = new List<Animation>();
             animations
-               .AddRange(skeleton.Bone
-                                 .Select(bone => QuadData.Animation
-                                                         .First(x => x.Id == bone.Attach.Id)));
+                .AddRange(skeleton.Bone
+                    .Select(bone => QuadData.Animation
+                        .First(x => x.Id == bone.Attach.Id)));
             skeleton.CombineAnimation = ProcessUtility.CombineAnimations(animations);
         }
 #endif

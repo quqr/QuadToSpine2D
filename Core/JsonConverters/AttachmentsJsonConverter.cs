@@ -45,7 +45,7 @@ public class AttachmentsJsonConverter<T> : JsonConverter<List<T>>
     }
 
     public override List<T>? ReadJson(JsonReader reader, Type objectType, List<T>? existingValue, bool hasExistingValue,
-        JsonSerializer                           serializer)
+        JsonSerializer serializer)
     {
         throw new NotImplementedException();
     }

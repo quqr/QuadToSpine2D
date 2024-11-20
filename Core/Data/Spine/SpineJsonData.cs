@@ -35,7 +35,7 @@ public class SpineJsonData
             Formatting = GlobalData.IsReadableJson ? Formatting.Indented : Formatting.None
         };
         var spineJsonFile = JsonConvert.SerializeObject(this, setting);
-        var output        = Path.Combine(GlobalData.ResultSavePath, "Result.json");
+        var output = Path.Combine(GlobalData.ResultSavePath, "Result.json");
         File.WriteAllText(output, spineJsonFile);
         Console.WriteLine("Complete!");
     }
@@ -43,18 +43,18 @@ public class SpineJsonData
 
 public class SpineSkeleton
 {
-    public string Spine      { get; set; } = "3.8";
+    public string Spine { get; set; } = "3.8";
     public string ImagesPath { get; set; } = string.Empty;
 }
 
 public class SpineSlot
 {
-    public              string Name             { get; set; }
-    public              string Bone             { get; set; } = "root";
-    public              string Blend            { get; set; }
-    [JsonIgnore] public string Attachment       { get; set; }
-    [JsonIgnore] public int    SlotOrder        { get; set; }
-    [JsonIgnore] public int    OrderByImageSlot { get; set; }
+    public string Name { get; set; }
+    public string Bone { get; set; } = "root";
+    public string Blend { get; set; }
+    [JsonIgnore] public string Attachment { get; set; }
+    [JsonIgnore] public int SlotOrder { get; set; }
+    [JsonIgnore] public int OrderByImageSlot { get; set; }
 }
 
 public class Skin
@@ -77,18 +77,18 @@ public class BaseMesh
 
 public class Boundingbox : BaseMesh
 {
-    public string  Type        { get; set; } = "boundingbox";
-    public int     VertexCount { get; set; } = 4;
-    public float[] Vertices    { get; set; } = new float[8];
+    public string Type { get; set; } = "boundingbox";
+    public int VertexCount { get; set; } = 4;
+    public float[] Vertices { get; set; } = new float[8];
 }
 
 public class Mesh : BaseMesh
 {
-    public string  Type      { get; set; } = "mesh";
-    public float[] Uvs       { get; set; } = new float[8];
+    public string Type { get; set; } = "mesh";
+    public float[] Uvs { get; set; } = new float[8];
     public float[] Triangles { get; set; } = [1, 2, 3, 1, 3, 0];
-    public float[] Vertices  { get; set; } = new float[8];
-    public int     Hull      { get; set; } = 4;
+    public float[] Vertices { get; set; } = new float[8];
+    public int Hull { get; set; } = 4;
 }
 
 public class LinkedMesh : BaseMesh
@@ -103,8 +103,8 @@ public class LinkedMesh : BaseMesh
 
 public class SpineBone
 {
-    public string Name   { get; set; }
-    public int    ScaleY { get; set; } = -1;
+    public string Name { get; set; }
+    public int ScaleY { get; set; } = -1;
 }
 
 public class SpineAnimation
@@ -122,7 +122,7 @@ public class SpineAnimation
 
 public class DrawOrder
 {
-    public float                 Time    { get; set; }
+    public float Time { get; set; }
     public List<DrawOrderOffset> Offsets { get; set; } = [];
 
     [JsonIgnore] public List<LayerOffset> LayerOffsets { get; set; } = [];
@@ -133,7 +133,7 @@ public class DrawOrder
         foreach (var layerOffset in LayerOffsets)
         {
             var slotOrder = layerOffset.LayerSlotOrder;
-            var offset    = layerOffset.LayerIndex - slotOrder;
+            var offset = layerOffset.LayerIndex - slotOrder;
 
             if (offset >= 0)
             {
@@ -148,8 +148,8 @@ public class DrawOrder
 
             Offsets.Add(new DrawOrderOffset
             {
-                Slot    = layerOffset.LayerName,
-                Offset  = offset,
+                Slot = layerOffset.LayerName,
+                Offset = offset,
                 SlotNum = slotOrder
             });
         }
@@ -157,24 +157,24 @@ public class DrawOrder
         Offsets.Sort((x, y) => x.SlotNum.CompareTo(y.SlotNum));
     }
 
-#region Nested type: LayerOffset
+    #region Nested type: LayerOffset
 
     public class LayerOffset
     {
-        public              string    LayerName      { get; set; }
-        [JsonIgnore] public SpineSlot Slot           { get; set; }
-        public              int       LayerSlotOrder => Slot.SlotOrder;
-        public              int       LayerIndex     { get; set; }
+        public string LayerName { get; set; }
+        [JsonIgnore] public SpineSlot Slot { get; set; }
+        public int LayerSlotOrder => Slot.SlotOrder;
+        public int LayerIndex { get; set; }
     }
 
-#endregion
+    #endregion
 }
 
 public class DrawOrderOffset
 {
-    [JsonIgnore] public int    SlotNum { get; set; }
-    public              string Slot    { get; set; } = string.Empty;
-    public              int    Offset  { get; set; }
+    [JsonIgnore] public int SlotNum { get; set; }
+    public string Slot { get; set; } = string.Empty;
+    public int Offset { get; set; }
 }
 
 public class AnimationSlot
@@ -184,7 +184,7 @@ public class AnimationSlot
 
 public class AnimationAttachment
 {
-    public float   Time { get; set; }
+    public float Time { get; set; }
     public string? Name { get; set; }
 }
 
@@ -207,12 +207,12 @@ public class Deform
 public class AnimationDefault
 {
     // mesh name
-    public string                  Name          { get; set; }
+    public string Name { get; set; }
     public List<AnimationVertices> ImageVertices { get; set; } = [];
 }
 
 public class AnimationVertices
 {
-    public float   Time     { get; set; }
+    public float Time { get; set; }
     public float[] Vertices { get; set; } = new float[8];
 }

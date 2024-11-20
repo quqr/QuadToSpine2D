@@ -12,12 +12,12 @@ namespace QuadToSpine2D.Core.Process;
 public class ProcessImages
 {
     private readonly Image?[,] _images;
-    private readonly int       _skinsCount;
+    private readonly int _skinsCount;
 
     public ProcessImages(List<List<string?>> imagesSrc)
     {
         _skinsCount = imagesSrc[0].Count;
-        _images     = new Image[imagesSrc.Count, _skinsCount];
+        _images = new Image[imagesSrc.Count, _skinsCount];
         GetImages(imagesSrc);
     }
 
@@ -29,18 +29,16 @@ public class ProcessImages
     private void GetImages(List<List<string?>> images)
     {
         for (var i = 0; i < images.Count; i++)
+        for (var j = 0; j < _skinsCount; j++)
         {
-            for (var j = 0; j < _skinsCount; j++)
+            var src = images[i][j];
+            if (src is null)
             {
-                var src = images[i][j];
-                if (src is null)
-                {
-                    _images[i, j] = null;
-                    continue;
-                }
-
-                _images[i, j] = Image.Load(src);
+                _images[i, j] = null;
+                continue;
             }
+
+            _images[i, j] = Image.Load(src);
         }
     }
 
@@ -69,7 +67,7 @@ public class ProcessImages
                 LayersDataDict[layer.TexId][skinIndex] = [];
             if (!LayersDataDict[layer.TexId][skinIndex].TryGetValue(layer.Guid, out var curLayerData))
             {
-                curLayerData                                       = [];
+                curLayerData = [];
                 LayersDataDict[layer.TexId][skinIndex][layer.Guid] = curLayerData;
             }
 
@@ -82,7 +80,7 @@ public class ProcessImages
     }
 
     private LayerData CropImage(Image image, Rectangle rectangle, KeyframeLayer layer, PoolData? poolData, int curSkin,
-        int                           copyIndex)
+        int copyIndex)
     {
         var imageName = GerImageName(layer, poolData, curSkin, copyIndex, out var imageIndex);
 
@@ -95,12 +93,12 @@ public class ProcessImages
 
         return new LayerData
         {
-            SlotAndImageName       = imageName,
-            KeyframeLayer          = layer,
-            SkinIndex              = curSkin,
-            ImageIndex             = imageIndex,
-            TexId                  = layer.TexId.ToString(),
-            CopyIndex              = copyIndex,
+            SlotAndImageName = imageName,
+            KeyframeLayer = layer,
+            SkinIndex = curSkin,
+            ImageIndex = imageIndex,
+            TexId = layer.TexId.ToString(),
+            CopyIndex = copyIndex,
             BaseSkinAttachmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
         };
     }
@@ -112,16 +110,16 @@ public class ProcessImages
         GlobalData.IsCompleted = false;
         Dispatcher.UIThread.Post(() =>
         {
-            GlobalData.BarValue              = 100;
+            GlobalData.BarValue = 100;
             GlobalData.ProcessBar.Foreground = GlobalData.ProcessBarErrorBrush;
-            GlobalData.BarTextContent        = task.Exception.InnerException.Message;
+            GlobalData.BarTextContent = task.Exception.InnerException.Message;
         });
     }
 
     private string GerImageName(KeyframeLayer layer, PoolData? poolData, int curSkin, int copyIndex, out int imageIndex)
     {
         imageIndex = poolData?.LayersData[curSkin].ImageIndex ?? _currentImageIndex;
-        var isFog     = layer.TexId == GlobalData.FogTexId ? "Fog" : layer.TexId.ToString();
+        var isFog = layer.TexId == GlobalData.FogTexId ? "Fog" : layer.TexId.ToString();
         var imageName = $"Slice_{imageIndex}_{isFog}_{curSkin}_{copyIndex}";
         layer.ImageNameOrder = imageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
         return imageName;
@@ -140,11 +138,11 @@ public class ProcessImages
         return new LayerData
         {
             SlotAndImageName = imageName,
-            KeyframeLayer    = layer,
-            SkinIndex        = curSkin,
-            ImageIndex       = imageIndex,
-            CopyIndex        = copyIndex,
-            TexId            = layer.TexId.ToString()
+            KeyframeLayer = layer,
+            SkinIndex = curSkin,
+            ImageIndex = imageIndex,
+            CopyIndex = copyIndex,
+            TexId = layer.TexId.ToString()
         };
     }
 

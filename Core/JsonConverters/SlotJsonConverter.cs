@@ -13,15 +13,15 @@ public class SlotJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer                          serializer)
+        JsonSerializer serializer)
     {
         IdCount++;
         var obj = serializer.Deserialize(reader);
         if (obj is not JArray jArray) return null;
         var slot = new Slot
         {
-            Attaches   = jArray.ToObject<List<Attach>>(),
-            Id         = IdCount,
+            Attaches = jArray.ToObject<List<Attach>>(),
+            Id = IdCount,
             AttachType = AttachType.Slot
         };
         return slot;
