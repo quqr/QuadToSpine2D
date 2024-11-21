@@ -11,10 +11,10 @@ public static class Utility
     {
         var files = storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Images",
+            Title                  = "Images",
             SuggestedStartLocation = null,
-            AllowMultiple = true,
-            FileTypeFilter = [FilePickerFileTypes.ImageAll]
+            AllowMultiple          = true,
+            FileTypeFilter         = [FilePickerFileTypes.ImageAll]
         }).Result;
         return files.Count == 0 ? null : files;
     }
@@ -23,10 +23,10 @@ public static class Utility
     {
         var files = storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "QuadFile",
+            Title                  = "QuadFile",
             SuggestedStartLocation = null,
-            AllowMultiple = false,
-            FileTypeFilter = [QuadFileTypeFilter]
+            AllowMultiple          = false,
+            FileTypeFilter         = [QuadFileTypeFilter]
         }).Result;
         return files.Count == 0 ? null : files;
     }
@@ -39,7 +39,7 @@ public static class Utility
     public static List<List<string?>> ConvertImagePath(List<List<string?>?> imagePath)
     {
         List<List<string?>> result = [];
-        var temp = CopyList(imagePath);
+        var                 temp   = CopyList(imagePath);
         if (temp.Count == 0) return [];
         var maxCount = temp.MaxBy(x => x.Count)?.Count;
         if (maxCount is null) return [];

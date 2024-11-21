@@ -4,9 +4,9 @@ public class Pool
 {
     private readonly Dictionary<string, List<PoolData>> _poolDictionary = new();
 
-    private readonly ProcessImages _processImages = new(GlobalData.ImagePath);
+    private readonly ProcessImages                      _processImages        = new(GlobalData.ImagePath);
     private readonly Dictionary<string, List<PoolData>> _unusedPoolDictionary = new();
-    public Dictionary<string, List<PoolData>> UsedPoolDictionary { get; } = new();
+    public           Dictionary<string, List<PoolData>> UsedPoolDictionary { get; } = new();
 
     public PoolData Get(KeyframeLayer layer)
     {
@@ -34,7 +34,7 @@ public class Pool
 
     private PoolData Create(KeyframeLayer layer, List<PoolData> usedPoolsData)
     {
-        var copyIndex = usedPoolsData.Count;
+        var       copyIndex    = usedPoolsData.Count;
         PoolData? usedPoolData = null;
         if (usedPoolsData.Count != 0)
             usedPoolData = usedPoolsData[0];

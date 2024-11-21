@@ -5,19 +5,19 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
 namespace QuadToSpine2D.Core.Process_Abandon_;
-[Obsolete]
+
 public class ProcessImage
 {
     private readonly Dictionary<string, LayerData> _layerDataDict = [];
 
-    private readonly Dictionary<string, Dictionary<int, string>> _imageNumData = [];
-    private int _currentImageIndex;
-    private Image?[,] _images;
-    private int _skinsCount;
+    private readonly Dictionary<string, Dictionary<int, string>> ImageNumData = [];
+    private          int                                         _currentImageIndex;
+    private          Image?[,]                                   _images;
+    private          int                                         _skinsCount;
 
     //skin tex_id layer_id layer_data
-    public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData { get; } = [];
-    public FrozenDictionary<string, LayerData> LayerDataDict { get; private set; }
+    public Dictionary<int, Dictionary<int, Dictionary<string, LayerData>?>> ImageData     { get; } = [];
+    public FrozenDictionary<string, LayerData>                              LayerDataDict { get; private set; }
 
     public void Process(List<List<string?>> imagesSrc, QuadJsonData quad)
     {
@@ -63,7 +63,7 @@ public class ProcessImage
                 var sameLayers = layers.Where(x => x.Guid.Equals(layer.Guid)).ToArray();
                 for (var copyIndex = 0; copyIndex < sameLayers.Length; copyIndex++)
                 {
-                    if (_imageNumData.TryGetValue(layer.Guid, out var num))
+                    if (ImageNumData.TryGetValue(layer.Guid, out var num))
                         if (num.TryGetValue(copyIndex, out var layerName))
                         {
                             layer.LayerName = layerName;
@@ -83,10 +83,10 @@ public class ProcessImage
 
                     ImageData[curSkin][layer.TexId].Add(layer.LayerName, layerData);
                     _layerDataDict.Add(layer.LayerName, layerData);
-                    if (!_imageNumData.TryGetValue(layer.Guid, out var dict))
+                    if (!ImageNumData.TryGetValue(layer.Guid, out var dict))
                     {
                         dict = [];
-                        _imageNumData.Add(layer.Guid, dict);
+                        ImageNumData.Add(layer.Guid, dict);
                     }
 
                     dict.Add(copyIndex, layer.LayerName);
@@ -105,12 +105,12 @@ public class ProcessImage
                 var src = images[i][j];
                 if (src is null)
                 {
-                    _images[i, j] = null;
+                    _images[i, j]   = null;
                     ImageData[i][j] = null;
                     continue;
                 }
 
-                _images[i, j] = Image.Load(src);
+                _images[i, j]   = Image.Load(src);
                 ImageData[i][j] = [];
             }
         }
@@ -120,9 +120,9 @@ public class ProcessImage
     {
         return new Rectangle
         {
-            X = (int)layer.MinAndMaxSrcPoints[0],
-            Y = (int)layer.MinAndMaxSrcPoints[1],
-            Width = (int)layer.Width,
+            X      = (int)layer.MinAndMaxSrcPoints[0],
+            Y      = (int)layer.MinAndMaxSrcPoints[1],
+            Width  = (int)layer.Width,
             Height = (int)layer.Height
         };
     }
@@ -131,12 +131,12 @@ public class ProcessImage
     {
         if (image is null) return null;
         using var clipImage = image.Clone(x => { x.Crop(rectangle); });
-        var order = _currentImageIndex;
-        var imageName = $"Slice_{_currentImageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
-        if (_imageNumData.TryGetValue(layer.Guid, out var dict))
+        var       order     = _currentImageIndex;
+        var       imageName = $"Slice_{_currentImageIndex}_{layer.TexId}_{curSkin}_{copyIndex}";
+        if (ImageNumData.TryGetValue(layer.Guid, out var dict))
         {
             imageName = dict[0].Remove(dict[0].Length - 1) + copyIndex;
-            order = int.Parse(dict[0].Split("_")[1]);
+            order     = int.Parse(dict[0].Split("_")[1]);
         }
         else
         {
@@ -151,11 +151,11 @@ public class ProcessImage
         return new LayerData
         {
             SlotAndImageName = imageName,
-            KeyframeLayer = layer,
-            SkinIndex = curSkin,
-            ImageIndex = _currentImageIndex,
-            TexId = layer.TexId.ToString(),
-            CopyIndex = copyIndex
+            KeyframeLayer    = layer,
+            SkinIndex        = curSkin,
+            ImageIndex       = _currentImageIndex,
+            TexId            = layer.TexId.ToString(),
+            CopyIndex        = copyIndex
         };
     }
 

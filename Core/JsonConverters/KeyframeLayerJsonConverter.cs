@@ -11,27 +11,27 @@ public class KeyframeLayerJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+        JsonSerializer                          serializer)
     {
         var obj = serializer.Deserialize(reader);
         if (obj is not JObject jObject) return null;
         return new KeyframeLayer
         {
-            Fog = ConvertToFog(jObject),
+            Fog   = ConvertToFog(jObject),
             TexId = jObject["tex_id"]?.ToObject<int>() ?? -1,
             Dstquad = ProcessUtility.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
                 GlobalData.ScaleFactor)!,
             Srcquad = ProcessUtility.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
                 GlobalData.ScaleFactor),
-            BlendId = jObject["blend_id"]?.ToObject<int>() ?? -1,
+            BlendId   = jObject["blend_id"]?.ToObject<int>() ?? -1,
             Attribute = ConvertToAttribute(jObject)
         };
     }
 
     private List<string>? ConvertToAttribute(JObject jObject)
     {
-        var baseAttribute = jObject["attribute"];
-        List<string>? attribute = null;
+        var           baseAttribute = jObject["attribute"];
+        List<string>? attribute     = null;
         switch (baseAttribute?.Type)
         {
             case JTokenType.Array:
@@ -47,8 +47,8 @@ public class KeyframeLayerJsonConverter : JsonConverter
 
     private List<string> ConvertToFog(JObject jObject)
     {
-        var baseFog = jObject["fogquad"];
-        List<string>? fog = [];
+        var           baseFog = jObject["fogquad"];
+        List<string>? fog     = [];
         switch (baseFog?.Type)
         {
             case JTokenType.Array:

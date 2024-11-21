@@ -12,16 +12,16 @@ public class HitboxJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+        JsonSerializer                          serializer)
     {
         IdCount++;
         var obj = serializer.Deserialize(reader);
         if (obj is not JObject jObject) return null;
         var json = new Hitbox
         {
-            Name = jObject["name"]?.ToString(),
-            Layer = jObject["layer"]?.ToObject<List<HitboxLayer?>>(),
-            Id = IdCount,
+            Name       = jObject["name"]?.ToString(),
+            Layer      = jObject["layer"]?.ToObject<List<HitboxLayer?>>(),
+            Id         = IdCount,
             AttachType = AttachType.HitBox
         };
         return json;

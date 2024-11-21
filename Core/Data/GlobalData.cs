@@ -6,14 +6,14 @@ namespace QuadToSpine2D.Core.Data;
 
 public static class GlobalData
 {
-    public const float Fps = 1 / 60f;
-    private static int _scaleFactor = 1;
-    private static List<List<string?>> _imagePath = [];
+    public const   float               Fps          = 1 / 60f;
+    private static int                 _scaleFactor = 1;
+    private static List<List<string?>> _imagePath   = [];
+    public static  bool                IsCompleted { get; set; }
 
     private static double _barValue;
-    public static bool IsCompleted { get; set; }
-    public static bool IsSetLoopAnimation { get; set; }
-    public static int FogTexId => 1000;
+    public static  bool   IsSetLoopAnimation { get; set; }
+    public static  int    FogTexId           => 1000;
 
     public static int ScaleFactor
     {
@@ -36,9 +36,9 @@ public static class GlobalData
         }
     }
 
-    public static string ImageSavePath { get; set; } = string.Empty;
-    public static string ResultSavePath { get; set; } = string.Empty;
-    public static ProgressBar ProcessBar { get; set; } = null!;
+    public static string      ImageSavePath  { get; set; } = string.Empty;
+    public static string      ResultSavePath { get; set; } = string.Empty;
+    public static ProgressBar ProcessBar     { get; set; } = null!;
 
     public static ISolidColorBrush ProcessBarNormalBrush { get; set; } =
         new SolidColorBrush(Color.FromRgb(0, 128, 128));
