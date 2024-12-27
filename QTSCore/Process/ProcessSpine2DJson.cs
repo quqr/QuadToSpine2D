@@ -4,7 +4,7 @@ using QuadToSpine2D.Core.Utility;
 
 namespace QuadToSpine2D.Core.Process;
 
-public class NewProcessSpine2DJson
+public class ProcessSpine2DJson
 {
     private readonly List<DrawOrder> _drawOrders       = [];
     private readonly List<PoolData>  _existAttachments = [];
@@ -17,7 +17,7 @@ public class NewProcessSpine2DJson
     private          Deform                            _deform              = new();
     private          float                             _time;
 
-    public NewProcessSpine2DJson(QuadJsonData quadJsonData)
+    public ProcessSpine2DJson(QuadJsonData quadJsonData)
     {
         GlobalData.BarTextContent                = "Processing...";
         _quadJsonData                            = quadJsonData;

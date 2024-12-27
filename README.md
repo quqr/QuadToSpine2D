@@ -12,7 +12,7 @@
 
 ### **Runtime**
 
-* [.NET8](https://dotnet.microsoft.com/zh-cn/download)
+* [.NET9](https://dotnet.microsoft.com/download)
 
 ### **Setup**
 

@@ -4,8 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
-using QuadToSpine2D.AvaUtility;
 using QuadToSpine2D.Core.Process;
+using QuadToSpine2D.Utility;
 
 namespace QuadToSpine2D.Pages;
 
@@ -79,7 +79,7 @@ public partial class MainWindow : Window
 
         void AddButtonClick(object? o, RoutedEventArgs routedEventArgs)
         {
-            var files = Utility.OpenImageFilePicker(StorageProvider);
+            var files = Utility.Utility.OpenImageFilePicker(StorageProvider);
             if (files is null) return;
             foreach (var file in files)
             {
@@ -103,7 +103,7 @@ public partial class MainWindow : Window
 
     private void OpenQuadFile(object? sender, RoutedEventArgs e)
     {
-        var file = Utility.OpenQuadFilePicker(StorageProvider);
+        var file = Utility.Utility.OpenQuadFilePicker(StorageProvider);
         if (file is null) return;
         _quadFilePath             = file[0].Path.DecodePath();
         QuadFileNameLabel.Content = file[0].Name;
@@ -143,7 +143,7 @@ public partial class MainWindow : Window
         // ];        
         _quadFilePath =
             @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
-        _imagePath =
+        List<List<string?>> imagePath =
         [
             [
                 @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.0.gnf.png"
@@ -192,6 +192,7 @@ public partial class MainWindow : Window
         GlobalData.IsCompleted = true;
         Task.Run(() =>
         {
+#if RELEASE
             var imagePath = new List<List<string?>>();
             foreach (var part in _buttonStatus)
             {
@@ -199,6 +200,7 @@ public partial class MainWindow : Window
                 foreach (var image in part.Value) imageList.Add(image);
                 imagePath.Add(imageList);
             }
+#endif            
             GlobalData.ImagePath = imagePath;
             
             new ProcessQuadData()

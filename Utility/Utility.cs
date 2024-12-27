@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using Avalonia.Platform.Storage;
 
-namespace QuadToSpine2D.AvaUtility;
+namespace QuadToSpine2D.Utility;
 
 public static class Utility
 {

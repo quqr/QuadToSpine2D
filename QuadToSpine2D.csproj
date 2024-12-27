@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <PublishAot>False</PublishAot>
         <PublishTrimmed>False</PublishTrimmed>
+        <LangVersion>12</LangVersion>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DebugType>embedded</DebugType>
@@ -16,18 +17,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.1.3">
-            <TreatAsUsed>true</TreatAsUsed>
-        </PackageReference>
-        <PackageReference Include="Avalonia.Desktop" Version="11.1.3"/>
+        <PackageReference Include="Avalonia" Version="11.2.3" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.3"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.3"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.3"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.3">
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.3"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3">
             <TreatAsUsed>true</TreatAsUsed>
         </PackageReference>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4"/>
     </ItemGroup>
 
@@ -40,38 +39,5 @@
             <DependentUpon>MainWindow.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Remove="TestProject1\**"/>
-        <Compile Remove="UnitTest\**"/>
-        <Compile Remove="NUnitTest\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <AvaloniaXaml Remove="TestProject1\**"/>
-        <AvaloniaXaml Remove="UnitTest\**"/>
-        <AvaloniaXaml Remove="NUnitTest\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Remove="TestProject1\**"/>
-        <EmbeddedResource Remove="UnitTest\**"/>
-        <EmbeddedResource Remove="NUnitTest\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <AdditionalFiles Remove="TestProject1\**"/>
-        <AdditionalFiles Remove="UnitTest\**"/>
-        <AdditionalFiles Remove="NUnitTest\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <AvaloniaResource Remove="TestProject1\**"/>
-        <AvaloniaResource Remove="UnitTest\**"/>
-        <AvaloniaResource Remove="NUnitTest\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="TestProject1\**"/>
-        <None Remove="UnitTest\**"/>
-        <None Remove="NUnitTest\**"/>
     </ItemGroup>
 </Project>

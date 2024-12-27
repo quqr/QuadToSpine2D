@@ -21,7 +21,7 @@ public class ProcessQuadData
         //    .Process(imageQuad, QuadData)
         //    .WriteToJson();
 
-        var spineJson = new NewProcessSpine2DJson(QuadData);
+        var spineJson = new ProcessSpine2DJson(QuadData);
         spineJson.Process().WriteToJson();
     }
 
