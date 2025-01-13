@@ -2,23 +2,25 @@
 
 ## Support
 
-+ Spine2D 3.8+
++ Spine2D 3.8
 
 ## Known issues
 
 1. **Some animations are displayed in the wrong order.**
-
-## **How to use**
+2. **Some animation layers are not displayed at all.**
+3. **Can not convert some quad files**
+## **How to use:**
 
 ### **Runtime**
 
-* [.NET9](https://dotnet.microsoft.com/download)
+* [.NET8](https://dotnet.microsoft.com/download)
 
 ### **Setup**
 
 * [How to get quad files](https://github.com/rufaswan/Web2D_Games/blob/master/docs/psxtools-steps.adoc)
 * [Details](https://www.vg-resource.com/thread-38430.html)
 
+### Usages:
 + ### Select quad file path and images path.
   #### Make sure order of image is right
   #### If your image is larger than the original image, the scale factor = current image size ÷ original image size.

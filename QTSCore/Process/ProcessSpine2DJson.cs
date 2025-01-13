@@ -32,7 +32,7 @@ public class ProcessSpine2DJson
         foreach (var skeleton in _quadJsonData.Skeleton)
         {
             GlobalData.BarTextContent = $"Processing animation : {skeleton.Name}";
-            // Console.WriteLine($"Processing animation : {skeleton.Name}");
+            Console.WriteLine($"Processing animation : {skeleton.Name}");
             SetAnimation(skeleton);
             GlobalData.BarValue += bar;
         }
@@ -41,14 +41,13 @@ public class ProcessSpine2DJson
         SortSlotsAndDrawOrder();
         return _spineJsonData;
     }
-
+    
     private void SortSlotsAndDrawOrder()
     {
         _spineJsonData.Slots = _spineJsonData.Slots
                                              .OrderBy(x => x.OrderByImageSlot)
                                              .ThenBy(x => x.Name)
                                              .ToList();
-        // _spineJsonData.Slots.Sort((x, y) => x.OrderByImageSlot.CompareTo(y.OrderByImageSlot));
         for (var index = 0; index < _spineJsonData.Slots.Count; index++)
             _spineJsonData.Slots[index].SlotOrder = index;
 
@@ -79,12 +78,12 @@ public class ProcessSpine2DJson
         var animationName                                   = skeleton.Name;
         if (skeleton.CombineAnimation.IsMix) animationName  += "_MIX";
         if (skeleton.CombineAnimation.IsLoop) animationName += "_LOOP";
-
+        if (skeleton.CombineAnimation.Data.Count == 0) animationName += "_EMPTY";
         _spineJsonData.Animations[animationName] = new SpineAnimation
         {
             Slots     = new Dictionary<string, AnimationSlot>(_spineAnimationSlots),
             Deform    = _deform.Clone(),
-            DrawOrder = new List<DrawOrder>(_drawOrders)
+            DrawOrder = [.._drawOrders]
         };
     }
 
@@ -100,6 +99,7 @@ public class ProcessSpine2DJson
 #endif
 #if DEBUG
         foreach (var drawOrder in drawOrders) drawOrder.SortOffset();
+        // drawOrders must be null if it's empty, or it will cause error in Spine2D
         drawOrders.RemoveAll(x => x.Offsets.Count == 0);
         spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
 #endif
@@ -170,17 +170,24 @@ public class ProcessSpine2DJson
             {
                 case AttachType.Keyframe:
                     var keyframe = timeline.Attach as Keyframe;
+                    if (keyframe is null) continue;
                     ReleaseKeyframe(keyframe, framePoint);
                     break;
                 case AttachType.Slot:
                     var slot = timeline.Attach as Slot;
-                    keyframe = slot.Attaches.Find(x => x.AttachType == AttachType.Keyframe) as Keyframe;
+                    keyframe = slot?.Attaches?.Find(x => x.AttachType == AttachType.Keyframe) as Keyframe;
+                    if (keyframe is null) continue;
                     ReleaseKeyframe(keyframe, framePoint);
                     break;
                 case AttachType.HitBox:
-                    var hitbox = timeline.Attach as Hitbox;
-                    ReleaseHitbox(hitbox);
+                    if (timeline.Attach is Hitbox hitbox) ReleaseHitbox(hitbox);
                     break;
+                case AttachType.Animation:
+                case AttachType.Skeleton:
+                case null:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }
@@ -223,9 +230,8 @@ public class ProcessSpine2DJson
         }
     }
 
-    private void ReleaseKeyframe(Keyframe? attachKeyframe, FramePoint framePoint)
+    private void ReleaseKeyframe(Keyframe attachKeyframe, FramePoint framePoint)
     {
-        if (attachKeyframe is null) return;
         foreach (var layer in attachKeyframe.Layers)
         {
             var poolData = _pool.FindPoolData(layer, framePoint);

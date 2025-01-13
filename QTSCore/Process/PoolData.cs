@@ -2,8 +2,8 @@
 
 public class PoolData
 {
-    private FramePoint      _framePoint = new(-1);
-    public  List<LayerData> LayersData { get; init; }
+    private         FramePoint      _framePoint = new(-1);
+    public required List<LayerData> LayersData { get; init; }
 
     public FramePoint FramePoint
     {
@@ -11,7 +11,7 @@ public class PoolData
         set
         {
             if (_framePoint.EndFrame != -1 && value.EndFrame != -1)
-                throw new InvalidOperationException("FramePoint is already set.");
+                throw new InvalidOperationException("FramePoint is already set. Something went wrong.");
             _framePoint = value;
         }
     }

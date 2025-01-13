@@ -59,6 +59,7 @@ public static class ProcessUtility
 
     /// <summary>
     ///     Combine animations into one animation data.
+    ///     A animation may be contain multiple animations.
     ///     new animation data = animation 1 + animation 2 + animation 3 + ...
     /// </summary>
     public static AnimationData CombineAnimations(List<Animation> animations)

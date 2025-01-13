@@ -129,6 +129,7 @@ public class DrawOrder
 
     public void SortOffset()
     {
+        // bugs
         var isResetOffsetList = new List<bool>();
         foreach (var layerOffset in LayerOffsets)
         {

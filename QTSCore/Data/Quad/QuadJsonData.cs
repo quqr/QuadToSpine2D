@@ -115,7 +115,9 @@ public class KeyframeLayer
                          .Select((t, i) => t * 3.7 / 7.3 + t * i * 97311397.135f / 773377.2746f)
                          .Sum()}";
     }
-
+    /// <summary>
+    /// recalculate UVs
+    /// </summary>
     private void CalculateUVs(float[] src)
     {
         List<Vector3> points =
@@ -125,7 +127,6 @@ public class KeyframeLayer
             new(src[4], src[5], 2),
             new(src[6], src[7], 3)
         ];
-        //Vector2[] uvs = [new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 1), new Vector2(1, 0)];
         Vector2[] uvs         = [new(0, 0), new(0, 1), new(1, 0), new(1, 1)];
         var       orderPoints = points.OrderBy(a => a.X).ThenBy(b => b.Y).ToList();
         for (var i = 0; i < 4; i++)
@@ -134,7 +135,7 @@ public class KeyframeLayer
             UVs[(int)orderPoints[i].Z * 2 + 1] = uvs[i].Y;
         }
 
-        //calculate ZeroCenterPoints
+        //calculate ZeroCenterPoints, make sure it's in center 
         for (var i = 0; i < UVs.Length; i++)
             if (i % 2 == 0)
                 ZeroCenterPoints[i] = (UVs[i] * 2f - 1f) * Width / 8f;

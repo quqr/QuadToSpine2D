@@ -24,7 +24,7 @@ public class ProcessImages
     private int _currentImageIndex { get; set; }
 
     // { tex_id: { skin_id: {layer_guid: [layer_data, ...] } }
-    public ConcurrentDictionary<int, Dictionary<int, Dictionary<string, List<LayerData>>>> LayersDataDict { get; } = [];
+    private ConcurrentDictionary<int, Dictionary<int, Dictionary<string, List<LayerData>>>> LayersDataDict { get; } = [];
 
     private void GetImages(List<List<string?>> images)
     {
@@ -148,7 +148,7 @@ public class ProcessImages
         };
     }
 
-    private Image DrawFogImage(int width, int height, List<string> colors)
+    private static Image<Rgba32> DrawFogImage(int width, int height, List<string> colors)
     {
         var image = new Image<Rgba32>(width, height);
         PointF[] fs =
