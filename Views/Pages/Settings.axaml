@@ -1,0 +1,50 @@
+﻿<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="1400"
+    mc:Ignorable="d"
+    x:Class="QTSAvalonia.Views.Pages.Settings"
+    x:DataType="pages:SettingsViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:suki="https://github.com/kikipoulet/SukiUI"
+    xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
+    xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
+    xmlns:pages1="clr-namespace:QTSAvalonia.Views.Pages">
+    <Design.DataContext>
+        <pages:SettingsViewModel />
+    </Design.DataContext>
+    <UserControl.DataContext>
+        <pages:SettingsViewModel />
+    </UserControl.DataContext>
+    <suki:SettingsLayout>
+        <suki:SettingsLayout.Items>
+            <objectModel:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">
+                <suki:SettingsLayoutItem Header="Converter">
+                    <suki:SettingsLayoutItem.Content>
+                        <suki:GlassCard Margin="0,25,0,0" Padding="25">
+                            <pages1:ConverterSetting></pages1:ConverterSetting>
+                        </suki:GlassCard>
+                    </suki:SettingsLayoutItem.Content>
+                </suki:SettingsLayoutItem>
+
+                <suki:SettingsLayoutItem Header="Previewer">
+                    <suki:SettingsLayoutItem.Content>
+                        <suki:GlassCard Margin="0,25,0,0" Padding="25">
+
+                        </suki:GlassCard>
+                    </suki:SettingsLayoutItem.Content>
+                </suki:SettingsLayoutItem>
+
+                <suki:SettingsLayoutItem Header="Base Converter">
+                    <suki:SettingsLayoutItem.Content>
+                        <suki:GlassCard Margin="0,25,0,0" Padding="25">
+
+                        </suki:GlassCard>
+                    </suki:SettingsLayoutItem.Content>
+                </suki:SettingsLayoutItem>
+            </objectModel:ObservableCollection>
+        </suki:SettingsLayout.Items>
+    </suki:SettingsLayout>
+</UserControl>

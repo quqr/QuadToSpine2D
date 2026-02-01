@@ -1,7 +1,8 @@
-﻿using Avalonia;
-using QuadToSpine2D.Pages;
+﻿using System;
+using Avalonia;
+using QTSAvalonia.Views.Pages;
 
-namespace QuadToSpine2D;
+namespace QTSAvalonia;
 
 internal class Program
 {

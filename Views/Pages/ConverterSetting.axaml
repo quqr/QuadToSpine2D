@@ -1,0 +1,59 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="QTSAvalonia.Views.Pages.ConverterSetting"
+             x:DataType="pages:ConverterSettingViewModel">
+    <Design.DataContext>
+        <pages:ConverterSettingViewModel />
+    </Design.DataContext>
+    <UserControl.DataContext>
+        <pages:ConverterSettingViewModel />
+    </UserControl.DataContext>
+    <StackPanel Spacing="15">
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Set loop animations" />
+                <TextBlock
+                    Margin="0,12,70,0"
+                    Text="des"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+            <ToggleSwitch IsChecked="{Binding IsLoopingAnimation}" HorizontalAlignment="Right" DockPanel.Dock="Right"></ToggleSwitch>
+        </DockPanel>
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Pretty json format" />
+                <TextBlock
+                    Margin="0,12,70,0"
+                    Text="des"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+            <ToggleSwitch HorizontalAlignment="Right" DockPanel.Dock="Right" IsChecked="{Binding IsPrettyJsonPrint}"/>
+        </DockPanel>
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Scale factor" />
+                <TextBlock
+                    Margin="0,12,70,0"
+                    Text="des"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+            <TextBox Watermark="1" 
+                     HorizontalAlignment="Right" 
+                     DockPanel.Dock="Right" Width="200" 
+                     Text="{Binding ScaleFactorStr}"/>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

@@ -1,6 +1,6 @@
-﻿using QuadToSpine2D.Core.Process_Abandon_;
+﻿using QTSCore.Data.Quad;
 
-namespace QuadToSpine2D.Core.Process;
+namespace QTSCore.Process;
 
 public class ProcessQuadData
 {

@@ -1,7 +1,9 @@
-﻿using QuadToSpine2D.Core.Process;
+﻿using QTSCore.Data;
+using QTSCore.Data.Quad;
+using QTSCore.Process;
 using SixLabors.ImageSharp;
 
-namespace QuadToSpine2D.Core.Utility;
+namespace QTSCore.Utility;
 
 public static class ProcessUtility
 {

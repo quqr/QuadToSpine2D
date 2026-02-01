@@ -1,8 +1,8 @@
-﻿using QuadToSpine2D.Core.JsonConverters;
-using QuadToSpine2D.Core.Process;
-using QuadToSpine2D.Core.Utility;
+﻿using QTSCore.JsonConverters;
+using QTSCore.Process;
+using QTSCore.Utility;
 
-namespace QuadToSpine2D.Core.Data.Quad;
+namespace QTSCore.Data.Quad;
 
 public class QuadJsonData
 {

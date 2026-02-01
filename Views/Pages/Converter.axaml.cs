@@ -1,21 +1,26 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
-using QuadToSpine2D.Core.Process;
-using QuadToSpine2D.Utility;
+using QTSAvalonia.Utilities;
+using QTSCore.Data;
+using QTSCore.Process;
+using SukiUI.Controls;
 
-namespace QuadToSpine2D.Pages;
+namespace QTSAvalonia.Views.Pages;
 
-public partial class MainWindow : Window
+public partial class Converter : UserControl
 {
     private          int                                   _currentImageBoxPart;
     private          string                                _quadFilePath = string.Empty;
     private readonly Dictionary<StackPanel, List<string?>> _buttonStatus  = new();
 
-    public MainWindow()
+    public Converter()
     {
         InitializeComponent();
         GlobalData.ProcessBar = ProcessBar;
@@ -23,7 +28,7 @@ public partial class MainWindow : Window
 
     private void OpenSettingWindow(object? sender, RoutedEventArgs e)
     {
-        new Settings().ShowDialog(this);
+        //new Settings().ShowDialog(this);
     }
 
     private void AddNewElement(object? sender, RoutedEventArgs e)
@@ -79,19 +84,19 @@ public partial class MainWindow : Window
 
         void AddButtonClick(object? o, RoutedEventArgs routedEventArgs)
         {
-            var files = Utility.Utility.OpenImageFilePicker(StorageProvider);
-            if (files is null) return;
-            foreach (var file in files)
-            {
-                var hyperLink = new HyperlinkButton
-                {
-                    Content     = file.Name,
-                    NavigateUri = file.Path
-                };
-                _buttonStatus[content].Add(file.Path.DecodePath());
-                stackPanel.Children.Add(hyperLink);
-                file.Dispose();
-            }
+            //var files = Utility.OpenImageFilePicker(StorageProvider);
+            // if (files is null) return;
+            // foreach (var file in files)
+            // {
+            //     var hyperLink = new HyperlinkButton
+            //     {
+            //         Content     = file.Name,
+            //         NavigateUri = file.Path
+            //     };
+            //     _buttonStatus[content].Add(file.Path.DecodePath());
+            //     stackPanel.Children.Add(hyperLink);
+            //     file.Dispose();
+            // }
         }
 
         void DeleteButtonOnClick(object? o, RoutedEventArgs routedEventArgs)
@@ -103,15 +108,16 @@ public partial class MainWindow : Window
 
     private void OpenQuadFile(object? sender, RoutedEventArgs e)
     {
-        var file = Utility.Utility.OpenQuadFilePicker(StorageProvider);
-        if (file is null) return;
-        _quadFilePath             = file[0].Path.DecodePath();
-        QuadFileNameLabel.Content = file[0].Name;
-        file[0].Dispose();
+        // var file = Utility.OpenQuadFilePicker(StorageProvider);
+        // if (file is null) return;
+        // _quadFilePath             = file[0].Path.DecodePath();
+        // QuadFileNameLabel.Content = file[0].Name;
+        // file[0].Dispose();
     }
 
     private void ProcessData(object? sender, RoutedEventArgs e)
     {
+        return;
         ProcessButton.IsEnabled = false;
 
         GlobalData.ResultSavePath = Directory.GetCurrentDirectory();
@@ -119,28 +125,6 @@ public partial class MainWindow : Window
 #if DEBUG
         GlobalData.ImageSavePath = @"E:\Asset\tt\images";
         GlobalData.ResultSavePath = @"E:\Asset\tt";
-
-        // _quadFilePath = @"E:\Asset\momohime\4k\00Files\file\Momohime_Rest.mbs.v55.quad";
-        // _imagePath =
-        // [
-        //     [
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime.0.tpl1.png"
-        //     ],
-        //     [
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime.1.tpl.png",
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.1.tpl.png"
-        //     ],
-        //     [
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime.2.tpl.png",
-        //         @"E:\Asset\momohime\4k\00Files\file\Momohime_Dark_tex.2.tpl.png"
-        //     ]
-        // ];
-        // _quadFilePath = @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.mbs.v55.quad";
-        // _imagePath = 
-        // [
-        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.0.nvt.png"],
-        //     [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi sent Fuyusaka00.1.nvt.png"],
-        // ];        
         _quadFilePath =
             @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
         List<List<string?>> imagePath =
@@ -153,31 +137,6 @@ public partial class MainWindow : Window
             ],
             [@"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Gwendlyn.2.gnf.png"]
         ];
-        // _quadFilePath =
-        //     @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M.mbs.v55.quad";
-        // _imagePath =
-        // [
-        //     [
-        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.0.nvt.png"
-        //     ],
-        //     [
-        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\swi unic BlackKnight_HG_M00.1.nvt.png"
-        //     ]
-        // ];
-        // _quadFilePath =
-        //     @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin REHD_Alice.mbs.v55.quad";
-        // _imagePath =
-        // [
-        //     [
-        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Alice.0.gnf.png"
-        //     ],
-        //     [
-        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Alice.1.gnf.png"
-        //     ],
-        //     [
-        //         @"D:\Download\quad_mobile_v05_beta-20240404-2000\quad_mobile_v05_beta\data\ps4 odin HD_Alice.2.gnf.png"
-        //     ]
-        // ];
 #endif
         if (!Directory.Exists(GlobalData.ImageSavePath)) Directory.CreateDirectory(GlobalData.ImageSavePath);
 #if DEBUG

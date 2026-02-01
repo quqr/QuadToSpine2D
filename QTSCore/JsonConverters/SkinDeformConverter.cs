@@ -1,6 +1,6 @@
-using QuadToSpine2D.Core.Data.Spine;
+using QTSCore.Data.Spine;
 
-namespace QuadToSpine2D.Core.JsonConverters;
+namespace QTSCore.JsonConverters;
 
 public class SkinDeformConverter : JsonConverter
 {

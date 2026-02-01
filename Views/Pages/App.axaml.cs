@@ -1,8 +1,9 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-namespace QuadToSpine2D.Pages;
+namespace QTSAvalonia.Views.Pages;
 
 public class App : Application
 {
@@ -14,7 +15,7 @@ public class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            desktop.MainWindow = new MainWindow();
+            desktop.MainWindow = new RootView();
 
         base.OnFrameworkInitializationCompleted();
     }

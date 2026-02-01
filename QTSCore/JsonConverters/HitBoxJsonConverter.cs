@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
+using QTSCore.Data.Quad;
 
-namespace QuadToSpine2D.Core.JsonConverters;
+namespace QTSCore.JsonConverters;
 
 public class HitboxJsonConverter : JsonConverter
 {

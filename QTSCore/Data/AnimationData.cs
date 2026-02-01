@@ -1,4 +1,6 @@
-﻿namespace QuadToSpine2D.Core.Data;
+﻿using QTSCore.Data.Quad;
+
+namespace QTSCore.Data;
 
 public class AnimationData
 {

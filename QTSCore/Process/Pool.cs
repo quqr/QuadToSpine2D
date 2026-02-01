@@ -1,4 +1,7 @@
-﻿namespace QuadToSpine2D.Core.Process;
+﻿using QTSCore.Data;
+using QTSCore.Data.Quad;
+
+namespace QTSCore.Process;
 
 /// <summary>
 /// Pool class to manage the pool of layer data.

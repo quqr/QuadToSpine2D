@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using QuadToSpine2D.Core.JsonConverters;
-using QuadToSpine2D.Core.Utility;
+﻿using QTSCore.Data;
+using QTSCore.Data.Quad;
+using QTSCore.JsonConverters;
+using QTSCore.Utility;
 
-namespace QuadToSpine2D.Core.Process_Abandon_;
+namespace QTSCore.Process;
 
 public class ProcessQuadJsonFile
 {

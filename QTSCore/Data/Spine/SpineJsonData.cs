@@ -1,7 +1,7 @@
 ﻿using System.Collections.Frozen;
-using QuadToSpine2D.Core.JsonConverters;
+using QTSCore.JsonConverters;
 
-namespace QuadToSpine2D.Core.Data.Spine;
+namespace QTSCore.Data.Spine;
 
 public class SpineJsonData
 {

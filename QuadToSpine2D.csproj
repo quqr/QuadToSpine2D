@@ -6,8 +6,10 @@
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <PublishAot>False</PublishAot>
         <PublishTrimmed>False</PublishTrimmed>
-        <LangVersion>12</LangVersion>
-        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>default</LangVersion>
+        <TargetFramework>net10.0</TargetFramework>
+        <AssemblyName>QTSAvalonia</AssemblyName>
+        <RootNamespace>QTSAvalonia</RootNamespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DebugType>embedded</DebugType>
@@ -17,17 +19,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.2.3" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.2.3"/>
+        <PackageReference Include="Avalonia" Version="11.3.11" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.11" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.3"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.3"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3">
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.11" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11">
             <TreatAsUsed>true</TreatAsUsed>
         </PackageReference>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+        <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.317" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
+        <PackageReference Include="SukiUI" Version="6.0.3" />
+        <PackageReference Include="SukiUI.Dock" Version="6.0.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -39,5 +46,42 @@
             <DependentUpon>MainWindow.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Compile Remove="QTSCore\**" />
+        <Compile Update="UserControls\Element.axaml.cs">
+          <DependentUpon>Element.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaXaml Remove="QTSCore\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="QTSCore\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Remove="QTSCore\**" />
+      <AdditionalFiles Include="Views\Pages\App.axaml" />
+      <AdditionalFiles Include="Views\Pages\MainWindow.axaml" />
+      <AdditionalFiles Include="Views\Pages\Settings.axaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaResource Remove="QTSCore\**" />
+      <AvaloniaResource Remove="SukiUI\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="QTSCore\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="QTSCore\QTSCore.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Views\" />
     </ItemGroup>
 </Project>

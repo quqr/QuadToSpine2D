@@ -1,4 +1,6 @@
-﻿namespace QuadToSpine2D.Core.Process;
+﻿using QTSCore.Data;
+
+namespace QTSCore.Process;
 
 public class PoolData
 {

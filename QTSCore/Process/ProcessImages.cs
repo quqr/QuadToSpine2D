@@ -1,13 +1,14 @@
 ﻿using System.Collections.Concurrent;
-using System.Threading.Tasks;
 using Avalonia.Threading;
-using QuadToSpine2D.Core.Utility;
+using QTSCore.Data;
+using QTSCore.Data.Quad;
+using QTSCore.Utility;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace QuadToSpine2D.Core.Process;
+namespace QTSCore.Process;
 
 public class ProcessImages
 {

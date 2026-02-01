@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using QuadToSpine2D.Core.Data.Spine;
-using QuadToSpine2D.Core.Utility;
+﻿using QTSCore.Data;
+using QTSCore.Data.Quad;
+using QTSCore.Data.Spine;
+using QTSCore.Utility;
 
-namespace QuadToSpine2D.Core.Process;
+namespace QTSCore.Process;
 
 public class ProcessSpine2DJson
 {

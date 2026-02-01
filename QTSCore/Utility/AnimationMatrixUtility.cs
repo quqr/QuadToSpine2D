@@ -1,4 +1,4 @@
-﻿namespace QuadToSpine2D.Core.Utility;
+﻿namespace QTSCore.Utility;
 
 public static class AnimationMatrixUtility
 {

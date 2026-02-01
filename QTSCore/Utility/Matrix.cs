@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace QuadToSpine2D.Core.Utility;
+﻿namespace QTSCore.Utility;
 
 public readonly struct Matrix : IEquatable<Matrix>
 {

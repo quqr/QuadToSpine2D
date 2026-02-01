@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 
-namespace QuadToSpine2D.Core.Data;
+namespace QTSCore.Data;
 
 public static class GlobalData
 {
