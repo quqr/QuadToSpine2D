@@ -25,95 +25,95 @@ public partial class Converter : UserControl
         InitializeComponent();
         GlobalData.ProcessBar = ProcessBar;
     }
-
-    private void OpenSettingWindow(object? sender, RoutedEventArgs e)
-    {
-        //new Settings().ShowDialog(this);
-    }
-
-    private void AddNewElement(object? sender, RoutedEventArgs e)
-    {
-        _currentImageBoxPart++;
-
-        var label = new Label
-        {
-            Content             = $"Part {_currentImageBoxPart}",
-            HorizontalAlignment = HorizontalAlignment.Center
-        };
-        var stackPanel = new StackPanel();
-        var scrollView = new ScrollViewer
-        {
-            Content   = stackPanel,
-            MaxHeight = 300
-        };
-        var addButton = new Button
-        {
-            Content                    = "Add",
-            Width                      = 100,
-            HorizontalContentAlignment = HorizontalAlignment.Center,
-            VerticalContentAlignment   = VerticalAlignment.Center,
-            HorizontalAlignment        = HorizontalAlignment.Center,
-            VerticalAlignment          = VerticalAlignment.Center
-        };
-        var deleteButton = new Button
-        {
-            Content                    = "Delete",
-            Width                      = 100,
-            HorizontalContentAlignment = HorizontalAlignment.Center,
-            VerticalContentAlignment   = VerticalAlignment.Center,
-            HorizontalAlignment        = HorizontalAlignment.Center,
-            VerticalAlignment          = VerticalAlignment.Center
-        };
-        var content = new StackPanel
-        {
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment   = VerticalAlignment.Center,
-            Margin              = new Thickness(10),
-            Children =
-            {
-                label, scrollView, addButton, deleteButton
-            }
-        };
-        ImageBox.Children.Insert(ImageBox.Children.Count - 1, content);
-
-        _buttonStatus[content] =  [];
-        addButton.Click       += AddButtonClick;
-        deleteButton.Click    += DeleteButtonOnClick;
-
-        return;
-
-        void AddButtonClick(object? o, RoutedEventArgs routedEventArgs)
-        {
-            //var files = Utility.OpenImageFilePicker(StorageProvider);
-            // if (files is null) return;
-            // foreach (var file in files)
-            // {
-            //     var hyperLink = new HyperlinkButton
-            //     {
-            //         Content     = file.Name,
-            //         NavigateUri = file.Path
-            //     };
-            //     _buttonStatus[content].Add(file.Path.DecodePath());
-            //     stackPanel.Children.Add(hyperLink);
-            //     file.Dispose();
-            // }
-        }
-
-        void DeleteButtonOnClick(object? o, RoutedEventArgs routedEventArgs)
-        {
-            ImageBox.Children.Remove(content);
-            _buttonStatus.Remove(content);
-        }
-    }
-
-    private void OpenQuadFile(object? sender, RoutedEventArgs e)
-    {
-        // var file = Utility.OpenQuadFilePicker(StorageProvider);
-        // if (file is null) return;
-        // _quadFilePath             = file[0].Path.DecodePath();
-        // QuadFileNameLabel.Content = file[0].Name;
-        // file[0].Dispose();
-    }
+    //
+    // private void OpenSettingWindow(object? sender, RoutedEventArgs e)
+    // {
+    //     //new Settings().ShowDialog(this);
+    // }
+    //
+    // private void AddNewElement(object? sender, RoutedEventArgs e)
+    // {
+    //     _currentImageBoxPart++;
+    //
+    //     var label = new Label
+    //     {
+    //         Content             = $"Part {_currentImageBoxPart}",
+    //         HorizontalAlignment = HorizontalAlignment.Center
+    //     };
+    //     var stackPanel = new StackPanel();
+    //     var scrollView = new ScrollViewer
+    //     {
+    //         Content   = stackPanel,
+    //         MaxHeight = 300
+    //     };
+    //     var addButton = new Button
+    //     {
+    //         Content                    = "Add",
+    //         Width                      = 100,
+    //         HorizontalContentAlignment = HorizontalAlignment.Center,
+    //         VerticalContentAlignment   = VerticalAlignment.Center,
+    //         HorizontalAlignment        = HorizontalAlignment.Center,
+    //         VerticalAlignment          = VerticalAlignment.Center
+    //     };
+    //     var deleteButton = new Button
+    //     {
+    //         Content                    = "Delete",
+    //         Width                      = 100,
+    //         HorizontalContentAlignment = HorizontalAlignment.Center,
+    //         VerticalContentAlignment   = VerticalAlignment.Center,
+    //         HorizontalAlignment        = HorizontalAlignment.Center,
+    //         VerticalAlignment          = VerticalAlignment.Center
+    //     };
+    //     var content = new StackPanel
+    //     {
+    //         HorizontalAlignment = HorizontalAlignment.Center,
+    //         VerticalAlignment   = VerticalAlignment.Center,
+    //         Margin              = new Thickness(10),
+    //         Children =
+    //         {
+    //             label, scrollView, addButton, deleteButton
+    //         }
+    //     };
+    //     ImageBox.Children.Insert(ImageBox.Children.Count - 1, content);
+    //
+    //     _buttonStatus[content] =  [];
+    //     addButton.Click       += AddButtonClick;
+    //     deleteButton.Click    += DeleteButtonOnClick;
+    //
+    //     return;
+    //
+    //     void AddButtonClick(object? o, RoutedEventArgs routedEventArgs)
+    //     {
+    //         //var files = Utility.OpenImageFilePicker(StorageProvider);
+    //         // if (files is null) return;
+    //         // foreach (var file in files)
+    //         // {
+    //         //     var hyperLink = new HyperlinkButton
+    //         //     {
+    //         //         Content     = file.Name,
+    //         //         NavigateUri = file.Path
+    //         //     };
+    //         //     _buttonStatus[content].Add(file.Path.DecodePath());
+    //         //     stackPanel.Children.Add(hyperLink);
+    //         //     file.Dispose();
+    //         // }
+    //     }
+    //
+    //     void DeleteButtonOnClick(object? o, RoutedEventArgs routedEventArgs)
+    //     {
+    //         ImageBox.Children.Remove(content);
+    //         _buttonStatus.Remove(content);
+    //     }
+    // }
+    //
+    // private void OpenQuadFile(object? sender, RoutedEventArgs e)
+    // {
+    //     // var file = Utility.OpenQuadFilePicker(StorageProvider);
+    //     // if (file is null) return;
+    //     // _quadFilePath             = file[0].Path.DecodePath();
+    //     // QuadFileNameLabel.Content = file[0].Name;
+    //     // file[0].Dispose();
+    // }
 
     private void ProcessData(object? sender, RoutedEventArgs e)
     {

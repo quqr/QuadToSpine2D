@@ -47,10 +47,6 @@
             <SubType>Code</SubType>
         </Compile>
         <Compile Remove="QTSCore\**" />
-        <Compile Update="UserControls\Element.axaml.cs">
-          <DependentUpon>Element.axaml</DependentUpon>
-          <SubType>Code</SubType>
-        </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -66,6 +62,7 @@
       <AdditionalFiles Include="Views\Pages\App.axaml" />
       <AdditionalFiles Include="Views\Pages\MainWindow.axaml" />
       <AdditionalFiles Include="Views\Pages\Settings.axaml" />
+      <AdditionalFiles Include="Views\UserControls\Element.axaml" />
     </ItemGroup>
 
     <ItemGroup>

@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
+    xmlns:userControls="clr-namespace:QTSAvalonia.Views.UserControls"
     mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
     x:Class="QTSAvalonia.Views.Pages.Converter"
     x:DataType="pages:ConverterModelView">
@@ -14,122 +15,46 @@
     <UserControl.DataContext>
         <pages:ConverterModelView />
     </UserControl.DataContext>
-    <Grid RowDefinitions="Auto,*,Auto">
-        <!-- 顶部操作栏 (文件操作) -->
-
+    <Grid RowDefinitions="1.5*,7*,1.5*" MinHeight="600" MinWidth="1000">
         <!-- 顶部操作区 -->
         <StackPanel
             Grid.Row="0"
             Orientation="Horizontal"
             HorizontalAlignment="Stretch"
-            Margin="25,15,25,10">
+            Margin="10">
             <Button
                 Content="Open Quad File"
                 Name="UploadButton"
-                Click="OpenQuadFile"
                 Width="140"
-                Margin="0,0,15,0"
-                HorizontalAlignment="Right" />
+                Margin="15" />
             <TextBlock
                 Text="{Binding QuadFileName}"
                 Foreground="DarkCyan"
                 FontWeight="SemiBold"
                 VerticalAlignment="Center"
-                Margin="0,0,15,0"
+                Margin="15"
                 FontSize="14" />
         </StackPanel>
-
-        <!-- 中央内容区 (图片列表) -->
-        <ScrollViewer
-            Grid.Row="1"
-            Margin="25,0,25,20"
-            MaxWidth="950"
-            HorizontalScrollBarVisibility="Auto"
-            VerticalScrollBarVisibility="Disabled">
-            <StackPanel
-                Orientation="Horizontal"
-                Name="ImageBox"
-                Spacing="15"
-                HorizontalAlignment="Left">
-                <sukiUi:GroupBox
-                    Header="1"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
-                    <StackPanel>
-                        <ScrollViewer MaxHeight="100">
-                            <ListBox HorizontalAlignment="Center">
-                                <ListBoxItem >
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>
-                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>                                <ListBoxItem>
-                                    <HyperlinkButton Content="123456789" />
-                                </ListBoxItem>
-                            </ListBox>
-                        </ScrollViewer>
-                        <Button Content="Add" />
-                        <Button Content="Remove" />
-                    </StackPanel>
-                </sukiUi:GroupBox>
-                <Button
-                    Content="Add New Element"
-                    Name="AddNewButton"
-                    Click="AddNewElement"
-                    Width="200"
-                    Height="150"
-                    Margin="0,0,10,0" />
-            </StackPanel>
-        </ScrollViewer>
-
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <ScrollViewer
+                Margin="15"
+                HorizontalScrollBarVisibility="Visible"
+                VerticalScrollBarVisibility="Disabled" MaxWidth="900"
+                IsScrollInertiaEnabled="True"
+                IsScrollChainingEnabled="True">
+                <StackPanel Spacing="10" Orientation="Horizontal">
+                    <userControls:Element />
+                    <userControls:Element />
+                    <userControls:Element />
+                    <userControls:Element />
+                    <userControls:Element />
+                    <userControls:Element />
+                </StackPanel>
+            </ScrollViewer>
+            <Button Height="50" Content="+" />
+        </StackPanel>
         <!-- 底部操作区 -->
-        <StackPanel
-            Grid.Row="2"
-            Orientation="Vertical"
-            HorizontalAlignment="Center"
-            Margin="0,0,0,25">
-
+        <StackPanel Grid.Row="2">
             <!-- 进度条 -->
             <ProgressBar
                 Width="800"
@@ -142,24 +67,26 @@
                 ShowProgressText="True"
                 Value="50" />
 
-            <!-- 处理按钮 -->
-            <Button
-                Content="Process Data"
-                Name="ProcessButton"
-                Width="180"
-                Height="45"
-                Margin="0,0,0,15"
-                HorizontalAlignment="Center"
-                Click="ProcessData" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                <!-- 处理按钮 -->
+                <Button
+                    Content="Process Data"
+                    Name="ProcessButton"
+                    Width="180"
+                    Height="45"
+                    Margin="0,0,15,15"
+                    HorizontalAlignment="Center"
+                    Click="ProcessData" />
 
-            <!-- 结果链接 -->
-            <HyperlinkButton
-                Content="Result JSON URL"
-                IsEnabled="False"
-                HorizontalAlignment="Center"
-                Name="ResultJsonUriButton"
-                Margin="0,0,0,10"
-                FontSize="14" />
+                <!-- 结果链接 -->
+                <HyperlinkButton
+                    Content="Result JSON URL"
+                    IsEnabled="False"
+                    HorizontalAlignment="Center"
+                    Name="ResultJsonUriButton"
+                    Margin="15,0,0,10"
+                    FontSize="14" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
