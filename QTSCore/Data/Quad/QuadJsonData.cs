@@ -238,7 +238,7 @@ public class Timeline
     public bool IsMatrixMix { get; private set; }
 
     [JsonProperty]
-    private int matrix_mix
+    private int MatrixMix
     {
         set => IsMatrixMix = value > 0;
     }

@@ -20,7 +20,6 @@ public class ProcessSpine2DJson
 
     public ProcessSpine2DJson(QuadJsonData quadJsonData)
     {
-        GlobalData.BarTextContent                = "Processing...";
         _quadJsonData                            = quadJsonData;
         _spineJsonData.SpineSkeletons.ImagesPath = GlobalData.ImageSavePath;
         _spineJsonData.Bones.Add(new SpineBone { Name = "root" });
@@ -32,13 +31,10 @@ public class ProcessSpine2DJson
         var bar = 65f / _quadJsonData.Skeleton.Count;
         foreach (var skeleton in _quadJsonData.Skeleton)
         {
-            GlobalData.BarTextContent = $"Processing animation : {skeleton.Name}";
             Console.WriteLine($"Processing animation : {skeleton.Name}");
             SetAnimation(skeleton);
-            GlobalData.BarValue += bar;
         }
-
-        GlobalData.BarTextContent = "Processing Slots...";
+        
         SortSlotsAndDrawOrder();
         return _spineJsonData;
     }

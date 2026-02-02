@@ -1,8 +1,6 @@
 ﻿using System;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-
-using Microsoft.Extensions.DependencyInjection;
 using QTSAvalonia.Views.Pages;
 
 namespace QTSAvalonia.Extensions;

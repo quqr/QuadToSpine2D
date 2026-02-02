@@ -4,87 +4,35 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.UserControls"
              xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:userControls="clr-namespace:QTSAvalonia.Views.UserControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="QTSAvalonia.Views.UserControls.Element"
              x:DataType="pages:ElementViewModel">
     <Design.DataContext>
         <pages:ElementViewModel />
     </Design.DataContext>
-    <UserControl.DataContext>
-        <pages:ElementViewModel />
-    </UserControl.DataContext>
     <suki:GlassCard>
         <suki:GroupBox
-            Header="123456789"
+            Header="{Binding Index}"
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
             <StackPanel>
                 <ScrollViewer Margin="5" MaxHeight="200">
-                    <ListBox HorizontalAlignment="Center">
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <HyperlinkButton Content="123456789" />
-                        </ListBoxItem>
+                    <ListBox HorizontalAlignment="Center" 
+                             ItemsSource="{Binding ImagePathHyperlinkButtons}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <userControls:HyperLinkTrimButton DataContext="{Binding}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
                     </ListBox>
                 </ScrollViewer>
-                <Button Margin="5" Content="Add" />
-                <Button Margin="5" Content="Remove" />
+                <Button Margin="5" 
+                        Content="Add"
+                        Command="{Binding AddImagePathsCommand}" />
+                <Button Margin="5"
+                        Content="Remove" 
+                        Command="{Binding DeleteElementCommand}" />
             </StackPanel>
         </suki:GroupBox>
     </suki:GlassCard>

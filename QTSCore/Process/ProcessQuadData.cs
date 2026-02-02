@@ -6,13 +6,10 @@ public class ProcessQuadData
 {
     public QuadJsonData? QuadData { get; set; }
 
-    public void ProcessJson(List<List<string?>> imagePath)
+    public void ProcessJson()
     {
         if (QuadData is null)
             throw new ArgumentException("Please select correct Quad file");
-
-        if (imagePath.Count == 0)
-            throw new ArgumentException("Please select correct image");
 
         var spineJson = new ProcessSpine2DJson(QuadData);
         spineJson.Process().WriteToJson();

@@ -1,5 +1,4 @@
-﻿using System;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace QTSAvalonia.ViewModels.Pages;
@@ -7,11 +6,11 @@ namespace QTSAvalonia.ViewModels.Pages;
 public partial class ConverterSettingViewModel: ViewModelBase
 {
     [ObservableProperty]
-    private bool isLoopingAnimation;
+    private bool _isLoopingAnimation;
     [ObservableProperty]
-    private bool isPrettyJsonPrint;
+    private bool _isPrettyJsonPrint;
 
-    [ObservableProperty] private string scaleFactorStr;
+    [ObservableProperty] private string _scaleFactorStr;
 
-    private float ScaleFactor => int.TryParse(scaleFactorStr, out var res) ? res : 1;
+    private float ScaleFactor => int.TryParse(_scaleFactorStr, out var res) ? res : 1;
 }

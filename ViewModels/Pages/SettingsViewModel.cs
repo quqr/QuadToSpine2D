@@ -5,11 +5,10 @@ namespace QTSAvalonia.ViewModels.Pages;
 
 public partial class SettingsViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    int counter;
+    [ObservableProperty] private int counter;
     
     [RelayCommand]
-    void AddCounter()
+    private void AddCounter()
     {
         Counter++;
     }

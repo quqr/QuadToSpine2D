@@ -111,12 +111,6 @@ public class ProcessImages
         if (task.Exception?.InnerException is null) return;
         Console.WriteLine(task.Exception.InnerException.Message);
         GlobalData.IsCompleted = false;
-        Dispatcher.UIThread.Post(() =>
-        {
-            GlobalData.BarValue              = 100;
-            GlobalData.ProcessBar.Foreground = GlobalData.ProcessBarErrorBrush;
-            GlobalData.BarTextContent        = task.Exception.InnerException.Message;
-        });
     }
 
     private string GerImageName(KeyframeLayer layer, PoolData? poolData, int curSkin, int copyIndex, out int imageIndex)

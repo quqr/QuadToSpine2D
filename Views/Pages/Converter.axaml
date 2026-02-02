@@ -26,7 +26,9 @@
                 Content="Open Quad File"
                 Name="UploadButton"
                 Width="140"
-                Margin="15" />
+                Height="50"
+                Margin="15"
+                Command="{Binding OpenQuadFilePickerCommand}"/>
             <TextBlock
                 Text="{Binding QuadFileName}"
                 Foreground="DarkCyan"
@@ -35,24 +37,39 @@
                 Margin="15"
                 FontSize="14" />
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <Grid Grid.Row="1"
+              HorizontalAlignment="Center"
+              ColumnDefinitions="9.5*,0.5*">
             <ScrollViewer
                 Margin="15"
                 HorizontalScrollBarVisibility="Visible"
-                VerticalScrollBarVisibility="Disabled" MaxWidth="900"
+                VerticalScrollBarVisibility="Disabled"
+                MinWidth="900"
                 IsScrollInertiaEnabled="True"
                 IsScrollChainingEnabled="True">
-                <StackPanel Spacing="10" Orientation="Horizontal">
-                    <userControls:Element />
-                    <userControls:Element />
-                    <userControls:Element />
-                    <userControls:Element />
-                    <userControls:Element />
-                    <userControls:Element />
-                </StackPanel>
+                <!-- ItemsControl 自动监听 ObservableCollection 变化 -->
+                <ItemsControl ItemsSource="{Binding Elements}">
+                    <!-- 使用 StackPanel 作为容器（替代代码中手动操作） -->
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="4" Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <!-- 每项渲染为 Element UserControl，自动绑定 DataContext -->
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <userControls:Element DataContext="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ScrollViewer>
-            <Button Height="50" Content="+" />
-        </StackPanel>
+            <Button Grid.Column="1" 
+                    Height="50" 
+                    Content="+" 
+                    HorizontalAlignment="Center"
+                    Command="{Binding AddNewElementCommand}"
+                    />
+        </Grid>
         <!-- 底部操作区 -->
         <StackPanel Grid.Row="2">
             <!-- 进度条 -->
@@ -63,27 +80,27 @@
                 Minimum="0"
                 Maximum="100"
                 Foreground="DarkOrange"
-                Name="ProcessBar"
                 ShowProgressText="True"
-                Value="50" />
+                Value="{Binding Progress}" />
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,15">
                 <!-- 处理按钮 -->
                 <Button
                     Content="Process Data"
-                    Name="ProcessButton"
                     Width="180"
                     Height="45"
                     Margin="0,0,15,15"
                     HorizontalAlignment="Center"
-                    Click="ProcessData" />
+                    Command="{Binding ProcessDataCommand}"/>
 
                 <!-- 结果链接 -->
                 <HyperlinkButton
-                    Content="Result JSON URL"
+                    Content="{Binding ResultJsonUrl}"
+                    NavigateUri="{Binding ResultJsonUrl}"
                     IsEnabled="False"
                     HorizontalAlignment="Center"
-                    Name="ResultJsonUriButton"
                     Margin="15,0,0,10"
                     FontSize="14" />
             </StackPanel>

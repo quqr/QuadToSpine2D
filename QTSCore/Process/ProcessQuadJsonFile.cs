@@ -12,23 +12,18 @@ public class ProcessQuadJsonFile
     public QuadJsonData LoadQuadJson(string quadPath)
     {
         Console.WriteLine("Loading quad file...");
-        GlobalData.BarTextContent = "Loading quad file...";
-        GlobalData.BarValue       = 0;
 
         var json = File.ReadAllText(quadPath);
-        GlobalData.BarValue = 5;
         ClearConverter();
         QuadData = JsonConvert.DeserializeObject<QuadJsonData>(json) ??
                    throw new ArgumentException("Invalid quad file");
-
-        GlobalData.BarValue = 15;
+        
 
         InitData();
         CombineAnimations();
-
-        GlobalData.BarTextContent = "Quad file loaded";
+        
         Console.WriteLine("Quad file loaded");
-        GlobalData.BarValue = 30;
+
         return QuadData;
     }
 

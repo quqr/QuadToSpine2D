@@ -26,7 +26,6 @@ public class SpineJsonData
 
     public void WriteToJson()
     {
-        GlobalData.BarValue = 95;
 
         var setting = new JsonSerializerSettings
         {
