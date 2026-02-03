@@ -1,6 +1,5 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
-    xmlns:sukiUi="clr-namespace:SukiUI.Controls;assembly=SukiUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -27,7 +26,7 @@
                 Width="140"
                 Height="50"
                 Margin="15"
-                Command="{Binding OpenQuadFilePickerCommand}"/>
+                Command="{Binding OpenQuadFilePickerCommand}" />
             <TextBlock
                 Text="{Binding QuadFileName}"
                 Foreground="DarkCyan"
@@ -51,23 +50,22 @@
                     <!-- 使用 StackPanel 作为容器（替代代码中手动操作） -->
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Spacing="4" Orientation="Horizontal"/>
+                            <StackPanel Spacing="4" Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <!-- 每项渲染为 Element UserControl，自动绑定 DataContext -->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <userControls:Element DataContext="{Binding}"/>
+                            <userControls:Element DataContext="{Binding}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            <Button Grid.Column="1" 
-                    Height="50" 
-                    Content="+" 
+            <Button Grid.Column="1"
+                    Height="50"
+                    Content="+"
                     HorizontalAlignment="Center"
-                    Command="{Binding AddNewElementCommand}"
-                    />
+                    Command="{Binding AddNewElementCommand}" />
         </Grid>
         <StackPanel Grid.Row="2">
             <!-- 进度条 -->
@@ -81,7 +79,7 @@
                 ShowProgressText="True"
                 Value="{Binding Progress}" />
 
-            <StackPanel Orientation="Horizontal" 
+            <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center"
                         Margin="0,0,0,15">
                 <!-- 处理按钮 -->
@@ -91,7 +89,7 @@
                     Height="45"
                     Margin="0,0,15,15"
                     HorizontalAlignment="Center"
-                    Command="{Binding ProcessDataCommand}"/>
+                    Command="{Binding ProcessDataCommand}" />
 
                 <!-- 结果链接 -->
                 <HyperlinkButton

@@ -19,23 +19,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.11" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.11" />
+        <PackageReference Include="Avalonia" Version="11.3.11"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.11"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.11" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11" />
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.11"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11">
             <TreatAsUsed>true</TreatAsUsed>
         </PackageReference>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-        <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.317" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
-        <PackageReference Include="SkiaSharp" Version="3.119.1" />
-        <PackageReference Include="SukiUI" Version="6.0.3" />
-        <PackageReference Include="SukiUI.Dock" Version="6.0.3" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
+        <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.317"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12"/>
+        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7"/>
+        <PackageReference Include="SkiaSharp" Version="3.119.1"/>
+        <PackageReference Include="SukiUI" Version="6.0.3"/>
+        <PackageReference Include="SukiUI.Dock" Version="6.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -47,39 +47,39 @@
             <DependentUpon>MainWindow.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Remove="QTSCore\**" />
+        <Compile Remove="QTSCore\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <AvaloniaXaml Remove="QTSCore\**" />
+        <AvaloniaXaml Remove="QTSCore\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="QTSCore\**" />
+        <EmbeddedResource Remove="QTSCore\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Remove="QTSCore\**" />
-      <AdditionalFiles Include="Views\Pages\App.axaml" />
-      <AdditionalFiles Include="Views\Pages\MainWindow.axaml" />
-      <AdditionalFiles Include="Views\Pages\Settings.axaml" />
-      <AdditionalFiles Include="Views\UserControls\Element.axaml" />
+        <AdditionalFiles Remove="QTSCore\**"/>
+        <AdditionalFiles Include="Views\Pages\App.axaml"/>
+        <AdditionalFiles Include="Views\Pages\MainWindow.axaml"/>
+        <AdditionalFiles Include="Views\Pages\Settings.axaml"/>
+        <AdditionalFiles Include="Views\UserControls\Element.axaml"/>
     </ItemGroup>
 
     <ItemGroup>
-      <AvaloniaResource Remove="QTSCore\**" />
-      <AvaloniaResource Remove="SukiUI\**" />
+        <AvaloniaResource Remove="QTSCore\**"/>
+        <AvaloniaResource Remove="SukiUI\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="QTSCore\**" />
+        <None Remove="QTSCore\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="QTSCore\QTSCore.csproj" />
+        <ProjectReference Include="QTSCore\QTSCore.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Views\" />
+        <Folder Include="Views\"/>
     </ItemGroup>
 </Project>

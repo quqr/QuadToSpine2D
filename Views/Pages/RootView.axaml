@@ -13,24 +13,24 @@
     x:Class="QTSAvalonia.Views.Pages.RootView"
     Title="QuadToSpine2D"
     MinHeight="750" MinWidth="1200">
-    <suki:SukiSideMenu >
+    <suki:SukiSideMenu>
         <suki:SukiSideMenu.Items>
             <suki:SukiSideMenuItem IsContentMovable="False" Header="Home"
                                    Icon="{fluent:FluentIcon Icon=TasksApp,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
-                    <pages:Converter/>
+                    <pages:Converter />
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
             <suki:SukiSideMenuItem IsContentMovable="False" Header="Previewer"
                                    Icon="{fluent:FluentIcon Icon=TasksApp,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
-                    <pages:Previewer/>
+                    <pages:Previewer />
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
             <suki:SukiSideMenuItem IsContentMovable="False" Header="Setting"
                                    Icon="{fluent:FluentIcon Icon=TasksApp,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
-                    <pages:Settings/>
+                    <pages:Settings />
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
         </suki:SukiSideMenu.Items>

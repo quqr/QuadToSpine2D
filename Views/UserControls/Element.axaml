@@ -18,20 +18,20 @@
             VerticalAlignment="Center">
             <StackPanel>
                 <ScrollViewer Margin="5" MaxHeight="200">
-                    <ListBox HorizontalAlignment="Center" 
+                    <ListBox HorizontalAlignment="Center"
                              ItemsSource="{Binding ImagePathHyperlinkButtons}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <userControls:HyperLinkTrimButton DataContext="{Binding}"/>
+                                <userControls:HyperLinkTrimButton DataContext="{Binding}" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </ScrollViewer>
-                <Button Margin="5" 
+                <Button Margin="5"
                         Content="Add"
                         Command="{Binding AddImagePathsCommand}" />
                 <Button Margin="5"
-                        Content="Remove" 
+                        Content="Remove"
                         Command="{Binding DeleteElementCommand}" />
             </StackPanel>
         </suki:GroupBox>

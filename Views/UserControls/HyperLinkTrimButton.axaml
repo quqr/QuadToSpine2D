@@ -13,8 +13,8 @@
         <pages:HyperLinkTrimButtonViewModel />
     </UserControl.DataContext>
     <HyperlinkButton MaxWidth="200" NavigateUri="{Binding ImagePath}">
-                <TextBlock Text="{Binding ImagePath}"
-                           TextTrimming="CharacterEllipsis"
-                           ToolTip.Tip="{Binding ImagePath}"/>
-            </HyperlinkButton>
+        <TextBlock Text="{Binding ImagePath}"
+                   TextTrimming="CharacterEllipsis"
+                   ToolTip.Tip="{Binding ImagePath}" />
+    </HyperlinkButton>
 </UserControl>

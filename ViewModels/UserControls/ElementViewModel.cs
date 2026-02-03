@@ -8,37 +8,40 @@ using QTSAvalonia.Utilities;
 
 namespace QTSAvalonia.ViewModels.UserControls;
 
-public partial class ElementViewModel: ViewModelBase
+public partial class ElementViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private List<string> _imagePaths= [];
-    
-    [ObservableProperty]
-    private ObservableCollection<HyperLinkTrimButtonViewModel> _imagePathHyperlinkButtons= [];
-    
+    [ObservableProperty] private List<string> _imagePaths = [];
+
+    [ObservableProperty] private ObservableCollection<HyperLinkTrimButtonViewModel> _imagePathHyperlinkButtons = [];
+
     [ObservableProperty] private int _index;
-    
+
     private readonly Action<ElementViewModel>? _onDeleteRequested;
-    
+
     public ElementViewModel(Action<ElementViewModel>? onDeleteRequested)
     {
         _onDeleteRequested = onDeleteRequested;
     }
-    
-    public ElementViewModel() { }
+
+    public ElementViewModel()
+    {
+    }
+
     [RelayCommand]
-    private void DeleteElement()=>_onDeleteRequested(this); 
+    private void DeleteElement()
+    {
+        _onDeleteRequested(this);
+    }
+
     [RelayCommand]
     private async Task AddImagePaths()
     {
         var files = await InstanceSingleton.Instance.FilePickerService.OpenImageFilesAsync();
-      if (files != null)
-      {
-          foreach (var file in files)
-          {
-              ImagePaths.Add(Uri.UnescapeDataString(file.Path.AbsolutePath));
-              ImagePathHyperlinkButtons.Add(new HyperLinkTrimButtonViewModel {ImagePath =  file.Path.AbsolutePath});
-          }
-      }
+        if (files != null)
+            foreach (var file in files)
+            {
+                ImagePaths.Add(Uri.UnescapeDataString(file.Path.AbsolutePath));
+                ImagePathHyperlinkButtons.Add(new HyperLinkTrimButtonViewModel { ImagePath = file.Path.AbsolutePath });
+            }
     }
 }

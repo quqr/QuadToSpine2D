@@ -17,7 +17,9 @@
         <Grid ColumnDefinitions="5*,5*">
             <suki:GlassCard>
                 <Grid RowDefinitions="9*,1*">
-                    <Image Source="{Binding Image}" />
+                    <Border Background="Black">
+                        <Image Source="{Binding Image}" />
+                    </Border>
                     <StackPanel Grid.Row="1" Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Spacing="5">
@@ -27,6 +29,7 @@
                                 Command="{Binding PlayAnimationCommand}" />
                         <Button Content="next"
                                 Command="{Binding SetNextFrameCommand}" />
+
                     </StackPanel>
                 </Grid>
             </suki:GlassCard>
@@ -44,8 +47,8 @@
                     </ItemsControl>
                 </ScrollViewer>
                 <ScrollViewer Grid.Column="1"
-                    Margin="15"
-                    MaxHeight="400">
+                              Margin="15"
+                              MaxHeight="400">
                     <ItemsControl
                         ItemsSource="{Binding Animations}">
                         <ItemsControl.ItemsPanel>
@@ -56,8 +59,8 @@
                     </ItemsControl>
                 </ScrollViewer>
                 <ScrollViewer Grid.Column="2"
-                    Margin="15"
-                    MaxHeight="400">
+                              Margin="15"
+                              MaxHeight="400">
                     <ItemsControl
                         ItemsSource="{Binding AnimationTimelines}">
                         <ItemsControl.ItemsPanel>
@@ -69,7 +72,15 @@
                 </ScrollViewer>
             </Grid>
         </Grid>
-        <Button Grid.Row="1" Content="Load"
-                Command="{Binding LoadCommand}" />
+        <StackPanel Grid.Row="1">
+            <ScrollViewer Height="200">
+                <StackPanel>
+                    <Button Content="Load"
+                            Command="{Binding LoadCommand}" />
+                </StackPanel>
+            </ScrollViewer>
+
+        </StackPanel>
+
     </Grid>
 </UserControl>

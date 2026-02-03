@@ -3,6 +3,7 @@
 public class InstanceSingleton
 {
     private static InstanceSingleton? _instance;
+
     public static InstanceSingleton Instance
     {
         get

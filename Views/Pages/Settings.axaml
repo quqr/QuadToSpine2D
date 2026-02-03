@@ -24,24 +24,20 @@
                 <suki:SettingsLayoutItem Header="Converter">
                     <suki:SettingsLayoutItem.Content>
                         <suki:GlassCard Margin="0,25,0,0" Padding="25">
-                            <pages1:ConverterSetting></pages1:ConverterSetting>
+                            <pages1:ConverterSetting />
                         </suki:GlassCard>
                     </suki:SettingsLayoutItem.Content>
                 </suki:SettingsLayoutItem>
 
                 <suki:SettingsLayoutItem Header="Previewer">
                     <suki:SettingsLayoutItem.Content>
-                        <suki:GlassCard Margin="0,25,0,0" Padding="25">
-
-                        </suki:GlassCard>
+                        <suki:GlassCard Margin="0,25,0,0" Padding="25" />
                     </suki:SettingsLayoutItem.Content>
                 </suki:SettingsLayoutItem>
 
                 <suki:SettingsLayoutItem Header="Base Converter">
                     <suki:SettingsLayoutItem.Content>
-                        <suki:GlassCard Margin="0,25,0,0" Padding="25">
-
-                        </suki:GlassCard>
+                        <suki:GlassCard Margin="0,25,0,0" Padding="25" />
                     </suki:SettingsLayoutItem.Content>
                 </suki:SettingsLayoutItem>
             </objectModel:ObservableCollection>

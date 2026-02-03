@@ -24,7 +24,7 @@
                     Text="des"
                     TextWrapping="Wrap" />
             </StackPanel>
-            <ToggleSwitch IsChecked="{Binding IsLoopingAnimation}" HorizontalAlignment="Right" DockPanel.Dock="Right"></ToggleSwitch>
+            <ToggleSwitch IsChecked="{Binding IsLoopingAnimation}" HorizontalAlignment="Right" DockPanel.Dock="Right" />
         </DockPanel>
         <DockPanel>
             <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
@@ -37,7 +37,7 @@
                     Text="des"
                     TextWrapping="Wrap" />
             </StackPanel>
-            <ToggleSwitch HorizontalAlignment="Right" DockPanel.Dock="Right" IsChecked="{Binding IsPrettyJsonPrint}"/>
+            <ToggleSwitch HorizontalAlignment="Right" DockPanel.Dock="Right" IsChecked="{Binding IsPrettyJsonPrint}" />
         </DockPanel>
         <DockPanel>
             <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
@@ -50,10 +50,10 @@
                     Text="des"
                     TextWrapping="Wrap" />
             </StackPanel>
-            <TextBox Watermark="1" 
-                     HorizontalAlignment="Right" 
-                     DockPanel.Dock="Right" Width="200" 
-                     Text="{Binding ScaleFactorStr}"/>
+            <TextBox Watermark="1"
+                     HorizontalAlignment="Right"
+                     DockPanel.Dock="Right" Width="200"
+                     Text="{Binding ScaleFactorStr}" />
         </DockPanel>
     </StackPanel>
 </UserControl>

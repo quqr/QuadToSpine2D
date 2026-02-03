@@ -1,5 +1,4 @@
-﻿using QTSCore.Data;
-using QTSCore.Data.Quad;
+﻿using QTSCore.Data.Quad;
 using QTSCore.JsonConverters;
 using QTSCore.Utility;
 

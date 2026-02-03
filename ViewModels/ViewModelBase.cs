@@ -8,6 +8,8 @@ public partial class ViewModelBase : ObservableObject
     {
         Initialize();
     }
-    
-    protected virtual void Initialize() { }
+
+    protected virtual void Initialize()
+    {
+    }
 }

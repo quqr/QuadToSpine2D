@@ -1,5 +1,3 @@
-using Avalonia.Media;
-
 namespace QTSCore.Data;
 
 public static class GlobalData

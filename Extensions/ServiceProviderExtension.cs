@@ -12,12 +12,8 @@ public class ServiceProviderExtension : MarkupExtension
     // 关键修改：使用框架提供的 IServiceProvider，而非硬编码 App.Services
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-
         // 预览时的降级处理：返回模拟实例（避免报错）
-        if (Design.IsDesignMode)
-        {
-            return CreateDesignTimeInstance(ServiceType);
-        }
+        if (Design.IsDesignMode) return CreateDesignTimeInstance(ServiceType);
         return new Settings();
     }
 

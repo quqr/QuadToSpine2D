@@ -10,8 +10,10 @@ public class AvaloniaFilePickerService
 {
     private readonly Func<TopLevel?> _getTopLevel; // 延迟获取，避免构造时为空
 
-    public AvaloniaFilePickerService(Func<TopLevel?> getTopLevel) 
-        => _getTopLevel = getTopLevel;
+    public AvaloniaFilePickerService(Func<TopLevel?> getTopLevel)
+    {
+        _getTopLevel = getTopLevel;
+    }
 
     public async Task<IReadOnlyList<IStorageFile>?> OpenImageFilesAsync()
     {
@@ -20,12 +22,13 @@ public class AvaloniaFilePickerService
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title          = "Select Images",
-            AllowMultiple  = true,
+            Title = "Select Images",
+            AllowMultiple = true,
             FileTypeFilter = [FilePickerFileTypes.ImageAll]
         });
         return files;
-    }    
+    }
+
     public async Task<IReadOnlyList<IStorageFile>?> OpenQuadFileAsync()
     {
         var topLevel = _getTopLevel?.Invoke();
@@ -33,7 +36,7 @@ public class AvaloniaFilePickerService
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title          = "Select quad",
+            Title = "Select quad",
             FileTypeFilter = [new FilePickerFileType("*.quad")]
         });
         return files;

@@ -9,6 +9,7 @@
 1. **Some animations are displayed in the wrong order.**
 2. **Some animation layers are not displayed at all.**
 3. **Can not convert some quad files**
+
 ## **How to use:**
 
 ### **Runtime**
@@ -21,6 +22,7 @@
 * [Details](https://www.vg-resource.com/thread-38430.html)
 
 ### Usages:
+
 + ### Select quad file path and images path.
   #### Make sure order of image is right
   #### If your image is larger than the original image, the scale factor = current image size ÷ original image size.

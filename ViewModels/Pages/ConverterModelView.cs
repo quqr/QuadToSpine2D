@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using QTSAvalonia.Utilities;
@@ -17,29 +15,24 @@ namespace QTSAvalonia.ViewModels.Pages;
 
 public partial class ConverterModelView : ViewModelBase
 {
-    [ObservableProperty]
-    private string _quadFileName = "Random Quad File";
+    [ObservableProperty] private string _quadFileName = "Random Quad File";
 
-    [ObservableProperty]
-    private ObservableCollection<ElementViewModel> _elements = [];
-    
+    [ObservableProperty] private ObservableCollection<ElementViewModel> _elements = [];
+
     [ObservableProperty] private float _progress = 56;
-    
+
     [ObservableProperty] private string _resultJsonUrl = "Result json path";
 
     public ConverterModelView()
     {
         Elements.CollectionChanged += UpdateElementsIndex;
     }
-    
+
     private void UpdateElementsIndex(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        for (var index = 0; index < Elements.Count; index++)
-        {
-            Elements[index].Index = index;
-        }
+        for (var index = 0; index < Elements.Count; index++) Elements[index].Index = index;
     }
-    
+
     private List<List<string?>> ProcessImagePaths()
     {
         //var imagePaths = _elements.Select(element => element.ImagePaths).ToList();
@@ -54,27 +47,29 @@ public partial class ConverterModelView : ViewModelBase
             ],
             [@"F:\Codes\Test\ps4 odin HD_Gwendlyn.2.gnf.png"]
         ];
-        
+
         var maxCount = imagePaths.Max(paths => paths.Count);
 
-        return  imagePaths.Select(paths =>
-                                   Enumerable.Range(0, maxCount)
-                                             .Select(index => index < paths.Count ? paths[index] : null)
-                                             .ToList())
-                               .ToList();
+        return imagePaths.Select(paths =>
+                Enumerable.Range(0, maxCount)
+                    .Select(index => index < paths.Count ? paths[index] : null)
+                    .ToList())
+            .ToList();
     }
+
     [RelayCommand]
     private async Task OpenQuadFilePicker()
     {
         var file = await InstanceSingleton.Instance.FilePickerService.OpenQuadFileAsync();
         if (file is not null)
         {
-            QuadFileName  = file[0].Name;
+            QuadFileName = file[0].Name;
             _quadFilePath = Uri.UnescapeDataString(file[0].Path.AbsolutePath);
         }
     }
 
     private string _quadFilePath = string.Empty;
+
     [RelayCommand]
     private void ProcessData()
     {
@@ -89,7 +84,10 @@ public partial class ConverterModelView : ViewModelBase
             Console.WriteLine("Process Complete!");
         });
     }
-    [RelayCommand]
-    private void AddNewElement() => Elements.Add(new ElementViewModel(vm => Elements.RemoveAt(vm.Index)));
 
+    [RelayCommand]
+    private void AddNewElement()
+    {
+        Elements.Add(new ElementViewModel(vm => Elements.RemoveAt(vm.Index)));
+    }
 }
