@@ -45,7 +45,6 @@ public class KeyframeLayer
 {
     private float[]  _dstquad;
     private float[]? _srcquad;
-    private int      _texId;
 
     public float[] Dstquad
     {
@@ -55,6 +54,9 @@ public class KeyframeLayer
             DstMatrix = new Matrix(4, 2, value);
             //Y is down, so we need to flip it to up
             _dstquad = value;
+            
+            DstX = _dstquad[0];
+            DstY = _dstquad[1];
         }
     }
 
@@ -74,6 +76,9 @@ public class KeyframeLayer
 
             CalculateGuid();
             CalculateUVs(_srcquad);
+            
+            SrcX = MinAndMaxSrcPoints[0];
+            SrcY = MinAndMaxSrcPoints[1];
         }
     }
 
@@ -82,23 +87,27 @@ public class KeyframeLayer
 
     public int TexId
     {
-        get => _texId;
+        get;
         set
         {
             if (value > -1)
             {
-                _texId = value;
+                field = value;
                 return;
             }
 
             // fog tex id
-            _texId = GlobalData.FogTexId;
+            field = GlobalData.FogTexId;
         }
     }
 
     public string        Guid               { get; set; } = string.Empty;
     public float         Height             { get; set; }
     public float         Width              { get; set; }
+    public float         SrcX              { get; set; }
+    public float         SrcY              { get; set; }
+    public float         DstX              { get; set; }
+    public float         DstY              { get; set; }
     public float[]       MinAndMaxSrcPoints { get; set; } = new float[8];
     public float[]       UVs                { get; set; } = new float[8];
     public float[]       ZeroCenterPoints   { get; set; } = new float[8];

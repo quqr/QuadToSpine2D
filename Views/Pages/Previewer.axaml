@@ -1,0 +1,75 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="QTSAvalonia.Views.Pages.Previewer"
+             xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
+             x:DataType="pages:PreviewerViewModel">
+    <Design.DataContext>
+        <pages:ConverterModelView />
+    </Design.DataContext>
+    <UserControl.DataContext>
+        <pages:PreviewerViewModel />
+    </UserControl.DataContext>
+    <Grid RowDefinitions="8*,2*">
+        <Grid ColumnDefinitions="5*,5*">
+            <suki:GlassCard>
+                <Grid RowDefinitions="9*,1*">
+                    <Image Source="{Binding Image}" />
+                    <StackPanel Grid.Row="1" Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Spacing="5">
+                        <Button Content="prev"
+                                Command="{Binding SetPreviousFrameCommand}" />
+                        <Button Content="play"
+                                Command="{Binding PlayAnimationCommand}" />
+                        <Button Content="next"
+                                Command="{Binding SetNextFrameCommand}" />
+                    </StackPanel>
+                </Grid>
+            </suki:GlassCard>
+            <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto,Auto">
+                <ScrollViewer
+                    Margin="15"
+                    MaxHeight="400">
+                    <ItemsControl
+                        ItemsSource="{Binding Skeletons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="4" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+                <ScrollViewer Grid.Column="1"
+                    Margin="15"
+                    MaxHeight="400">
+                    <ItemsControl
+                        ItemsSource="{Binding Animations}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="4" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+                <ScrollViewer Grid.Column="2"
+                    Margin="15"
+                    MaxHeight="400">
+                    <ItemsControl
+                        ItemsSource="{Binding AnimationTimelines}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="4" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+        <Button Grid.Row="1" Content="Load"
+                Command="{Binding LoadCommand}" />
+    </Grid>
+</UserControl>

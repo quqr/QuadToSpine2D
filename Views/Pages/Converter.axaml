@@ -16,7 +16,6 @@
         <pages:ConverterModelView />
     </UserControl.DataContext>
     <Grid RowDefinitions="1.5*,7*,1.5*" MinHeight="600" MinWidth="1000">
-        <!-- 顶部操作区 -->
         <StackPanel
             Grid.Row="0"
             Orientation="Horizontal"
@@ -70,7 +69,6 @@
                     Command="{Binding AddNewElementCommand}"
                     />
         </Grid>
-        <!-- 底部操作区 -->
         <StackPanel Grid.Row="2">
             <!-- 进度条 -->
             <ProgressBar

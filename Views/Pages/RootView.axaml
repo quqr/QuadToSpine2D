@@ -8,7 +8,6 @@
     xmlns:vm="clr-namespace:QTSAvalonia.ViewModels.Pages"
     x:DataType="vm:RootModelView"
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
-    xmlns:sukiExt="clr-namespace:QTSAvalonia.Extensions"
     xmlns:pages="clr-namespace:QTSAvalonia.Views.Pages"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
     x:Class="QTSAvalonia.Views.Pages.RootView"
@@ -20,6 +19,12 @@
                                    Icon="{fluent:FluentIcon Icon=TasksApp,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
                     <pages:Converter/>
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            <suki:SukiSideMenuItem IsContentMovable="False" Header="Previewer"
+                                   Icon="{fluent:FluentIcon Icon=TasksApp,IconVariant=Regular}">
+                <suki:SukiSideMenuItem.PageContent>
+                    <pages:Previewer/>
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
             <suki:SukiSideMenuItem IsContentMovable="False" Header="Setting"

@@ -31,7 +31,7 @@ public class SpineJsonData
         {
             ContractResolver = new DefaultContractResolver
                 { NamingStrategy = new CamelCaseNamingStrategy() },
-            Formatting = GlobalData.IsReadableJson ? Formatting.Indented : Formatting.None
+            Formatting = Formatting.Indented 
         };
         var spineJsonFile = JsonConvert.SerializeObject(this, setting);
         var output        = Path.Combine(GlobalData.ResultSavePath, "Result.json");

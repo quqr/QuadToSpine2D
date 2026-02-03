@@ -1,167 +1,285 @@
 ﻿using System.Collections.Concurrent;
-using Avalonia.Threading;
+using SkiaSharp;
 using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Utility;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
-namespace QTSCore.Process;
-
-public class ProcessImages
+namespace QTSCore.Process
 {
-    private readonly Image?[,] _images;
-    private readonly int       _skinsCount;
-
-    public ProcessImages(List<List<string?>> imagesSrc)
+    /// <summary>
+    /// 图像处理服务：裁剪纹理图集、生成雾效图像
+    /// 线程安全设计，支持并行处理多皮肤资源
+    /// </summary>
+    public class ProcessImages
     {
-        _skinsCount = imagesSrc[0].Count;
-        _images     = new Image[imagesSrc.Count, _skinsCount];
-        GetImages(imagesSrc);
-    }
+        private readonly SKBitmap?[,] _images;
+        private readonly int _skinsCount;
+        private int _currentImageIndex;
+        
+        // 线程安全的嵌套字典：TexId -> SkinIndex -> Guid -> LayerData列表
+        private readonly ConcurrentDictionary<int, 
+            ConcurrentDictionary<int, 
+                ConcurrentDictionary<string, ConcurrentBag<LayerData>>>> _layersDataDict 
+            = new();
 
-    private int _currentImageIndex { get; set; }
+        // 全局锁：仅用于保护_currentImageIndex更新（轻量级）
+        private readonly Lock _indexLock = new();
 
-    // { tex_id: { skin_id: {layer_guid: [layer_data, ...] } }
-    private ConcurrentDictionary<int, Dictionary<int, Dictionary<string, List<LayerData>>>> LayersDataDict { get; } = [];
-
-    private void GetImages(List<List<string?>> images)
-    {
-        for (var i = 0; i < images.Count; i++)
+        /// <summary>
+        /// 初始化图像资源库
+        /// </summary>
+        public ProcessImages(List<List<string?>> imagesSrc)
         {
-            for (var j = 0; j < _skinsCount; j++)
+            if (imagesSrc == null || imagesSrc.Count == 0 || imagesSrc[0].Count == 0)
+                throw new ArgumentException("图像源列表不能为空");
+
+            _skinsCount = imagesSrc[0].Count;
+            _images = new SKBitmap[imagesSrc.Count, _skinsCount];
+            LoadImagesParallel(imagesSrc);
+        }
+
+        /// <summary>
+        /// 并行加载所有纹理图像（线程安全）
+        /// </summary>
+        private void LoadImagesParallel(List<List<string?>> imagesSrc)
+        {
+            Parallel.For(0, imagesSrc.Count, i =>
             {
-                var src = images[i][j];
-                if (src is null)
+                for (var j = 0; j < _skinsCount; j++)
                 {
-                    _images[i, j] = null;
-                    continue;
+                    var path = imagesSrc[i][j];
+                    if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+                    {
+                        _images[i, j] = null;
+                        continue;
+                    }
+
+                    try
+                    {
+                        using var stream = File.OpenRead(path);
+                        _images[i, j] = SKBitmap.Decode(stream);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"加载图像失败 [{i},{j}]: {path} - {ex.Message}");
+                        _images[i, j] = null;
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// 处理单个图层数据，生成所有皮肤的裁剪/雾效图像
+        /// </summary>
+        public List<LayerData> GetLayerData(KeyframeLayer layer, PoolData? poolData, int copyIndex)
+        {
+            ArgumentNullException.ThrowIfNull(layer);
+
+            var results = new ConcurrentBag<LayerData>();
+
+            // 并行处理每个皮肤
+            Parallel.For(0, _skinsCount, skinIndex =>
+            {
+                LayerData? data = null;
+                
+                if (layer.Srcquad != null && 
+                    _images[layer.TexId, skinIndex] != null)
+                {
+                    var rect = ProcessUtility.CalculateRectangle(layer);
+                    data = ProcessTextureImage(
+                        _images[layer.TexId, skinIndex], 
+                        rect, 
+                        layer, 
+                        poolData, 
+                        skinIndex, 
+                        copyIndex
+                    );
+                }
+                else if (layer.Fog is { Count: > 0 })
+                {
+                    data = ProcessFogImage(layer, poolData, skinIndex, copyIndex);
                 }
 
-                _images[i, j] = Image.Load(src);
-            }
-        }
-    }
+                if (data != null)
+                {
+                    // 安全存储到嵌套ConcurrentDictionary
+                    _layersDataDict
+                        .GetOrAdd(layer.TexId, _ => new())
+                        .GetOrAdd(skinIndex, _ => new())
+                        .GetOrAdd(layer.Guid, _ => new())
+                        .Add(data);
+                    
+                    results.Add(data);
+                }
+            });
 
-    public List<LayerData> GetLayerData(KeyframeLayer layer, PoolData? poolData, int copyIndex)
-    {
-        var layersData = new List<LayerData>();
-        for (var skinIndex = 0; skinIndex < _skinsCount; skinIndex++)
-        {
-            LayerData data;
-            if (layer.Srcquad is not null)
+            // 按SkinIndex排序保证输出顺序
+            var sortedResults = results.OrderBy(d => d.SkinIndex).ToList();
+            
+            // 安全更新全局索引（仅当copyIndex=0时递增）
+            if (copyIndex == 0)
             {
-                var image = _images[layer.TexId, skinIndex];
-                if (image is null)
-                    continue;
-                var rectangle = ProcessUtility.CalculateRectangle(layer);
-                data = CropImage(image, rectangle, layer, poolData, skinIndex, copyIndex);
-            }
-            else
-            {
-                data = CropImage(layer, poolData, skinIndex, copyIndex);
-            }
-
-            if (!LayersDataDict.ContainsKey(layer.TexId))
-                LayersDataDict[layer.TexId] = [];
-            if (!LayersDataDict[layer.TexId].TryGetValue(skinIndex, out _))
-                LayersDataDict[layer.TexId][skinIndex] = [];
-            if (!LayersDataDict[layer.TexId][skinIndex].TryGetValue(layer.Guid, out var curLayerData))
-            {
-                curLayerData                                       = [];
-                LayersDataDict[layer.TexId][skinIndex][layer.Guid] = curLayerData;
+                lock (_indexLock)
+                {
+                    _currentImageIndex++;
+                }
             }
 
-            curLayerData.Add(data);
-            layersData.Add(data);
+            return sortedResults;
         }
 
-        _currentImageIndex = copyIndex == 0 ? _currentImageIndex + 1 : _currentImageIndex;
-        return layersData;
-    }
+        #region 核心处理逻辑
 
-    private LayerData CropImage(Image image, Rectangle rectangle, KeyframeLayer layer, PoolData? poolData, int curSkin,
-        int                           copyIndex)
-    {
-        var imageName = GerImageName(layer, poolData, curSkin, copyIndex, out var imageIndex);
-
-
-        Task.Run(() =>
+        /// <summary>
+        /// 裁剪纹理图像并异步保存
+        /// </summary>
+        private LayerData ProcessTextureImage(
+            SKBitmap source, 
+            SKRectI rect, 
+            KeyframeLayer layer, 
+            PoolData? poolData, 
+            int skinIndex, 
+            int copyIndex)
         {
-            using var clipImage = image.Clone(x => { x.Crop(rectangle); });
-            clipImage.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png"));
-        }).ContinueWith(CatchErrors);
+            var (imageName, imageIndex) = GenerateImageName(layer, poolData, skinIndex, copyIndex);
+            
+            // 异步保存（带错误处理）
+            _ = Task.Run(() => SaveCroppedImage(source, rect, imageName))
+                .ContinueWith(t => HandleSaveError(t, imageName), TaskContinuationOptions.OnlyOnFaulted);
 
-        return new LayerData
+            return CreateLayerData(imageName, layer, skinIndex, imageIndex, copyIndex);
+        }
+
+        /// <summary>
+        /// 生成雾效图像并异步保存
+        /// </summary>
+        private LayerData ProcessFogImage(
+            KeyframeLayer layer, 
+            PoolData? poolData, 
+            int skinIndex, 
+            int copyIndex)
         {
-            SlotAndImageName       = imageName,
-            KeyframeLayer          = layer,
-            SkinIndex              = curSkin,
-            ImageIndex             = imageIndex,
-            TexId                  = layer.TexId.ToString(),
-            CopyIndex              = copyIndex,
-            BaseSkinAttachmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
-        };
-    }
+            var (imageName, imageIndex) = GenerateImageName(layer, poolData, skinIndex, copyIndex);
+            
+            _ = Task.Run(() => SaveFogImage(imageName, 100, 100, layer.Fog!))
+                .ContinueWith(t => HandleSaveError(t, imageName), TaskContinuationOptions.OnlyOnFaulted);
 
-    private static void CatchErrors(Task task)
-    {
-        if (task.Exception?.InnerException is null) return;
-        Console.WriteLine(task.Exception.InnerException.Message);
-        GlobalData.IsCompleted = false;
-    }
+            return CreateLayerData(imageName, layer, skinIndex, imageIndex, copyIndex);
+        }
 
-    private string GerImageName(KeyframeLayer layer, PoolData? poolData, int curSkin, int copyIndex, out int imageIndex)
-    {
-        imageIndex = poolData?.LayersData[curSkin].ImageIndex ?? _currentImageIndex;
-        var isFog     = layer.TexId == GlobalData.FogTexId ? "Fog" : layer.TexId.ToString();
-        var imageName = $"Slice_{imageIndex}_{isFog}_{curSkin}_{copyIndex}";
-        layer.ImageNameOrder = imageIndex * 1000 + layer.TexId * 100 + curSkin * 10 + copyIndex;
-        return imageName;
-    }
+        #endregion
 
-    private LayerData CropImage(KeyframeLayer layer, PoolData? poolData, int curSkin, int copyIndex)
-    {
-        var imageName = GerImageName(layer, poolData, curSkin, copyIndex, out var imageIndex);
+        #region 辅助方法
 
-        Task.Run(() =>
+        /// <summary>
+        /// 生成唯一图像文件名并计算索引
+        /// </summary>
+        private (string Name, int Index) GenerateImageName(
+            KeyframeLayer layer, 
+            PoolData? poolData, 
+            int skinIndex, 
+            int copyIndex)
         {
-            using var fog = DrawFogImage(100, 100, layer.Fog);
-            fog.SaveAsPngAsync(Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png"));
-        }).ContinueWith(CatchErrors);
+            var imageIndex = poolData?.LayersData[skinIndex].ImageIndex ?? _currentImageIndex;
+            var texIdStr = layer.TexId == GlobalData.FogTexId ? "Fog" : layer.TexId.ToString();
+            var name = $"Slice_{imageIndex}_{texIdStr}_{skinIndex}_{copyIndex}";
+            
+            // 更新图层内部排序标识
+            layer.ImageNameOrder = imageIndex * 1000 + layer.TexId * 100 + skinIndex * 10 + copyIndex;
+            
+            return (name, imageIndex);
+        }
 
-        return new LayerData
+        /// <summary>
+        /// 创建LayerData对象（消除重复代码）
+        /// </summary>
+        private static LayerData CreateLayerData(
+            string imageName, 
+            KeyframeLayer layer, 
+            int skinIndex, 
+            int imageIndex, 
+            int copyIndex)
         {
-            SlotAndImageName = imageName,
-            KeyframeLayer    = layer,
-            SkinIndex        = curSkin,
-            ImageIndex       = imageIndex,
-            CopyIndex        = copyIndex,
-            TexId            = layer.TexId.ToString()
-        };
-    }
+            return new LayerData
+            {
+                SlotAndImageName = imageName,
+                KeyframeLayer = layer,
+                SkinIndex = skinIndex,
+                ImageIndex = imageIndex,
+                TexId = layer.TexId.ToString(),
+                CopyIndex = copyIndex,
+                BaseSkinAttachmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
+            };
+        }
 
-    private static Image<Rgba32> DrawFogImage(int width, int height, List<string> colors)
-    {
-        var image = new Image<Rgba32>(width, height);
-        PointF[] fs =
-        [
-            new(0, image.Width),
-            new(0, 0),
-            new(image.Height, 0),
-            new(image.Height, image.Width)
-        ];
-        Color[] cs =
-        [
-            Color.ParseHex(colors[0]),
-            Color.ParseHex(colors[1]),
-            Color.ParseHex(colors[2]),
-            Color.ParseHex(colors[3])
-        ];
+        /// <summary>
+        /// 保存裁剪后的图像
+        /// </summary>
+        private static void SaveCroppedImage(SKBitmap source, SKRectI rect, string imageName)
+        {
+            using var cropped = new SKBitmap(rect.Width, rect.Height);
+            using (var canvas = new SKCanvas(cropped))
+            {
+                canvas.DrawBitmap(source, -rect.Left, -rect.Top);
+            }
 
-        image.Mutate(x => { x.Fill(new PathGradientBrush(fs, cs)); });
-        return image;
+            SaveSkImage(SKImage.FromBitmap(cropped), imageName);
+        }
+
+        /// <summary>
+        /// 生成并保存雾效图像（支持4色渐变）
+        /// </summary>
+        private static void SaveFogImage(string imageName, int width, int height, List<string> colors)
+        {
+            if (colors == null || colors.Count < 4)
+                throw new ArgumentException("雾效需要至少4个颜色值");
+
+            using var surface = SKSurface.Create(new SKImageInfo(width, height));
+            var canvas = surface.Canvas;
+            
+            var skColors = colors.Select(SKColor.Parse).ToArray();
+            using var shader = SKShader.CreateRadialGradient(
+                new SKPoint(width / 2f, height / 2f),
+                Math.Max(width, height) / 2f,
+                skColors,
+                null,
+                SKShaderTileMode.Clamp
+            );
+            
+            using var paint = new SKPaint();
+            paint.Shader = shader;
+            canvas.DrawRect(new SKRect(0, 0, width, height), paint);
+            
+            SaveSkImage(surface.Snapshot(), imageName);
+        }
+
+        /// <summary>
+        /// 通用图像保存逻辑
+        /// </summary>
+        private static void SaveSkImage(SKImage image, string imageName)
+        {
+            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+            if (data == null) throw new InvalidOperationException("图像编码失败");
+            
+            var fullPath = Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png");
+            Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!); // 确保目录存在
+            
+            using var stream = File.OpenWrite(fullPath);
+            data.SaveTo(stream);
+        }
+
+        /// <summary>
+        /// 统一错误处理
+        /// </summary>
+        private static void HandleSaveError(Task task, string imageName)
+        {
+
+            if (task.Exception?.InnerException is not { } ex) return;
+            Console.WriteLine($"保存图像失败 [{imageName}]: {ex.Message}");
+            GlobalData.IsCompleted = false;
+
+        }
+
+        #endregion
     }
 }

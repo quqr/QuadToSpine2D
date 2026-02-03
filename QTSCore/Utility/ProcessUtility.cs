@@ -2,6 +2,7 @@
 using QTSCore.Data.Quad;
 using QTSCore.Process;
 using SixLabors.ImageSharp;
+using SkiaSharp;
 
 namespace QTSCore.Utility;
 
@@ -142,15 +143,10 @@ public static class ProcessUtility
         return data;
     }
 
-    public static Rectangle CalculateRectangle(KeyframeLayer layer)
+    public static SKRectI CalculateRectangle(KeyframeLayer layer)
     {
-        return new Rectangle
-        {
-            X      = (int)layer.MinAndMaxSrcPoints[0],
-            Y      = (int)layer.MinAndMaxSrcPoints[1],
-            Width  = (int)layer.Width,
-            Height = (int)layer.Height
-        };
+        return SKRectI.Create((int)layer.MinAndMaxSrcPoints[0], (int)layer.MinAndMaxSrcPoints[1],
+            (int)layer.Width, (int)layer.Height);
     }
 
     public static bool ApproximatelyEqual(float? a, float? b, float epsilon = 0.01f)
