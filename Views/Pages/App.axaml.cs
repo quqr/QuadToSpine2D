@@ -9,7 +9,7 @@ using QTSCore.Data;
 
 namespace QTSAvalonia.Views.Pages;
 
-public partial class App : Application
+public class App : Application
 {
     private IServiceProvider? _serviceProvider;
 

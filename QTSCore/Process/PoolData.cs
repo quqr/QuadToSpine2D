@@ -4,7 +4,7 @@ namespace QTSCore.Process;
 
 public class PoolData
 {
-    private         FramePoint      _framePoint = new(-1);
+    private FramePoint _framePoint = new(-1);
     public required List<LayerData> LayersData { get; init; }
 
     public FramePoint FramePoint

@@ -16,11 +16,11 @@ public class ProcessQuadJsonFile
         ClearConverter();
         QuadData = JsonConvert.DeserializeObject<QuadJsonData>(json) ??
                    throw new ArgumentException("Invalid quad file");
-        
+
 
         InitData();
         CombineAnimations();
-        
+
         Console.WriteLine("Quad file loaded");
 
         return QuadData;
@@ -52,9 +52,9 @@ public class ProcessQuadJsonFile
         {
             var animations = new List<Animation>();
             animations
-               .AddRange(skeleton.Bone
-                                 .Select(bone => QuadData.Animation
-                                                         .First(x => x.Id == bone.Attach.Id)));
+                .AddRange(skeleton.Bone
+                                  .Select(bone => QuadData.Animation
+                                                          .First(x => x.Id == bone.Attach.Id)));
             skeleton.CombineAnimation = ProcessUtility.CombineAnimations(animations);
         }
 #endif

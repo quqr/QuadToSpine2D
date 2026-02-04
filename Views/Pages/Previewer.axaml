@@ -3,9 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:suki="https://github.com/kikipoulet/SukiUI"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:paz="using:Avalonia.Controls.PanAndZoom"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800"
              x:Class="QTSAvalonia.Views.Pages.Previewer"
              xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
+             xmlns:userControls="clr-namespace:QTSAvalonia.ViewModels.UserControls"
              x:DataType="pages:PreviewerViewModel">
     <Design.DataContext>
         <pages:ConverterModelView />
@@ -13,74 +15,129 @@
     <UserControl.DataContext>
         <pages:PreviewerViewModel />
     </UserControl.DataContext>
-    <Grid RowDefinitions="8*,2*">
-        <Grid ColumnDefinitions="5*,5*">
-            <suki:GlassCard>
+    <UserControl.Styles>
+        <Style Selector="Path.dashed-axis">
+            <Setter Property="StrokeDashArray" Value="1.5,1" />
+            <Setter Property="StrokeThickness" Value="2" />
+            <Setter Property="Stroke" Value="Black" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Styles>
+    <Grid RowDefinitions="8.5*,1.5*">
+        <Grid Grid.Row="0" ColumnDefinitions="5*,5*">
+            <suki:GlassCard Grid.Column="1" Margin="5">
                 <Grid RowDefinitions="9*,1*">
-                    <Border Background="Black">
-                        <Image Source="{Binding Image}" />
-                    </Border>
-                    <StackPanel Grid.Row="1" Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                Spacing="5">
-                        <Button Content="prev"
-                                Command="{Binding SetPreviousFrameCommand}" />
-                        <Button Content="play"
-                                Command="{Binding PlayAnimationCommand}" />
-                        <Button Content="next"
-                                Command="{Binding SetNextFrameCommand}" />
-
+                    <paz:ZoomBorder
+                        Name="ZoomBorder"
+                        Stretch="None" ZoomSpeed="1.1"
+                        ClipToBounds="True" Focusable="True"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        MinZoomX="0.1"
+                        MinZoomY="0.1"
+                        MaxZoomX="5"
+                        MaxZoomY="5">
+                        <Grid>
+                            <Grid.RenderTransform>
+                                <TranslateTransform
+                                    X="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=paz:ZoomBorder}}"
+                                    Y="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=paz:ZoomBorder}}" />
+                            </Grid.RenderTransform>
+                            <Border Background="{userControls:ChessboardBackground}"
+                                    Width="40000"
+                                    Height="40000" />
+                            <!-- 坐标轴居中显示 -->
+                            <Path ZIndex="10" Classes="dashed-axis" Stroke="Black">
+                                <Path.Data>
+                                    <LineGeometry StartPoint="-40000,0" EndPoint="40000,0" />
+                                </Path.Data>
+                            </Path>
+                            <Path ZIndex="10" Classes="dashed-axis" Stroke="Black">
+                                <Path.Data>
+                                    <LineGeometry StartPoint="0,-40000" EndPoint="0,40000" />
+                                </Path.Data>
+                            </Path>
+                            <Border ZIndex="1000" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Image Source="{Binding Image}" />
+                            </Border>
+                        </Grid>
+                    </paz:ZoomBorder>
+                    <StackPanel Grid.Row="1"
+                                HorizontalAlignment="Center">
+                        <Grid ColumnDefinitions="9*,1*">
+                            <Slider Value="{Binding CurrentFrame}"
+                                    Minimum="0"
+                                    Maximum="{Binding TotalFrames}" />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}/{1}">
+                                        <Binding Path="CurrentFrame" />
+                                        <Binding Path="TotalFrames" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <Button Content="prev"
+                                    Command="{Binding SetPreviousFrameCommand}" />
+                            <Button Content="play"
+                                    Command="{Binding PlayAnimationCommand}" />
+                            <Button Content="next"
+                                    Command="{Binding SetNextFrameCommand}" />
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </suki:GlassCard>
-            <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto,Auto">
-                <ScrollViewer
-                    Margin="15"
-                    MaxHeight="400">
-                    <ItemsControl
-                        ItemsSource="{Binding Skeletons}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Spacing="4" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </ScrollViewer>
-                <ScrollViewer Grid.Column="1"
-                              Margin="15"
-                              MaxHeight="400">
-                    <ItemsControl
-                        ItemsSource="{Binding Animations}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Spacing="4" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </ScrollViewer>
-                <ScrollViewer Grid.Column="2"
-                              Margin="15"
-                              MaxHeight="400">
-                    <ItemsControl
-                        ItemsSource="{Binding AnimationTimelines}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Spacing="4" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Grid>
+            <suki:GlassCard Grid.Column="0" Margin="5">
+                <Grid ColumnDefinitions="1*,1*,1*">
+                    <ScrollViewer
+                        Margin="15"
+                        Height="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
+                        <ItemsControl
+                            ItemsSource="{Binding Skeletons}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="4" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <ScrollViewer Grid.Column="1"
+                                  Margin="15"
+                                  Height="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
+                        <ItemsControl
+                            ItemsSource="{Binding Animations}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="4" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <ScrollViewer Grid.Column="2"
+                                  Margin="15"
+                                  Height="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
+                        <ItemsControl
+                            ItemsSource="{Binding AnimationTimelines}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="4" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </suki:GlassCard>
         </Grid>
-        <StackPanel Grid.Row="1">
-            <ScrollViewer Height="200">
-                <StackPanel>
-                    <Button Content="Load"
-                            Command="{Binding LoadCommand}" />
-                </StackPanel>
-            </ScrollViewer>
-
-        </StackPanel>
-
+        <suki:GlassCard Grid.Row="1">
+            <Grid ColumnDefinitions="1*,1*,1*">
+                <Button Width="150" Grid.Column="0" Content="Select quad"
+                        Command="{Binding  OpenQuadFilePickerCommand}" />
+                <Button Width="150" Grid.Column="1" Content="Select images"
+                        Command="{Binding OpenImageFilePickerCommand}" />
+                <Button Width="150" Grid.Column="2" Content="Load" Command="{Binding LoadCommand}" />
+            </Grid>
+        </suki:GlassCard>
     </Grid>
 </UserControl>

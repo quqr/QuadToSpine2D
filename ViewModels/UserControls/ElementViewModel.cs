@@ -10,13 +10,12 @@ namespace QTSAvalonia.ViewModels.UserControls;
 
 public partial class ElementViewModel : ViewModelBase
 {
-    [ObservableProperty] private List<string> _imagePaths = [];
+    private readonly Action<ElementViewModel>? _onDeleteRequested;
 
     [ObservableProperty] private ObservableCollection<HyperLinkTrimButtonViewModel> _imagePathHyperlinkButtons = [];
+    [ObservableProperty] private List<string> _imagePaths = [];
 
     [ObservableProperty] private int _index;
-
-    private readonly Action<ElementViewModel>? _onDeleteRequested;
 
     public ElementViewModel(Action<ElementViewModel>? onDeleteRequested)
     {
@@ -41,7 +40,10 @@ public partial class ElementViewModel : ViewModelBase
             foreach (var file in files)
             {
                 ImagePaths.Add(Uri.UnescapeDataString(file.Path.AbsolutePath));
-                ImagePathHyperlinkButtons.Add(new HyperLinkTrimButtonViewModel { ImagePath = file.Path.AbsolutePath });
+                ImagePathHyperlinkButtons.Add(new HyperLinkTrimButtonViewModel
+                {
+                    ImagePath = file.Path.AbsolutePath
+                });
             }
     }
 }

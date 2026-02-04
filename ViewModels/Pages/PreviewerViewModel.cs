@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -17,109 +19,71 @@ namespace QTSAvalonia.ViewModels.Pages;
 
 public partial class PreviewerViewModel : ViewModelBase, IDisposable
 {
-    [ObservableProperty] private Bitmap _image = null!;
-
-    private List<SKBitmap> _sourceImages = [];
-
-
-    private List<string> _sourceImagePaths =
+    private readonly List<string> _sourceImagePaths =
     [
-        //@"F:\Codes\Test\ps4 odin HD_Gwendlyn.0.gnf.png",
-        //@"F:\Codes\Test\ps4 odin HD_Gwendlyn.1.gnf.png",
-        //@"F:\Codes\Test\ps4 odin HD_Gwendlyn.2.gnf.png"
+        @"F:\Codes\Test\ps4 odin HD_Gwendlyn.0.gnf.png",
+        @"F:\Codes\Test\ps4 odin HD_Gwendlyn.1.gnf.png",
+        @"F:\Codes\Test\ps4 odin HD_Gwendlyn.2.gnf.png"
     ];
 
-    [ObservableProperty] private ObservableCollection<Button> _skeletons = [];
+    private readonly List<SKBitmap> _sourceImages = [];
+
+    private readonly List<string> imagePaths = [];
     [ObservableProperty] private ObservableCollection<Button> _animations = [];
     [ObservableProperty] private ObservableCollection<Button> _animationTimelines = [];
+    private Animation? _currentAnimation;
 
+    [ObservableProperty]
+    private int _currentFrame;
+
+    private QuadSkeleton? _currentSkeleton;
+    private Timeline? _currentTimeline;
+
+    [ObservableProperty] private float _fps = 1 / 30f;
+    [ObservableProperty] private Bitmap _image = null!;
+    private string _quadFilePath;
 
     private QuadJsonData _quadJsonData = null!;
+    [ObservableProperty] private ObservableCollection<Button> _skeletons = [];
 
-    private void LoadImageIntoControl(SKData skData)
+    [ObservableProperty] private int _totalFrames;
+
+    public string QuadFileName { get; set; }
+
+    public void Dispose()
     {
-        using var skImage = SKImage.FromEncodedData(skData);
-        // 将 SkiaSharp 的图像转换为 Avalonia 的 IBitmap
-        using var skBitmap = SKBitmap.FromImage(skImage);
-        using var ms = new MemoryStream();
-        // 保存 SKBitmap 到内存流
-        skBitmap.Encode(SKEncodedImageFormat.Png, 100).SaveTo(ms);
-        ms.Seek(0, SeekOrigin.Begin);
-        Image = new Bitmap(ms);
+        Image.Dispose();
     }
 
     [RelayCommand]
     private void Load()
     {
-        LoadBitmap(@"/Users/loop/Downloads/pictures/ggg.jpg");
-
+        Clear();
         Dispatcher.UIThread.InvokeAsync(() =>
         {
-            //LoadQuadFile(@"F:\Codes\Test\ps4 odin REHD_Gwendlyn.mbs.v55.quad");
-            //SetSkeletons();
+            LoadQuadFile(@"F:\Codes\Test\ps4 odin REHD_Gwendlyn.mbs.v55.quad");
+            SetSkeletons();
         });
         foreach (var path in _sourceImagePaths)
         {
-            using var stream = File.OpenRead(path);
-            var skImage = SKBitmap.Decode(stream);
+            using var stream  = File.OpenRead(path);
+            var       skImage = SKBitmap.Decode(stream);
             _sourceImages.Add(skImage);
         }
     }
 
-    private void LoadBitmap(string imagePath)
+    private void Clear()
     {
-        var bitmap = SKBitmap.Decode(imagePath);
 
-        //Test points
-        SKPoint[] destPoints =
-        [
-            new(0, 0), // 左上
-            new(700, 120), // 右上（下移40px）
-            new(650, 480), // 右下（上移20px）
-            new(150, 520) // 左下（下移20px）
-        ];
-        // 2. 定义原始图片的四个角点（纹理坐标）
-        SKPoint[] texturePoints =
-        [
-            new(0, 0), // 左上角
-            new(bitmap.Width, 0), // 右上角
-            new(bitmap.Width, bitmap.Height), // 右下角
-            new(0, bitmap.Height) // 左下角
-        ];
-
-        // 3. 创建三角形索引（两个三角形组成四边形）
-        ushort[] indices = [0, 1, 2, 0, 2, 3]; // 三角形1: 0-1-2, 三角形2: 0-2-3
-
-        // 4. 创建顶点集合 - 修复参数类型问题
-        using var vertices = SKVertices.CreateCopy(
-            SKVertexMode.Triangles,
-            destPoints,
-            texturePoints,
-            null,
-            indices);
-
-        // 5. 创建着色器（绑定图片）
-        using var shader = SKShader.CreateBitmap(bitmap, SKShaderTileMode.Clamp, SKShaderTileMode.Clamp);
-        using var paint = new SKPaint();
-        paint.Shader = shader;
-        paint.IsAntialias = true;
-
-        // 6. 创建画布并绘制
-        var info = new SKImageInfo(800, 600);
-        using (var surface = SKSurface.Create(info))
-        {
-            var canvas = surface.Canvas;
-            canvas.Clear(SKColors.Transparent);
-
-            // 绘制变形后的图片
-            canvas.DrawVertices(vertices, SKBlendMode.SrcOver, paint);
-
-            using var image = surface.Snapshot();
-            var data = image.Encode(SKEncodedImageFormat.Png, 100);
-            LoadImageIntoControl(data);
-        }
-
-        bitmap.Dispose();
+        Skeletons?.Clear();
+        Animations?.Clear();
+        AnimationTimelines?.Clear();
+        _sourceImages?.Clear();
+        Image?.Dispose();
+        _quadJsonData     = null!;
+        _currentAnimation = null;
+        _currentSkeleton  = null;
+        _currentTimeline  = null;
     }
 
     private void LoadQuadFile(string quadPath)
@@ -135,14 +99,16 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         var animation = _quadJsonData.Animation[attach.Id];
         if (animation is null) return;
         AnimationTimelines.Clear();
+
+        _currentAnimation = animation;
+        TotalFrames       = animation.Timeline.Count - 1;
+
         foreach (var timeline in animation.Timeline)
         {
             if (timeline.Attach is null) return;
             AnimationTimelines.Add(new Button
             {
-                Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id} {animation.IsLoop}",
-                Command = GetFrameCommand,
-                CommandParameter = timeline
+                Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = SetAttachCommand, CommandParameter = timeline
             });
         }
     }
@@ -153,11 +119,11 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         if (skeleton.Bone is null) return;
         Animations.Clear();
         AnimationTimelines.Clear();
+        _currentSkeleton = skeleton;
         foreach (var bone in skeleton.Bone)
             Animations.Add(new Button
             {
-                Content = $"{bone.Attach.AttachType} {bone.Attach.Id}", Command = SetAnimationTimelinesCommand,
-                CommandParameter = bone.Attach
+                Content = $"{bone.Attach.AttachType} {bone.Attach.Id}", Command = SetAnimationTimelinesCommand, CommandParameter = bone.Attach
             });
     }
 
@@ -182,79 +148,166 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         var safeRect = SKRectI.Intersect(srcRect, new SKRectI(0, 0, source.Width, source.Height));
         if (safeRect.Width <= 0 || safeRect.Height <= 0)
             return null;
-        var cropped = new SKBitmap(safeRect.Width, safeRect.Height);
-        using var canvas = new SKCanvas(cropped);
+        var       cropped = new SKBitmap(safeRect.Width, safeRect.Height);
+        using var canvas  = new SKCanvas(cropped);
 
         canvas.DrawBitmap(source, -safeRect.Left, -safeRect.Top);
         return cropped;
     }
 
     [RelayCommand]
-    private void GetFrame(Timeline timeline)
+    private void SetAttach(Timeline timeline)
+    {
+        var bitmap = GetAttach(timeline);
+        if (bitmap is null) return;
+        Image = bitmap;
+    }
+
+    private Bitmap? GetAttach(Timeline timeline)
     {
         var attach = timeline.Attach;
-        var imageInfo = new SKImageInfo(800, 600);
-        using var surface = SKSurface.Create(imageInfo);
-        using var canvas = surface.Canvas;
-        var centerX = imageInfo.Width / 2f;
-        var centerY = imageInfo.Height / 2f;
-        switch (attach.AttachType)
+        if (attach is null) return null;
+        var bitmap = attach.AttachType switch
         {
-            case AttachType.Keyframe:
-                var keyframe = _quadJsonData.Keyframe[attach.Id];
-                if (keyframe?.Layers is null) return;
-                foreach (var layer in keyframe.Layers)
-                {
-                    if (layer?.Srcquad == null || layer.TexId < 0) continue;
-                    var src = SKRectI.Create((int)layer.SrcX, (int)layer.SrcY, (int)layer.Width, (int)layer.Height);
-                    var source = _sourceImages[layer.TexId];
-                    using var cropImage = CropBitmap(source, src);
+            AttachType.Keyframe => GetKeyframe(timeline, attach),
+            _                   => null
+        };
+        return bitmap;
+    }
 
-                    var vert = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
-                    var x = ProcessUtility.MinusFloats(vert.ToFloatArray(), layer.ZeroCenterPoints);
+    private Bitmap? GetKeyframe(Timeline timeline, Attach attach)
+    {
 
-                    var destX = imageInfo.Width / 2f - layer.DstX;
-                    var destY = imageInfo.Height / 2f - layer.DstY;
-                    //TODO: 
+        var keyframe = _quadJsonData.Keyframe[attach.Id];
+        if (keyframe?.Layers is null) return null;
+        var       imageInfo = new SKImageInfo(800, 800);
+        using var surface   = SKSurface.Create(imageInfo);
+        using var canvas    = surface.Canvas;
+        var       centerX   = imageInfo.Width  / 2f;
+        var       centerY   = imageInfo.Height / 2f;
+        foreach (var layer in keyframe.Layers)
+        {
+            if (layer?.Srcquad == null || layer.TexId < 0) continue;
+            var       src        = SKRectI.Create((int)layer.SrcX, (int)layer.SrcY, (int)layer.Width, (int)layer.Height);
+            var       bitmap     = _sourceImages[layer.TexId];
+            using var cropImage  = CropBitmap(bitmap, src);
+            var       vertMatrix = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
+            var       verts      = vertMatrix.ToFloatArray();
+            SKPoint[] destPoints =
+            [
+                new(verts[0] + centerX, verts[1] + centerY),
+                new(verts[2] + centerX, verts[3] + centerY),
+                new(verts[4] + centerX, verts[5] + centerY),
+                new(verts[6] + centerX, verts[7] + centerY)
+            ];
 
-                    using var image = SKImage.FromBitmap(cropImage);
-                    using var shader = image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp);
-                    using var paint = new SKPaint();
-                    paint.Shader = shader;
-                    canvas.DrawVertices(SKVertexMode.Triangles, [], [], paint);
-                }
+            var srcQuad = layer.Srcquad;
+            var srcPoints = new[]
+            {
+                new SKPoint(srcQuad[0], srcQuad[1]),
+                new SKPoint(srcQuad[2], srcQuad[3]),
+                new SKPoint(srcQuad[4], srcQuad[5]),
+                new SKPoint(srcQuad[6], srcQuad[7])
+            };
 
-                var snapshot = surface.Snapshot();
-                Image = SKBitmap.FromImage(snapshot).ToBitmap();
-                snapshot.Dispose();
-                break;
-            case AttachType.Slot:
-            case AttachType.HitBox:
-            case AttachType.Animation:
-            case AttachType.Skeleton:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            // 重新排序纹理坐标以匹配标准UV映射
+            var texturePoints = new SKPoint[4];
+            for (var i = 0; i < 4; i++)
+            {
+                var point = srcPoints[i];
+                // 转换为相对于裁剪区域的坐标
+                var localX = point.X - layer.SrcX;
+                var localY = point.Y - layer.SrcY;
+                texturePoints[i] = new SKPoint(localX, localY);
+            }
+
+            // 创建三角形索引（两个三角形组成四边形）
+            ushort[] indices = [0, 1, 2, 0, 2, 3]; // 三角形1: 0-1-2, 三角形2: 0-2-3
+
+            using var vertices = SKVertices.CreateCopy(
+                SKVertexMode.Triangles,
+                destPoints,
+                texturePoints,
+                null,
+                indices);
+            using var shader = SKShader.CreateBitmap(cropImage);
+            using var paint  = new SKPaint();
+            paint.Shader      = shader;
+            paint.IsAntialias = true;
+            canvas.DrawVertices(vertices, layer.BlendId > 0 ? SKBlendMode.Plus : SKBlendMode.SrcOver, paint);
         }
+
+        using var snapshot = surface.Snapshot();
+        return SKBitmap.FromImage(snapshot).ToBitmap();
     }
 
     [RelayCommand]
-    private void PlayAnimation()
+    private async Task PlayAnimationAsync()
     {
+        if (_currentAnimation is null) return;
+        for (var i = CurrentFrame; i < _currentAnimation.Timeline.Count; i++)
+        {
+            CurrentFrame++;
+            await Task.Delay((int)(1000 * Fps));
+        }
     }
 
     [RelayCommand]
     private void SetNextFrame()
     {
+
+        if (CurrentFrame >= _currentAnimation?.Timeline.Count)
+        {
+            CurrentFrame = 0;
+        }
+        else
+        {
+            CurrentFrame++;
+        }
     }
 
     [RelayCommand]
     private void SetPreviousFrame()
     {
+        if (_currentAnimation is null) return;
+        if (CurrentFrame <= 0)
+        {
+            CurrentFrame = _currentAnimation.Timeline.Count - 1;
+        }
+        else
+        {
+            CurrentFrame--;
+        }
     }
 
-    public void Dispose()
+    partial void OnCurrentFrameChanged(int value)
     {
-        _image.Dispose();
+        if (CurrentFrame < _currentAnimation?.Timeline.Count)
+        {
+            var bitmap = GetAttach(_currentAnimation.Timeline[value]);
+            if (bitmap is null) return;
+            Image = bitmap;
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenQuadFilePicker()
+    {
+        var file = await InstanceSingleton.Instance.FilePickerService.OpenQuadFileAsync();
+        if (file is not null)
+        {
+            QuadFileName  = file[0].Name;
+            _quadFilePath = Uri.UnescapeDataString(file[0].Path.AbsolutePath);
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenImageFilePicker()
+    {
+        var file = await InstanceSingleton.Instance.FilePickerService.OpenImageFilesAsync();
+        if (file is not null)
+        {
+            imagePaths.AddRange(file.Select(f => Uri.UnescapeDataString(f.Path.AbsolutePath)));
+        }
     }
 }

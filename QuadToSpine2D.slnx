@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="QTSCore/QTSCore.csproj" />
-  <Project Path="QuadToSpine2D.csproj" />
+    <Project Path="QTSCore/QTSCore.csproj"/>
+    <Project Path="QuadToSpine2D.csproj"/>
 </Solution>

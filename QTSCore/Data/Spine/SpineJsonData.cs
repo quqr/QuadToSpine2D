@@ -30,8 +30,10 @@ public class SpineJsonData
         var setting = new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver
-                { NamingStrategy = new CamelCaseNamingStrategy() },
-            Formatting = Formatting.Indented 
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            },
+            Formatting = Formatting.Indented
         };
         var spineJsonFile = JsonConvert.SerializeObject(this, setting);
         var output        = Path.Combine(GlobalData.ResultSavePath, "Result.json");
@@ -148,9 +150,7 @@ public class DrawOrder
 
             Offsets.Add(new DrawOrderOffset
             {
-                Slot    = layerOffset.LayerName,
-                Offset  = offset,
-                SlotNum = slotOrder
+                Slot = layerOffset.LayerName, Offset = offset, SlotNum = slotOrder
             });
         }
 

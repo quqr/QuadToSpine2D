@@ -96,8 +96,8 @@ public readonly struct Matrix : IEquatable<Matrix>
         Parallel.For(0, aRows, i =>
             {
                 for (var j = 0; j < bCols; ++j)
-                    for (var k = 0; k < aCols; ++k)
-                        result[i, j] += matrixA[i, k] * matrixB[k, j];
+                for (var k = 0; k < aCols; ++k)
+                    result[i, j] += matrixA[i, k] * matrixB[k, j];
             }
         );
         return result;

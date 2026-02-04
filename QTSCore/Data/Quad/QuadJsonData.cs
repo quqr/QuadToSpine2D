@@ -43,7 +43,7 @@ public class Keyframe : Attach
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
 public class KeyframeLayer
 {
-    private float[]  _dstquad;
+    private float[] _dstquad;
     private float[]? _srcquad;
 
     public float[] Dstquad
@@ -54,9 +54,6 @@ public class KeyframeLayer
             DstMatrix = new Matrix(4, 2, value);
             //Y is down, so we need to flip it to up
             _dstquad = value;
-            
-            DstX = _dstquad[0];
-            DstY = _dstquad[1];
         }
     }
 
@@ -76,7 +73,7 @@ public class KeyframeLayer
 
             CalculateGuid();
             CalculateUVs(_srcquad);
-            
+
             SrcX = MinAndMaxSrcPoints[0];
             SrcY = MinAndMaxSrcPoints[1];
         }
@@ -104,10 +101,8 @@ public class KeyframeLayer
     public string        Guid               { get; set; } = string.Empty;
     public float         Height             { get; set; }
     public float         Width              { get; set; }
-    public float         SrcX              { get; set; }
-    public float         SrcY              { get; set; }
-    public float         DstX              { get; set; }
-    public float         DstY              { get; set; }
+    public float         SrcX               { get; set; }
+    public float         SrcY               { get; set; }
     public float[]       MinAndMaxSrcPoints { get; set; } = new float[8];
     public float[]       UVs                { get; set; } = new float[8];
     public float[]       ZeroCenterPoints   { get; set; } = new float[8];
@@ -121,11 +116,12 @@ public class KeyframeLayer
         Width              = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
         Height             = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
         Guid = $"{TexId}_{_srcquad
-                         .Select((t, i) => t * 3.7 / 7.3 + t * i * 97311397.135f / 773377.2746f)
-                         .Sum()}";
+                          .Select((t, i) => t * 3.7 / 7.3 + t * i * 97311397.135f / 773377.2746f)
+                          .Sum()}";
     }
+
     /// <summary>
-    /// recalculate UVs
+    ///     recalculate UVs
     /// </summary>
     private void CalculateUVs(float[] src)
     {
@@ -144,7 +140,7 @@ public class KeyframeLayer
             UVs[(int)orderPoints[i].Z * 2 + 1] = uvs[i].Y;
         }
 
-        //calculate ZeroCenterPoints, make sure it's in center 
+        //calculate ZeroCenterPoints, make sure it's in spine2D center in layer picture
         for (var i = 0; i < UVs.Length; i++)
             if (i % 2 == 0)
                 ZeroCenterPoints[i] = (UVs[i] * 2f - 1f) * Width / 8f;

@@ -15,11 +15,12 @@ namespace QTSAvalonia.ViewModels.Pages;
 
 public partial class ConverterModelView : ViewModelBase
 {
-    [ObservableProperty] private string _quadFileName = "Random Quad File";
-
     [ObservableProperty] private ObservableCollection<ElementViewModel> _elements = [];
 
     [ObservableProperty] private float _progress = 56;
+    [ObservableProperty] private string _quadFileName = "Random Quad File";
+
+    private string _quadFilePath = string.Empty;
 
     [ObservableProperty] private string _resultJsonUrl = "Result json path";
 
@@ -51,10 +52,10 @@ public partial class ConverterModelView : ViewModelBase
         var maxCount = imagePaths.Max(paths => paths.Count);
 
         return imagePaths.Select(paths =>
-                Enumerable.Range(0, maxCount)
-                    .Select(index => index < paths.Count ? paths[index] : null)
-                    .ToList())
-            .ToList();
+                             Enumerable.Range(0, maxCount)
+                                       .Select(index => index < paths.Count ? paths[index] : null)
+                                       .ToList())
+                         .ToList();
     }
 
     [RelayCommand]
@@ -63,12 +64,10 @@ public partial class ConverterModelView : ViewModelBase
         var file = await InstanceSingleton.Instance.FilePickerService.OpenQuadFileAsync();
         if (file is not null)
         {
-            QuadFileName = file[0].Name;
+            QuadFileName  = file[0].Name;
             _quadFilePath = Uri.UnescapeDataString(file[0].Path.AbsolutePath);
         }
     }
-
-    private string _quadFilePath = string.Empty;
 
     [RelayCommand]
     private void ProcessData()

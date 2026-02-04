@@ -21,10 +21,7 @@ public class SkeletonJsonConverter : JsonConverter
         if (obj is not JObject jObject) return null;
         var skeleton = new QuadSkeleton
         {
-            Name       = jObject["name"]?.ToString(),
-            Bone       = jObject["bone"]?.ToObject<List<QuadBone>>(),
-            Id         = IdCount,
-            AttachType = AttachType.Skeleton
+            Name = jObject["name"]?.ToString(), Bone = jObject["bone"]?.ToObject<List<QuadBone>>(), Id = IdCount, AttachType = AttachType.Skeleton
         };
         return skeleton;
     }

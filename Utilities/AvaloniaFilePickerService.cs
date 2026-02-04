@@ -22,9 +22,7 @@ public class AvaloniaFilePickerService
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Select Images",
-            AllowMultiple = true,
-            FileTypeFilter = [FilePickerFileTypes.ImageAll]
+            Title = "Select Images", AllowMultiple = true, FileTypeFilter = [FilePickerFileTypes.ImageAll]
         });
         return files;
     }
@@ -36,8 +34,7 @@ public class AvaloniaFilePickerService
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Select quad",
-            FileTypeFilter = [new FilePickerFileType("*.quad")]
+            Title = "Select quad", FileTypeFilter = [new FilePickerFileType("*.quad")]
         });
         return files;
     }

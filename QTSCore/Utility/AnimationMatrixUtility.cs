@@ -49,9 +49,15 @@ public static class AnimationMatrixUtility
 
         var m = new Matrix(3, 3)
         {
-            [0, 0] = c0.X, [0, 1] = c1.X, [0, 2] = c2.X,
-            [1, 0] = c0.Y, [1, 1] = c1.Y, [1, 2] = c2.Y,
-            [2, 0] = c0.Z, [2, 1] = c1.Z, [2, 2] = c2.Z
+            [0, 0] = c0.X,
+            [0, 1] = c1.X,
+            [0, 2] = c2.X,
+            [1, 0] = c0.Y,
+            [1, 1] = c1.Y,
+            [1, 2] = c2.Y,
+            [2, 0] = c0.Z,
+            [2, 1] = c1.Z,
+            [2, 2] = c2.Z
         };
         return m;
     }
@@ -66,11 +72,11 @@ public static class AnimationMatrixUtility
         for (var i = 0; i < 4; i++)
         {
             result[i, 0] =
-                matrixA[0, 0] * matrixB[i, 0] + matrixA[0, 1] * matrixB[i, 1]
-                + matrixA[0, 2]               + matrixA[0, 3];
+                matrixA[0, 0] * matrixB[i, 0]                                 + matrixA[0, 1] * matrixB[i, 1]
+                                                                              + matrixA[0, 2] + matrixA[0, 3];
             result[i, 1] =
-                matrixA[1, 0] * matrixB[i, 0] + matrixA[1, 1] * matrixB[i, 1]
-                + matrixA[1, 2]               + matrixA[1, 3];
+                matrixA[1, 0] * matrixB[i, 0]                                 + matrixA[1, 1] * matrixB[i, 1]
+                                                                              + matrixA[1, 2] + matrixA[1, 3];
         }
 
         return result;

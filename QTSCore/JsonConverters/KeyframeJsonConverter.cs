@@ -20,10 +20,7 @@ public class KeyframeJsonConverter : JsonConverter
         if (obj is not JObject jObject) return null;
         var json = new Keyframe
         {
-            Name       = jObject["name"]?.ToString(),
-            Layers     = jObject["layer"]?.ToObject<List<KeyframeLayer?>>(),
-            Id         = IdCount,
-            AttachType = AttachType.Keyframe
+            Name = jObject["name"]?.ToString(), Layers = jObject["layer"]?.ToObject<List<KeyframeLayer?>>(), Id = IdCount, AttachType = AttachType.Keyframe
         };
         return json;
     }

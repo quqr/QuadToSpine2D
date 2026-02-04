@@ -2,7 +2,7 @@
 
 namespace QTSAvalonia.ViewModels;
 
-public partial class ViewModelBase : ObservableObject
+public class ViewModelBase : ObservableObject
 {
     protected ViewModelBase()
     {

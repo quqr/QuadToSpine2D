@@ -7,22 +7,30 @@ namespace QTSCore.Process;
 
 public class ProcessSpine2DJson
 {
-    private readonly List<DrawOrder> _drawOrders       = [];
-    private readonly List<PoolData>  _existAttachments = [];
-    private readonly Skin            _hitboxSkin       = new() { Name = "Hitbox", Attachments = [] };
-    private readonly Pool            _pool             = new();
-    private readonly QuadJsonData    _quadJsonData;
+    private readonly List<DrawOrder> _drawOrders = [];
+    private readonly List<PoolData> _existAttachments = [];
+
+    private readonly Skin _hitboxSkin = new()
+    {
+        Name = "Hitbox", Attachments = []
+    };
+
+    private readonly Pool _pool = new();
+    private readonly QuadJsonData _quadJsonData;
 
     private readonly Dictionary<string, AnimationSlot> _spineAnimationSlots = [];
-    private readonly SpineJsonData                     _spineJsonData       = new();
-    private          Deform                            _deform              = new();
-    private          float                             _time;
+    private readonly SpineJsonData _spineJsonData = new();
+    private Deform _deform = new();
+    private float _time;
 
     public ProcessSpine2DJson(QuadJsonData quadJsonData)
     {
         _quadJsonData                            = quadJsonData;
         _spineJsonData.SpineSkeletons.ImagesPath = GlobalData.ImageSavePath;
-        _spineJsonData.Bones.Add(new SpineBone { Name = "root" });
+        _spineJsonData.Bones.Add(new SpineBone
+        {
+            Name = "root"
+        });
     }
 
     public SpineJsonData Process()
@@ -34,11 +42,11 @@ public class ProcessSpine2DJson
             Console.WriteLine($"Processing animation : {skeleton.Name}");
             SetAnimation(skeleton);
         }
-        
+
         SortSlotsAndDrawOrder();
         return _spineJsonData;
     }
-    
+
     private void SortSlotsAndDrawOrder()
     {
         _spineJsonData.Slots = _spineJsonData.Slots
@@ -65,22 +73,23 @@ public class ProcessSpine2DJson
             RemoveAttachments(animation);
             AddAttachments(animation);
 
-            var drawOrder = new DrawOrder { Time = _time };
+            var drawOrder = new DrawOrder
+            {
+                Time = _time
+            };
             _drawOrders.Add(drawOrder);
             AddLayerOffsets(_existAttachments, drawOrder);
 
             _time = (animation.Key + 1) * GlobalData.Fps;
         }
 
-        var animationName                                   = skeleton.Name;
-        if (skeleton.CombineAnimation.IsMix) animationName  += "_MIX";
-        if (skeleton.CombineAnimation.IsLoop) animationName += "_LOOP";
+        var animationName                                            = skeleton.Name;
+        if (skeleton.CombineAnimation.IsMix) animationName           += "_MIX";
+        if (skeleton.CombineAnimation.IsLoop) animationName          += "_LOOP";
         if (skeleton.CombineAnimation.Data.Count == 0) animationName += "_EMPTY";
         _spineJsonData.Animations[animationName] = new SpineAnimation
         {
-            Slots     = new Dictionary<string, AnimationSlot>(_spineAnimationSlots),
-            Deform    = _deform.Clone(),
-            DrawOrder = [.._drawOrders]
+            Slots = new Dictionary<string, AnimationSlot>(_spineAnimationSlots), Deform = _deform.Clone(), DrawOrder = [.._drawOrders]
         };
     }
 
@@ -104,7 +113,10 @@ public class ProcessSpine2DJson
 
     private void AddVertices(PoolData poolData, KeyframeLayer keyframeLayer, Timeline timeline)
     {
-        AnimationVertices vert = new() { Time = _time };
+        AnimationVertices vert = new()
+        {
+            Time = _time
+        };
         var animationDefaultValue =
             GetAnimationDefaultValue(poolData.LayersData[0].SlotAndImageName, poolData.LayersData[0].SkinName);
         InterpolateAnimation(keyframeLayer, timeline, animationDefaultValue, vert);
@@ -131,8 +143,7 @@ public class ProcessSpine2DJson
             var vert = AnimationMatrixUtility.QuadMultiply(Matrix.Lerp(srcMatrix, dstMatrix, rate), layer.DstMatrix);
             animationDefault.ImageVertices.Add(new AnimationVertices
             {
-                Time     = _time + i * GlobalData.Fps,
-                Vertices = ProcessUtility.MinusFloats(vert.ToFloatArray(), layer.ZeroCenterPoints)
+                Time = _time + i * GlobalData.Fps, Vertices = ProcessUtility.MinusFloats(vert.ToFloatArray(), layer.ZeroCenterPoints)
             });
         }
     }
@@ -142,8 +153,7 @@ public class ProcessSpine2DJson
         if (timeline.IsKeyframeMix || timeline.IsMatrixMix) return;
         animationDefault.ImageVertices.Add(new AnimationVertices
         {
-            Time     = _time + timeline.Frames * GlobalData.Fps,
-            Vertices = animationDefault.ImageVertices[^1].Vertices
+            Time = _time + timeline.Frames * GlobalData.Fps, Vertices = animationDefault.ImageVertices[^1].Vertices
         });
     }
 
@@ -221,8 +231,7 @@ public class ProcessSpine2DJson
             var slot = _spineAnimationSlots[hitboxLayer.Name];
             slot.Attachment.Add(new AnimationAttachment
             {
-                Time = _time,
-                Name = null
+                Time = _time, Name = null
             });
         }
     }
@@ -243,8 +252,7 @@ public class ProcessSpine2DJson
         var slot = _spineAnimationSlots[poolData.LayersData[0].SlotAndImageName];
         slot.Attachment.Add(new AnimationAttachment
         {
-            Time = _time,
-            Name = null
+            Time = _time, Name = null
         });
     }
 
@@ -269,8 +277,7 @@ public class ProcessSpine2DJson
 
         value.Attachment.Add(new AnimationAttachment
         {
-            Time = _time,
-            Name = layerName
+            Time = _time, Name = layerName
         });
     }
 
@@ -278,8 +285,7 @@ public class ProcessSpine2DJson
     {
         value.ImageVertices.Add(new AnimationVertices
         {
-            Time     = _time,
-            Vertices = vert
+            Time = _time, Vertices = vert
         });
     }
 
@@ -320,8 +326,7 @@ public class ProcessSpine2DJson
 
         value.Attachment.Add(new AnimationAttachment
         {
-            Time = _time,
-            Name = slotName
+            Time = _time, Name = slotName
         });
     }
 
@@ -349,7 +354,10 @@ public class ProcessSpine2DJson
 
             if (skin is null)
             {
-                skin = new Skin { Name = skinName, Attachments = [] };
+                skin = new Skin
+                {
+                    Name = skinName, Attachments = []
+                };
                 _spineJsonData.Skins.Add(skin);
             }
 
@@ -366,7 +374,10 @@ public class ProcessSpine2DJson
             _deform.SkinName[skinName] = [];
         if (!_deform.SkinName[skinName].TryGetValue(slotName, out var value))
         {
-            value                                = new AnimationDefault { Name = slotName };
+            value = new AnimationDefault
+            {
+                Name = slotName
+            };
             _deform.SkinName[skinName][slotName] = value;
         }
 
@@ -379,9 +390,7 @@ public class ProcessSpine2DJson
         {
             Mesh = new Mesh
             {
-                Name     = layerData.SlotAndImageName,
-                Uvs      = layerData.KeyframeLayer.UVs,
-                Vertices = layerData.KeyframeLayer.ZeroCenterPoints
+                Name = layerData.SlotAndImageName, Uvs = layerData.KeyframeLayer.UVs, Vertices = layerData.KeyframeLayer.ZeroCenterPoints
             }
         });
     }
@@ -392,10 +401,7 @@ public class ProcessSpine2DJson
         {
             Mesh = new LinkedMesh
             {
-                Name   = layerData.SlotAndImageName,
-                Type   = "linkedmesh",
-                Skin   = $"tex_id_{layerData.TexId}/skin_0",
-                Parent = layerData.BaseSkinAttachmentName
+                Name = layerData.SlotAndImageName, Type = "linkedmesh", Skin = $"tex_id_{layerData.TexId}/skin_0", Parent = layerData.BaseSkinAttachmentName
             }
         });
     }
@@ -409,9 +415,7 @@ public class ProcessSpine2DJson
                 hitbox.Layer[i].Name = hitboxLayerName;
                 _spineJsonData.Slots.Add(new SpineSlot
                 {
-                    Name             = hitboxLayerName,
-                    Attachment       = "boundingbox",
-                    OrderByImageSlot = int.MaxValue
+                    Name = hitboxLayerName, Attachment = "boundingbox", OrderByImageSlot = int.MaxValue
                 });
                 _hitboxSkin.Attachments.Add(new Attachments
                 {

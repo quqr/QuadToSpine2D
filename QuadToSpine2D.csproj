@@ -31,6 +31,7 @@
         <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.317"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+        <PackageReference Include="PanAndZoom" Version="11.3.9.1"/>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12"/>
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7"/>
         <PackageReference Include="SkiaSharp" Version="3.119.1"/>

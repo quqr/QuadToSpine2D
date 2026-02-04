@@ -4,16 +4,16 @@ using QTSCore.Data.Quad;
 namespace QTSCore.Process;
 
 /// <summary>
-/// Pool class to manage the pool of layer data.
-/// A keyframe layer can have multiple copies of same layers, and they must be saved,
-/// Spine2D can not use same images to render at the same time.
-/// To prevent much same image be saved, we use a pool to manage the layer data.And reuse it when needed.
+///     Pool class to manage the pool of layer data.
+///     A keyframe layer can have multiple copies of same layers, and they must be saved,
+///     Spine2D can not use same images to render at the same time.
+///     To prevent much same image be saved, we use a pool to manage the layer data.And reuse it when needed.
 /// </summary>
 public class Pool
 {
     private readonly Dictionary<string, List<PoolData>> _poolDictionary = new();
 
-    private readonly ProcessImages                      _processImages        = new(GlobalData.ImagePath);
+    private readonly ProcessImages _processImages = new(GlobalData.ImagePath);
     private readonly Dictionary<string, List<PoolData>> _unusedPoolDictionary = new();
 
     public Dictionary<string, List<PoolData>> UsedPoolDictionary { get; } = new();
@@ -52,7 +52,10 @@ public class Pool
             throw new InvalidOperationException("Too many copies of layer data. Please increase the limit.");
         var data = _processImages.GetLayerData(layer, usedPoolData, copyIndex);
 
-        var poolData = new PoolData { LayersData = data };
+        var poolData = new PoolData
+        {
+            LayersData = data
+        };
 
         if (!_poolDictionary.TryGetValue(layer.Guid, out var value))
             _poolDictionary.Add(layer.Guid, [poolData]);
