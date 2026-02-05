@@ -1,4 +1,5 @@
 <Solution>
-    <Project Path="QTSCore/QTSCore.csproj"/>
-    <Project Path="QuadToSpine2D.csproj"/>
+    <Project Path="QTSAvalonia.csproj" />
+    <Project Path="QTSCore/QTSCore.csproj" />
+    <Project Path="ServiceSourceGenerators/ServiceSourceGenerators/ServiceSourceGenerators.csproj" />
 </Solution>

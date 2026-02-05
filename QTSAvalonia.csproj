@@ -32,55 +32,60 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
         <PackageReference Include="PanAndZoom" Version="11.3.9.1"/>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12"/>
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7"/>
+        <PackageReference Include="Serilog" Version="4.3.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+        <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
         <PackageReference Include="SkiaSharp" Version="3.119.1"/>
         <PackageReference Include="SukiUI" Version="6.0.3"/>
         <PackageReference Include="SukiUI.Dock" Version="6.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Pages\App.axaml.cs">
-            <DependentUpon>App.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Update="Pages\MainWindow.axaml.cs">
-            <DependentUpon>MainWindow.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
-        <Compile Remove="QTSCore\**"/>
+      <AvaloniaXaml Remove="QTSCore\bin\**" />
+      <AvaloniaXaml Remove="QTSCore\obj\**" />
+      <AvaloniaXaml Remove="ServiceGenerators\**" />
+      <AvaloniaXaml Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaXaml Remove="QTSCore\**"/>
+      <Compile Remove="QTSCore\bin\**" />
+      <Compile Remove="QTSCore\obj\**" />
+      <Compile Remove="ServiceGenerators\**" />
+      <Compile Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Remove="QTSCore\**"/>
+      <EmbeddedResource Remove="QTSCore\bin\**" />
+      <EmbeddedResource Remove="QTSCore\obj\**" />
+      <EmbeddedResource Remove="ServiceGenerators\**" />
+      <EmbeddedResource Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Remove="QTSCore\**"/>
-        <AdditionalFiles Include="Views\Pages\App.axaml"/>
-        <AdditionalFiles Include="Views\Pages\MainWindow.axaml"/>
-        <AdditionalFiles Include="Views\Pages\Settings.axaml"/>
-        <AdditionalFiles Include="Views\UserControls\Element.axaml"/>
+      <AdditionalFiles Remove="QTSCore\bin\**" />
+      <AdditionalFiles Remove="QTSCore\obj\**" />
+      <AdditionalFiles Remove="ServiceGenerators\**" />
+      <AdditionalFiles Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Remove="QTSCore\**"/>
-        <AvaloniaResource Remove="SukiUI\**"/>
+      <AvaloniaResource Remove="QTSCore\bin\**" />
+      <AvaloniaResource Remove="QTSCore\obj\**" />
+      <AvaloniaResource Remove="ServiceGenerators\**" />
+      <AvaloniaResource Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="QTSCore\**"/>
+      <None Remove="QTSCore\bin\**" />
+      <None Remove="QTSCore\obj\**" />
+      <None Remove="ServiceGenerators\**" />
+      <None Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="QTSCore\QTSCore.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Views\"/>
+        <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0"/>
     </ItemGroup>
 </Project>

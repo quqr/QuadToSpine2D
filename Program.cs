@@ -1,8 +1,4 @@
-﻿using System;
-using Avalonia;
-using QTSAvalonia.Views.Pages;
-
-namespace QTSAvalonia;
+﻿namespace QTSAvalonia;
 
 internal class Program
 {

@@ -2,6 +2,7 @@
 using QTSCore.Data.Quad;
 using QTSCore.Data.Spine;
 using QTSCore.Utility;
+using Matrix = QTSCore.Utility.Matrix;
 
 namespace QTSCore.Process;
 

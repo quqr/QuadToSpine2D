@@ -11,7 +11,7 @@
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
     xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
-    xmlns:pages1="clr-namespace:QTSAvalonia.Views.Pages">
+    xmlns:settings="clr-namespace:QTSAvalonia.Views.Pages">
     <Design.DataContext>
         <pages:SettingsViewModel />
     </Design.DataContext>
@@ -24,14 +24,16 @@
                 <suki:SettingsLayoutItem Header="Converter">
                     <suki:SettingsLayoutItem.Content>
                         <suki:GlassCard Margin="0,25,0,0" Padding="25">
-                            <pages1:ConverterSetting />
+                            <settings:ConverterSetting />
                         </suki:GlassCard>
                     </suki:SettingsLayoutItem.Content>
                 </suki:SettingsLayoutItem>
 
                 <suki:SettingsLayoutItem Header="Previewer">
                     <suki:SettingsLayoutItem.Content>
-                        <suki:GlassCard Margin="0,25,0,0" Padding="25" />
+                        <suki:GlassCard Margin="0,25,0,0" Padding="25" >
+                            <settings:PreviewerSetting/>
+                        </suki:GlassCard>
                     </suki:SettingsLayoutItem.Content>
                 </suki:SettingsLayoutItem>
 

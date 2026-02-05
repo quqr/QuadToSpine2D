@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-
-namespace QTSAvalonia.ViewModels;
+﻿namespace QTSAvalonia.ViewModels;
 
 public class ViewModelBase : ObservableObject
 {

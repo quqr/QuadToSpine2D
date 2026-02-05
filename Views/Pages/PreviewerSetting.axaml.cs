@@ -1,8 +1,8 @@
 ﻿namespace QTSAvalonia.Views.Pages;
 
-public partial class Settings : UserControl
+public partial class PreviewerSetting : UserControl
 {
-    public Settings()
+    public PreviewerSetting()
     {
         InitializeComponent();
     }

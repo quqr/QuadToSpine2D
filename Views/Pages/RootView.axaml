@@ -6,9 +6,10 @@
     xmlns:fluent="clr-namespace:FluentIcons.Avalonia.Fluent.Markup;assembly=FluentIcons.Avalonia.Fluent"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="clr-namespace:QTSAvalonia.ViewModels.Pages"
-    x:DataType="vm:RootModelView"
+    x:DataType="vm:RootViewModel"
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:pages="clr-namespace:QTSAvalonia.Views.Pages"
+    xmlns:util="clr-namespace:QTSAvalonia.Helper"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
     x:Class="QTSAvalonia.Views.Pages.RootView"
     Title="QuadToSpine2D"
@@ -35,4 +36,7 @@
             </suki:SukiSideMenuItem>
         </suki:SukiSideMenu.Items>
     </suki:SukiSideMenu>
+    <suki:SukiWindow.Hosts>
+        <suki:SukiToastHost Manager="{x:Static util:ToastHelper.ToastManager}"/>
+    </suki:SukiWindow.Hosts>
 </sukiUi:SukiWindow>

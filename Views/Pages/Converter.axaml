@@ -7,12 +7,12 @@
     xmlns:userControls="clr-namespace:QTSAvalonia.Views.UserControls"
     mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
     x:Class="QTSAvalonia.Views.Pages.Converter"
-    x:DataType="pages:ConverterModelView">
+    x:DataType="pages:ConverterViewModel">
     <Design.DataContext>
-        <pages:ConverterModelView />
+        <pages:ConverterViewModel />
     </Design.DataContext>
     <UserControl.DataContext>
-        <pages:ConverterModelView />
+        <pages:ConverterViewModel />
     </UserControl.DataContext>
     <Grid RowDefinitions="1.5*,7*,1.5*" MinHeight="600" MinWidth="1000">
         <StackPanel

@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using QTSAvalonia.Utilities;
-
 namespace QTSAvalonia.ViewModels.UserControls;
 
 public partial class ElementViewModel : ViewModelBase
@@ -20,30 +12,49 @@ public partial class ElementViewModel : ViewModelBase
     public ElementViewModel(Action<ElementViewModel>? onDeleteRequested)
     {
         _onDeleteRequested = onDeleteRequested;
+        LoggerHelper.Debug($"ElementViewModel created with delete handler: {_onDeleteRequested != null}");
     }
 
     public ElementViewModel()
     {
+        LoggerHelper.Debug("ElementViewModel created without delete handler");
+    }
+
+    protected override void Initialize()
+    {
+        LoggerHelper.Info("ElementViewModel initialized");
+        base.Initialize();
     }
 
     [RelayCommand]
     private void DeleteElement()
     {
+        LoggerHelper.Info($"Deleting element at index {_index}");
         _onDeleteRequested(this);
     }
 
     [RelayCommand]
     private async Task AddImagePaths()
     {
-        var files = await InstanceSingleton.Instance.FilePickerService.OpenImageFilesAsync();
+        LoggerHelper.Info("Adding image paths");
+        var files = await AvaloniaFilePickerService.OpenImageFilesAsync();
         if (files != null)
+        {
+            LoggerHelper.Debug($"Selected {files.Count} image files");
             foreach (var file in files)
             {
-                ImagePaths.Add(Uri.UnescapeDataString(file.Path.AbsolutePath));
+                var imagePath = Uri.UnescapeDataString(file.Path.AbsolutePath);
+                ImagePaths.Add(imagePath);
                 ImagePathHyperlinkButtons.Add(new HyperLinkTrimButtonViewModel
                 {
                     ImagePath = file.Path.AbsolutePath
                 });
+                LoggerHelper.Debug($"Added image: {imagePath}");
             }
+        }
+        else
+        {
+            LoggerHelper.Warn("No files selected");
+        }
     }
 }

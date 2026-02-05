@@ -1,6 +1,4 @@
-﻿using Avalonia.Controls;
-
-namespace QTSAvalonia.Views.Pages;
+﻿namespace QTSAvalonia.Views.Pages;
 
 public partial class ConverterSetting : UserControl
 {

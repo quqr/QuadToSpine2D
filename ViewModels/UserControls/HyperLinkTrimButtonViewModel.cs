@@ -1,5 +1,3 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-
 namespace QTSAvalonia.ViewModels.UserControls;
 
 public partial class HyperLinkTrimButtonViewModel : ViewModelBase

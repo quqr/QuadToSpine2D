@@ -1,13 +1,11 @@
 namespace QTSCore.Data;
 
+[Obsolete]
 public static class GlobalData
 {
     public const float Fps = 1 / 60f;
     private static int _scaleFactor = 1;
-
-    private static double _barValue;
-    public static bool IsCompleted        { get; set; }
-    public static bool IsSetLoopAnimation { get; set; }
+    
     public static int  FogTexId           => 1000;
 
     /// <summary>
@@ -26,9 +24,10 @@ public static class GlobalData
 
     public static string ResultSavePath { get; set; } = @"F:\Codes\Test\output";
 
-    public static bool IsReadableJson { get; set; }
+    public static bool IsReadableJson     { get; set; }
+    public static bool IsSetLoopAnimation { get; set; }
 
-    public static void InitializeUIResources()
+    public static void InitializeUiResources()
     {
     }
 }

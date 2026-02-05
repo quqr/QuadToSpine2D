@@ -1,5 +1,3 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-
 namespace QTSAvalonia.ViewModels.Pages;
 
 public partial class ConverterSettingViewModel : ViewModelBase

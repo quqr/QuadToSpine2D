@@ -3,21 +3,19 @@ using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Utility;
 using SkiaSharp;
+using System.Diagnostics;
+using System.Threading;
+using QTSAvalonia.Helper;
 
 namespace QTSCore.Process;
-
-/// <summary>
-///     图像处理服务：裁剪纹理图集、生成雾效图像
-///     线程安全设计，支持并行处理多皮肤资源
-/// </summary>
 public class ProcessImages
 {
     private readonly SKBitmap?[,] _images;
 
-    // 全局锁：仅用于保护_currentImageIndex更新（轻量级）
+    // Global lock: only for protecting _currentImageIndex updates (lightweight)
     private readonly Lock _indexLock = new();
 
-    // 线程安全的嵌套字典：TexId -> SkinIndex -> Guid -> LayerData列表
+    // Thread-safe nested dictionary: TexId -> SkinIndex -> Guid -> LayerData list
     private readonly ConcurrentDictionary<int,
         ConcurrentDictionary<int,
             ConcurrentDictionary<string, ConcurrentBag<LayerData>>>> _layersDataDict
@@ -27,31 +25,58 @@ public class ProcessImages
     private int _currentImageIndex;
 
     /// <summary>
-    ///     初始化图像资源库
+    ///     Initialize image resource library
     /// </summary>
     public ProcessImages(List<List<string?>> imagesSrc)
     {
+        LoggerHelper.Info($"Initializing image resource library, source count: {imagesSrc?.Count ?? 0}");
+        
         if (imagesSrc == null || imagesSrc.Count == 0 || imagesSrc[0].Count == 0)
-            throw new ArgumentException("图像源列表不能为空");
+        {
+            var errorMsg = "Image source list cannot be empty";
+            LoggerHelper.Error(errorMsg);
+            throw new ArgumentException(errorMsg);
+        }
 
         _skinsCount = imagesSrc[0].Count;
         _images     = new SKBitmap[imagesSrc.Count, _skinsCount];
+        
+        LoggerHelper.Debug($"Image configuration: {_images.GetLength(0)} x {_images.GetLength(1)}, skin count: {_skinsCount}");
         LoadImagesParallel(imagesSrc);
+        
+        LoggerHelper.Info("Image resource library initialization completed");
     }
 
     /// <summary>
-    ///     并行加载所有纹理图像（线程安全）
+    ///     Parallel load all texture images (thread-safe)
     /// </summary>
     private void LoadImagesParallel(List<List<string?>> imagesSrc)
     {
+        LoggerHelper.Info($"Starting parallel loading of {_images.GetLength(0)} texture images");
+        
+        var loadStartTime = DateTime.Now;
+        var failedCount = 0;
+        var successCount = 0;
+        var stopwatch = Stopwatch.StartNew();
+
         Parallel.For(0, imagesSrc.Count, i =>
         {
             for (var j = 0; j < _skinsCount; j++)
             {
                 var path = imagesSrc[i][j];
-                if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+                if (string.IsNullOrWhiteSpace(path))
                 {
                     _images[i, j] = null;
+                    Interlocked.Increment(ref failedCount);
+                    LoggerHelper.Debug($"Skipping empty path [{i},{j}]");
+                    continue;
+                }
+
+                if (!File.Exists(path))
+                {
+                    _images[i, j] = null;
+                    Interlocked.Increment(ref failedCount);
+                    LoggerHelper.Warn($"Image file not found [{i},{j}]: {path}");
                     continue;
                 }
 
@@ -59,26 +84,44 @@ public class ProcessImages
                 {
                     using var stream = File.OpenRead(path);
                     _images[i, j] = SKBitmap.Decode(stream);
+                    
+                    if (_images[i, j] != null)
+                    {
+                        Interlocked.Increment(ref successCount);
+                        LoggerHelper.Debug($"Successfully loaded image [{i},{j}]: {path} ({_images[i, j].Width}x{_images[i, j].Height})");
+                    }
+                    else
+                    {
+                        Interlocked.Increment(ref failedCount);
+                        LoggerHelper.Error($"Image decoding failed [{i},{j}]: {path}");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"加载图像失败 [{i},{j}]: {path} - {ex.Message}");
+                    Interlocked.Increment(ref failedCount);
+                    LoggerHelper.Error($"Image loading exception [{i},{j}]: {path}", ex);
                     _images[i, j] = null;
                 }
             }
         });
+
+        stopwatch.Stop();
+        LoggerHelper.Info($"Image loading completed - Success: {successCount}, Failed: {failedCount}, Duration: {stopwatch.ElapsedMilliseconds}ms");
     }
 
     /// <summary>
-    ///     处理单个图层数据，生成所有皮肤的裁剪/雾效图像
+    ///     Process single layer data, generate cropped/fog images for all skins
     /// </summary>
     public List<LayerData> GetLayerData(KeyframeLayer layer, PoolData? poolData, int copyIndex)
     {
         ArgumentNullException.ThrowIfNull(layer);
+        
+        LoggerHelper.Debug($"Starting layer data processing - TexId: {layer.TexId}, Guid: {layer.Guid}, CopyIndex: {copyIndex}");
 
+        var startTime = DateTime.Now;
         var results = new ConcurrentBag<LayerData>();
 
-        // 并行处理每个皮肤
+        // Parallel process each skin
         Parallel.For(0, _skinsCount, skinIndex =>
         {
             LayerData? data = null;
@@ -87,6 +130,8 @@ public class ProcessImages
                 _images[layer.TexId, skinIndex] != null)
             {
                 var rect = ProcessUtility.CalculateRectangle(layer);
+                LoggerHelper.Debug($"Processing texture image - SkinIndex: {skinIndex}, Rect: {rect}");
+                
                 data = ProcessTextureImage(
                     _images[layer.TexId, skinIndex],
                     rect,
@@ -98,41 +143,45 @@ public class ProcessImages
             }
             else if (layer.Fog is { Count: > 0 })
             {
+                LoggerHelper.Debug($"Processing fog image - SkinIndex: {skinIndex}, FogCount: {layer.Fog.Count}");
                 data = ProcessFogImage(layer, poolData, skinIndex, copyIndex);
             }
 
-            if (data != null)
-            {
-                // 安全存储到嵌套ConcurrentDictionary
-                _layersDataDict
-                    .GetOrAdd(layer.TexId, _ => new ConcurrentDictionary<int, ConcurrentDictionary<string, ConcurrentBag<LayerData>>>())
-                    .GetOrAdd(skinIndex, _ => new ConcurrentDictionary<string, ConcurrentBag<LayerData>>())
-                    .GetOrAdd(layer.Guid, _ => new ConcurrentBag<LayerData>())
-                    .Add(data);
+            if (data is null) return;
+            // Safely store in nested ConcurrentDictionary
+            _layersDataDict
+                .GetOrAdd(layer.TexId, _ => new ConcurrentDictionary<int, ConcurrentDictionary<string, ConcurrentBag<LayerData>>>())
+                .GetOrAdd(skinIndex, _ => new ConcurrentDictionary<string, ConcurrentBag<LayerData>>())
+                .GetOrAdd(layer.Guid, _ => [])
+                .Add(data);
 
-                results.Add(data);
-            }
+            results.Add(data);
+            LoggerHelper.Debug($"Layer data processing completed - SkinIndex: {skinIndex}, ImageName: {data.SlotAndImageName}");
         });
 
-        // 按SkinIndex排序保证输出顺序
+        // Sort by SkinIndex to ensure output order
         var sortedResults = results.OrderBy(d => d.SkinIndex).ToList();
 
-        // 安全更新全局索引（仅当copyIndex=0时递增）
+        // Safely update global index (only increment when copyIndex=0)
         if (copyIndex == 0)
         {
             lock (_indexLock)
             {
                 _currentImageIndex++;
+                LoggerHelper.Debug($"Updated global image index to: {_currentImageIndex}");
             }
         }
+
+        var processDuration = DateTime.Now - startTime;
+        LoggerHelper.Info($"Layer data processing completed - Result count: {sortedResults.Count}, Duration: {processDuration.TotalMilliseconds:F2}ms");
 
         return sortedResults;
     }
 
-#region 核心处理逻辑
+#region Core Processing Logic
 
     /// <summary>
-    ///     裁剪纹理图像并异步保存
+    ///     Crop texture image and save asynchronously
     /// </summary>
     private LayerData ProcessTextureImage(
         SKBitmap      source,
@@ -143,16 +192,21 @@ public class ProcessImages
         int           copyIndex)
     {
         var (imageName, imageIndex) = GenerateImageName(layer, poolData, skinIndex, copyIndex);
+        
+        LoggerHelper.Debug($"Starting texture image processing - ImageName: {imageName}, Rect: {rect.Width}x{rect.Height}");
 
-        // 异步保存（带错误处理）
+        // Async save (with error handling)
         _ = Task.Run(() => SaveCroppedImage(source, rect, imageName))
                 .ContinueWith(t => HandleSaveError(t, imageName), TaskContinuationOptions.OnlyOnFaulted);
 
-        return CreateLayerData(imageName, layer, skinIndex, imageIndex, copyIndex);
+        var layerData = CreateLayerData(imageName, layer, skinIndex, imageIndex, copyIndex);
+        LoggerHelper.Debug($"Texture image processing completed - {imageName}");
+        
+        return layerData;
     }
 
     /// <summary>
-    ///     生成雾效图像并异步保存
+    ///     Generate fog image and save asynchronously
     /// </summary>
     private LayerData ProcessFogImage(
         KeyframeLayer layer,
@@ -161,19 +215,24 @@ public class ProcessImages
         int           copyIndex)
     {
         var (imageName, imageIndex) = GenerateImageName(layer, poolData, skinIndex, copyIndex);
+        
+        LoggerHelper.Debug($"Starting fog image processing - ImageName: {imageName}, Colors: {layer.Fog?.Count ?? 0}");
 
         _ = Task.Run(() => SaveFogImage(imageName, 100, 100, layer.Fog!))
                 .ContinueWith(t => HandleSaveError(t, imageName), TaskContinuationOptions.OnlyOnFaulted);
 
-        return CreateLayerData(imageName, layer, skinIndex, imageIndex, copyIndex);
+        var layerData = CreateLayerData(imageName, layer, skinIndex, imageIndex, copyIndex);
+        LoggerHelper.Debug($"Fog image processing completed - {imageName}");
+        
+        return layerData;
     }
 
 #endregion
 
-#region 辅助方法
+#region Helper Methods
 
     /// <summary>
-    ///     生成唯一图像文件名并计算索引
+    ///     Generate unique image filename and calculate index
     /// </summary>
     private (string Name, int Index) GenerateImageName(
         KeyframeLayer layer,
@@ -185,14 +244,14 @@ public class ProcessImages
         var texIdStr   = layer.TexId == GlobalData.FogTexId ? "Fog" : layer.TexId.ToString();
         var name       = $"Slice_{imageIndex}_{texIdStr}_{skinIndex}_{copyIndex}";
 
-        // 更新图层内部排序标识
+        // Update layer internal sorting identifier
         layer.ImageNameOrder = imageIndex * 1000 + layer.TexId * 100 + skinIndex * 10 + copyIndex;
 
         return (name, imageIndex);
     }
 
     /// <summary>
-    ///     创建LayerData对象（消除重复代码）
+    ///     Create LayerData object (eliminate duplicate code)
     /// </summary>
     private static LayerData CreateLayerData(
         string        imageName,
@@ -214,10 +273,12 @@ public class ProcessImages
     }
 
     /// <summary>
-    ///     保存裁剪后的图像
+    ///     Save cropped image
     /// </summary>
     private static void SaveCroppedImage(SKBitmap source, SKRectI rect, string imageName)
     {
+        LoggerHelper.Debug($"Saving cropped image: {imageName}, size: {rect.Width}x{rect.Height}");
+        
         using var cropped = new SKBitmap(rect.Width, rect.Height);
         using (var canvas = new SKCanvas(cropped))
         {
@@ -225,15 +286,22 @@ public class ProcessImages
         }
 
         SaveSkImage(SKImage.FromBitmap(cropped), imageName);
+        LoggerHelper.Debug($"Cropped image saved successfully: {imageName}");
     }
 
     /// <summary>
-    ///     生成并保存雾效图像（支持4色渐变）
+    ///     Generate and save fog image (support 4-color gradient)
     /// </summary>
     private static void SaveFogImage(string imageName, int width, int height, List<string> colors)
     {
+        LoggerHelper.Debug($"Saving fog image: {imageName}, colors: {colors.Count}");
+        
         if (colors == null || colors.Count < 4)
-            throw new ArgumentException("雾效需要至少4个颜色值");
+        {
+            const string errorMsg = "Fog effect requires at least 4 color values";
+            LoggerHelper.Error(errorMsg);
+            throw new ArgumentException(errorMsg);
+        }
 
         using var surface = SKSurface.Create(new SKImageInfo(width, height));
         var       canvas  = surface.Canvas;
@@ -252,33 +320,38 @@ public class ProcessImages
         canvas.DrawRect(new SKRect(0, 0, width, height), paint);
 
         SaveSkImage(surface.Snapshot(), imageName);
+        LoggerHelper.Debug($"Fog image saved successfully: {imageName}");
     }
 
     /// <summary>
-    ///     通用图像保存逻辑
+    ///     Generic image saving logic
     /// </summary>
     private static void SaveSkImage(SKImage image, string imageName)
     {
         using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-        if (data == null) throw new InvalidOperationException("图像编码失败");
+        if (data == null) 
+        {
+            const string errorMsg = "Image encoding failed";
+            LoggerHelper.Error(errorMsg);
+            throw new InvalidOperationException(errorMsg);
+        }
 
         var fullPath = Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png");
-        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!); // 确保目录存在
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!); // Ensure directory exists
 
         using var stream = File.OpenWrite(fullPath);
         data.SaveTo(stream);
+        
+        LoggerHelper.Debug($"Image saved to: {fullPath}");
     }
 
     /// <summary>
-    ///     统一错误处理
+    ///     Unified error handling
     /// </summary>
     private static void HandleSaveError(Task task, string imageName)
     {
-
         if (task.Exception?.InnerException is not { } ex) return;
-        Console.WriteLine($"保存图像失败 [{imageName}]: {ex.Message}");
-        GlobalData.IsCompleted = false;
-
+        LoggerHelper.Error($"Failed to save image [{imageName}]", ex);
     }
 
 #endregion

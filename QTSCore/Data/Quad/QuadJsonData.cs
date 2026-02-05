@@ -1,6 +1,7 @@
 ﻿using QTSCore.JsonConverters;
 using QTSCore.Process;
 using QTSCore.Utility;
+using Matrix = QTSCore.Utility.Matrix;
 
 namespace QTSCore.Data.Quad;
 

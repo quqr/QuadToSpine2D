@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
-using Avalonia.Controls;
 using Avalonia.Controls.PanAndZoom;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
 
 namespace QTSAvalonia.Views.UserControls;
 

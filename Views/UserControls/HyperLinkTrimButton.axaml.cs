@@ -1,6 +1,4 @@
-﻿using Avalonia.Controls;
-
-namespace QTSAvalonia.Views.UserControls;
+﻿namespace QTSAvalonia.Views.UserControls;
 
 public partial class HyperLinkTrimButton : UserControl
 {
