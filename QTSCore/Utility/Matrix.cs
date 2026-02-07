@@ -14,13 +14,27 @@ public readonly struct Matrix : IEquatable<Matrix>
         Cols  = cols;
         Value = new float[Rows, Cols];
     }
-
+    
     public Matrix(int rowsAndCols, bool isIdentity = true)
     {
         Rows  = rowsAndCols;
         Cols  = rowsAndCols;
         Value = new float[Rows, Cols];
-        for (var i = 0; i < rowsAndCols; i++) Value[i, i] = 1;
+        for (var i = 0; i < Rows; i++)
+        {
+            for (var j = 0; j < Cols; j++)
+            {
+                Value[i, j] = 0;
+            }
+        }
+        
+        if (isIdentity)
+        {
+            for (var i = 0; i < rowsAndCols; i++)
+            {
+                Value[i, i] = 1;
+            }
+        }
     }
 
     public Matrix(int rows, int cols, float[] source)
@@ -41,6 +55,11 @@ public readonly struct Matrix : IEquatable<Matrix>
         }
     }
 
+    public bool IsZeroMatrix()
+    {
+        const float epsilon = 1e-6f;
+        return Value.Cast<float>().All(f => MathF.Abs(f) < epsilon);
+    }
     public static Matrix IdentityMatrixBy4X4 => new(4);
 
     /// <summary>
@@ -53,7 +72,7 @@ public readonly struct Matrix : IEquatable<Matrix>
             throw new Exception("Non-conformable matrices in MatrixProduct");
         return srcMatrix * (1 - rate) + dstMatrix * rate;
     }
-
+    
     public float[] ToFloatArray()
     {
         var array = new float[Rows * Cols];
@@ -64,7 +83,7 @@ public readonly struct Matrix : IEquatable<Matrix>
 
         return array;
     }
-
+    
     public override string ToString()
     {
         var result = string.Empty;

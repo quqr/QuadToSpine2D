@@ -1,4 +1,6 @@
-﻿namespace QTSAvalonia;
+﻿using Avalonia;
+
+namespace QTSAvalonia;
 
 internal class Program
 {

@@ -20,8 +20,13 @@ public class KeyframeJsonConverter : JsonConverter
         if (obj is not JObject jObject) return null;
         var json = new Keyframe
         {
-            Name = jObject["name"]?.ToString(), Layers = jObject["layer"]?.ToObject<List<KeyframeLayer?>>(), Id = IdCount, AttachType = AttachType.Keyframe
+            Name = jObject["name"]?.ToString(), 
+            Layers = jObject["layer"]?.ToObject<List<KeyframeLayer?>>(), 
+            Id = IdCount, 
+            AttachType = AttachType.Keyframe,
         };
+        if(json.Layers is not null)
+            json.Order = jObject["orders"]?.ToObject<List<int>>() ?? Enumerable.Range(0, json.Layers.Count).ToList();
         return json;
     }
 

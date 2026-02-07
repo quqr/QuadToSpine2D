@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using QTSCore.Data;
 

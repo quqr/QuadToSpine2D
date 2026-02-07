@@ -118,7 +118,7 @@
                                   Margin="15"
                                   Height="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
                         <ItemsControl
-                            ItemsSource="{Binding AnimationTimelines}">
+                            ItemsSource="{Binding Keyframes}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Spacing="4" />

@@ -1,4 +1,5 @@
-﻿using Avalonia.Media;
+﻿using Avalonia;
+using Avalonia.Media;
 
 namespace QTSAvalonia.ViewModels.UserControls;
 

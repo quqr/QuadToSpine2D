@@ -9,8 +9,7 @@ using SkiaSharp;
 
 namespace QTSAvalonia.ViewModels.Pages;
 
-[SingletonService]
-public partial class PreviewerViewModel : ViewModelBase, IDisposable
+public partial class PlayerViewModel : ViewModelBase, IDisposable
 {
     private const int CanvasSize = 1600;
     private const float CenterX = CanvasSize / 2f;
@@ -103,8 +102,8 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
     {
         for (var index = 0; index < animation.Timeline.Count; index++)
         {
-            currentTime -= animation.Timeline[index].Time;
-            if (currentTime < 0) return (index, -currentTime);
+            var time = currentTime - animation.Timeline[index].Time;
+            if (time < 0) return (index, -time);
         }
 
         return animation.IsLoop ? (-1, 0) : (animation.LoopId, currentTime);
@@ -135,13 +134,10 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         m4 = timeline.IsMatrixMix
             ? timeline.AnimationMatrix
             : Matrix.Lerp(timeline.AnimationMatrix, nextTimeline.AnimationMatrix, rate);
-        if (m4.IsZeroMatrix())
-        {
-            m4 = Matrix.IdentityMatrixBy4X4;
-        }
+
         result.matrix *= m4;
         //TODO : Lerp color
-        
+
         return result;
     }
 
@@ -231,14 +227,8 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
                 SKBlendMode.SrcOver,
                 paint);
         }
-        
-        Render();
     }
 
-    private void Render()
-    {
-        Image = SKBitmap.FromImage(_surface.Snapshot()).ToBitmap();
-    }
     private SKBitmap? CropBitmap(SKBitmap? source, SKRectI srcRect)
     {
         if (source == null || srcRect.Width <= 0 || srcRect.Height <= 0)
@@ -483,17 +473,6 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         LoggerHelper.Debug($"Frame changed to: {CurrentFrame}");
     }
 
-    partial void OnCurrentFrameChanged(int value)
-    {
-        Canvas.Clear();
-        Time = value;
-        foreach (var bone in CurrentSkeleton.Bone)
-        {
-            Draw(bone.Attach);
-        }
-
-    }
-
     [RelayCommand]
     private async Task OpenQuadFilePickerAsync()
     {
@@ -535,7 +514,9 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
             return null;
         return _quadJsonData.Animation[id];
     }
-    
+
+
+
     private string GenerateCacheKey(object obj, int frameIndex)
     {
         return $"{obj.GetHashCode()}_{frameIndex}_{CurrentAnimation?.Id ?? -1}";
@@ -558,8 +539,9 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         }
 
         CurrentAnimation = animation;
+        TotalFrames = Math.Max(0, animation.Timeline.Count - 1);
         CurrentFrame = 0;
-        TotalFrames = animation.Timeline.Sum(x => x.Time);
+        var allFrames = animation.Timeline.Sum(x => x.Frames);
         Keyframes.Clear();
         foreach (var timeline in animation.Timeline.Where(t => t.Attach != null))
             Keyframes.Add(new Button

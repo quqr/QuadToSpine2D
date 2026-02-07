@@ -36,16 +36,17 @@ public class Slot : Attach
 [JsonConverter(typeof(KeyframeJsonConverter))]
 public class Keyframe : Attach
 {
-    public string Name { get; set; }
+    public string Name { get; set; }= "";
 
-    public List<KeyframeLayer?>? Layers { get; set; }
+    public List<KeyframeLayer?>? Layers { get; set; } = [];
+    public List<int> Order { get; set; } = [];
 }
 
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
 public class KeyframeLayer
 {
-    private float[] _dstquad;
-    private float[]? _srcquad;
+    private float[] _dstquad=[];
+    private float[]? _srcquad=[];
 
     public float[] Dstquad
     {
@@ -237,7 +238,11 @@ public class Timeline
         set
         {
             if (value is null) return;
-            AnimationMatrix = new Matrix(4, 4, value);
+            var matrix = new Matrix(4, 4, value);
+            if (!matrix.IsZeroMatrix())
+            {
+                AnimationMatrix = matrix;
+            }
         }
     }
 
@@ -269,6 +274,16 @@ public class Timeline
 
 public class Attach
 {
+    public Attach()
+    {
+    }
+
+    public Attach(AttachType attachType, int id)
+    {
+        AttachType = attachType;
+        Id = id;
+    }
+
     [JsonProperty]
     private string Type
     {
@@ -308,7 +323,10 @@ public enum AttachType
     Slot,
     HitBox,
     Animation,
-    Skeleton
+    Skeleton,
+    Mix,
+    List,
+    None
 }
 
 [JsonConverter(typeof(SkeletonJsonConverter))]
