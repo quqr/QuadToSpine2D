@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls.Notifications;
+using Avalonia.Controls.Notifications;
 using SukiUI.Toasts;
 
 namespace QTSAvalonia.Helper;

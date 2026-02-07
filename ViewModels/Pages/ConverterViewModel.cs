@@ -4,7 +4,7 @@ using QTSCore.Data;
 using QTSCore.Process;
 
 namespace QTSAvalonia.ViewModels.Pages;
-
+[SingletonService]
 public partial class ConverterViewModel : ViewModelBase
 {
     [ObservableProperty] private ObservableCollection<ElementViewModel> _elements = [];

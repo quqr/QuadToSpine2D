@@ -11,6 +11,9 @@
     <Design.DataContext>
         <pages:ElementViewModel />
     </Design.DataContext>
+    <UserControl.DataContext>
+        <pages:ElementViewModel />
+    </UserControl.DataContext>
     <suki:GlassCard>
         <suki:GroupBox
             Header="{Binding Index}"

@@ -13,15 +13,17 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        Instances.Initialize();
+        LoggerHelper.InitializeLogger();
+        GlobalData.InitializeUiResources();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+
+            
             var mainWindow = new RootView();
             desktop.MainWindow = mainWindow;
             
-            Instances.Initialize();
-            LoggerHelper.InitializeLogger();
             AvaloniaFilePickerService.Initialize(TopLevel.GetTopLevel(mainWindow));
-            GlobalData.InitializeUiResources();
         }
 
         base.OnFrameworkInitializationCompleted();

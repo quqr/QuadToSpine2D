@@ -1,6 +1,8 @@
-﻿using Serilog;
+using Serilog;
 
 namespace QTSAvalonia.Helper;
+
+
 public enum LogLevel : uint
 {
     Debug = 1,

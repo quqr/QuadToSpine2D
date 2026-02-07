@@ -11,9 +11,6 @@
     <Design.DataContext>
         <pages:ConverterViewModel />
     </Design.DataContext>
-    <UserControl.DataContext>
-        <pages:ConverterViewModel />
-    </UserControl.DataContext>
     <Grid RowDefinitions="1.5*,7*,1.5*" MinHeight="600" MinWidth="1000">
         <StackPanel
             Grid.Row="0"

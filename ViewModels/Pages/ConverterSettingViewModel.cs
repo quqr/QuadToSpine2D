@@ -1,5 +1,6 @@
 namespace QTSAvalonia.ViewModels.Pages;
 
+[SingletonService]
 public partial class ConverterSettingViewModel : ViewModelBase
 {
     [ObservableProperty] private bool _isLoopingAnimation;

@@ -10,6 +10,7 @@
         <TargetFramework>net10.0</TargetFramework>
         <AssemblyName>QTSAvalonia</AssemblyName>
         <RootNamespace>QTSAvalonia</RootNamespace>
+        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DebugType>embedded</DebugType>
@@ -24,9 +25,6 @@
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11">
-            <TreatAsUsed>true</TreatAsUsed>
-        </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
         <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.317"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2"/>
@@ -40,48 +38,51 @@
         <PackageReference Include="SukiUI.Dock" Version="6.0.3"/>
     </ItemGroup>
 
+    <!-- 移除对 ServiceSourceGenerators 的排除项 -->
     <ItemGroup>
       <AvaloniaXaml Remove="QTSCore\bin\**" />
       <AvaloniaXaml Remove="QTSCore\obj\**" />
       <AvaloniaXaml Remove="ServiceGenerators\**" />
-      <AvaloniaXaml Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
       <Compile Remove="QTSCore\bin\**" />
       <Compile Remove="QTSCore\obj\**" />
       <Compile Remove="ServiceGenerators\**" />
-      <Compile Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Remove="QTSCore\bin\**" />
       <EmbeddedResource Remove="QTSCore\obj\**" />
       <EmbeddedResource Remove="ServiceGenerators\**" />
-      <EmbeddedResource Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
       <AdditionalFiles Remove="QTSCore\bin\**" />
       <AdditionalFiles Remove="QTSCore\obj\**" />
       <AdditionalFiles Remove="ServiceGenerators\**" />
-      <AdditionalFiles Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
       <AvaloniaResource Remove="QTSCore\bin\**" />
       <AvaloniaResource Remove="QTSCore\obj\**" />
       <AvaloniaResource Remove="ServiceGenerators\**" />
-      <AvaloniaResource Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="QTSCore\bin\**" />
       <None Remove="QTSCore\obj\**" />
       <None Remove="ServiceGenerators\**" />
-      <None Remove="ServiceSourceGenerators\**" />
     </ItemGroup>
-        <ItemGroup>
+    
+    <!-- 添加对源代码生成器项目的引用 -->
+    <ItemGroup>
+        <ProjectReference Include="ServiceSourceGenerators\ServiceSourceGenerators\ServiceSourceGenerators.csproj" 
+                          OutputItemType="Analyzer" 
+                          ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

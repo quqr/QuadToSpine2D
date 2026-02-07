@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using Avalonia.Threading;
 
 namespace QTSAvalonia.Helper;

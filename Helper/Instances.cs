@@ -4,7 +4,7 @@ namespace QTSAvalonia.Helper;
 
 public static partial class Instances
 {
-    public static IServiceProvider? ServiceProvider;
+    public static IServiceProvider ServiceProvider;
     
     public static void Initialize()
     {

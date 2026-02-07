@@ -1,12 +1,14 @@
 using System.Threading;
 using Avalonia.Media.Imaging;
+using QTSCore.Data;
 using QTSCore.Data.Quad;
+using QTSCore.Process;
 using QTSCore.Utility;
 using SkiaSharp;
 
 namespace QTSAvalonia.ViewModels.Pages;
 
-[Service]
+[SingletonService]
 public partial class PreviewerViewModel : ViewModelBase, IDisposable
 {
 #region Fields
@@ -28,10 +30,10 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
     [ObservableProperty]
     private ObservableCollection<Button> _animationTimelines = [];
 
-    private Animation? _currentAnimation;
-    private QuadSkeleton? _currentSkeleton;
-    private Timeline? _currentTimeline;
-
+    private Animation?     CurrentAnimation     { get; set; }
+    private AnimationData? CurrentAnimationData { get; set; }
+    private QuadSkeleton?  CurrentSkeleton      { get; set; }
+    
     [ObservableProperty]
     private int _currentFrame;
 
@@ -59,6 +61,12 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
 
     [ObservableProperty]
     private string _quadFileName = string.Empty;
+
+    private const int CanvasSize = 1600;
+    private readonly SKSurface _surface = SKSurface.Create(new SKImageInfo(CanvasSize, CanvasSize));
+    private SKCanvas Canvas => _surface.Canvas;
+    private const float CenterX = CanvasSize / 2f;
+    private const float CenterY = CanvasSize / 2f;
 
 #endregion
 
@@ -91,12 +99,12 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         }
 
         _frameCache.Clear();
-
+        Canvas.Clear();
         // Clean up data
         _quadJsonData     = null;
-        _currentAnimation = null;
-        _currentSkeleton  = null;
-        _currentTimeline  = null;
+        CurrentAnimation = null;
+        CurrentAnimationData = null;
+        CurrentSkeleton  = null;
         CurrentFrame      = 0;
         TotalFrames       = 0;
 
@@ -147,7 +155,7 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private async Task PlayAnimationAsync()
     {
-        if (_currentAnimation?.Timeline is null || _currentAnimation.Timeline.Count == 0)
+        if ((CurrentAnimation?.Timeline is null || CurrentAnimation.Timeline.Count == 0) && CurrentAnimationData is null)
         {
             LoggerHelper.Warn("No valid animation to play");
             ToastHelper.Warn("WARNING", "No animation available to play");
@@ -168,12 +176,23 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
 
         try
         {
-            for (var i = CurrentFrame; i < _currentAnimation.Timeline.Count && !token.IsCancellationRequested; i++)
+            if (!IsPlayingCombineAnimation)
             {
-                CurrentFrame = i;
-                await Task.Delay(TimeSpan.FromSeconds(Fps), token);
+                for (var i = CurrentFrame; i < CurrentAnimation.Timeline.Count && !token.IsCancellationRequested; i++)
+                {
+                    CurrentFrame = i;
+                    await Task.Delay(TimeSpan.FromSeconds(Fps), token);
+                }
             }
-
+            else
+            {                
+                for (var i = CurrentFrame; i < CurrentAnimationData.Data.ElementAt(i).Value.DisplayAttachments.Count && !token.IsCancellationRequested; i++)
+                {
+                    CurrentFrame = i;
+                    await Task.Delay(TimeSpan.FromSeconds(Fps), token);
+                }
+                
+            }
             LoggerHelper.Info("Animation playback completed");
         }
         catch (OperationCanceledException)
@@ -203,18 +222,24 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private void SetNextFrame()
     {
-        if (_currentAnimation?.Timeline is null) return;
+        if (CurrentAnimation?.Timeline is null && CurrentAnimationData is null) return;
 
-        CurrentFrame = CurrentFrame >= _currentAnimation.Timeline.Count - 1 ? 0 : CurrentFrame + 1;
+        if (!IsPlayingCombineAnimation)
+            CurrentFrame = CurrentFrame >= CurrentAnimation.Timeline.Count - 1 ? 0 : CurrentFrame + 1;
+        else
+            CurrentFrame = CurrentFrame >= CurrentAnimationData.Data.Count - 1 ? 0 : CurrentFrame + 1;
         LoggerHelper.Debug($"Frame changed to: {CurrentFrame}");
     }
 
     [RelayCommand]
     private void SetPreviousFrame()
     {
-        if (_currentAnimation?.Timeline is null) return;
+        if (CurrentAnimation?.Timeline is null && CurrentAnimationData is null) return;
 
-        CurrentFrame = CurrentFrame <= 0 ? _currentAnimation.Timeline.Count - 1 : CurrentFrame - 1;
+        if (!IsPlayingCombineAnimation)
+            CurrentFrame = CurrentFrame <= 0 ? CurrentAnimation.Timeline.Count - 1 : CurrentFrame - 1;
+        else
+            CurrentFrame = CurrentFrame <= 0 ? CurrentAnimationData.Data.Count - 1 : CurrentFrame - 1;
         LoggerHelper.Debug($"Frame changed to: {CurrentFrame}");
     }
 
@@ -246,6 +271,7 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
                 ImagePaths.Add(imagePath);
                 LoggerHelper.Debug($"Added image path: {imagePath}");
             }
+
             LoggerHelper.Info($"Selected {ImagePaths.Count} image files");
             ToastHelper.Success("SUCCESS", $"Selected {ImagePaths.Count} image files");
         }
@@ -271,7 +297,7 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
             return;
         }
 
-        _currentAnimation = animation;
+        CurrentAnimation = animation;
         TotalFrames       = Math.Max(0, animation.Timeline.Count - 1);
         CurrentFrame      = 0;
 
@@ -280,10 +306,10 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         {
             AnimationTimelines.Add(new Button
             {
-                Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = SetAttachCommand, CommandParameter = timeline
+                Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = SetAttachCommand, CommandParameter = new List<Timeline> { timeline }
             });
         }
-
+        IsPlayingCombineAnimation = false;
         LoggerHelper.Debug($"Set {AnimationTimelines.Count} animation timelines");
     }
 
@@ -298,9 +324,9 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
 
         Animations.Clear();
         AnimationTimelines.Clear();
-        _currentSkeleton = skeleton;
-
-        foreach (var bone in skeleton.Bone.Where(b => b.Attach != null))
+        CurrentSkeleton = skeleton;
+        
+        foreach (var bone in skeleton.Bone.Where(b => b.Attach is not null))
         {
             Animations.Add(new Button
             {
@@ -308,13 +334,44 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
             });
         }
 
+        if (skeleton.Bone.Count > 1)
+        {
+            Animations.Add(new Button
+            {
+                Content = "Combine Animations", Command = CombineAnimationsCommand
+            });
+        }
         LoggerHelper.Debug($"Set {Animations.Count} animations for skeleton: {skeleton.Name}");
     }
 
+    private bool IsPlayingCombineAnimation { get; set; }
     [RelayCommand]
-    private void SetAttach(Timeline? timeline)
+    private void CombineAnimations()
     {
-        if (timeline?.Attach is null)
+        if (CurrentSkeleton?.CombineAnimation == null) return;
+        CurrentAnimationData = CurrentSkeleton.CombineAnimation;
+        TotalFrames = CurrentAnimationData.Data.Count-1;
+        AnimationTimelines.Clear();
+        for (var i = 0; i < TotalFrames; i++)
+        {
+            AnimationTimelines.Add(new Button
+            {
+                Content = $"Frame {i}", Command = SetAttachCommand, CommandParameter = CurrentAnimationData.Data.ElementAt(i).Value.DisplayAttachments
+            });
+        }
+        IsPlayingCombineAnimation = true;
+    }
+    private void PlayCombineAnimation()
+    {
+        var attach = CurrentAnimationData?.Data.ElementAt(CurrentFrame).Value;
+        if (attach == null) return;
+        SetAttach(attach.DisplayAttachments);
+    }
+    [RelayCommand]
+    private void SetAttach(List<Timeline?>? timeline)
+    {
+        Canvas.Clear();
+        if (timeline is null)
         {
             LoggerHelper.Warn("Invalid timeline or attach");
             return;
@@ -328,12 +385,8 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
             return;
         }
 
-        var bitmap = GetAttach(timeline);
-        if (bitmap is null)
-        {
-            LoggerHelper.Warn("Failed to generate attach bitmap");
-            return;
-        }
+        GetAttach(timeline);
+        var bitmap = SKBitmap.FromImage(_surface.Snapshot()).ToBitmap();
 
         // Cache newly generated frame
         _frameCache[cacheKey] = bitmap;
@@ -385,8 +438,8 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
 
         try
         {
-            var json = File.ReadAllText(quadPath);
-            _quadJsonData = JsonConvert.DeserializeObject<QuadJsonData>(json);
+            _quadJsonData = new ProcessQuadData()
+                            .LoadQuadJson(quadPath).QuadData;
 
             if (_quadJsonData is null)
             {
@@ -433,7 +486,6 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
             {
                 LoggerHelper.Error("Failed to load image", new InvalidOperationException($"Failed to load image: {path}", ex));
                 ToastHelper.Error("ERROR", $"Failed to load image: {path}");
-                return;
             }
         });
 
@@ -462,53 +514,51 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         LoggerHelper.Debug($"Set {Skeletons.Count} skeletons");
     }
 
-    private Bitmap? GetAttach(Timeline timeline)
+    private void GetAttach(List<Timeline?> timelines)
     {
-        var attach = timeline.Attach;
-        return attach?.AttachType switch
+        foreach (var timeline in timelines)
         {
-            AttachType.Keyframe => GetKeyframe(timeline, attach),
-            _                   => null
-        };
+            if (timeline is null) continue;
+            var attach = timeline.Attach;
+            switch (attach?.AttachType)
+            {
+                case AttachType.Keyframe:
+                    GetKeyframe(timeline, attach);
+                    break;
+                case AttachType.Slot:
+                case AttachType.HitBox:
+                case AttachType.Animation:
+                case AttachType.Skeleton:
+                case null:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 
-    private Bitmap? GetKeyframe(Timeline timeline, Attach attach)
+    private void GetKeyframe(Timeline timeline, Attach attach)
     {
         var keyframe = GetSafeKeyframe(attach.Id);
         if (keyframe?.Layers is null || keyframe.Layers.Count == 0)
         {
             LoggerHelper.Warn($"Invalid keyframe or no layers: ID {attach.Id}");
-            return null;
+            return;
         }
-
-        const int canvasSize = 1600;
-        var       imageInfo  = new SKImageInfo(canvasSize, canvasSize);
-
-        using var surface = SKSurface.Create(imageInfo);
-        using var canvas  = surface.Canvas;
-
-        const float centerX = canvasSize / 2f;
-        const float centerY = canvasSize / 2f;
-
-        // Clear canvas
-        canvas.Clear(SKColors.Transparent);
 
         foreach (var layer in keyframe.Layers.Where(l => l is { Srcquad: not null, TexId: >= 0 }))
         {
             try
             {
-                RenderLayer(canvas, timeline, layer, centerX, centerY);
+                RenderLayer(Canvas, timeline, layer, CenterX, CenterY);
             }
             catch (Exception ex)
             {
                 LoggerHelper.Error($"Failed to render layer: TexId={layer.TexId}", ex);
                 ToastHelper.Error("ERROR", $"Failed to render layer: {layer.TexId}");
-                return null;
+                return;
             }
         }
-
-        using var snapshot = surface.Snapshot();
-        return SKBitmap.FromImage(snapshot)?.ToBitmap();
     }
 
     private void RenderLayer(SKCanvas canvas, Timeline timeline, KeyframeLayer layer, float centerX, float centerY)
@@ -532,8 +582,9 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         }
 
         // Calculate transformation matrix
+        var vertices = new float[8];
         var vertexMatrix = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
-        var vertices     = vertexMatrix.ToFloatArray();
+        vertices = vertexMatrix.ToFloatArray();
 
         const int scaleFactor = 4;
         // Target points (relative to canvas center)
@@ -607,9 +658,9 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         return _quadJsonData.Keyframe[id];
     }
 
-    private string GenerateCacheKey(Timeline timeline, int frameIndex)
+    private string GenerateCacheKey(object obj, int frameIndex)
     {
-        return $"{timeline.GetHashCode()}_{frameIndex}_{_currentAnimation?.Id ?? -1}";
+        return $"{obj.GetHashCode()}_{frameIndex}_{CurrentAnimation?.Id ?? -1}";
     }
 
 #endregion
@@ -620,14 +671,20 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
     {
         LoggerHelper.Debug($"Current frame changed to: {value}");
 
-        if (_currentAnimation?.Timeline is null || value < 0 || value >= _currentAnimation.Timeline.Count)
+        if ((CurrentAnimation?.Timeline is null || value < 0 || value >= CurrentAnimation.Timeline.Count) && !IsPlayingCombineAnimation)
         {
             LoggerHelper.Warn($"Invalid frame index: {value}");
             return;
         }
 
-        var timeline = _currentAnimation.Timeline[value];
-        SetAttachCommand.Execute(timeline);
+        if (!IsPlayingCombineAnimation)
+        {
+            SetAttach([CurrentAnimation.Timeline[value]]);
+        }
+        else
+        {
+            PlayCombineAnimation();
+        }
     }
 
     partial void OnFpsChanged(float value)

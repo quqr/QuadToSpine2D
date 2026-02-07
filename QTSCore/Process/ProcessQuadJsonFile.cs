@@ -50,6 +50,7 @@ public class ProcessQuadJsonFile
 #if DEBUG
         foreach (var skeleton in QuadData.Skeleton)
         {
+            if(skeleton?.Bone is null) continue;
             var animations = new List<Animation>();
             animations
                 .AddRange(skeleton.Bone
@@ -64,7 +65,7 @@ public class ProcessQuadJsonFile
     {
         Parallel.ForEach(QuadData.Animation, SetAttaches);
 
-        ClearNullData();
+        //ClearNullData();
 
         // TODO : Attributes
         // Attributes = QuadData.Keyframe

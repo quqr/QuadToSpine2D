@@ -2,6 +2,7 @@
 
 namespace QTSAvalonia.ViewModels.UserControls;
 
+
 public class ChessboardBackgroundExtension : MarkupExtension
 {
     public int CellSize { get; set; } = 20;

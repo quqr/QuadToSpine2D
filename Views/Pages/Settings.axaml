@@ -15,9 +15,6 @@
     <Design.DataContext>
         <pages:SettingsViewModel />
     </Design.DataContext>
-    <UserControl.DataContext>
-        <pages:SettingsViewModel />
-    </UserControl.DataContext>
     <suki:SettingsLayout>
         <suki:SettingsLayout.Items>
             <objectModel:ObservableCollection x:TypeArguments="suki:SettingsLayoutItem">

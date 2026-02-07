@@ -9,9 +9,6 @@
     <Design.DataContext>
         <pages:ConverterSettingViewModel />
     </Design.DataContext>
-    <UserControl.DataContext>
-        <pages:ConverterSettingViewModel />
-    </UserControl.DataContext>
     <StackPanel Spacing="15">
         <DockPanel>
             <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
