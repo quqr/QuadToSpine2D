@@ -18,7 +18,7 @@
                     Text="Set loop animations" />
                 <TextBlock
                     Margin="0,12,70,0"
-                    Text="des"
+                    Text="Set loop animations for output json file"
                     TextWrapping="Wrap" />
             </StackPanel>
             <ToggleSwitch IsChecked="{Binding IsLoopingAnimation}" HorizontalAlignment="Right" DockPanel.Dock="Right" />
@@ -31,7 +31,7 @@
                     Text="Pretty json format" />
                 <TextBlock
                     Margin="0,12,70,0"
-                    Text="des"
+                    Text="Set pretty json format for output json file"
                     TextWrapping="Wrap" />
             </StackPanel>
             <ToggleSwitch HorizontalAlignment="Right" DockPanel.Dock="Right" IsChecked="{Binding IsPrettyJsonPrint}" />
@@ -44,13 +44,50 @@
                     Text="Scale factor" />
                 <TextBlock
                     Margin="0,12,70,0"
-                    Text="des"
+                    Text="If your image is larger than the original image, the scale factor = current image size ÷ original image size."
+                    FontSize="10"
                     TextWrapping="Wrap" />
             </StackPanel>
-            <TextBox Watermark="1"
-                     HorizontalAlignment="Right"
-                     DockPanel.Dock="Right" Width="200"
-                     Text="{Binding ScaleFactorStr}" />
+            <TextBox
+                HorizontalAlignment="Right"
+                DockPanel.Dock="Right" Width="200"
+                Text="{Binding ScaleFactor}" />
+        </DockPanel>
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Spine2D json save path" />
+                <TextBlock
+                    Margin="0,12,70,0"
+                    Text="{Binding ResultSavePath}"
+                    FontSize="10"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+            <Button
+                Content="Choose"
+                HorizontalAlignment="Right"
+                Command="{Binding OpenJsonSavePathCommand}"
+                DockPanel.Dock="Right" Width="200" />
+        </DockPanel>
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Images save path" />
+                <TextBlock
+                    Margin="0,12,70,0"
+                    Text="{Binding ImageSavePath}"
+                    FontSize="10"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+            <Button
+                Content="Choose"
+                HorizontalAlignment="Right"
+                Command="{Binding OpenImagesSavePathCommand}"
+                DockPanel.Dock="Right" Width="200" />
         </DockPanel>
     </StackPanel>
 </UserControl>

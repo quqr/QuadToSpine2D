@@ -1,4 +1,5 @@
-﻿using QTSCore.JsonConverters;
+﻿using QTSAvalonia.Helper;
+using QTSCore.JsonConverters;
 using QTSCore.Process;
 using QTSCore.Utility;
 using Matrix = QTSCore.Utility.Matrix;
@@ -96,7 +97,7 @@ public class KeyframeLayer
             }
 
             // fog tex id
-            field = GlobalData.FogTexId;
+            field = Instances.ConverterSetting.FogTexId;
         }
     }
 
@@ -111,6 +112,7 @@ public class KeyframeLayer
     public string        LayerName          { get; set; } = string.Empty;
     public List<string>  Fog                { get; set; } = [];
     public List<string>? Attribute          { get; set; } = [];
+    public string Colorize { get; set; } = string.Empty;
 
     private void CalculateGuid()
     {
@@ -230,19 +232,15 @@ public class Timeline
         set => IsKeyframeMix = value > 0;
     }
 
-    public Matrix AnimationMatrix { get; private set; } = Utility.Matrix.IdentityMatrixBy4X4;
+    public Matrix AnimationMatrix { get; private init; } = Utility.Matrix.IdentityMatrixBy4X4;
 
     [JsonProperty]
     private float[]? Matrix
     {
-        set
+        init
         {
             if (value is null) return;
-            var matrix = new Matrix(4, 4, value);
-            if (!matrix.IsZeroMatrix())
-            {
-                AnimationMatrix = matrix;
-            }
+            AnimationMatrix = new Matrix(4, 4, value);
         }
     }
 

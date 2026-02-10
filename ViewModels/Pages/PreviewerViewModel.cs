@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Threading;
 using Avalonia.Media.Imaging;
-using QTSCore.Data;
+using Microsoft.Extensions.DependencyInjection;
 using QTSCore.Data.Quad;
 using QTSCore.Process;
 using QTSCore.Utility;
@@ -12,9 +12,14 @@ namespace QTSAvalonia.ViewModels.Pages;
 [SingletonService]
 public partial class PreviewerViewModel : ViewModelBase, IDisposable
 {
-    private const int CanvasSize = 1600;
-    private const float CenterX = CanvasSize / 2f;
-    private const float CenterY = CanvasSize / 2f;
+    private static readonly PreviewerSettingViewModel Settings =
+        Instances.ServiceProvider.GetRequiredService<PreviewerSettingViewModel>();
+
+    private int ImageScaleFactor => Settings.ImageScaleFactor;
+
+    private static int CanvasSize => Settings.CanvasSize;
+    private static float CenterX => CanvasSize / 2f;
+    private static float CenterY => CanvasSize / 2f;
     private readonly Dictionary<string, Bitmap> _frameCache = new(); // Frame cache
     private readonly List<SKBitmap> _sourceImages = [];
     private readonly SKSurface _surface = SKSurface.Create(new SKImageInfo(CanvasSize, CanvasSize));
@@ -22,7 +27,7 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
     [ObservableProperty] private ObservableCollection<Button> _animations = [];
 
     [ObservableProperty] private int _currentFrame;
-    [ObservableProperty] private float _fps = 1f / 30f; // Default 30 FPS
+    private float Fps => 1 / Settings.Fps;
 
     [ObservableProperty] private Bitmap? _image;
 
@@ -48,11 +53,8 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
     [ObservableProperty] private int _totalFrames;
 
     private Animation? CurrentAnimation { get; set; }
-    private AnimationData? CurrentAnimationData { get; set; }
     private QuadSkeleton? CurrentSkeleton { get; set; }
     private SKCanvas Canvas => _surface.Canvas;
-
-    private bool IsPlayingCombineAnimation { get; set; }
 
     public void Dispose()
     {
@@ -62,6 +64,11 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         GC.SuppressFinalize(this);
     }
 
+    [RelayCommand]
+    private void DrawAttach(Attach? attach)
+    {
+        DrawAttach(attach, Matrix.IdentityMatrixBy4X4, Color.White);
+    }
 
     private void DrawAttach(Attach? attach, Matrix matrix, Color color)
     {
@@ -89,6 +96,7 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
                 break;
             case AttachType.List:
                 break;
+            case AttachType.None:
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -116,39 +124,35 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         var animation = _quadJsonData.Animation[attach.Id];
         var (currentFrameIndex, currentTime) = GetAnimationTimeIndex(Time, animation);
         if (currentFrameIndex < 0) return result;
-        var timeline = animation.Timeline[currentFrameIndex];
+        var curTimeline = animation.Timeline[currentFrameIndex];
         var nextFrameIndex = currentFrameIndex + 1;
         if (nextFrameIndex >= animation.Timeline.Count)
-            nextFrameIndex = animation.IsLoop ? currentFrameIndex : animation.LoopId;
+            nextFrameIndex = !animation.IsLoop ? currentFrameIndex : animation.LoopId;
 
         var nextTimeline = animation.Timeline[nextFrameIndex];
-        result.Item1 = timeline.Attach;
+        result.Item1 = curTimeline.Attach ?? new Attach { AttachType = AttachType.None, Id = -1 };
         if (currentFrameIndex == nextFrameIndex)
         {
-            result.matrix *= timeline.AnimationMatrix;
+            result.matrix *= curTimeline.AnimationMatrix;
             //TODO: Color multi
             return result;
         }
 
-        var rate = currentTime / timeline.Time;
+        var rate = (float)currentTime / curTimeline.Time;
         var m4 = Matrix.IdentityMatrixBy4X4;
-        m4 = timeline.IsMatrixMix
-            ? timeline.AnimationMatrix
-            : Matrix.Lerp(timeline.AnimationMatrix, nextTimeline.AnimationMatrix, rate);
-        if (m4.IsZeroMatrix())
-        {
-            m4 = Matrix.IdentityMatrixBy4X4;
-        }
+        m4 = curTimeline.IsMatrixMix
+            ? curTimeline.AnimationMatrix
+            : Matrix.Lerp(curTimeline.AnimationMatrix, nextTimeline.AnimationMatrix, rate);
+
         result.matrix *= m4;
         //TODO : Lerp color
-        
+
         return result;
     }
 
-
     private void DrawHitBox(Attach attach, Matrix matrix, Color color)
     {
-        throw new NotImplementedException();
+        // TODO: Draw HitBox
     }
 
     private void DrawSlot(Attach attach, Matrix matrix, Color color)
@@ -156,49 +160,34 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         foreach (var att in _quadJsonData.Slot[attach.Id].Attaches) DrawAttach(att, matrix, color);
     }
 
+    private static readonly ushort[] Indices = [0, 1, 2, 0, 2, 3];
+
     private void DrawKeyframe(Attach attach, Matrix matrix, Color color)
     {
         var keyframe = _quadJsonData.Keyframe[attach.Id];
         if (keyframe?.Layers is null) return;
+
         foreach (var order in keyframe.Order)
         {
             var layer = keyframe.Layers[order];
             if (layer is null) continue;
-
-            // TODO: Draw Fog
-
             var srcRect = SKRectI.Create((int)layer.SrcX, (int)layer.SrcY, (int)layer.Width, (int)layer.Height);
-            if (layer.TexId >= _sourceImages.Count)
-            {
-                LoggerHelper.Error("Texture ID out of range",
-                    new IndexOutOfRangeException($"Texture ID out of range: {layer.TexId}"));
-                ToastHelper.Error("ERROR", $"Texture ID out of range: {layer.TexId}");
-                return;
-            }
-
-            var sourceBitmap = _sourceImages[layer.TexId];
-            using var croppedImage = CropBitmap(sourceBitmap, srcRect);
-            if (croppedImage is null)
-            {
-                LoggerHelper.Error("Failed to crop image",
-                    new InvalidOperationException($"Failed to crop image: {layer.TexId}"));
-                ToastHelper.Error("ERROR", $"Failed to crop image: {layer.TexId}");
-                return;
-            }
-
+            
+            using var sourceBitmap = GetImage(layer, srcRect);
+            if(sourceBitmap is null) continue;
+            
             // Calculate transformation matrix
             var vertices = new float[8];
             var vertexMatrix = matrix * layer.DstMatrix;
             vertices = vertexMatrix.ToFloatArray();
 
-            const int scaleFactor = 4;
             // Target points (relative to canvas center)
             var destPoints = new[]
             {
-                new SKPoint(vertices[0] * scaleFactor + CenterX, vertices[1] * scaleFactor + CenterY),
-                new SKPoint(vertices[2] * scaleFactor + CenterX, vertices[3] * scaleFactor + CenterY),
-                new SKPoint(vertices[4] * scaleFactor + CenterX, vertices[5] * scaleFactor + CenterY),
-                new SKPoint(vertices[6] * scaleFactor + CenterX, vertices[7] * scaleFactor + CenterY)
+                new SKPoint(vertices[0] * ImageScaleFactor + CenterX, vertices[1] * ImageScaleFactor + CenterY),
+                new SKPoint(vertices[2] * ImageScaleFactor + CenterX, vertices[3] * ImageScaleFactor + CenterY),
+                new SKPoint(vertices[4] * ImageScaleFactor + CenterX, vertices[5] * ImageScaleFactor + CenterY),
+                new SKPoint(vertices[6] * ImageScaleFactor + CenterX, vertices[7] * ImageScaleFactor + CenterY)
             };
 
             // Texture coordinates (relative to crop area)
@@ -210,17 +199,14 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
                 new SKPoint(layer.Srcquad[6] - layer.SrcX, layer.Srcquad[7] - layer.SrcY)
             };
 
-            // Triangle indices
-            ushort[] indices = [0, 1, 2, 0, 2, 3];
-
             using var verticesObj = SKVertices.CreateCopy(
                 SKVertexMode.Triangles,
                 destPoints,
                 texturePoints,
                 null,
-                indices);
+                Indices);
 
-            using var shader = SKShader.CreateBitmap(croppedImage);
+            using var shader = SKShader.CreateBitmap(sourceBitmap);
             using var paint = new SKPaint();
             paint.Shader = shader;
             paint.IsAntialias = true;
@@ -231,14 +217,56 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
                 SKBlendMode.SrcOver,
                 paint);
         }
-        
-        Render();
+    }
+
+    private SKBitmap? GetImage(KeyframeLayer layer, SKRectI srcRect )
+    {
+        if (layer.TexId >= _sourceImages.Count || layer.TexId < 0)
+        {
+            return GetFogBitmap(layer.Fog);
+        }
+        var sourceBitmap = _sourceImages[layer.TexId];
+        var croppedImage = CropBitmap(sourceBitmap, srcRect);
+        if (croppedImage is null)
+        {
+            LoggerHelper.Error("Failed to crop image",
+                new InvalidOperationException($"Failed to crop image: {layer.TexId}"));
+            ToastHelper.Error("ERROR", $"Failed to crop image: {layer.TexId}");
+            return null;
+        }
+        return sourceBitmap;
+    }
+
+    private static SKBitmap? GetFogBitmap(List<string> colors)
+    {
+        if (colors.Count < 4)
+        {
+            LoggerHelper.Error("Fog effect requires at least 4 color values");
+            return null;
+        }
+
+        var skColors = colors.Select(SKColor.Parse).ToArray();
+        using var shader = SKShader.CreateRadialGradient(
+            new SKPoint(128f, 128f),
+            Math.Max(256, 256) / 2f,
+            skColors,
+            null,
+            SKShaderTileMode.Clamp
+        );
+        using var surface = SKSurface.Create(new SKImageInfo(256, 256));
+        using var canvas = surface.Canvas;
+        using var paint = new SKPaint();
+        paint.Shader = shader;
+        canvas.DrawRect(new SKRect(0, 0, 256, 256), paint);
+        return SKBitmap.FromImage(surface.Snapshot());
     }
 
     private void Render()
     {
         Image = SKBitmap.FromImage(_surface.Snapshot()).ToBitmap();
+        _frameCache.TryAdd(GenerateCacheKey(CurrentAnimation, CurrentFrame), Image);
     }
+
     private SKBitmap? CropBitmap(SKBitmap? source, SKRectI srcRect)
     {
         if (source == null || srcRect.Width <= 0 || srcRect.Height <= 0)
@@ -255,6 +283,7 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
 
         return cropped;
     }
+
     [RelayCommand]
     public void Draw(Attach attach)
     {
@@ -395,8 +424,7 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private async Task PlayAnimationAsync()
     {
-        if ((CurrentAnimation?.Timeline is null || CurrentAnimation.Timeline.Count == 0) &&
-            CurrentAnimationData is null)
+        if ((CurrentAnimation?.Timeline is null || CurrentAnimation.Timeline.Count == 0))
         {
             LoggerHelper.Warn("No valid animation to play");
             ToastHelper.Warn("WARNING", "No animation available to play");
@@ -417,21 +445,11 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
 
         try
         {
-            if (!IsPlayingCombineAnimation)
-                for (var i = CurrentFrame; i < CurrentAnimation.Timeline.Count && !token.IsCancellationRequested; i++)
-                {
-                    CurrentFrame = i;
-                    await Task.Delay(TimeSpan.FromSeconds(Fps), token);
-                }
-            else
-                for (var i = CurrentFrame;
-                     i < CurrentAnimationData.Data.ElementAt(i).Value.DisplayAttachments.Count &&
-                     !token.IsCancellationRequested;
-                     i++)
-                {
-                    CurrentFrame = i;
-                    await Task.Delay(TimeSpan.FromSeconds(Fps), token);
-                }
+            for (var i = CurrentFrame; i < TotalFrames - 1 && !token.IsCancellationRequested; i++)
+            {
+                CurrentFrame = i;
+                await Task.Delay(TimeSpan.FromSeconds(Fps), token);
+            }
 
             LoggerHelper.Info("Animation playback completed");
         }
@@ -462,36 +480,75 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private void SetNextFrame()
     {
-        if (CurrentAnimation?.Timeline is null && CurrentAnimationData is null) return;
+        if (CurrentAnimation?.Timeline is null) return;
 
-        if (!IsPlayingCombineAnimation)
-            CurrentFrame = CurrentFrame >= CurrentAnimation.Timeline.Count - 1 ? 0 : CurrentFrame + 1;
-        else
-            CurrentFrame = CurrentFrame >= CurrentAnimationData.Data.Count - 1 ? 0 : CurrentFrame + 1;
+
+        CurrentFrame = CurrentFrame >= TotalFrames - 1 ? 0 : CurrentFrame + 1;
         LoggerHelper.Debug($"Frame changed to: {CurrentFrame}");
     }
 
     [RelayCommand]
     private void SetPreviousFrame()
     {
-        if (CurrentAnimation?.Timeline is null && CurrentAnimationData is null) return;
+        if (CurrentAnimation?.Timeline is null) return;
 
-        if (!IsPlayingCombineAnimation)
-            CurrentFrame = CurrentFrame <= 0 ? CurrentAnimation.Timeline.Count - 1 : CurrentFrame - 1;
-        else
-            CurrentFrame = CurrentFrame <= 0 ? CurrentAnimationData.Data.Count - 1 : CurrentFrame - 1;
+        CurrentFrame = CurrentFrame <= 0 ? TotalFrames - 1 : CurrentFrame - 1;
         LoggerHelper.Debug($"Frame changed to: {CurrentFrame}");
+    }
+
+    private string GenerateCacheKey(object obj, int frameIndex)
+    {
+        return $"{obj.GetHashCode()}_{frameIndex}";
+    }
+
+    [RelayCommand]
+    async Task CacheKeyframes()
+    {
+        ToastHelper.Info("INFO", "Caching keyframes");
+        LoggerHelper.Info("Caching keyframes");
+        DispatcherHelper.RunOnMainThreadAsync(() =>
+        {
+            if (CurrentAnimation == null) return;
+            for (var i = 0; i < TotalFrames; i++)
+            {
+                Canvas.Clear();
+                Time = i;
+                if (_frameCache.TryGetValue(GenerateCacheKey(CurrentAnimation, i), out _))
+                {
+                    continue;
+                }
+
+                foreach (var bone in CurrentSkeleton.Bone)
+                {
+                    Draw(bone.Attach);
+                }
+
+                _frameCache.TryAdd(GenerateCacheKey(CurrentAnimation, CurrentFrame),
+                    SKBitmap.FromImage(_surface.Snapshot()).ToBitmap());
+                LoggerHelper.Debug($"Frame cached: {GenerateCacheKey(CurrentAnimation, i)}");
+            }
+
+            ToastHelper.Success("SUCCESS", "All keyframes cached");
+            LoggerHelper.Info("All keyframes cached");
+        });
     }
 
     partial void OnCurrentFrameChanged(int value)
     {
         Canvas.Clear();
         Time = value;
+        if (_frameCache.TryGetValue(GenerateCacheKey(CurrentAnimation, value), out var cachedBitmap))
+        {
+            Image = cachedBitmap;
+            return;
+        }
+
         foreach (var bone in CurrentSkeleton.Bone)
         {
             Draw(bone.Attach);
         }
 
+        Render();
     }
 
     [RelayCommand]
@@ -535,11 +592,6 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
             return null;
         return _quadJsonData.Animation[id];
     }
-    
-    private string GenerateCacheKey(object obj, int frameIndex)
-    {
-        return $"{obj.GetHashCode()}_{frameIndex}_{CurrentAnimation?.Id ?? -1}";
-    }
 
     [RelayCommand]
     private void SetKeyframes(Attach? attach)
@@ -557,18 +609,23 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
             return;
         }
 
+        if (CurrentAnimation == animation)
+        {
+            return;
+        }
+
         CurrentAnimation = animation;
         CurrentFrame = 0;
         TotalFrames = animation.Timeline.Sum(x => x.Time);
         Keyframes.Clear();
+
         foreach (var timeline in animation.Timeline.Where(t => t.Attach != null))
             Keyframes.Add(new Button
             {
-                Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = DrawCommand,
-                CommandParameter = attach
+                Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = DrawAttachCommand,
+                CommandParameter = timeline.Attach
             });
 
-        IsPlayingCombineAnimation = false;
         LoggerHelper.Debug($"Set {Keyframes.Count} animation timelines");
     }
 
@@ -581,10 +638,14 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
             return;
         }
 
+        if (CurrentSkeleton == skeleton)
+        {
+            return;
+        }
+
         Animations.Clear();
         Keyframes.Clear();
         CurrentSkeleton = skeleton;
-
         foreach (var bone in skeleton.Bone.Where(b => b.Attach is not null))
             Animations.Add(new Button
             {
@@ -592,35 +653,13 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
                 CommandParameter = bone.Attach
             });
 
-        if (skeleton.Bone.Count > 1)
-            Animations.Add(new Button
-            {
-                Content = "Combine Animations", Command = CombineAnimationsCommand
-            });
-
         LoggerHelper.Debug($"Set {Animations.Count} animations for skeleton: {skeleton.Name}");
     }
 
-    [RelayCommand]
-    private void CombineAnimations()
-    {
-        //TODO
-        return;
-        if (CurrentSkeleton?.CombineAnimation == null) return;
-        CurrentAnimationData = CurrentSkeleton.CombineAnimation;
-        TotalFrames = CurrentAnimationData.Data.Count - 1;
-        Keyframes.Clear();
-        for (var i = 0; i < TotalFrames; i++)
-            Keyframes.Add(new Button
-            {
-                Content = $"Frame {i}", Command = DrawCommand,
-                CommandParameter = CurrentAnimationData.Data.ElementAt(i).Value.DisplayAttachments
-            });
-
-        IsPlayingCombineAnimation = true;
-    }
     private void ClearResources()
     {
+        CurrentFrame = 0;
+        TotalFrames = 0;
         // Clean up image resources
         Image?.Dispose();
         Image = null;
@@ -636,10 +675,7 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         // Clean up data
         _quadJsonData = null;
         CurrentAnimation = null;
-        CurrentAnimationData = null;
         CurrentSkeleton = null;
-        CurrentFrame = 0;
-        TotalFrames = 0;
     }
 
     [RelayCommand]
@@ -658,5 +694,18 @@ public partial class PreviewerViewModel : ViewModelBase, IDisposable
         ClearResources();
 
         LoggerHelper.Debug("Preview data cleared");
+    }
+
+    [RelayCommand]
+    private async Task QuicklyLoad()
+    {
+        _quadFilePath = "/Users/loop/Downloads/Test/ps4 odin REHD_Gwendlyn.mbs.v55.quad";
+        ImagePaths =
+        [
+            "/Users/loop/Downloads/Test/ps4 odin HD_Gwendlyn.0.gnf.png",
+            "/Users/loop/Downloads/Test/ps4 odin HD_Gwendlyn.1.gnf.png",
+            "/Users/loop/Downloads/Test/ps4 odin HD_Gwendlyn.2.gnf.png"
+        ];
+        await LoadAsync();
     }
 }

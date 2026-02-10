@@ -1,4 +1,5 @@
-﻿using QTSCore.Data;
+﻿using QTSAvalonia.Helper;
+using QTSCore.Data;
 using QTSCore.Data.Quad;
 
 namespace QTSCore.Process;
@@ -13,7 +14,7 @@ public class Pool
 {
     private readonly Dictionary<string, List<PoolData>> _poolDictionary = new();
 
-    private readonly ProcessImages _processImages = new(GlobalData.ImagePath);
+    private readonly ProcessImages _processImages = new(Instances.ConverterSetting.ImagePath);
     private readonly Dictionary<string, List<PoolData>> _unusedPoolDictionary = new();
 
     public Dictionary<string, List<PoolData>> UsedPoolDictionary { get; } = new();

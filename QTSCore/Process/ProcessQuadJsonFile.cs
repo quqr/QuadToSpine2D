@@ -1,4 +1,5 @@
-﻿using QTSCore.Data.Quad;
+﻿using QTSAvalonia.Helper;
+using QTSCore.Data.Quad;
 using QTSCore.JsonConverters;
 using QTSCore.Utility;
 
@@ -10,22 +11,29 @@ public class ProcessQuadJsonFile
 
     public QuadJsonData LoadQuadJson(string quadPath)
     {
-        Console.WriteLine("Loading quad file...");
-
+        LoggerHelper.Info($"Loading quad file {quadPath}");
         var json = File.ReadAllText(quadPath);
         ClearConverter();
-        QuadData = JsonConvert.DeserializeObject<QuadJsonData>(json) ??
+        
+        // 添加详细的反序列化调试信息
+        var settings = new JsonSerializerSettings
+        {
+            Error = (sender, args) =>
+            {
+                LoggerHelper.Error($"JSON deserialization error: {args.ErrorContext.Error.Message}");
+                args.ErrorContext.Handled = true;
+            },
+            MissingMemberHandling = MissingMemberHandling.Ignore,
+            NullValueHandling = NullValueHandling.Ignore
+        };
+        
+        QuadData = JsonConvert.DeserializeObject<QuadJsonData>(json, settings) ??
                    throw new ArgumentException("Invalid quad file");
-
-
-        InitData();
-        CombineAnimations();
-
-        Console.WriteLine("Quad file loaded");
-
+        
+        
+        LoggerHelper.Info("Quad file loaded successfully");
         return QuadData;
     }
-
     private void ClearConverter()
     {
         HitboxJsonConverter.IdCount   = -1;

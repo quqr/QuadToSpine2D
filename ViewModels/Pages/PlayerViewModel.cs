@@ -129,7 +129,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             return result;
         }
 
-        var rate = currentTime / timeline.Time;
+        var rate = (float)currentTime / timeline.Time;
         var m4 = Matrix.IdentityMatrixBy4X4;
         m4 = timeline.IsMatrixMix
             ? timeline.AnimationMatrix

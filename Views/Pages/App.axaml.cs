@@ -16,7 +16,6 @@ public class App : Application
     {
         Instances.Initialize();
         LoggerHelper.InitializeLogger();
-        GlobalData.InitializeUiResources();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
 

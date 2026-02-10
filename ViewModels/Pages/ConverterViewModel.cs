@@ -1,4 +1,5 @@
 using System.Collections.Specialized;
+using Microsoft.Extensions.DependencyInjection;
 using QTSAvalonia.ViewModels.UserControls;
 using QTSCore.Data;
 using QTSCore.Process;
@@ -7,6 +8,7 @@ namespace QTSAvalonia.ViewModels.Pages;
 [SingletonService]
 public partial class ConverterViewModel : ViewModelBase
 {
+    
     [ObservableProperty] private ObservableCollection<ElementViewModel> _elements = [];
 
     [ObservableProperty] private float _progress;
@@ -80,7 +82,7 @@ public partial class ConverterViewModel : ViewModelBase
             {
                 var imagePaths = ProcessImagePaths();
                 LoggerHelper.Debug($"Processing {imagePaths.Count} image paths");
-                GlobalData.ImagePath = imagePaths;
+                Instances.ConverterSetting.ImagePath = imagePaths;
                 new ProcessQuadData()
                     .LoadQuadJson(_quadFilePath)
                     .ProcessJson();
@@ -102,4 +104,5 @@ public partial class ConverterViewModel : ViewModelBase
         Elements.Add(new ElementViewModel(vm => Elements.RemoveAt(vm.Index)));
         LoggerHelper.Debug($"Element added. New count: {Elements.Count}");
     }
+
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Frozen;
+using QTSAvalonia.Helper;
 using QTSCore.JsonConverters;
 
 namespace QTSCore.Data.Spine;
@@ -36,7 +37,7 @@ public class SpineJsonData
             Formatting = Formatting.Indented
         };
         var spineJsonFile = JsonConvert.SerializeObject(this, setting);
-        var output        = Path.Combine(GlobalData.ResultSavePath, "Result.json");
+        var output        = Path.Combine(Instances.ConverterSetting.ResultSavePath, "Result.json");
         File.WriteAllText(output, spineJsonFile);
         Console.WriteLine("Complete!");
     }

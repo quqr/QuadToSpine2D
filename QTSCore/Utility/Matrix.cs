@@ -1,12 +1,12 @@
 ﻿namespace QTSCore.Utility;
 
-public readonly struct Matrix : IEquatable<Matrix>
+public readonly struct Matrix : IEquatable<Matrix>, ICloneable
 {
     public int Rows { get; }
 
     public int Cols { get; }
 
-    public float[,] Value { get; }
+    public float[,] Value { get; init; }
 
     public Matrix(int rows, int cols)
     {
@@ -15,7 +15,7 @@ public readonly struct Matrix : IEquatable<Matrix>
         Value = new float[Rows, Cols];
     }
     
-    public Matrix(int rowsAndCols, bool isIdentity = true)
+    public Matrix(int rowsAndCols)
     {
         Rows  = rowsAndCols;
         Cols  = rowsAndCols;
@@ -24,15 +24,7 @@ public readonly struct Matrix : IEquatable<Matrix>
         {
             for (var j = 0; j < Cols; j++)
             {
-                Value[i, j] = 0;
-            }
-        }
-        
-        if (isIdentity)
-        {
-            for (var i = 0; i < rowsAndCols; i++)
-            {
-                Value[i, i] = 1;
+                Value[i, j] = i == j ? 1 : 0;
             }
         }
     }
@@ -47,10 +39,7 @@ public readonly struct Matrix : IEquatable<Matrix>
             for (var j = 0; j < cols; j++)
             {
                 var index = i * cols + j;
-                if (index < source.Length)
-                    Value[i, j] = source[index];
-                else
-                    Value[i, j] = 1;
+                Value[i, j] = index < source.Length ? source[index] : 0;
             }
         }
     }
@@ -60,6 +49,7 @@ public readonly struct Matrix : IEquatable<Matrix>
         const float epsilon = 1e-6f;
         return Value.Cast<float>().All(f => MathF.Abs(f) < epsilon);
     }
+    
     public static Matrix IdentityMatrixBy4X4 => new(4);
 
     /// <summary>
@@ -78,7 +68,8 @@ public readonly struct Matrix : IEquatable<Matrix>
         var array = new float[Rows * Cols];
         for (var i = 0; i < Rows; i++)
         {
-            for (var j = 0; j < Cols; j++) array[j + i * Cols] = Value[i, j];
+            for (var j = 0; j < Cols; j++) 
+                array[j + i * Cols] = Value[i, j];
         }
 
         return array;
@@ -86,13 +77,13 @@ public readonly struct Matrix : IEquatable<Matrix>
     
     public override string ToString()
     {
-        var result = string.Empty;
-        result += "[ ";
+        var result = "[ ";
         for (var i = 0; i < Rows; i++)
         {
             result += "[";
-            for (var j = 0; j < Cols; j++) result += $"{Value[i, j]}, ";
-            result =  result.Remove(result.Length - 2);
+            for (var j = 0; j < Cols; j++) 
+                result += $"{Value[i, j]}, ";
+            result = result.Remove(result.Length - 2);
             result += "] ";
         }
 
@@ -101,22 +92,24 @@ public readonly struct Matrix : IEquatable<Matrix>
         return result;
     }
 
+    public object Clone()
+    {
+        var clonedValues = new float[Rows, Cols];
+        Array.Copy(Value, clonedValues, Value.Length);
+        return new Matrix(Rows, Cols ) { Value = clonedValues };
+    }
+
     public static Matrix operator *(Matrix matrixA, Matrix matrixB)
     {
-        var aRows = matrixA.Rows;
-        var aCols = matrixA.Cols;
-        var bRows = matrixB.Rows;
-        var bCols = matrixB.Cols;
-
-        if (aCols != bRows)
+        if (matrixA.Cols != matrixB.Rows)
             throw new Exception("Non-conformable matrices in MatrixProduct");
 
-        var result = new Matrix(aRows, bCols);
-        Parallel.For(0, aRows, i =>
+        var result = new Matrix(matrixA.Rows, matrixB.Cols);
+        Parallel.For(0, matrixA.Rows, i =>
             {
-                for (var j = 0; j < bCols; ++j)
-                for (var k = 0; k < aCols; ++k)
-                    result[i, j] += matrixA[i, k] * matrixB[k, j];
+                for (var j = 0; j < matrixB.Cols; ++j)
+                for (var k = 0; k < matrixA.Cols; ++k)
+                    result.Value[i, j] += matrixA.Value[i, k] * matrixB.Value[k, j];
             }
         );
         return result;
@@ -124,13 +117,17 @@ public readonly struct Matrix : IEquatable<Matrix>
 
     public static Matrix operator *(Matrix matrixA, float value)
     {
+        var result = new Matrix(matrixA.Rows, matrixA.Cols);
         for (var i = 0; i < matrixA.Rows; i++)
         {
-            for (var j = 0; j < matrixA.Cols; j++) matrixA[i, j] *= value;
+            for (var j = 0; j < matrixA.Cols; j++) 
+                result.Value[i, j] = matrixA.Value[i, j] * value;
         }
 
-        return matrixA;
+        return result;
     }
+
+    public static Matrix operator *(float value, Matrix matrixA) => matrixA * value;
 
     public static bool operator ==(Matrix value1, Matrix value2)
     {
@@ -144,16 +141,14 @@ public readonly struct Matrix : IEquatable<Matrix>
 
     public static Matrix operator +(Matrix value1, Matrix value2)
     {
-        var aRows = value1.Rows;
-        var aCols = value1.Cols;
-        var bRows = value2.Rows;
-        var bCols = value2.Cols;
-        if (aCols != bCols || aRows != bRows)
+        if (value1.Cols != value2.Cols || value1.Rows != value2.Rows)
             throw new Exception("Non-conformable matrices in MatrixProduct");
-        var result = new Matrix(aRows, aCols);
+            
+        var result = new Matrix(value1.Rows, value1.Cols);
         for (var i = 0; i < value1.Rows; i++)
         {
-            for (var j = 0; j < value1.Cols; j++) result[i, j] = value1[i, j] + value2[i, j];
+            for (var j = 0; j < value1.Cols; j++) 
+                result.Value[i, j] = value1.Value[i, j] + value2.Value[i, j];
         }
 
         return result;
@@ -161,12 +156,11 @@ public readonly struct Matrix : IEquatable<Matrix>
 
     public static Matrix operator +(Matrix value1, float value2)
     {
-        var aRows  = value1.Rows;
-        var aCols  = value1.Cols;
-        var result = new Matrix(aRows, aCols);
+        var result = new Matrix(value1.Rows, value1.Cols);
         for (var i = 0; i < value1.Rows; i++)
         {
-            for (var j = 0; j < value1.Cols; j++) result[i, j] = value1[i, j] + value2;
+            for (var j = 0; j < value1.Cols; j++) 
+                result.Value[i, j] = value1.Value[i, j] + value2;
         }
 
         return result;
@@ -174,16 +168,14 @@ public readonly struct Matrix : IEquatable<Matrix>
 
     public static Matrix operator -(Matrix value1, Matrix value2)
     {
-        var aRows = value1.Rows;
-        var aCols = value1.Cols;
-        var bRows = value2.Rows;
-        var bCols = value2.Cols;
-        if (aCols != bCols || aRows != bRows)
+        if (value1.Cols != value2.Cols || value1.Rows != value2.Rows)
             throw new Exception("Non-conformable matrices in MatrixProduct");
-        var result = new Matrix(aRows, aCols);
+            
+        var result = new Matrix(value1.Rows, value1.Cols);
         for (var i = 0; i < value1.Rows; i++)
         {
-            for (var j = 0; j < value1.Cols; j++) result[i, j] = value1[i, j] - value2[i, j];
+            for (var j = 0; j < value1.Cols; j++) 
+                result.Value[i, j] = value1.Value[i, j] - value2.Value[i, j];
         }
 
         return result;
@@ -191,12 +183,11 @@ public readonly struct Matrix : IEquatable<Matrix>
 
     public static Matrix operator -(Matrix value1, float value2)
     {
-        var aRows  = value1.Rows;
-        var aCols  = value1.Cols;
-        var result = new Matrix(aRows, aCols);
+        var result = new Matrix(value1.Rows, value1.Cols);
         for (var i = 0; i < value1.Rows; i++)
         {
-            for (var j = 0; j < value1.Cols; j++) result[i, j] = value1[i, j] - value2;
+            for (var j = 0; j < value1.Cols; j++) 
+                result.Value[i, j] = value1.Value[i, j] - value2;
         }
 
         return result;
@@ -205,7 +196,7 @@ public readonly struct Matrix : IEquatable<Matrix>
     public float this[int row, int col]
     {
         get => Value[row, col];
-        set => Value[row, col] = value;
+        init => Value[row, col] = value;
     }
 
     public bool Equals(Matrix other)
@@ -215,7 +206,7 @@ public readonly struct Matrix : IEquatable<Matrix>
         for (var i = 0; i < Rows; i++)
         {
             for (var j = 0; j < Cols; j++)
-                if (ProcessUtility.ApproximatelyEqual(Value[i, j], other.Value[i, j]))
+                if (!ProcessUtility.ApproximatelyEqual(Value[i, j], other.Value[i, j]))
                     return false;
         }
 

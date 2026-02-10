@@ -7,7 +7,7 @@
              x:Class="QTSAvalonia.Views.Pages.PreviewerSetting"
              x:DataType="pages:PreviewerSettingViewModel">
     <Design.DataContext>
-        <pages:ConverterSettingViewModel />
+        <pages:PreviewerSettingViewModel />
     </Design.DataContext>
     <StackPanel Spacing="15">
         <DockPanel>
@@ -15,43 +15,49 @@
                 <TextBlock
                     FontSize="16"
                     FontWeight="Bold"
-                    Text="Set loop animations" />
+                    Text="Canvas size" />
                 <TextBlock
                     Margin="0,12,70,0"
-                    Text="des"
-                    TextWrapping="Wrap" />
-            </StackPanel>
-            <ToggleSwitch  HorizontalAlignment="Right" DockPanel.Dock="Right" />
-        </DockPanel>
-        <DockPanel>
-            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
-                <TextBlock
-                    FontSize="16"
-                    FontWeight="Bold"
-                    Text="Pretty json format" />
-                <TextBlock
-                    Margin="0,12,70,0"
-                    Text="des"
-                    TextWrapping="Wrap" />
-            </StackPanel>
-            <ToggleSwitch HorizontalAlignment="Right" DockPanel.Dock="Right" 
-                          />
-        </DockPanel>
-        <DockPanel>
-            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
-                <TextBlock
-                    FontSize="16"
-                    FontWeight="Bold"
-                    Text="Scale factor" />
-                <TextBlock
-                    Margin="0,12,70,0"
-                    Text="des"
+                    Text=""
                     TextWrapping="Wrap" />
             </StackPanel>
             <TextBox Watermark="1"
                      HorizontalAlignment="Right"
                      DockPanel.Dock="Right" Width="200"
+                     Text="{Binding CanvasSize}"
                      />
+        </DockPanel>
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="FPS" />
+                <TextBlock
+                    Margin="0,12,70,0"
+                    Text="The animation FPS"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+            <TextBox Watermark="1"
+                     HorizontalAlignment="Right"
+                     Text="{Binding Fps}"
+                     DockPanel.Dock="Right" Width="200"/>
+        </DockPanel>
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Image scale factor" />
+                <TextBlock
+                    Margin="0,12,70,0"
+                    Text="The image scale"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+            <TextBox Watermark="1"
+                     HorizontalAlignment="Right"
+                     Text="{Binding ImageScaleFactor}"
+                     DockPanel.Dock="Right" Width="200"/>
         </DockPanel>
     </StackPanel>
 </UserControl>

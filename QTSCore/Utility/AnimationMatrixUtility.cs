@@ -61,24 +61,4 @@ public static class AnimationMatrixUtility
         };
         return m;
     }
-
-    /// <summary>
-    ///     Multiplies two matrices representing a quad.
-    /// </summary>
-    public static Matrix QuadMultiply(Matrix matrixA, Matrix matrixB)
-    {
-        if (matrixA == Matrix.IdentityMatrixBy4X4) return matrixB;
-        var result = new Matrix(4, 2);
-        for (var i = 0; i < 4; i++)
-        {
-            result[i, 0] =
-                matrixA[0, 0] * matrixB[i, 0]                                 + matrixA[0, 1] * matrixB[i, 1]
-                                                                              + matrixA[0, 2] + matrixA[0, 3];
-            result[i, 1] =
-                matrixA[1, 0] * matrixB[i, 0]                                 + matrixA[1, 1] * matrixB[i, 1]
-                                                                              + matrixA[1, 2] + matrixA[1, 3];
-        }
-
-        return result;
-    }
 }

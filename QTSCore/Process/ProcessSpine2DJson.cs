@@ -1,4 +1,5 @@
-﻿using QTSCore.Data;
+﻿using QTSAvalonia.Helper;
+using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Data.Spine;
 using QTSCore.Utility;
@@ -27,7 +28,7 @@ public class ProcessSpine2DJson
     public ProcessSpine2DJson(QuadJsonData quadJsonData)
     {
         _quadJsonData                            = quadJsonData;
-        _spineJsonData.SpineSkeletons.ImagesPath = GlobalData.ImageSavePath;
+        _spineJsonData.SpineSkeletons.ImagesPath = Instances.ConverterSetting.ImageSavePath;
         _spineJsonData.Bones.Add(new SpineBone
         {
             Name = "root"
@@ -81,7 +82,7 @@ public class ProcessSpine2DJson
             _drawOrders.Add(drawOrder);
             AddLayerOffsets(_existAttachments, drawOrder);
 
-            _time = (animation.Key + 1) * GlobalData.Fps;
+            _time = (animation.Key + 1) * Instances.ConverterSetting.Fps;
         }
 
         var animationName                                            = skeleton.Name;
@@ -141,10 +142,10 @@ public class ProcessSpine2DJson
         for (var i = 1; i < timeline.Frames; i++)
         {
             var rate = i / timeline.Frames;
-            var vert = AnimationMatrixUtility.QuadMultiply(Matrix.Lerp(srcMatrix, dstMatrix, rate), layer.DstMatrix);
+            var vert = Matrix.Lerp(srcMatrix, dstMatrix, rate) * layer.DstMatrix;
             animationDefault.ImageVertices.Add(new AnimationVertices
             {
-                Time = _time + i * GlobalData.Fps, Vertices = ProcessUtility.MinusFloats(vert.ToFloatArray(), layer.ZeroCenterPoints)
+                Time = _time + i * Instances.ConverterSetting.Fps, Vertices = ProcessUtility.MinusFloats(vert.ToFloatArray(), layer.ZeroCenterPoints)
             });
         }
     }
@@ -154,7 +155,7 @@ public class ProcessSpine2DJson
         if (timeline.IsKeyframeMix || timeline.IsMatrixMix) return;
         animationDefault.ImageVertices.Add(new AnimationVertices
         {
-            Time = _time + timeline.Frames * GlobalData.Fps, Vertices = animationDefault.ImageVertices[^1].Vertices
+            Time = _time + timeline.Frames * Instances.ConverterSetting.Fps, Vertices = animationDefault.ImageVertices[^1].Vertices
         });
     }
 
@@ -163,7 +164,7 @@ public class ProcessSpine2DJson
         AnimationVertices                               animationVert,
         Timeline                                        timeline)
     {
-        var vert = AnimationMatrixUtility.QuadMultiply(timeline.AnimationMatrix, layer.DstMatrix);
+        var vert = timeline.AnimationMatrix * layer.DstMatrix;
         // Make sure the image to center
         animationVert.Vertices = ProcessUtility.MinusFloats(vert.ToFloatArray(), layer.ZeroCenterPoints);
         animationDefault.ImageVertices.Add(animationVert);

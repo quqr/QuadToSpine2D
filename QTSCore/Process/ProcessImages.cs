@@ -241,7 +241,7 @@ public class ProcessImages
         int           copyIndex)
     {
         var imageIndex = poolData?.LayersData[skinIndex].ImageIndex ?? _currentImageIndex;
-        var texIdStr   = layer.TexId == GlobalData.FogTexId ? "Fog" : layer.TexId.ToString();
+        var texIdStr   = layer.TexId == Instances.ConverterSetting.FogTexId ? "Fog" : layer.TexId.ToString();
         var name       = $"Slice_{imageIndex}_{texIdStr}_{skinIndex}_{copyIndex}";
 
         // Update layer internal sorting identifier
@@ -336,7 +336,7 @@ public class ProcessImages
             throw new InvalidOperationException(errorMsg);
         }
 
-        var fullPath = Path.Combine(GlobalData.ImageSavePath, $"{imageName}.png");
+        var fullPath = Path.Combine(Instances.ConverterSetting.ImageSavePath, $"{imageName}.png");
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!); // Ensure directory exists
 
         using var stream = File.OpenWrite(fullPath);

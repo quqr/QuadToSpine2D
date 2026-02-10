@@ -32,5 +32,15 @@ public static class AvaloniaFilePickerService
             FileTypeFilter = [new FilePickerFileType("Quad files") { Patterns = [ "*.quad" ] }]
         });
         return files;
+    }    
+    public static async Task<IReadOnlyList<IStorageFolder>?> OpenFileSavePathAsync()
+    {
+        if (_topLevel?.StorageProvider == null) return null;
+
+        var folder = await _topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+        {
+            Title = "Select Save Path",
+        });
+        return folder;
     }
 }

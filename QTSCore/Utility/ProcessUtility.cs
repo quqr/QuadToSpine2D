@@ -1,4 +1,5 @@
-﻿using QTSCore.Data;
+﻿using QTSAvalonia.Helper;
+using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Process;
 using SkiaSharp;
@@ -81,7 +82,7 @@ public static class ProcessUtility
                     timeline.EndFrame);
             }
 
-            if (GlobalData.IsSetLoopAnimation) SetLoopData(animation, newAnimation, maxFrame);
+            if (Instances.ConverterSetting.IsLoopingAnimation) SetLoopData(animation, newAnimation, maxFrame);
             newAnimation.Data = newAnimation.Data.OrderBy(x => x.Key).ToDictionary();
         }
 
@@ -148,7 +149,7 @@ public static class ProcessUtility
             (int)layer.Width, (int)layer.Height);
     }
 
-    public static bool ApproximatelyEqual(float? a, float? b, float epsilon = 0.01f)
+    public static bool ApproximatelyEqual(float? a, float? b, float epsilon = 0.000001f)
     {
         if (a is null || b is null) return false;
         return Math.Abs((float)(a - b)) < epsilon;
