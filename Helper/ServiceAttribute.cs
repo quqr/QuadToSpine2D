@@ -11,7 +11,7 @@ public class SingletonService : Attribute
 }
 
 [AttributeUsage(AttributeTargets.Class)]
-public class TransientService : Attribute   
+public class TransientService : Attribute
 {
     public ServiceLifetime Lifetime { get; set; } = ServiceLifetime.Transient;
 }

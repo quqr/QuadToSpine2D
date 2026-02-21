@@ -1,4 +1,3 @@
-using System.Threading;
 using Avalonia.Threading;
 
 namespace QTSAvalonia.Helper;
@@ -14,23 +13,20 @@ public static class DispatcherHelper
         }
 
         Dispatcher.UIThread.Invoke(action);
-
     }
 
     public static T RunOnMainThread<T>(Func<T> func)
     {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            return func();
-        }
+        if (Dispatcher.UIThread.CheckAccess()) return func();
 
         return Dispatcher.UIThread.Invoke(func);
-
     }
-    public static Task RunOnMainThreadAsync(Action action, DispatcherPriority? priority = null, CancellationToken? cancellationToken = null)
+
+    public static Task RunOnMainThreadAsync(Action action, DispatcherPriority? priority = null,
+        CancellationToken? cancellationToken = null)
     {
         cancellationToken ??= CancellationToken.None;
-        priority          ??= new DispatcherPriority();
+        priority ??= new DispatcherPriority();
         if (Dispatcher.UIThread.CheckAccess())
         {
             action();
@@ -43,10 +39,7 @@ public static class DispatcherHelper
 
     public static Task<T> RunOnMainThreadAsync<T>(Func<T> func)
     {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            return Task.FromResult(func());
-        }
+        if (Dispatcher.UIThread.CheckAccess()) return Task.FromResult(func());
 
         return Dispatcher.UIThread.InvokeAsync(func).GetTask();
     }

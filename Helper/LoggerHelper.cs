@@ -1,18 +1,19 @@
 using Serilog;
+using Serilog.Core;
 
 namespace QTSAvalonia.Helper;
-
 
 public enum LogLevel : uint
 {
     Debug = 1,
     Info = 2,
     Warn = 3,
-    Error = 4,
+    Error = 4
 }
+
 public static class LoggerHelper
 {
-    private static Serilog.Core.Logger? _logger;
+    private static Logger? _logger;
     private static readonly List<(LogLevel level, string message)> _logCache = [];
 
     public static void InitializeLogger()
@@ -22,7 +23,7 @@ public static class LoggerHelper
         if (_logger != null) return;
         _logger = new LoggerConfiguration()
             .WriteTo.File(
-                $"logs/log-.log",
+                "logs/log-.log",
                 rollingInterval: RollingInterval.Day,
                 shared: true,
                 outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
@@ -42,7 +43,6 @@ public static class LoggerHelper
     {
         if (_logger == null) return;
         foreach (var (level, msg) in _logCache)
-        {
             switch (level)
             {
                 case LogLevel.Info:
@@ -55,80 +55,56 @@ public static class LoggerHelper
                     _logger.Warning(msg);
                     break;
             }
-        }
+
         _logCache.Clear();
     }
 
     public static void Info(object? message)
     {
         if (_logger == null)
-        {
             _logCache.Add((LogLevel.Info, message?.ToString() ?? string.Empty));
-        }
         else
-        {
             _logger.Information(message?.ToString() ?? string.Empty);
-        }
     }
-    
+
     public static void Debug(object? message)
     {
         if (_logger == null)
-        {
             _logCache.Add((LogLevel.Debug, message?.ToString() ?? string.Empty));
-        }
         else
-        {
             _logger.Debug(message?.ToString() ?? string.Empty);
-        }
     }
-    
+
     public static void Error(object message)
     {
         if (_logger == null)
-        {
             _logCache.Add((LogLevel.Error, message.ToString() ?? string.Empty));
-        }
         else
-        {
             _logger.Error(message.ToString() ?? string.Empty);
-        }
     }
 
     public static void Error(object message, Exception e)
     {
         var errorMsg = $"{message}\n{e}";
         if (_logger == null)
-        {
             _logCache.Add((LogLevel.Error, errorMsg));
-        }
         else
-        {
             _logger.Error(errorMsg);
-        }
     }
-    
+
     public static void Warn(object message)
     {
         if (_logger == null)
-        {
             _logCache.Add((LogLevel.Warn, message.ToString() ?? string.Empty));
-        }
         else
-        {
             _logger.Warning(message.ToString() ?? string.Empty);
-        }
     }
-    
+
     public static void Warning(object message)
     {
         if (_logger == null)
-        {
             _logCache.Add((LogLevel.Warn, message.ToString() ?? string.Empty));
-        }
         else
-        {
             _logger.Warning(message.ToString() ?? string.Empty);
-        }
     }
 }

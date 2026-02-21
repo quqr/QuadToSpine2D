@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
     xmlns:userControls="clr-namespace:QTSAvalonia.Views.UserControls"
+    xmlns:fluent="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
     mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
     x:Class="QTSAvalonia.Views.Pages.Converter"
     x:DataType="pages:ConverterViewModel">
@@ -19,7 +20,6 @@
             Margin="10">
             <Button
                 Content="Open Quad File"
-                Name="UploadButton"
                 Width="140"
                 Height="50"
                 Margin="15"
@@ -60,9 +60,11 @@
             </ScrollViewer>
             <Button Grid.Column="1"
                     Height="50"
-                    Content="+"
                     HorizontalAlignment="Center"
-                    Command="{Binding AddNewElementCommand}" />
+                    VerticalAlignment="Center"
+                    Command="{Binding AddNewElementCommand}">
+                <fluent:FluentIcon Icon="Add" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </Button>
         </Grid>
         <StackPanel Grid.Row="2">
             <!-- 进度条 -->
@@ -92,7 +94,7 @@
                 <HyperlinkButton
                     Content="{Binding ResultJsonUrl}"
                     NavigateUri="{Binding ResultJsonUrl}"
-                    IsEnabled="False"
+                    IsEnabled="{Binding ResultJsonUrlIsEnable}"
                     HorizontalAlignment="Center"
                     Margin="15,0,0,10"
                     FontSize="14" />

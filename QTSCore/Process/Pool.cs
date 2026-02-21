@@ -1,5 +1,4 @@
 ﻿using QTSAvalonia.Helper;
-using QTSCore.Data;
 using QTSCore.Data.Quad;
 
 namespace QTSCore.Process;
@@ -45,7 +44,7 @@ public class Pool
 
     private PoolData Create(KeyframeLayer layer, List<PoolData> usedPoolsData)
     {
-        var       copyIndex    = usedPoolsData.Count;
+        var copyIndex = usedPoolsData.Count;
         PoolData? usedPoolData = null;
         if (usedPoolsData.Count != 0)
             usedPoolData = usedPoolsData[0];

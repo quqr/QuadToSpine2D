@@ -1,4 +1,5 @@
 namespace QTSAvalonia.ViewModels.Pages;
+
 [SingletonService]
 public partial class RootViewModel : ViewModelBase
 {

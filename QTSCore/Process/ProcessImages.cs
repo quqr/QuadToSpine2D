@@ -1,13 +1,13 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using QTSAvalonia.Helper;
 using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Utility;
 using SkiaSharp;
-using System.Diagnostics;
-using System.Threading;
-using QTSAvalonia.Helper;
 
 namespace QTSCore.Process;
+
 public class ProcessImages
 {
     private readonly SKBitmap?[,] _images;
@@ -30,20 +30,21 @@ public class ProcessImages
     public ProcessImages(List<List<string?>> imagesSrc)
     {
         LoggerHelper.Info($"Initializing image resource library, source count: {imagesSrc?.Count ?? 0}");
-        
+
         if (imagesSrc == null || imagesSrc.Count == 0 || imagesSrc[0].Count == 0)
         {
-            var errorMsg = "Image source list cannot be empty";
+            const string errorMsg = "Image source list cannot be empty";
             LoggerHelper.Error(errorMsg);
             throw new ArgumentException(errorMsg);
         }
 
         _skinsCount = imagesSrc[0].Count;
-        _images     = new SKBitmap[imagesSrc.Count, _skinsCount];
-        
-        LoggerHelper.Debug($"Image configuration: {_images.GetLength(0)} x {_images.GetLength(1)}, skin count: {_skinsCount}");
+        _images = new SKBitmap[imagesSrc.Count, _skinsCount];
+
+        LoggerHelper.Debug(
+            $"Image configuration: {_images.GetLength(0)} x {_images.GetLength(1)}, skin count: {_skinsCount}");
         LoadImagesParallel(imagesSrc);
-        
+
         LoggerHelper.Info("Image resource library initialization completed");
     }
 
@@ -53,8 +54,7 @@ public class ProcessImages
     private void LoadImagesParallel(List<List<string?>> imagesSrc)
     {
         LoggerHelper.Info($"Starting parallel loading of {_images.GetLength(0)} texture images");
-        
-        var loadStartTime = DateTime.Now;
+
         var failedCount = 0;
         var successCount = 0;
         var stopwatch = Stopwatch.StartNew();
@@ -84,11 +84,12 @@ public class ProcessImages
                 {
                     using var stream = File.OpenRead(path);
                     _images[i, j] = SKBitmap.Decode(stream);
-                    
+
                     if (_images[i, j] != null)
                     {
                         Interlocked.Increment(ref successCount);
-                        LoggerHelper.Debug($"Successfully loaded image [{i},{j}]: {path} ({_images[i, j].Width}x{_images[i, j].Height})");
+                        LoggerHelper.Debug(
+                            $"Successfully loaded image [{i},{j}]: {path} ({_images[i, j].Width}x{_images[i, j].Height})");
                     }
                     else
                     {
@@ -106,7 +107,8 @@ public class ProcessImages
         });
 
         stopwatch.Stop();
-        LoggerHelper.Info($"Image loading completed - Success: {successCount}, Failed: {failedCount}, Duration: {stopwatch.ElapsedMilliseconds}ms");
+        LoggerHelper.Info(
+            $"Image loading completed - Success: {successCount}, Failed: {failedCount}, Duration: {stopwatch.ElapsedMilliseconds}ms");
     }
 
     /// <summary>
@@ -115,8 +117,9 @@ public class ProcessImages
     public List<LayerData> GetLayerData(KeyframeLayer layer, PoolData? poolData, int copyIndex)
     {
         ArgumentNullException.ThrowIfNull(layer);
-        
-        LoggerHelper.Debug($"Starting layer data processing - TexId: {layer.TexId}, Guid: {layer.Guid}, CopyIndex: {copyIndex}");
+
+        LoggerHelper.Debug(
+            $"Starting layer data processing - TexId: {layer.TexId}, Guid: {layer.Guid}, CopyIndex: {copyIndex}");
 
         var startTime = DateTime.Now;
         var results = new ConcurrentBag<LayerData>();
@@ -126,12 +129,12 @@ public class ProcessImages
         {
             LayerData? data = null;
 
-            if (layer.Srcquad                   != null &&
+            if (layer.Srcquad != null &&
                 _images[layer.TexId, skinIndex] != null)
             {
                 var rect = ProcessUtility.CalculateRectangle(layer);
                 LoggerHelper.Debug($"Processing texture image - SkinIndex: {skinIndex}, Rect: {rect}");
-                
+
                 data = ProcessTextureImage(
                     _images[layer.TexId, skinIndex],
                     rect,
@@ -150,13 +153,15 @@ public class ProcessImages
             if (data is null) return;
             // Safely store in nested ConcurrentDictionary
             _layersDataDict
-                .GetOrAdd(layer.TexId, _ => new ConcurrentDictionary<int, ConcurrentDictionary<string, ConcurrentBag<LayerData>>>())
+                .GetOrAdd(layer.TexId,
+                    _ => new ConcurrentDictionary<int, ConcurrentDictionary<string, ConcurrentBag<LayerData>>>())
                 .GetOrAdd(skinIndex, _ => new ConcurrentDictionary<string, ConcurrentBag<LayerData>>())
                 .GetOrAdd(layer.Guid, _ => [])
                 .Add(data);
 
             results.Add(data);
-            LoggerHelper.Debug($"Layer data processing completed - SkinIndex: {skinIndex}, ImageName: {data.SlotAndImageName}");
+            LoggerHelper.Debug(
+                $"Layer data processing completed - SkinIndex: {skinIndex}, ImageName: {data.SlotAndImageName}");
         });
 
         // Sort by SkinIndex to ensure output order
@@ -164,44 +169,44 @@ public class ProcessImages
 
         // Safely update global index (only increment when copyIndex=0)
         if (copyIndex == 0)
-        {
             lock (_indexLock)
             {
                 _currentImageIndex++;
                 LoggerHelper.Debug($"Updated global image index to: {_currentImageIndex}");
             }
-        }
 
         var processDuration = DateTime.Now - startTime;
-        LoggerHelper.Info($"Layer data processing completed - Result count: {sortedResults.Count}, Duration: {processDuration.TotalMilliseconds:F2}ms");
+        LoggerHelper.Info(
+            $"Layer data processing completed - Result count: {sortedResults.Count}, Duration: {processDuration.TotalMilliseconds:F2}ms");
 
         return sortedResults;
     }
 
-#region Core Processing Logic
+    #region Core Processing Logic
 
     /// <summary>
     ///     Crop texture image and save asynchronously
     /// </summary>
     private LayerData ProcessTextureImage(
-        SKBitmap      source,
-        SKRectI       rect,
+        SKBitmap source,
+        SKRectI rect,
         KeyframeLayer layer,
-        PoolData?     poolData,
-        int           skinIndex,
-        int           copyIndex)
+        PoolData? poolData,
+        int skinIndex,
+        int copyIndex)
     {
         var (imageName, imageIndex) = GenerateImageName(layer, poolData, skinIndex, copyIndex);
-        
-        LoggerHelper.Debug($"Starting texture image processing - ImageName: {imageName}, Rect: {rect.Width}x{rect.Height}");
+
+        LoggerHelper.Debug(
+            $"Starting texture image processing - ImageName: {imageName}, Rect: {rect.Width}x{rect.Height}");
 
         // Async save (with error handling)
         _ = Task.Run(() => SaveCroppedImage(source, rect, imageName))
-                .ContinueWith(t => HandleSaveError(t, imageName), TaskContinuationOptions.OnlyOnFaulted);
+            .ContinueWith(t => HandleSaveError(t, imageName), TaskContinuationOptions.OnlyOnFaulted);
 
         var layerData = CreateLayerData(imageName, layer, skinIndex, imageIndex, copyIndex);
         LoggerHelper.Debug($"Texture image processing completed - {imageName}");
-        
+
         return layerData;
     }
 
@@ -210,39 +215,39 @@ public class ProcessImages
     /// </summary>
     private LayerData ProcessFogImage(
         KeyframeLayer layer,
-        PoolData?     poolData,
-        int           skinIndex,
-        int           copyIndex)
+        PoolData? poolData,
+        int skinIndex,
+        int copyIndex)
     {
         var (imageName, imageIndex) = GenerateImageName(layer, poolData, skinIndex, copyIndex);
-        
+
         LoggerHelper.Debug($"Starting fog image processing - ImageName: {imageName}, Colors: {layer.Fog?.Count ?? 0}");
 
         _ = Task.Run(() => SaveFogImage(imageName, 100, 100, layer.Fog!))
-                .ContinueWith(t => HandleSaveError(t, imageName), TaskContinuationOptions.OnlyOnFaulted);
+            .ContinueWith(t => HandleSaveError(t, imageName), TaskContinuationOptions.OnlyOnFaulted);
 
         var layerData = CreateLayerData(imageName, layer, skinIndex, imageIndex, copyIndex);
         LoggerHelper.Debug($"Fog image processing completed - {imageName}");
-        
+
         return layerData;
     }
 
-#endregion
+    #endregion
 
-#region Helper Methods
+    #region Helper Methods
 
     /// <summary>
     ///     Generate unique image filename and calculate index
     /// </summary>
     private (string Name, int Index) GenerateImageName(
         KeyframeLayer layer,
-        PoolData?     poolData,
-        int           skinIndex,
-        int           copyIndex)
+        PoolData? poolData,
+        int skinIndex,
+        int copyIndex)
     {
         var imageIndex = poolData?.LayersData[skinIndex].ImageIndex ?? _currentImageIndex;
-        var texIdStr   = layer.TexId == Instances.ConverterSetting.FogTexId ? "Fog" : layer.TexId.ToString();
-        var name       = $"Slice_{imageIndex}_{texIdStr}_{skinIndex}_{copyIndex}";
+        var texIdStr = layer.TexId == Instances.ConverterSetting.FogTexId ? "Fog" : layer.TexId.ToString();
+        var name = $"Slice_{imageIndex}_{texIdStr}_{skinIndex}_{copyIndex}";
 
         // Update layer internal sorting identifier
         layer.ImageNameOrder = imageIndex * 1000 + layer.TexId * 100 + skinIndex * 10 + copyIndex;
@@ -254,20 +259,20 @@ public class ProcessImages
     ///     Create LayerData object (eliminate duplicate code)
     /// </summary>
     private static LayerData CreateLayerData(
-        string        imageName,
+        string imageName,
         KeyframeLayer layer,
-        int           skinIndex,
-        int           imageIndex,
-        int           copyIndex)
+        int skinIndex,
+        int imageIndex,
+        int copyIndex)
     {
         return new LayerData
         {
-            SlotAndImageName       = imageName,
-            KeyframeLayer          = layer,
-            SkinIndex              = skinIndex,
-            ImageIndex             = imageIndex,
-            TexId                  = layer.TexId.ToString(),
-            CopyIndex              = copyIndex,
+            SlotAndImageName = imageName,
+            KeyframeLayer = layer,
+            SkinIndex = skinIndex,
+            ImageIndex = imageIndex,
+            TexId = layer.TexId.ToString(),
+            CopyIndex = copyIndex,
             BaseSkinAttachmentName = $"Slice_{imageIndex}_{layer.TexId}_0_{copyIndex}"
         };
     }
@@ -278,7 +283,7 @@ public class ProcessImages
     private static void SaveCroppedImage(SKBitmap source, SKRectI rect, string imageName)
     {
         LoggerHelper.Debug($"Saving cropped image: {imageName}, size: {rect.Width}x{rect.Height}");
-        
+
         using var cropped = new SKBitmap(rect.Width, rect.Height);
         using (var canvas = new SKCanvas(cropped))
         {
@@ -295,7 +300,7 @@ public class ProcessImages
     private static void SaveFogImage(string imageName, int width, int height, List<string> colors)
     {
         LoggerHelper.Debug($"Saving fog image: {imageName}, colors: {colors.Count}");
-        
+
         if (colors == null || colors.Count < 4)
         {
             const string errorMsg = "Fog effect requires at least 4 color values";
@@ -304,7 +309,7 @@ public class ProcessImages
         }
 
         using var surface = SKSurface.Create(new SKImageInfo(width, height));
-        var       canvas  = surface.Canvas;
+        var canvas = surface.Canvas;
 
         var skColors = colors.Select(SKColor.Parse).ToArray();
         using var shader = SKShader.CreateRadialGradient(
@@ -329,7 +334,7 @@ public class ProcessImages
     private static void SaveSkImage(SKImage image, string imageName)
     {
         using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-        if (data == null) 
+        if (data == null)
         {
             const string errorMsg = "Image encoding failed";
             LoggerHelper.Error(errorMsg);
@@ -337,11 +342,11 @@ public class ProcessImages
         }
 
         var fullPath = Path.Combine(Instances.ConverterSetting.ImageSavePath, $"{imageName}.png");
-        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!); // Ensure directory exists
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)); // Ensure directory exists
 
         using var stream = File.OpenWrite(fullPath);
         data.SaveTo(stream);
-        
+
         LoggerHelper.Debug($"Image saved to: {fullPath}");
     }
 
@@ -354,5 +359,5 @@ public class ProcessImages
         LoggerHelper.Error($"Failed to save image [{imageName}]", ex);
     }
 
-#endregion
+    #endregion
 }

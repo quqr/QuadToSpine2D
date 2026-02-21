@@ -8,23 +8,23 @@ namespace QTSCore.Data.Quad;
 
 public class QuadJsonData
 {
-    public List<Keyframe?>     Keyframe  { get; set; } = [];
-    public List<Animation?>    Animation { get; set; } = [];
-    public List<QuadSkeleton?> Skeleton  { get; set; } = [];
-    public List<Slot>          Slot      { get; set; } = [];
-    public List<Hitbox?>       Hitbox    { get; set; } = [];
+    public List<Keyframe?> Keyframe { get; set; } = [];
+    public List<Animation?> Animation { get; set; } = [];
+    public List<QuadSkeleton?> Skeleton { get; set; } = [];
+    public List<Slot> Slot { get; set; } = [];
+    public List<Hitbox?> Hitbox { get; set; } = [];
 }
 
 [JsonConverter(typeof(HitboxJsonConverter))]
 public class Hitbox : Attach
 {
-    public string            Name  { get; set; }
+    public string Name { get; set; }
     public List<HitboxLayer> Layer { get; set; }
 }
 
 public class HitboxLayer
 {
-    public string  Name    { get; set; }
+    public string Name { get; set; }
     public float[] Hitquad { get; set; }
 }
 
@@ -37,7 +37,7 @@ public class Slot : Attach
 [JsonConverter(typeof(KeyframeJsonConverter))]
 public class Keyframe : Attach
 {
-    public string Name { get; set; }= "";
+    public string Name { get; set; } = "";
 
     public List<KeyframeLayer?>? Layers { get; set; } = [];
     public List<int> Order { get; set; } = [];
@@ -46,8 +46,8 @@ public class Keyframe : Attach
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
 public class KeyframeLayer
 {
-    private float[] _dstquad=[];
-    private float[]? _srcquad=[];
+    private float[] _dstquad = [];
+    private float[]? _srcquad = [];
 
     public float[] Dstquad
     {
@@ -83,7 +83,7 @@ public class KeyframeLayer
     }
 
     public int ImageNameOrder { get; set; }
-    public int BlendId        { get; set; }
+    public int BlendId { get; set; }
 
     public int TexId
     {
@@ -101,27 +101,27 @@ public class KeyframeLayer
         }
     }
 
-    public string        Guid               { get; set; } = string.Empty;
-    public float         Height             { get; set; }
-    public float         Width              { get; set; }
-    public float         SrcX               { get; set; }
-    public float         SrcY               { get; set; }
-    public float[]       MinAndMaxSrcPoints { get; set; } = new float[8];
-    public float[]       UVs                { get; set; } = new float[8];
-    public float[]       ZeroCenterPoints   { get; set; } = new float[8];
-    public string        LayerName          { get; set; } = string.Empty;
-    public List<string>  Fog                { get; set; } = [];
-    public List<string>? Attribute          { get; set; } = [];
+    public string Guid { get; set; } = string.Empty;
+    public float Height { get; set; }
+    public float Width { get; set; }
+    public float SrcX { get; set; }
+    public float SrcY { get; set; }
+    public float[] MinAndMaxSrcPoints { get; set; } = new float[8];
+    public float[] UVs { get; set; } = new float[8];
+    public float[] ZeroCenterPoints { get; set; } = new float[8];
+    public string LayerName { get; set; } = string.Empty;
+    public List<string> Fog { get; set; } = [];
+    public List<string>? Attribute { get; set; } = [];
     public string Colorize { get; set; } = string.Empty;
 
     private void CalculateGuid()
     {
         MinAndMaxSrcPoints = ProcessUtility.FindMinAndMaxPoints(_srcquad);
-        Width              = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
-        Height             = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
+        Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
+        Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
         Guid = $"{TexId}_{_srcquad
-                          .Select((t, i) => t * 3.7 / 7.3 + t * i * 97311397.135f / 773377.2746f)
-                          .Sum()}";
+            .Select((t, i) => t * 3.7 / 7.3 + t * i * 97311397.135f / 773377.2746f)
+            .Sum()}";
     }
 
     /// <summary>
@@ -136,11 +136,11 @@ public class KeyframeLayer
             new(src[4], src[5], 2),
             new(src[6], src[7], 3)
         ];
-        Vector2[] uvs         = [new(0, 0), new(0, 1), new(1, 0), new(1, 1)];
-        var       orderPoints = points.OrderBy(a => a.X).ThenBy(b => b.Y).ToList();
+        Vector2[] uvs = [new(0, 0), new(0, 1), new(1, 0), new(1, 1)];
+        var orderPoints = points.OrderBy(a => a.X).ThenBy(b => b.Y).ToList();
         for (var i = 0; i < 4; i++)
         {
-            UVs[(int)orderPoints[i].Z * 2]     = uvs[i].X;
+            UVs[(int)orderPoints[i].Z * 2] = uvs[i].X;
             UVs[(int)orderPoints[i].Z * 2 + 1] = uvs[i].Y;
         }
 
@@ -166,7 +166,7 @@ public class Animation : Attach
             var splitName = _name.Split(' ');
             // avoid "ALL KEYFRAMES"
             if (!splitName[0].Equals("animation")) return;
-            Id         = Convert.ToInt32(splitName[^1]);
+            Id = Convert.ToInt32(splitName[^1]);
             AttachType = AttachType.Animation;
         }
     }
@@ -180,7 +180,7 @@ public class Animation : Attach
         {
             for (var i = 0; i < value.Count; i++)
             {
-                value[i].Prev = i > 0 ? value[i               - 1] : null;
+                value[i].Prev = i > 0 ? value[i - 1] : null;
                 value[i].Next = i < value.Count - 1 ? value[i + 1] : null;
             }
 
@@ -189,7 +189,7 @@ public class Animation : Attach
     }
 
     public bool IsLoop { get; set; }
-    public int  LoopId { get; set; }
+    public int LoopId { get; set; }
 
     [JsonProperty]
     private int loop_id
@@ -211,20 +211,20 @@ public class Timeline
         get => _prev;
         set
         {
-            _prev      = value;
+            _prev = value;
             StartFrame = value?.EndFrame ?? 0;
-            EndFrame   = StartFrame + Frames;
+            EndFrame = StartFrame + Frames;
         }
     }
 
-    public Timeline?  Next          { get; set; }
-    public int        Frames        => Time;
-    public int        Time          { get; set; }
-    public int        StartFrame    { get; set; }
-    public int        EndFrame      { get; set; }
-    public FramePoint FramePoint    { get; set; }
-    public Attach?    Attach        { get; set; }
-    public bool       IsKeyframeMix { get; private set; }
+    public Timeline? Next { get; set; }
+    public int Frames => Time;
+    public int Time { get; set; }
+    public int StartFrame { get; set; }
+    public int EndFrame { get; set; }
+    public FramePoint FramePoint { get; set; }
+    public Attach? Attach { get; set; }
+    public bool IsKeyframeMix { get; private set; }
 
     [JsonProperty]
     private int keyframe_mix
@@ -256,16 +256,16 @@ public class Timeline
     {
         return new Timeline
         {
-            Prev            = Prev,
-            Next            = Next,
-            Time            = Time,
-            StartFrame      = StartFrame,
-            EndFrame        = EndFrame,
-            FramePoint      = FramePoint,
-            Attach          = Attach,
-            IsKeyframeMix   = IsKeyframeMix,
+            Prev = Prev,
+            Next = Next,
+            Time = Time,
+            StartFrame = StartFrame,
+            EndFrame = EndFrame,
+            FramePoint = FramePoint,
+            Attach = Attach,
+            IsKeyframeMix = IsKeyframeMix,
             AnimationMatrix = AnimationMatrix,
-            IsMatrixMix     = IsMatrixMix
+            IsMatrixMix = IsMatrixMix
         };
     }
 }
@@ -305,14 +305,14 @@ public class Attach
                     AttachType = AttachType.HitBox;
                     break;
                 default:
-                    Console.WriteLine($"Can not process attach type : {value}");
+                    LoggerHelper.Info($"Can not process attach type : {value}");
                     break;
             }
         }
     }
 
     public AttachType AttachType { get; set; }
-    public int        Id         { get; set; } = -1;
+    public int Id { get; set; } = -1;
 }
 
 public enum AttachType
@@ -330,9 +330,9 @@ public enum AttachType
 [JsonConverter(typeof(SkeletonJsonConverter))]
 public class QuadSkeleton : Attach
 {
-    public string          Name             { get; set; }
-    public List<QuadBone>? Bone             { get; set; }
-    public AnimationData   CombineAnimation { get; set; }
+    public string Name { get; set; }
+    public List<QuadBone>? Bone { get; set; }
+    public AnimationData CombineAnimation { get; set; }
 }
 
 public class QuadBone

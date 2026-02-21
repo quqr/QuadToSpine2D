@@ -28,8 +28,8 @@
 
                 <suki:SettingsLayoutItem Header="Previewer">
                     <suki:SettingsLayoutItem.Content>
-                        <suki:GlassCard Margin="0,25,0,0" Padding="25" >
-                            <settings:PreviewerSetting/>
+                        <suki:GlassCard Margin="0,25,0,0" Padding="25">
+                            <settings:PreviewerSetting />
                         </suki:GlassCard>
                     </suki:SettingsLayoutItem.Content>
                 </suki:SettingsLayoutItem>

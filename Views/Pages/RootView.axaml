@@ -23,13 +23,19 @@
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
             <suki:SukiSideMenuItem IsContentMovable="False" Header="Previewer"
-                                   Icon="{fluent:FluentIcon Icon=TasksApp,IconVariant=Regular}">
+                                   Icon="{fluent:FluentIcon Icon=Play,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
-                    <pages:Previewer />
+                    <pages:Player />
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            <suki:SukiSideMenuItem IsContentMovable="False" Header="DataBase"
+                                   Icon="{fluent:FluentIcon Icon=Database,IconVariant=Regular}">
+                <suki:SukiSideMenuItem.PageContent>
+                    <pages:DataBase />
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
             <suki:SukiSideMenuItem IsContentMovable="False" Header="Setting"
-                                   Icon="{fluent:FluentIcon Icon=TasksApp,IconVariant=Regular}">
+                                   Icon="{fluent:FluentIcon Icon=Settings,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
                     <pages:Settings />
                 </suki:SukiSideMenuItem.PageContent>
@@ -37,6 +43,6 @@
         </suki:SukiSideMenu.Items>
     </suki:SukiSideMenu>
     <suki:SukiWindow.Hosts>
-        <suki:SukiToastHost Manager="{x:Static util:ToastHelper.ToastManager}"/>
+        <suki:SukiToastHost Manager="{x:Static util:ToastHelper.ToastManager}" />
     </suki:SukiWindow.Hosts>
 </sukiUi:SukiWindow>

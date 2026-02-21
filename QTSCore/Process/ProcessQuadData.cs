@@ -1,10 +1,11 @@
-﻿using QTSCore.Data.Quad;
+﻿using QTSAvalonia.Helper;
+using QTSCore.Data.Quad;
 
 namespace QTSCore.Process;
 
 public class ProcessQuadData
 {
-    public QuadJsonData? QuadData { get; set; }
+    public QuadJsonData? QuadData { get; private set; }
 
     public void ProcessJson()
     {
@@ -12,12 +13,15 @@ public class ProcessQuadData
             throw new ArgumentException("Please select correct Quad file");
 
         var spineJson = new ProcessSpine2DJson(QuadData);
-        spineJson.Process().WriteToJson();
+        var outputPath = spineJson.Process().WriteToJson();
+        Instances.Converter.Progress = 100;
+        Instances.Converter.ResultJsonUrl = outputPath;
+        Instances.Converter.ResultJsonUrlIsEnable = true;
     }
 
-    public ProcessQuadData LoadQuadJson(string quadPath)
+    public ProcessQuadData LoadQuadJson(string quadPath, bool isPostProcess = false)
     {
-        QuadData = new ProcessQuadJsonFile().LoadQuadJson(quadPath);
+        QuadData = new ProcessQuadJsonFile().LoadQuadJson(quadPath, isPostProcess);
         return this;
     }
 }

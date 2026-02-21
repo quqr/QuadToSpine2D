@@ -32,7 +32,7 @@
                 </ScrollViewer>
                 <Button Margin="5"
                         Content="Add"
-                        Command="{Binding AddImagePathsCommand}"/>
+                        Command="{Binding AddImagePathsCommand}" />
                 <Button Margin="5"
                         Content="Remove"
                         Command="{Binding DeleteElementCommand}" />

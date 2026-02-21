@@ -7,7 +7,7 @@ public partial class PreviewerSetting : UserControl
 {
     public PreviewerSetting()
     {
-        DataContext = Instances.ServiceProvider.GetRequiredService<PreviewerSettingViewModel>();
+        DataContext = Instances.ServiceProvider.GetRequiredService<PlayerSettingViewModel>();
         InitializeComponent();
     }
 }

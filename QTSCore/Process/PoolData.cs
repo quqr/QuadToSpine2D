@@ -22,19 +22,19 @@ public class PoolData
 public readonly struct FramePoint : IEquatable<FramePoint>
 {
     public int StartFrame { get; }
-    public int EndFrame   { get; }
+    public int EndFrame { get; }
 
     public FramePoint(int startFrame, int endFrame)
     {
         if (startFrame > endFrame) throw new ArgumentException("End frame must be greater than start frame.");
         StartFrame = startFrame;
-        EndFrame   = endFrame;
+        EndFrame = endFrame;
     }
 
     public FramePoint(int frame)
     {
         StartFrame = frame;
-        EndFrame   = frame;
+        EndFrame = frame;
     }
 
     public static bool operator ==(FramePoint left, FramePoint right)

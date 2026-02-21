@@ -1,0 +1,17 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
+    mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+    x:Class="QTSAvalonia.Views.Pages.DataBase"
+    x:DataType="pages:DataBaseViewModel">
+    <Design.DataContext>
+        <pages:DataBaseViewModel />
+    </Design.DataContext>
+    <StackPanel Margin="20">
+        <TextBlock Margin="0 5">选择一个动物：</TextBlock>
+        <AutoCompleteBox x:Name="animals" FilterMode="StartsWith" />
+    </StackPanel>
+</UserControl>

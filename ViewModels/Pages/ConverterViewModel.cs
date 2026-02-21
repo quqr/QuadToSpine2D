@@ -1,14 +1,12 @@
 using System.Collections.Specialized;
-using Microsoft.Extensions.DependencyInjection;
 using QTSAvalonia.ViewModels.UserControls;
-using QTSCore.Data;
 using QTSCore.Process;
 
 namespace QTSAvalonia.ViewModels.Pages;
+
 [SingletonService]
 public partial class ConverterViewModel : ViewModelBase
 {
-    
     [ObservableProperty] private ObservableCollection<ElementViewModel> _elements = [];
 
     [ObservableProperty] private float _progress;
@@ -17,6 +15,7 @@ public partial class ConverterViewModel : ViewModelBase
     private string _quadFilePath = string.Empty;
 
     [ObservableProperty] private string _resultJsonUrl = "Result json path";
+    [ObservableProperty] private bool _resultJsonUrlIsEnable;
 
     public ConverterViewModel()
     {
@@ -25,34 +24,37 @@ public partial class ConverterViewModel : ViewModelBase
 
     private void UpdateElementsIndex(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        for (var index = 0; index < Elements.Count; index++) 
-        {
-            Elements[index].Index = index;
-        }
+        for (var index = 0; index < Elements.Count; index++) Elements[index].Index = index;
     }
 
-    private List<List<string?>> ProcessImagePaths()
+    private List<List<string?>>? ProcessImagePaths()
     {
-        //var imagePaths = _elements.Select(element => element.ImagePaths).ToList();
+        var imagePaths = Elements.Select(element => element.ImagePaths).ToList();
 
-        List<List<string?>> imagePaths =
-        [
-            [
-                @"F:\Codes\Test\ps4 odin HD_Gwendlyn.0.gnf.png"
-            ],
-            [
-                @"F:\Codes\Test\ps4 odin HD_Gwendlyn.1.gnf.png"
-            ],
-            [@"F:\Codes\Test\ps4 odin HD_Gwendlyn.2.gnf.png"]
-        ];
+        // List<List<string?>> imagePaths =
+        // [
+        //     [
+        //         @"F:\Codes\Test\ps4 odin HD_Gwendlyn.0.gnf.png"
+        //     ],
+        //     [
+        //         @"F:\Codes\Test\ps4 odin HD_Gwendlyn.1.gnf.png"
+        //     ],
+        //     [@"F:\Codes\Test\ps4 odin HD_Gwendlyn.2.gnf.png"]
+        // ];
+        if (imagePaths.Count == 0)
+        {
+            ToastHelper.Error("No image paths found");
+            LoggerHelper.Warn("No image paths found");
+            return null;
+        }
 
         var maxCount = imagePaths.Max(paths => paths.Count);
 
         return imagePaths.Select(paths =>
-                             Enumerable.Range(0, maxCount)
-                                       .Select(index => index < paths.Count ? paths[index] : null)
-                                       .ToList())
-                         .ToList();
+                Enumerable.Range(0, maxCount)
+                    .Select(index => index < paths.Count ? paths[index] : null)
+                    .ToList())
+            .ToList();
     }
 
     [RelayCommand]
@@ -62,7 +64,7 @@ public partial class ConverterViewModel : ViewModelBase
         var file = await AvaloniaFilePickerService.OpenQuadFileAsync();
         if (file is not null && file.Count > 0)
         {
-            QuadFileName  = file[0].Name;
+            QuadFileName = file[0].Name;
             _quadFilePath = Uri.UnescapeDataString(file[0].Path.AbsolutePath);
             LoggerHelper.Info($"Selected quad file: {QuadFileName}");
         }
@@ -76,24 +78,19 @@ public partial class ConverterViewModel : ViewModelBase
     private void ProcessData()
     {
         LoggerHelper.Info("Starting data processing");
+        ResultJsonUrlIsEnable = false;
+        Progress = 1;
         Task.Run(() =>
         {
-            try
-            {
-                var imagePaths = ProcessImagePaths();
-                LoggerHelper.Debug($"Processing {imagePaths.Count} image paths");
-                Instances.ConverterSetting.ImagePath = imagePaths;
-                new ProcessQuadData()
-                    .LoadQuadJson(_quadFilePath)
-                    .ProcessJson();
-                
-                LoggerHelper.Info("Data processing completed successfully");
-                Console.WriteLine("Process Complete!");
-            }
-            catch (Exception ex)
-            {
-                LoggerHelper.Error("Error during data processing", ex);
-            }
+            var imagePaths = ProcessImagePaths();
+            if (imagePaths is null) return;
+            LoggerHelper.Debug($"Processing {imagePaths.Count} image paths");
+            Instances.ConverterSetting.ImagePath = imagePaths;
+            new ProcessQuadData()
+                .LoadQuadJson(_quadFilePath, true)
+                .ProcessJson();
+
+            LoggerHelper.Info("Data processing completed successfully");
         });
     }
 
@@ -104,5 +101,4 @@ public partial class ConverterViewModel : ViewModelBase
         Elements.Add(new ElementViewModel(vm => Elements.RemoveAt(vm.Index)));
         LoggerHelper.Debug($"Element added. New count: {Elements.Count}");
     }
-
 }

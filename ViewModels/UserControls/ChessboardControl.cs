@@ -3,7 +3,6 @@ using Avalonia.Media;
 
 namespace QTSAvalonia.ViewModels.UserControls;
 
-
 public class ChessboardBackgroundExtension : MarkupExtension
 {
     public int CellSize { get; set; } = 20;
@@ -61,7 +60,8 @@ public class ChessboardBackgroundExtension : MarkupExtension
 
         return new DrawingBrush
         {
-            Drawing = drawingGroup, TileMode = TileMode.Tile, DestinationRect = new RelativeRect(0, 0, tileSize, tileSize, RelativeUnit.Absolute), Stretch = Stretch.None
+            Drawing = drawingGroup, TileMode = TileMode.Tile,
+            DestinationRect = new RelativeRect(0, 0, tileSize, tileSize, RelativeUnit.Absolute), Stretch = Stretch.None
         };
     }
 }

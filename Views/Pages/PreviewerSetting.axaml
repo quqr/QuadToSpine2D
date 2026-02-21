@@ -5,9 +5,9 @@
              xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="QTSAvalonia.Views.Pages.PreviewerSetting"
-             x:DataType="pages:PreviewerSettingViewModel">
+             x:DataType="pages:PlayerSettingViewModel">
     <Design.DataContext>
-        <pages:PreviewerSettingViewModel />
+        <pages:PlayerSettingViewModel />
     </Design.DataContext>
     <StackPanel Spacing="15">
         <DockPanel>
@@ -24,8 +24,7 @@
             <TextBox Watermark="1"
                      HorizontalAlignment="Right"
                      DockPanel.Dock="Right" Width="200"
-                     Text="{Binding CanvasSize}"
-                     />
+                     Text="{Binding CanvasSize}" />
         </DockPanel>
         <DockPanel>
             <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
@@ -41,7 +40,7 @@
             <TextBox Watermark="1"
                      HorizontalAlignment="Right"
                      Text="{Binding Fps}"
-                     DockPanel.Dock="Right" Width="200"/>
+                     DockPanel.Dock="Right" Width="200" />
         </DockPanel>
         <DockPanel>
             <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
@@ -57,7 +56,7 @@
             <TextBox Watermark="1"
                      HorizontalAlignment="Right"
                      Text="{Binding ImageScaleFactor}"
-                     DockPanel.Dock="Right" Width="200"/>
+                     DockPanel.Dock="Right" Width="200" />
         </DockPanel>
     </StackPanel>
 </UserControl>

@@ -9,12 +9,12 @@ public class ProcessQuadJsonFile
 {
     private QuadJsonData QuadData { get; set; }
 
-    public QuadJsonData LoadQuadJson(string quadPath)
+    public QuadJsonData LoadQuadJson(string quadPath, bool isPostProcess = false)
     {
         LoggerHelper.Info($"Loading quad file {quadPath}");
-        var json = File.ReadAllText(quadPath);
         ClearConverter();
-        
+        var json = File.ReadAllText(quadPath);
+
         // 添加详细的反序列化调试信息
         var settings = new JsonSerializerSettings
         {
@@ -26,18 +26,27 @@ public class ProcessQuadJsonFile
             MissingMemberHandling = MissingMemberHandling.Ignore,
             NullValueHandling = NullValueHandling.Ignore
         };
-        
+
         QuadData = JsonConvert.DeserializeObject<QuadJsonData>(json, settings) ??
                    throw new ArgumentException("Invalid quad file");
-        
-        
+        if (isPostProcess)
+        {
+            LoggerHelper.Info("Combining animations...");
+            InitializeData();
+            CombineAnimations();
+            LoggerHelper.Info("Combining animations completed");
+        }
+
+        Instances.Converter.Progress = 50;
+
         LoggerHelper.Info("Quad file loaded successfully");
         return QuadData;
     }
+
     private void ClearConverter()
     {
-        HitboxJsonConverter.IdCount   = -1;
-        SlotJsonConverter.IdCount     = -1;
+        HitboxJsonConverter.IdCount = -1;
+        SlotJsonConverter.IdCount = -1;
         SkeletonJsonConverter.IdCount = -1;
         KeyframeJsonConverter.IdCount = -1;
     }
@@ -58,18 +67,22 @@ public class ProcessQuadJsonFile
 #if DEBUG
         foreach (var skeleton in QuadData.Skeleton)
         {
-            if(skeleton?.Bone is null) continue;
-            var animations = new List<Animation>();
+            if (skeleton?.Bone is null) continue;
+            var animations = new List<Animation?>();
             animations
                 .AddRange(skeleton.Bone
-                                  .Select(bone => QuadData.Animation
-                                                          .First(x => x.Id == bone.Attach.Id)));
+                    .Select(bone => QuadData.Animation
+                        .First(x =>
+                        {
+                            if (x is null) return false;
+                            return x.Id == bone.Attach.Id;
+                        })));
             skeleton.CombineAnimation = ProcessUtility.CombineAnimations(animations);
         }
 #endif
     }
 
-    private void InitData()
+    private void InitializeData()
     {
         Parallel.ForEach(QuadData.Animation, SetAttaches);
 

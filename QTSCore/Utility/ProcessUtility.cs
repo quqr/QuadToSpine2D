@@ -55,7 +55,7 @@ public static class ProcessUtility
     {
         if (a is null) return null;
         if (ApproximatelyEqual(b, 1f)) return a;
-        var c                                   = new float[a.Length];
+        var c = new float[a.Length];
         for (var i = 0; i < a.Length; i++) c[i] = a[i] * b;
         return c;
     }
@@ -65,7 +65,7 @@ public static class ProcessUtility
     ///     A animation may be contain multiple animations.
     ///     new animation data = animation 1 + animation 2 + animation 3 + ...
     /// </summary>
-    public static AnimationData CombineAnimations(List<Animation> animations)
+    public static AnimationData CombineAnimations(List<Animation?> animations)
     {
         var newAnimation = new AnimationData();
 
@@ -73,6 +73,7 @@ public static class ProcessUtility
 
         foreach (var animation in animations)
         {
+            if (animation is null) continue;
             newAnimation.IsLoop = animation.IsLoop | newAnimation.IsLoop;
 
             foreach (var timeline in animation.Timeline)
@@ -105,7 +106,7 @@ public static class ProcessUtility
                 var newTimeline = animation.Timeline[animation.LoopId].Clone();
 
                 lastTimeline.Next = newTimeline;
-                newTimeline.Prev  = lastTimeline;
+                newTimeline.Prev = lastTimeline;
 
                 if (newTimeline.EndFrame >= maxFrame)
                 {
@@ -121,9 +122,9 @@ public static class ProcessUtility
 
     private static void SetAttachmentsData(
         AnimationData newAnimation,
-        Timeline      timeline,
-        int           startFrame,
-        int           endFrame)
+        Timeline timeline,
+        int startFrame,
+        int endFrame)
     {
         if (timeline.Attach is null) return; // draw nothing
 

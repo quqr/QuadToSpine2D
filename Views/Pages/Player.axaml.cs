@@ -3,13 +3,11 @@ using QTSAvalonia.ViewModels.Pages;
 
 namespace QTSAvalonia.Views.Pages;
 
-public partial class Previewer : UserControl
+public partial class Player : UserControl
 {
-    public Previewer()
+    public Player()
     {
-        DataContext = Instances.ServiceProvider.GetService<PreviewerViewModel>();
+        DataContext = Instances.ServiceProvider.GetService<PlayerViewModel>();
         InitializeComponent();
     }
-
-
 }

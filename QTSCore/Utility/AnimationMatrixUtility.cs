@@ -12,7 +12,7 @@ public static class AnimationMatrixUtility
             0, 0.001f, -0.015f
         ];
         var hInvMatrix = new Matrix(3, 3, hInv);
-        var m3         = h * hInvMatrix;
+        var m3 = h * hInvMatrix;
 
         Matrix[] matrices =
         [
@@ -22,11 +22,11 @@ public static class AnimationMatrixUtility
             m3 * new Matrix(3, 1, [10, 20, 1])
         ];
 
-        List<float> t  = [];
-        var         t1 = matrices[0].ToFloatArray();
-        var         t2 = matrices[1].ToFloatArray();
-        var         t3 = matrices[2].ToFloatArray();
-        var         t4 = matrices[3].ToFloatArray();
+        List<float> t = [];
+        var t1 = matrices[0].ToFloatArray();
+        var t2 = matrices[1].ToFloatArray();
+        var t3 = matrices[2].ToFloatArray();
+        var t4 = matrices[3].ToFloatArray();
         t.AddRange(t1[..2]);
         t.AddRange(t2[..2]);
         t.AddRange(t3[..2]);

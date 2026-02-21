@@ -1,16 +1,17 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:suki="https://github.com/kikipoulet/SukiUI"
              xmlns:paz="using:Avalonia.Controls.PanAndZoom"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800"
-             x:Class="QTSAvalonia.Views.Pages.Previewer"
+             x:Class="QTSAvalonia.Views.Pages.Player"
              xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
              xmlns:userControls="clr-namespace:QTSAvalonia.ViewModels.UserControls"
-             x:DataType="pages:PreviewerViewModel">
+             xmlns:fluent="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
+             x:DataType="pages:PlayerViewModel">
     <Design.DataContext>
-        <pages:PreviewerViewModel />
+        <pages:PlayerViewModel />
     </Design.DataContext>
     <UserControl.Styles>
         <Style Selector="Path.dashed-axis">
@@ -20,14 +21,25 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center" />
         </Style>
+        <Style Selector="GridSplitter">
+            <Setter Property="Background" Value="#40FFFFFF" />
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="Opacity" Value="0.6" />
+        </Style>
+        <Style Selector="GridSplitter:pointerover">
+            <Setter Property="Background" Value="#60FFFFFF" />
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="GridSplitter:pressed">
+            <Setter Property="Background" Value="#80FFFFFF" />
+        </Style>
     </UserControl.Styles>
     <Panel>
-        <Grid RowDefinitions="8.5*,1.5*">
-            <Grid Grid.Row="0" ColumnDefinitions="5*,5*">
-                <suki:GlassCard Grid.Column="1" Margin="5">
+        <Grid RowDefinitions="8.5*,0.1*,1.5*">
+            <Grid Grid.Row="0" ColumnDefinitions="5*,0.1*,5*">
+                <suki:GlassCard Grid.Column="2" Margin="5">
                     <Grid RowDefinitions="9*,1*">
                         <paz:ZoomBorder
-                            Name="ZoomBorder"
                             Stretch="None" ZoomSpeed="1.1"
                             ClipToBounds="True" Focusable="True"
                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
@@ -78,23 +90,37 @@
                                 </TextBlock>
                             </Grid>
                             <StackPanel Orientation="Horizontal" Spacing="5">
-                                <Button Content="prev"
-                                        Command="{Binding SetPreviousFrameCommand}" />
-                                <Button Content="play"
-                                        Command="{Binding PlayAnimationCommand}"
-                                        IsEnabled="{Binding !IsPlaying}" />
-                                <Button Content="stop"
-                                        Command="{Binding StopPlaybackCommand}"
-                                        IsEnabled="{Binding IsPlaying}" />
-                                <Button Content="next"
-                                        Command="{Binding SetNextFrameCommand}" />
-                                <Button Content="quick load"
-                                        Command="{Binding QuicklyLoadCommand}" />
-                                
+                                <Button
+                                    Command="{Binding SetPreviousFrameCommand}">
+                                    <fluent:FluentIcon Icon="Previous" />
+                                </Button>
+                                <Button
+                                    Command="{Binding PlayAnimationCommand}"
+                                    IsEnabled="{Binding !IsPlaying}">
+                                    <fluent:FluentIcon Icon="Play" />
+
+                                </Button>
+                                <Button
+                                    Command="{Binding StopPlaybackCommand}"
+                                    IsEnabled="{Binding IsPlaying}">
+                                    <fluent:FluentIcon Icon="Stop" />
+
+                                </Button>
+                                <Button
+                                    Command="{Binding SetNextFrameCommand}">
+                                    <fluent:FluentIcon Icon="Next" />
+
+                                </Button>
+                                <Button
+                                    Command="{Binding QuicklyLoadCommand}">
+                                    <fluent:FluentIcon Icon="ArrowSync" />
+                                </Button>
+
                             </StackPanel>
                         </StackPanel>
                     </Grid>
                 </suki:GlassCard>
+                <GridSplitter Grid.Column="1" Width="4" Margin="2,0" />
                 <suki:GlassCard Grid.Column="0" Margin="5">
                     <Grid ColumnDefinitions="1*,1*,1*">
                         <ScrollViewer
@@ -136,7 +162,8 @@
                     </Grid>
                 </suki:GlassCard>
             </Grid>
-            <suki:GlassCard Grid.Row="1">
+            <GridSplitter Grid.Row="1" Height="4" Margin="0,2" />
+            <suki:GlassCard Grid.Row="2">
                 <Grid ColumnDefinitions="1*,1*,1*,1*,2*">
                     <Button Width="150" Grid.Column="0" Content="Select quad"
                             Command="{Binding  OpenQuadFilePickerCommand}" />
@@ -159,7 +186,6 @@
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
-
             </suki:GlassCard>
         </Grid>
     </Panel>
