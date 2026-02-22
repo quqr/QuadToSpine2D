@@ -22,11 +22,12 @@ public class KeyframeLayerJsonConverter : JsonConverter
             Fog = ConvertToFog(jObject),
             TexId = jObject["tex_id"]?.ToObject<int>() ?? -1,
             Dstquad = ProcessUtility.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
-                Instances.ConverterSetting.ScaleFactor),
+                Instances.ConverterSetting.ScaleFactor)!,
             Srcquad = ProcessUtility.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
                 Instances.ConverterSetting.ScaleFactor),
             BlendId = jObject["blend_id"]?.ToObject<int>() ?? -1,
-            Attribute = ConvertToAttribute(jObject)
+            Attribute = ConvertToAttribute(jObject),
+            AttachType = AttachType.KeyframeLayer
         };
     }
 

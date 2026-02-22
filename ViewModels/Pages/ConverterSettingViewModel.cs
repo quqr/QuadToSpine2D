@@ -18,7 +18,7 @@ public partial class ConverterSettingViewModel : ViewModelBase
     {
         var folders = await AvaloniaFilePickerService.OpenFileSavePathAsync();
         if (folders is not null && folders.Count > 0)
-            ResultSavePath = Uri.UnescapeDataString(folders[0].Path.AbsolutePath);
+            ResultSavePath = folders[0].Path.LocalPath;
     }
 
     [RelayCommand]
@@ -26,6 +26,6 @@ public partial class ConverterSettingViewModel : ViewModelBase
     {
         var folders = await AvaloniaFilePickerService.OpenFileSavePathAsync();
         if (folders is not null && folders.Count > 0)
-            ImageSavePath = Uri.UnescapeDataString(folders[0].Path.AbsolutePath);
+            ImageSavePath = folders[0].Path.LocalPath;
     }
 }

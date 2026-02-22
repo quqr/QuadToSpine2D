@@ -10,7 +10,7 @@ public partial class ConverterViewModel : ViewModelBase
     [ObservableProperty] private ObservableCollection<ElementViewModel> _elements = [];
 
     [ObservableProperty] private float _progress;
-    [ObservableProperty] private string _quadFileName = "Random Quad File";
+    [ObservableProperty] private string _quadFileName = string.Empty;
 
     private string _quadFilePath = string.Empty;
 
@@ -64,8 +64,8 @@ public partial class ConverterViewModel : ViewModelBase
         var file = await AvaloniaFilePickerService.OpenQuadFileAsync();
         if (file is not null && file.Count > 0)
         {
-            QuadFileName = file[0].Name;
-            _quadFilePath = Uri.UnescapeDataString(file[0].Path.AbsolutePath);
+            QuadFileName  = file[0].Name;
+            _quadFilePath = file[0].Path.LocalPath;
             LoggerHelper.Info($"Selected quad file: {QuadFileName}");
         }
         else
@@ -89,8 +89,20 @@ public partial class ConverterViewModel : ViewModelBase
             new ProcessQuadData()
                 .LoadQuadJson(_quadFilePath, true)
                 .ProcessJson();
-
             LoggerHelper.Info("Data processing completed successfully");
+        }).ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                LoggerHelper.Error($"Error occurred during data processing : {task.Exception?.StackTrace}");
+                ToastHelper.Error($"Error occurred during data processing :{task.Exception?.StackTrace}");
+                Progress = 0;
+            }
+            else if (task.IsCompletedSuccessfully)
+            {
+                LoggerHelper.Info("Data processing completed successfully");
+                ToastHelper.Success("Data processing completed successfully");
+            }
         });
     }
 

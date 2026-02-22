@@ -8,11 +8,11 @@ namespace QTSCore.Data.Quad;
 
 public class QuadJsonData
 {
-    public List<Keyframe?> Keyframe { get; set; } = [];
-    public List<Animation?> Animation { get; set; } = [];
-    public List<QuadSkeleton?> Skeleton { get; set; } = [];
-    public List<Slot> Slot { get; set; } = [];
-    public List<Hitbox?> Hitbox { get; set; } = [];
+    public List<Keyframe?>     Keyframe  { get; set; } = [];
+    public List<Animation?>    Animation { get; set; } = [];
+    public List<QuadSkeleton?> Skeleton  { get; set; } = [];
+    public List<Slot>          Slot      { get; set; } = [];
+    public List<Hitbox?>?      Hitbox    { get; set; } = [];
 }
 
 [JsonConverter(typeof(HitboxJsonConverter))]
@@ -44,7 +44,7 @@ public class Keyframe : Attach
 }
 
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
-public class KeyframeLayer
+public class KeyframeLayer : Attach
 {
     private float[] _dstquad = [];
     private float[]? _srcquad = [];
@@ -324,6 +324,7 @@ public enum AttachType
     Skeleton,
     Mix,
     List,
+    KeyframeLayer,
     None
 }
 

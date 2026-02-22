@@ -1,3 +1,5 @@
+using Avalonia.Platform.Storage;
+
 namespace QTSAvalonia.ViewModels.UserControls;
 
 public partial class ElementViewModel : ViewModelBase
@@ -29,7 +31,7 @@ public partial class ElementViewModel : ViewModelBase
     [RelayCommand]
     private void DeleteElement()
     {
-        LoggerHelper.Info($"Deleting element at index {_index}");
+        LoggerHelper.Info($"Deleting element at index {Index}");
         _onDeleteRequested(this);
     }
 
@@ -43,11 +45,11 @@ public partial class ElementViewModel : ViewModelBase
             LoggerHelper.Debug($"Selected {files.Count} image files");
             foreach (var file in files)
             {
-                var imagePath = Uri.UnescapeDataString(file.Path.AbsolutePath);
+                var imagePath = file.Path.LocalPath;
                 ImagePaths.Add(imagePath);
                 ImagePathHyperlinkButtons.Add(new HyperLinkTrimButtonViewModel
                 {
-                    ImagePath = file.Path.AbsolutePath
+                    ImagePath = imagePath
                 });
                 LoggerHelper.Debug($"Added image: {imagePath}");
             }

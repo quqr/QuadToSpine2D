@@ -34,11 +34,11 @@
                     </suki:SettingsLayoutItem.Content>
                 </suki:SettingsLayoutItem>
 
-                <suki:SettingsLayoutItem Header="Base Converter">
-                    <suki:SettingsLayoutItem.Content>
-                        <suki:GlassCard Margin="0,25,0,0" Padding="25" />
-                    </suki:SettingsLayoutItem.Content>
-                </suki:SettingsLayoutItem>
+                <!-- <suki:SettingsLayoutItem Header="Base Converter"> -->
+                <!--     <suki:SettingsLayoutItem.Content> -->
+                <!--         <suki:GlassCard Margin="0,25,0,0" Padding="25" /> -->
+                <!--     </suki:SettingsLayoutItem.Content> -->
+                <!-- </suki:SettingsLayoutItem> -->
             </objectModel:ObservableCollection>
         </suki:SettingsLayout.Items>
     </suki:SettingsLayout>

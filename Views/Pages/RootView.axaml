@@ -16,25 +16,25 @@
     MinHeight="750" MinWidth="1200">
     <suki:SukiSideMenu>
         <suki:SukiSideMenu.Items>
-            <suki:SukiSideMenuItem IsContentMovable="False" Header="Home"
+            <suki:SukiSideMenuItem IsContentMovable="False" Header="Home" FontWeight="Bold"
                                    Icon="{fluent:FluentIcon Icon=TasksApp,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
                     <pages:Converter />
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
-            <suki:SukiSideMenuItem IsContentMovable="False" Header="Previewer"
+            <suki:SukiSideMenuItem IsContentMovable="False" Header="Previewer" FontWeight="Bold"
                                    Icon="{fluent:FluentIcon Icon=Play,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
                     <pages:Player />
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
-            <suki:SukiSideMenuItem IsContentMovable="False" Header="DataBase"
-                                   Icon="{fluent:FluentIcon Icon=Database,IconVariant=Regular}">
-                <suki:SukiSideMenuItem.PageContent>
-                    <pages:DataBase />
-                </suki:SukiSideMenuItem.PageContent>
-            </suki:SukiSideMenuItem>
-            <suki:SukiSideMenuItem IsContentMovable="False" Header="Setting"
+            <!-- <suki:SukiSideMenuItem IsContentMovable="False" Header="DataBase" FontWeight="Bold" -->
+            <!--                        Icon="{fluent:FluentIcon Icon=Database,IconVariant=Regular}"> -->
+            <!--     <suki:SukiSideMenuItem.PageContent> -->
+            <!--         <pages:DataBase /> -->
+            <!--     </suki:SukiSideMenuItem.PageContent> -->
+            <!-- </suki:SukiSideMenuItem> -->
+            <suki:SukiSideMenuItem IsContentMovable="False" Header="Setting" FontWeight="Bold"
                                    Icon="{fluent:FluentIcon Icon=Settings,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
                     <pages:Settings />

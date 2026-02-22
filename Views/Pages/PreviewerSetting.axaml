@@ -27,7 +27,14 @@
                      Text="{Binding CanvasSize}" />
         </DockPanel>
         <DockPanel>
-            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+
+            <NumericUpDown
+                     FormatString="0"
+                     Value="{Binding Fps}"
+                     Minimum="1"
+                     DockPanel.Dock="Right"
+                     Width="200" />
+            <StackPanel HorizontalAlignment="Left">
                 <TextBlock
                     FontSize="16"
                     FontWeight="Bold"
@@ -37,13 +44,15 @@
                     Text="The animation FPS"
                     TextWrapping="Wrap" />
             </StackPanel>
-            <TextBox Watermark="1"
-                     HorizontalAlignment="Right"
-                     Text="{Binding Fps}"
-                     DockPanel.Dock="Right" Width="200" />
         </DockPanel>
         <DockPanel>
-            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+            <NumericUpDown
+                     Minimum="1"
+                     FormatString="0"
+                     Value="{Binding ImageScaleFactor}"
+                     DockPanel.Dock="Right" 
+                     Width="200" />
+            <StackPanel HorizontalAlignment="Left">
                 <TextBlock
                     FontSize="16"
                     FontWeight="Bold"
@@ -53,10 +62,6 @@
                     Text="The image scale"
                     TextWrapping="Wrap" />
             </StackPanel>
-            <TextBox Watermark="1"
-                     HorizontalAlignment="Right"
-                     Text="{Binding ImageScaleFactor}"
-                     DockPanel.Dock="Right" Width="200" />
         </DockPanel>
     </StackPanel>
 </UserControl>

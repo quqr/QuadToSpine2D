@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
+             xmlns:fluent="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="QTSAvalonia.Views.Pages.ConverterSetting"
              x:DataType="pages:ConverterSettingViewModel">
@@ -37,21 +38,25 @@
             <ToggleSwitch HorizontalAlignment="Right" DockPanel.Dock="Right" IsChecked="{Binding IsPrettyJsonPrint}" />
         </DockPanel>
         <DockPanel>
-            <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
+
+            <NumericUpDown
+                DockPanel.Dock="Right"
+                Increment="1"
+                FormatString="0"
+                Width="200"
+                Minimum="1"
+                Value="{Binding ScaleFactor}" />
+            <StackPanel HorizontalAlignment="Left">
                 <TextBlock
                     FontSize="16"
                     FontWeight="Bold"
                     Text="Scale factor" />
                 <TextBlock
                     Margin="0,12,70,0"
-                    Text="If your image is larger than the original image, the scale factor = current image size ÷ original image size."
+                    Text="The scale factor = current image size / original image size."
                     FontSize="10"
                     TextWrapping="Wrap" />
             </StackPanel>
-            <TextBox
-                HorizontalAlignment="Right"
-                DockPanel.Dock="Right" Width="200"
-                Text="{Binding ScaleFactor}" />
         </DockPanel>
         <DockPanel>
             <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
@@ -66,10 +71,11 @@
                     TextWrapping="Wrap" />
             </StackPanel>
             <Button
-                Content="Choose"
                 HorizontalAlignment="Right"
                 Command="{Binding OpenJsonSavePathCommand}"
-                DockPanel.Dock="Right" Width="200" />
+                DockPanel.Dock="Right" Width="200">
+                <fluent:FluentIcon Icon="ArrowRight" />
+            </Button>
         </DockPanel>
         <DockPanel>
             <StackPanel HorizontalAlignment="Left" DockPanel.Dock="Left">
@@ -84,10 +90,11 @@
                     TextWrapping="Wrap" />
             </StackPanel>
             <Button
-                Content="Choose"
                 HorizontalAlignment="Right"
                 Command="{Binding OpenImagesSavePathCommand}"
-                DockPanel.Dock="Right" Width="200" />
+                DockPanel.Dock="Right" Width="200">
+                <fluent:FluentIcon Icon="ArrowRight" />
+            </Button>
         </DockPanel>
     </StackPanel>
 </UserControl>
