@@ -6,5 +6,6 @@
     <Application.Styles>
         <sukiUi:SukiTheme ThemeColor="Blue" />
         <StyleInclude Source="avares://SukiUI.Dock/Index.axaml" />
+        <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
     </Application.Styles>
 </Application>

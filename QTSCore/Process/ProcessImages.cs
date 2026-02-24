@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Threading;
 using QTSAvalonia.Helper;
+using QTSAvalonia.ViewModels.Pages;
 using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Utility;
@@ -77,7 +77,7 @@ public class ProcessImages
                 {
                     _images[i, j] = null;
                     Interlocked.Increment(ref failedCount);
-                    LoggerHelper.Warn($"Image file not found [{i},{j}]: {path}");
+                    LoggerHelper.Warning($"Image file not found [{i},{j}]: {path}");
                     continue;
                 }
 
@@ -122,14 +122,18 @@ public class ProcessImages
         LoggerHelper.Debug(
             $"Starting layer data processing - TexId: {layer.TexId}, Guid: {layer.Guid}, CopyIndex: {copyIndex}");
 
-        var startTime = DateTime.Now;
         var results = new ConcurrentBag<LayerData>();
 
         // Parallel process each skin
         Parallel.For(0, _skinsCount, skinIndex =>
         {
             LayerData? data = null;
-
+            if (layer.TexId >= _images.Length)
+            {
+                LoggerHelper.Error($"Invalid TexId: {layer.TexId}");
+                ToastHelper.Error("Invalid TexId.The image has error");
+                return;
+            }
             if (layer.Srcquad != null &&
                 _images[layer.TexId, skinIndex] != null)
             {
@@ -145,13 +149,17 @@ public class ProcessImages
                     copyIndex
                 );
             }
-            else if (layer.Fog is { Count: > 0 })
+            else if (layer.Fog is { Length: > 0 })
             {
-                LoggerHelper.Debug($"Processing fog image - SkinIndex: {skinIndex}, FogCount: {layer.Fog.Count}");
+                LoggerHelper.Debug($"Processing fog image - SkinIndex: {skinIndex}, FogCount: {layer.Fog.Length}");
                 data = ProcessFogImage(layer, poolData, skinIndex, copyIndex);
             }
 
-            if (data is null) return;
+            if (data is null)
+            {
+                LoggerHelper.Debug($"Skipping layer data - SkinIndex: {skinIndex}");
+                return;
+            }
             // Safely store in nested ConcurrentDictionary
             _layersDataDict
                 .GetOrAdd(layer.TexId,
@@ -161,26 +169,23 @@ public class ProcessImages
                 .Add(data);
 
             results.Add(data);
-            LoggerHelper.Debug(
-                $"Layer data processing completed - SkinIndex: {skinIndex}, ImageName: {data.SlotAndImageName}");
         });
 
         // Sort by SkinIndex to ensure output order
         var sortedResults = results.OrderBy(d => d.SkinIndex).ToList();
 
         // Safely update global index (only increment when copyIndex=0)
-        if (copyIndex == 0)
-            lock (_indexLock)
-            {
-                _currentImageIndex++;
-                LoggerHelper.Debug($"Updated global image index to: {_currentImageIndex}");
-            }
+        if (copyIndex != 0) return sortedResults;
+        lock (_indexLock)
+        {
+            _currentImageIndex++;
+            LoggerHelper.Debug($"Updated global image index to: {_currentImageIndex}");
+        }
 
-        var processDuration = DateTime.Now - startTime;
-        LoggerHelper.Info(
-            $"Layer data processing completed - Result count: {sortedResults.Count}, Duration: {processDuration.TotalMilliseconds:F2}ms");
-
-        return sortedResults;
+        if (sortedResults.Count != 0) return sortedResults;
+        ToastHelper.Error("The images has error.");
+        LoggerHelper.Error("The images has error");
+        throw new NullReferenceException();
     }
 
     #region Core Processing Logic
@@ -222,9 +227,9 @@ public class ProcessImages
     {
         var (imageName, imageIndex) = GenerateImageName(layer, poolData, skinIndex, copyIndex);
 
-        LoggerHelper.Debug($"Starting fog image processing - ImageName: {imageName}, Colors: {layer.Fog?.Count ?? 0}");
+        LoggerHelper.Debug($"Starting fog image processing - ImageName: {imageName}, Colors: {layer.Fog?.Length ?? 0}");
 
-        _ = Task.Run(() => SaveFogImage(imageName, 100, 100, layer.Fog!))
+        _ = Task.Run(() => SaveFogImage(imageName, 100, 100, layer.Fog))
             .ContinueWith(t => HandleSaveError(t, imageName), TaskContinuationOptions.OnlyOnFaulted);
 
         var layerData = CreateLayerData(imageName, layer, skinIndex, imageIndex, copyIndex);
@@ -247,7 +252,7 @@ public class ProcessImages
         int copyIndex)
     {
         var imageIndex = poolData?.LayersData[skinIndex].ImageIndex ?? _currentImageIndex;
-        var texIdStr = layer.TexId == Instances.ConverterSetting.FogTexId ? "Fog" : layer.TexId.ToString();
+        var texIdStr = layer.TexId == ConverterSettingViewModel.FogTexId ? "Fog" : layer.TexId.ToString();
         var name = $"Slice_{imageIndex}_{texIdStr}_{skinIndex}_{copyIndex}";
 
         // Update layer internal sorting identifier
@@ -298,11 +303,11 @@ public class ProcessImages
     /// <summary>
     ///     Generate and save fog image (support 4-color gradient)
     /// </summary>
-    private static void SaveFogImage(string imageName, int width, int height, List<string> colors)
+    private static void SaveFogImage(string imageName, int width, int height, string[] colors)
     {
-        LoggerHelper.Debug($"Saving fog image: {imageName}, colors: {colors.Count}");
+        LoggerHelper.Debug($"Saving fog image: {imageName}, colors: {colors.Length}");
 
-        if (colors == null || colors.Count < 4)
+        if (colors == null || colors.Length < 4)
         {
             const string errorMsg = "Fog effect requires at least 4 color values";
             LoggerHelper.Error(errorMsg);
@@ -329,9 +334,6 @@ public class ProcessImages
         LoggerHelper.Debug($"Fog image saved successfully: {imageName}");
     }
 
-    /// <summary>
-    ///     Generic image saving logic
-    /// </summary>
     private static void SaveSkImage(SKImage image, string imageName)
     {
         using var data = image.Encode(SKEncodedImageFormat.Png, 100);
@@ -343,7 +345,7 @@ public class ProcessImages
         }
 
         var fullPath = Path.Combine(Instances.ConverterSetting.ImageSavePath, $"{imageName}.png");
-        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)); // Ensure directory exists
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!); // Ensure directory exists
 
         using var stream = File.OpenWrite(fullPath);
         data.SaveTo(stream);

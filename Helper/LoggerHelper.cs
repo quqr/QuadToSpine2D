@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+using QTSAvalonia.ViewModels.Pages;
 using Serilog;
 using Serilog.Core;
 
@@ -13,8 +15,11 @@ public enum LogLevel : uint
 
 public static class LoggerHelper
 {
+    private static readonly SettingsViewModel SettingsViewModel =
+        Instances.ServiceProvider.GetRequiredService<SettingsViewModel>();
     private static Logger? _logger;
     private static readonly List<(LogLevel level, string message)> _logCache = [];
+    private const string OutputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj}{NewLine}{Exception}";
 
     public static void InitializeLogger()
     {
@@ -26,9 +31,9 @@ public static class LoggerHelper
                 "logs/log-.log",
                 rollingInterval: RollingInterval.Day,
                 shared: true,
-                outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                outputTemplate: OutputTemplate)
             .WriteTo.Console(
-                outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                outputTemplate: OutputTemplate)
             .CreateLogger();
         FlushCache();
     }
@@ -58,53 +63,77 @@ public static class LoggerHelper
 
         _logCache.Clear();
     }
-
-    public static void Info(object? message)
+    private static string FormatLogMessage(string? message, LogLevel level)
+    {
+        var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        var levelString = level switch
+        {
+            LogLevel.Debug => "DEBUG",
+            LogLevel.Info => "INFO",
+            LogLevel.Warn => "WARN",
+            LogLevel.Error => "ERROR",
+            _ => "UNKNOWN"
+        };
+        
+        return $"[{timestamp}][{levelString}] {message}";
+    }
+    private static void Log(object? message, LogLevel level)
     {
         if (_logger == null)
-            _logCache.Add((LogLevel.Info, message?.ToString() ?? string.Empty));
+            _logCache.Add((level, message?.ToString() ?? string.Empty));
         else
-            _logger.Information(message?.ToString() ?? string.Empty);
+        {
+            switch (level)
+            {
+                case LogLevel.Debug:
+                    _logger.Debug(message?.ToString() ?? string.Empty);
+                    break;
+                case LogLevel.Info:
+                    _logger.Information(message?.ToString() ?? string.Empty);
+                    break;
+                case LogLevel.Warn:
+                    _logger.Warning(message?.ToString() ?? string.Empty);
+                    break;
+                case LogLevel.Error:
+                    _logger.Error(message?.ToString() ?? string.Empty);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
+            }
+        }
+
+        DispatcherHelper.RunOnMainThreadAsync((() =>
+        {
+            SettingsViewModel.Logs.Add(new TextBlock
+            {
+                Text = FormatLogMessage(message?.ToString(),level),
+            });
+        }));
+    }
+    public static void Info(object? message)
+    {
+        Log(message, LogLevel.Info);
     }
 
     public static void Debug(object? message)
     {
-        if (_logger == null)
-            _logCache.Add((LogLevel.Debug, message?.ToString() ?? string.Empty));
-        else
-            _logger.Debug(message?.ToString() ?? string.Empty);
+        Log(message,LogLevel.Debug);
     }
-
+    
     public static void Error(object message)
     {
-        if (_logger == null)
-            _logCache.Add((LogLevel.Error, message.ToString() ?? string.Empty));
-        else
-            _logger.Error(message.ToString() ?? string.Empty);
+        Log(message,LogLevel.Error);
+
     }
 
     public static void Error(object message, Exception e)
     {
-        var errorMsg = $"{message}\n{e}";
-        if (_logger == null)
-            _logCache.Add((LogLevel.Error, errorMsg));
-        else
-            _logger.Error(errorMsg);
-    }
+        Log($"{message}\n{e}",LogLevel.Error);
 
-    public static void Warn(object message)
-    {
-        if (_logger == null)
-            _logCache.Add((LogLevel.Warn, message.ToString() ?? string.Empty));
-        else
-            _logger.Warning(message.ToString() ?? string.Empty);
     }
 
     public static void Warning(object message)
     {
-        if (_logger == null)
-            _logCache.Add((LogLevel.Warn, message.ToString() ?? string.Empty));
-        else
-            _logger.Warning(message.ToString() ?? string.Empty);
+        Log(message, LogLevel.Warn);
     }
 }

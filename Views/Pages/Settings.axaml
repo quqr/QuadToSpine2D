@@ -1,5 +1,5 @@
 ﻿<UserControl
-    d:DesignHeight="450"
+    d:DesignHeight="1000"
     d:DesignWidth="1400"
     mc:Ignorable="d"
     x:Class="QTSAvalonia.Views.Pages.Settings"
@@ -29,7 +29,29 @@
                 <suki:SettingsLayoutItem Header="Previewer">
                     <suki:SettingsLayoutItem.Content>
                         <suki:GlassCard Margin="0,25,0,0" Padding="25">
-                            <settings:PreviewerSetting />
+                            <settings:PlayerSetting />
+                        </suki:GlassCard>
+                    </suki:SettingsLayoutItem.Content>
+                </suki:SettingsLayoutItem>
+                <suki:SettingsLayoutItem Header="Logger">
+                    <suki:SettingsLayoutItem.Content>
+                        <suki:GlassCard Margin="0,25,0,0" Padding="25">
+                            <StackPanel Spacing="15">
+                                <TextBlock Text="Log" FontWeight="Bold"/>
+                                <ScrollViewer
+                                    Margin="15"
+                                    MaxHeight="400">
+                                    <ItemsControl
+                                        ItemsSource="{Binding Logs }">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Spacing="15" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </ScrollViewer>
+
+                            </StackPanel>
                         </suki:GlassCard>
                     </suki:SettingsLayoutItem.Content>
                 </suki:SettingsLayoutItem>

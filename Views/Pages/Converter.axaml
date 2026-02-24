@@ -88,6 +88,7 @@
                     Height="45"
                     Margin="0,0,15,15"
                     HorizontalAlignment="Center"
+                    IsEnabled="{Binding !IsProcessing}"
                     Command="{Binding ProcessDataCommand}" />
 
                 <!-- 结果链接 -->

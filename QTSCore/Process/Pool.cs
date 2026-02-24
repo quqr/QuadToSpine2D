@@ -31,6 +31,7 @@ public class Pool
         if (unusedPoolData is null)
         {
             poolData = Create(layer, usedPoolsData);
+
         }
         else
         {
@@ -51,7 +52,6 @@ public class Pool
         if (copyIndex > 150)
             throw new InvalidOperationException("Too many copies of layer data. Please increase the limit.");
         var data = _processImages.GetLayerData(layer, usedPoolData, copyIndex);
-
         var poolData = new PoolData
         {
             LayersData = data

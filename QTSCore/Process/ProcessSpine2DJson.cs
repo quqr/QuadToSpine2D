@@ -1,4 +1,5 @@
 ﻿using QTSAvalonia.Helper;
+using QTSAvalonia.ViewModels.Pages;
 using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Data.Spine;
@@ -38,13 +39,13 @@ public class ProcessSpine2DJson
     public SpineJsonData Process()
     {
         InitHitboxSlot(_quadJsonData);
-        for (var index = 0; index < _quadJsonData.Skeleton.Count; index++)
+        for (var index = 0; index < _quadJsonData.Skeleton.Length; index++)
         {
             var skeleton = _quadJsonData.Skeleton[index];
             if (skeleton is null) continue;
             LoggerHelper.Info($"Processing animation : {skeleton.Name}");
             SetAnimation(skeleton);
-            Instances.Converter.Progress += 48f * (index + 1) / _quadJsonData.Skeleton.Count;
+            Instances.Converter.Progress += 48f * (index + 1) / _quadJsonData.Skeleton.Length;
         }
 
         SortSlotsAndDrawOrder();
@@ -88,7 +89,7 @@ public class ProcessSpine2DJson
             _drawOrders.Add(drawOrder);
             AddLayerOffsets(_existAttachments, drawOrder);
 
-            _time = (animation.Key + 1) * Instances.ConverterSetting.Fps;
+            _time = (animation.Key + 1) * ConverterSettingViewModel.Fps;
         }
 
         var animationName = skeleton.Name;
@@ -137,37 +138,8 @@ public class ProcessSpine2DJson
         AnimationVertices animationVert)
     {
         LineInterpolateAnimation(layer, animationDefault, animationVert, timeline);
-        // TryInterpolateAnimationByMatrix(layer, animationDefault, timeline);
-        // TrySteppedInterpolateAnimation(animationDefault, timeline);
     }
-
-    private void TryInterpolateAnimationByMatrix(KeyframeLayer layer, AnimationDefault animationDefault,
-        Timeline timeline)
-    {
-        if (!timeline.IsMatrixMix) return;
-        var srcMatrix = timeline.AnimationMatrix;
-        var dstMatrix = timeline.Next?.AnimationMatrix ?? srcMatrix;
-        for (var i = 1; i < timeline.Frames; i++)
-        {
-            var rate = i / timeline.Frames;
-            var vert = Matrix.Lerp(srcMatrix, dstMatrix, rate) * layer.DstMatrix;
-            animationDefault.ImageVertices.Add(new AnimationVertices
-            {
-                Time = _time + i * Instances.ConverterSetting.Fps,
-                Vertices = ProcessUtility.MinusFloats(vert.ToFloatArray(), layer.ZeroCenterPoints)
-            });
-        }
-    }
-
-    private void TrySteppedInterpolateAnimation(AnimationDefault animationDefault, Timeline timeline)
-    {
-        if (timeline.IsKeyframeMix || timeline.IsMatrixMix) return;
-        animationDefault.ImageVertices.Add(new AnimationVertices
-        {
-            Time = _time + timeline.Frames * Instances.ConverterSetting.Fps,
-            Vertices = animationDefault.ImageVertices[^1].Vertices
-        });
-    }
+    
 
     private void LineInterpolateAnimation(KeyframeLayer layer,
         AnimationDefault animationDefault,
@@ -193,12 +165,12 @@ public class ProcessSpine2DJson
                     break;
                 case AttachType.Slot:
                     var slot = timeline.Attach as Slot;
-                    keyframe = slot?.Attaches?.Find(x => x.AttachType == AttachType.Keyframe) as Keyframe;
+                    keyframe = slot?.Attaches?.First(x => x.AttachType == AttachType.Keyframe) as Keyframe;
                     ReleaseKeyframe(keyframe, framePoint);
                     break;
                 case AttachType.HitBox:
-                    if (timeline.Attach is Hitbox hitbox) ReleaseHitbox(hitbox);
-                    break;
+                    //if (timeline.Attach is Hitbox hitbox) ReleaseHitbox(hitbox);
+                    //break;
                 case AttachType.Animation:
                 case AttachType.Skeleton:
                 case null:
@@ -224,11 +196,11 @@ public class ProcessSpine2DJson
                 case AttachType.Slot:
                     var slot = timeline.Attach as Slot;
                     if (slot?.Attaches is null) continue;
-                    keyframe = slot.Attaches.Find(x => x.AttachType == AttachType.Keyframe) as Keyframe;
+                    keyframe = slot.Attaches.First(x => x.AttachType == AttachType.Keyframe) as Keyframe;
                     GetKeyframe(keyframe, timeline, framePoint);
                     break;
                 case AttachType.HitBox:
-                    if (timeline.Attach is not Hitbox hitbox) continue;
+                    // if (timeline.Attach is not Hitbox hitbox) continue;
                     // TODO: bugs
                     // GetHitbox(hitbox);
                     break;
@@ -429,7 +401,7 @@ public class ProcessSpine2DJson
         foreach (var hitbox in quadJsonData.Hitbox)
         {
             if (hitbox is null) continue;
-            for (var i = 0; i < hitbox.Layer.Count; i++)
+            for (var i = 0; i < hitbox.Layer.Length; i++)
             {
                 var hitboxLayerName = $"{hitbox.Name}_{i}";
                 hitbox.Layer[i].Name = hitboxLayerName;

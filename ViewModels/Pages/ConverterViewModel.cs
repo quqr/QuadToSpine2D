@@ -16,6 +16,7 @@ public partial class ConverterViewModel : ViewModelBase
 
     [ObservableProperty] private string _resultJsonUrl = "Result json path";
     [ObservableProperty] private bool _resultJsonUrlIsEnable;
+    [ObservableProperty] private bool _isProcessing;
 
     public ConverterViewModel()
     {
@@ -44,7 +45,7 @@ public partial class ConverterViewModel : ViewModelBase
         if (imagePaths.Count == 0)
         {
             ToastHelper.Error("No image paths found");
-            LoggerHelper.Warn("No image paths found");
+            LoggerHelper.Warning("No image paths found");
             return null;
         }
 
@@ -70,7 +71,7 @@ public partial class ConverterViewModel : ViewModelBase
         }
         else
         {
-            LoggerHelper.Warn("No quad file selected in ConverterModelView");
+            LoggerHelper.Warning("No quad file selected in ConverterModelView");
         }
     }
 
@@ -80,10 +81,17 @@ public partial class ConverterViewModel : ViewModelBase
         LoggerHelper.Info("Starting data processing");
         ResultJsonUrlIsEnable = false;
         Progress = 1;
+        IsProcessing = true;
         Task.Run(() =>
         {
             var imagePaths = ProcessImagePaths();
-            if (imagePaths is null) return;
+            imagePaths?.RemoveAll(x=>x.Count == 0);
+            if (imagePaths is null || imagePaths.Count == 0)
+            {
+                LoggerHelper.Error("The images has error.");
+                ToastHelper.Error("The images has error.");
+                return;
+            }
             LoggerHelper.Debug($"Processing {imagePaths.Count} image paths");
             Instances.ConverterSetting.ImagePath = imagePaths;
             new ProcessQuadData()
@@ -103,6 +111,7 @@ public partial class ConverterViewModel : ViewModelBase
                 LoggerHelper.Info("Data processing completed successfully");
                 ToastHelper.Success("Data processing completed successfully");
             }
+            IsProcessing = false;
         });
     }
 

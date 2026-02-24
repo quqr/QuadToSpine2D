@@ -9,9 +9,9 @@ public partial class ConverterSettingViewModel : ViewModelBase
     [ObservableProperty] private string _resultSavePath = Directory.GetCurrentDirectory();
     [ObservableProperty] private int _scaleFactor = 1;
 
-    public int FogTexId { get; set; } = 1000;
+    public static int FogTexId => 1000;
     public List<List<string?>> ImagePath { get; set; } = [];
-    public float Fps { get; set; } = 1 / 60f;
+    public static float Fps => 1 / 60f;
 
     [RelayCommand]
     private async Task OpenJsonSavePath()

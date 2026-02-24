@@ -94,18 +94,6 @@ public class ProcessQuadJsonFile
         //     .ToDictionary(z=>z.Attribute);
     }
 
-    private void ClearNullData()
-    {
-        QuadData.Skeleton.RemoveAll(x => x is null);
-        QuadData.Animation.RemoveAll(x => x is null || x.Id == -1);
-
-        foreach (var keyframe in QuadData.Keyframe) keyframe?.Layers?.RemoveAll(y => y is null);
-
-        QuadData.Keyframe.RemoveAll(x => x?.Layers is null || x.Layers.Count == 0);
-
-        QuadData.Hitbox.RemoveAll(x => x is null);
-    }
-
     private void SetAttaches(Animation? animation)
     {
         if (animation is null) return;
@@ -123,10 +111,10 @@ public class ProcessQuadJsonFile
             case AttachType.Keyframe:
                 return QuadData.Keyframe[targetId];
             case AttachType.Slot:
-                for (var index = 0; index < QuadData.Slot[targetId].Attaches!.Count; index++)
-                    QuadData.Slot[targetId].Attaches![index] = GetAttach(
-                        QuadData.Slot[targetId].Attaches![index].AttachType,
-                        QuadData.Slot[targetId].Attaches![index].Id)!;
+                for (var index = 0; index < QuadData.Slot[targetId].Attaches.Length; index++)
+                    QuadData.Slot[targetId].Attaches[index] = GetAttach(
+                        QuadData.Slot[targetId].Attaches[index].AttachType,
+                        QuadData.Slot[targetId].Attaches[index].Id)!;
                 return QuadData.Slot[targetId];
             case AttachType.HitBox:
                 return QuadData.Hitbox[targetId];

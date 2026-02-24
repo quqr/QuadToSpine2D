@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using SkiaSharp;
 
 namespace QTSAvalonia.Helper;

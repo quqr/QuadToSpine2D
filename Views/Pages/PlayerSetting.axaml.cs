@@ -3,9 +3,9 @@ using QTSAvalonia.ViewModels.Pages;
 
 namespace QTSAvalonia.Views.Pages;
 
-public partial class PreviewerSetting : UserControl
+public partial class PlayerSetting: UserControl
 {
-    public PreviewerSetting()
+    public PlayerSetting()
     {
         DataContext = Instances.ServiceProvider.GetRequiredService<PlayerSettingViewModel>();
         InitializeComponent();

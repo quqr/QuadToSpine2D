@@ -1,5 +1,3 @@
-using Avalonia.Platform.Storage;
-
 namespace QTSAvalonia.ViewModels.UserControls;
 
 public partial class ElementViewModel : ViewModelBase
@@ -56,7 +54,7 @@ public partial class ElementViewModel : ViewModelBase
         }
         else
         {
-            LoggerHelper.Warn("No files selected");
+            LoggerHelper.Warning("No files selected");
         }
     }
 }

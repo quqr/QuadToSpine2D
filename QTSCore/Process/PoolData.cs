@@ -4,19 +4,18 @@ namespace QTSCore.Process;
 
 public class PoolData
 {
-    private FramePoint _framePoint = new(-1);
     public required List<LayerData> LayersData { get; init; }
 
     public FramePoint FramePoint
     {
-        get => _framePoint;
+        get;
         set
         {
-            if (_framePoint.EndFrame != -1 && value.EndFrame != -1)
+            if (field.EndFrame != -1 && value.EndFrame != -1)
                 throw new InvalidOperationException("FramePoint is already set. Something went wrong.");
-            _framePoint = value;
+            field = value;
         }
-    }
+    } = new(-1);
 }
 
 public readonly struct FramePoint : IEquatable<FramePoint>

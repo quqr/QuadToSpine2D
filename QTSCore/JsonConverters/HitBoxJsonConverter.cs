@@ -20,7 +20,7 @@ public class HitboxJsonConverter : JsonConverter
         if (obj is not JObject jObject) return null;
         var json = new Hitbox
         {
-            Name = jObject["name"]?.ToString(), Layer = jObject["layer"]?.ToObject<List<HitboxLayer?>>(), Id = IdCount,
+            Name = jObject["name"]?.ToString() ?? string.Empty, Layer = jObject["layer"]?.ToObject<HitboxLayer[]>() ?? [], Id = IdCount,
             AttachType = AttachType.HitBox
         };
         return json;

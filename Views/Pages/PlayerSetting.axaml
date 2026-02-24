@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="QTSAvalonia.Views.Pages.PreviewerSetting"
+             x:Class="QTSAvalonia.Views.Pages.PlayerSetting"
              x:DataType="pages:PlayerSettingViewModel">
     <Design.DataContext>
         <pages:PlayerSettingViewModel />
@@ -60,6 +60,24 @@
                 <TextBlock
                     Margin="0,12,70,0"
                     Text="The image scale"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+        </DockPanel>
+        <DockPanel>
+            <NumericUpDown
+                     Minimum="1"
+                     FormatString="0"
+                     Value="{Binding ImageBorderThickness}"
+                     DockPanel.Dock="Right" 
+                     Width="200" />
+            <StackPanel HorizontalAlignment="Left">
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Image border thickness" />
+                <TextBlock
+                    Margin="0,12,70,0"
+                    Text="The image border thickness"
                     TextWrapping="Wrap" />
             </StackPanel>
         </DockPanel>

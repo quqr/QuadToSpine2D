@@ -21,41 +21,37 @@ public class KeyframeLayerJsonConverter : JsonConverter
         {
             Fog = ConvertToFog(jObject),
             TexId = jObject["tex_id"]?.ToObject<int>() ?? -1,
-            Dstquad = ProcessUtility.MulFloats(jObject["dstquad"]?.ToObject<float[]>(),
+            Dstquad = ProcessUtility.MulFloats(jObject["dstquad"]?.ToObject<float[]?>(),
                 Instances.ConverterSetting.ScaleFactor)!,
-            Srcquad = ProcessUtility.MulFloats(jObject["srcquad"]?.ToObject<float[]>(),
+            Srcquad = ProcessUtility.MulFloats(jObject["srcquad"]?.ToObject<float[]?>(),
                 Instances.ConverterSetting.ScaleFactor),
             BlendId = jObject["blend_id"]?.ToObject<int>() ?? -1,
             Attribute = ConvertToAttribute(jObject),
+            Colorize = jObject["colorize"]?.ToObject<string>() ?? string.Empty,
             AttachType = AttachType.KeyframeLayer
         };
     }
 
-    private List<string>? ConvertToAttribute(JObject jObject)
+    private string[] ConvertToAttribute(JObject jObject)
     {
         var baseAttribute = jObject["attribute"];
-        List<string>? attribute = null;
-        switch (baseAttribute?.Type)
+        var attribute = baseAttribute?.Type switch
         {
-            case JTokenType.Array:
-                attribute = baseAttribute.ToObject<List<string>>();
-                break;
-            case JTokenType.String:
-                attribute = [baseAttribute.ToString()];
-                break;
-        }
-
-        return attribute;
+            JTokenType.Array => baseAttribute.ToObject<string[]?>(),
+            JTokenType.String => [baseAttribute.ToString()],
+            _ => []
+        };
+        return attribute ?? [];
     }
 
-    private List<string> ConvertToFog(JObject jObject)
+    private string[] ConvertToFog(JObject jObject)
     {
         var baseFog = jObject["fogquad"];
-        List<string>? fog = [];
+        string[]? fog = [];
         switch (baseFog?.Type)
         {
             case JTokenType.Array:
-                fog = baseFog.ToObject<List<string>>();
+                fog = baseFog.ToObject<string[]>();
                 break;
             case JTokenType.String:
                 var result = baseFog.ToString();
@@ -63,7 +59,7 @@ public class KeyframeLayerJsonConverter : JsonConverter
                 break;
         }
 
-        if (fog is null || fog.Count == 0) fog = ["#ffffffff", "#ffffffff", "#ffffffff", "#ffffffff"];
+        if (fog is null || fog.Length == 0) fog = ["#ffffffff", "#ffffffff", "#ffffffff", "#ffffffff"];
         return fog;
     }
 

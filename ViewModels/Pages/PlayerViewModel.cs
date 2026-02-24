@@ -1,6 +1,7 @@
+using System.Collections.Specialized;
 using System.Drawing;
-using System.Threading;
 using Avalonia.Media.Imaging;
+using Avalonia.Skia;
 using Microsoft.Extensions.DependencyInjection;
 using QTSCore.Data.Quad;
 using QTSCore.Process;
@@ -17,17 +18,19 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
     private static readonly ushort[] Indices = [0, 1, 2, 0, 2, 3];
     private readonly Dictionary<string, Bitmap> _frameCache = new(); // Frame cache
-    private readonly List<SKBitmap> _sourceImages = [];
+    private readonly List<SKImage> _sourceImages = [];
     private readonly SKSurface _surface = SKSurface.Create(new SKImageInfo(CanvasSize, CanvasSize));
 
     [ObservableProperty] private ObservableCollection<Button> _animations = [];
 
     [ObservableProperty] private int _currentFrame;
+    public int ImageBorderThickness => Settings.ImageBorderThickness;
 
     [ObservableProperty] private Bitmap? _image;
 
 
     [ObservableProperty] private ObservableCollection<string> _imagePaths = [];
+    [ObservableProperty] private ObservableCollection<ColorPicker> _colorize = [];
 
     [ObservableProperty] private bool _isLoading;
 
@@ -53,11 +56,49 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     private static int CanvasSize => Settings.CanvasSize;
     private static float CenterX => CanvasSize / 2f;
     private static float CenterY => CanvasSize / 2f;
-    private float Fps => 1 / Settings.Fps;
+    private static float Fps => 1 / Settings.Fps;
 
     private Animation? CurrentAnimation { get; set; }
     private QuadSkeleton? CurrentSkeleton { get; set; }
     private SKCanvas Canvas => _surface.Canvas;
+
+    public PlayerViewModel()
+    {
+        Colorize.CollectionChanged += ColorizeOnCollectionChanged;
+    }
+
+    private Dictionary<string, SKColor> ColorizeColors { get; set; } = [];
+
+    private void ColorizeOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        switch (e.Action)
+        {
+            case NotifyCollectionChangedAction.Add:
+                foreach (var item in e.NewItems)
+                {
+                    if (item is not ColorPicker colorPicker) continue;
+                    colorPicker.ColorChanged += ColorPickerOnColorChanged;
+                }
+
+                break;
+            case NotifyCollectionChangedAction.Remove:
+                foreach (var item in e.OldItems)
+                {
+                    if (item is not ColorPicker colorPicker) continue;
+                    colorPicker.ColorChanged -= ColorPickerOnColorChanged;
+                    ColorizeColors.Remove(colorPicker.Content.ToString());
+                }
+
+                break;
+        }
+    }
+
+    private void ColorPickerOnColorChanged(object? sender, ColorChangedEventArgs e)
+    {
+        if (sender is not ColorPicker colorPicker) return;
+        ColorizeColors[colorPicker.Content.ToString()] = e.NewColor.ToSKColor();
+        ReDraw();
+    }
 
     public void Dispose()
     {
@@ -70,16 +111,16 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private void DrawAttach(Attach? attach)
     {
-        DrawAttach(attach, Matrix.IdentityMatrixBy4X4, Color.White);
-    }    
+        DrawAttach(attach, Matrix.IdentityMatrixBy4X4, SKColors.Transparent);
+    }
 
-    private void DrawAttach(Attach? attach, Matrix matrix, Color color)
+    private void DrawAttach(Attach? attach, Matrix matrix, SKColor color)
     {
         if (attach is null) return;
         switch (attach.AttachType)
         {
             case AttachType.KeyframeLayer:
-                DrawKeyframeLayer(attach,matrix,color);
+                DrawKeyframeLayer(attach, matrix, color);
                 break;
             case AttachType.Keyframe:
                 DrawKeyframe(attach, matrix, color);
@@ -107,20 +148,20 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         }
     }
 
-    private void DrawKeyframeLayer(Attach attach, Matrix matrix, Color color)
+    private void DrawKeyframeLayer(Attach attach, Matrix matrix, SKColor color)
     {
         if (attach is not KeyframeLayer keyframeLayer) return;
-        DrawKeyframeLayer(matrix,keyframeLayer);
+        DrawKeyframeLayer(matrix, keyframeLayer, color);
     }
 
-    private void DrawSkeleton(Attach attach, Matrix matrix, Color color)
+    private void DrawSkeleton(Attach attach, Matrix matrix, SKColor color)
     {
         foreach (var bone in _quadJsonData.Skeleton[attach.Id].Bone) DrawAttach(bone.Attach, matrix, color);
     }
 
     private (int currentFrameIndex, int currentTime) GetAnimationTimeIndex(int currentTime, Animation animation)
     {
-        for (var index = 0; index < animation.Timeline.Count; index++)
+        for (var index = 0; index < animation.Timeline.Length; index++)
         {
             currentTime -= animation.Timeline[index].Time;
             if (currentTime < 0) return (index, -currentTime);
@@ -129,7 +170,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         return animation.IsLoop ? (-1, 0) : (animation.LoopId, currentTime);
     }
 
-    private (Attach attach, Matrix matrix, Color color) DrawAnimation(Attach attach, Matrix matrix, Color color)
+    private (Attach attach, Matrix matrix, SKColor color) DrawAnimation(Attach attach, Matrix matrix, SKColor color)
     {
         var result = (new Attach(AttachType.None, -1), matrix, color);
         var animation = _quadJsonData.Animation[attach.Id];
@@ -137,7 +178,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         if (currentFrameIndex < 0) return result;
         var curTimeline = animation.Timeline[currentFrameIndex];
         var nextFrameIndex = currentFrameIndex + 1;
-        if (nextFrameIndex >= animation.Timeline.Count)
+        if (nextFrameIndex >= animation.Timeline.Length)
             nextFrameIndex = !animation.IsLoop ? currentFrameIndex : animation.LoopId;
 
         var nextTimeline = animation.Timeline[nextFrameIndex];
@@ -150,7 +191,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         }
 
         var rate = (float)currentTime / curTimeline.Time;
-        var m4 = curTimeline.IsMatrixMix
+        var m4 = curTimeline.MatrixMixId != -1
             ? curTimeline.AnimationMatrix
             : Matrix.Lerp(curTimeline.AnimationMatrix, nextTimeline.AnimationMatrix, rate);
         //result.matrix *= m4; bugs
@@ -159,7 +200,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         return result;
     }
 
-    private void DrawHitBox(Attach attach, Matrix matrix, Color color)
+    private void DrawHitBox(Attach attach, Matrix matrix, SKColor color)
     {
         var hitboxes = _quadJsonData.Hitbox[attach.Id]?.Layer;
         if (hitboxes is null) return;
@@ -180,10 +221,10 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             path.AddPoly(destPoints);
 
             using var paint = new SKPaint();
-            paint.Style       = SKPaintStyle.Stroke;      // 描边模式
-            paint.Color       = SKColor.Parse("#ffffff"); // 设置颜色
-            paint.StrokeWidth = 2;                        // 描边宽度
-            paint.IsAntialias = true;                     // 抗锯齿
+            paint.Style = SKPaintStyle.Stroke; // 描边模式
+            paint.Color = color; // 设置颜色
+            paint.StrokeWidth = 2; // 描边宽度
+            paint.IsAntialias = true; // 抗锯齿
 
             // 绘制矩形
             Canvas.DrawPath(path, paint);
@@ -191,12 +232,12 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     }
 
 
-    private void DrawSlot(Attach attach, Matrix matrix, Color color)
+    private void DrawSlot(Attach attach, Matrix matrix, SKColor color)
     {
         foreach (var att in _quadJsonData.Slot[attach.Id].Attaches) DrawAttach(att, matrix, color);
     }
 
-    private void DrawKeyframe(Attach attach, Matrix matrix, Color color)
+    private void DrawKeyframe(Attach attach, Matrix matrix, SKColor color)
     {
         var keyframe = _quadJsonData.Keyframe[attach.Id];
         if (keyframe?.Layers is null) return;
@@ -205,21 +246,39 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         {
             var layer = keyframe.Layers[order];
             if (layer is null) continue;
-            
-            DrawKeyframeLayer(matrix, layer);
+
+            DrawKeyframeLayer(matrix, layer, color);
         }
     }
 
-    private void DrawKeyframeLayer(Matrix matrix, KeyframeLayer layer)
+    private readonly Dictionary<int,SKImage> _imageCache = [];
+    private void DrawKeyframeLayer(Matrix matrix, KeyframeLayer layer, SKColor color)
     {
+        var srcRect = SKRectI.Create((int)layer.SrcX, (int)layer.SrcY, (int)layer.Width, (int)layer.Height);
 
-        var       srcRect      = SKRectI.Create((int)layer.SrcX, (int)layer.SrcY, (int)layer.Width, (int)layer.Height);
-        using var sourceBitmap = GetImage(layer, srcRect);
-        if (sourceBitmap is null) return;
+        if (ColorizeColors.TryGetValue(layer.Colorize, out var clr))
+        {
+            color = clr;
+        }
+        else if (!layer.Colorize.Equals(string.Empty))
+        {
+            ColorizeColors.TryAdd(layer.Colorize, SKColors.White);
+            Colorize.Add(new ColorPicker { Content = layer.Colorize });
+        }
+        
+        SKImage? skImage;
+        if (_imageCache.TryGetValue(srcRect.GetHashCode(), out var image))
+            skImage = image;
+        else
+        {
+            skImage = GetImage(layer, srcRect, color);
+            if (skImage is null) return;
+            _imageCache.TryAdd(srcRect.GetHashCode(), skImage);
+        }
 
         // Calculate transformation matrix
         var vertexMatrix = matrix * layer.DstMatrix;
-        var vertices     = vertexMatrix.ToFloatArray();
+        var vertices = vertexMatrix.ToFloatArray();
 
         // Target points (relative to canvas center)
         var destPoints = new[]
@@ -229,13 +288,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             new SKPoint(vertices[4] * ImageScaleFactor + CenterX, vertices[5] * ImageScaleFactor + CenterY),
             new SKPoint(vertices[6] * ImageScaleFactor + CenterX, vertices[7] * ImageScaleFactor + CenterY)
         };
-        foreach (var point in destPoints)
-        {
-            if (point.X < -CenterX )
-            {
-                Console.WriteLine();
-            }
-        }
+
         // Texture coordinates (relative to crop area)
         var texturePoints = new[]
         {
@@ -252,11 +305,11 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             null,
             Indices);
 
-        using var shader = SKShader.CreateBitmap(sourceBitmap);
-        using var paint  = new SKPaint();
-        paint.Shader      = shader;
+        using var shader = SKShader.CreateImage(skImage);
+        using var paint = new SKPaint();
+        paint.Shader = shader;
         paint.IsAntialias = true;
-        paint.BlendMode   = layer.BlendId > 0 ? SKBlendMode.Plus : SKBlendMode.SrcOver;
+        paint.BlendMode = layer.BlendId > 0 ? SKBlendMode.Plus : SKBlendMode.SrcOver;
 
         Canvas.DrawVertices(
             verticesObj,
@@ -264,11 +317,11 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             paint);
     }
 
-    private SKBitmap? GetImage(KeyframeLayer layer, SKRectI srcRect)
+    private SKImage? GetImage(KeyframeLayer layer, SKRectI srcRect, SKColor color)
     {
         if (layer.TexId >= _sourceImages.Count || layer.TexId < 0) return GetFogBitmap(layer.Fog);
-        var sourceBitmap = _sourceImages[layer.TexId];
-        var croppedImage = CropBitmap(sourceBitmap, srcRect);
+        var sourceImage = _sourceImages[layer.TexId];
+        var croppedImage = CropImage(sourceImage, srcRect, color);
         if (croppedImage is null)
         {
             LoggerHelper.Error("Failed to crop image",
@@ -280,9 +333,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         return croppedImage;
     }
 
-    private static SKBitmap? GetFogBitmap(List<string> colors)
+    private static SKImage? GetFogBitmap(string[] colors)
     {
-        if (colors.Count < 4)
+        if (colors.Length < 4)
         {
             LoggerHelper.Error("Fog effect requires at least 4 color values");
             return null;
@@ -301,16 +354,16 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         using var paint = new SKPaint();
         paint.Shader = shader;
         canvas.DrawRect(new SKRect(0, 0, 256, 256), paint);
-        return SKBitmap.FromImage(surface.Snapshot());
+        return surface.Snapshot();
     }
 
     private void Render()
     {
-        Image = SKBitmap.FromImage(_surface.Snapshot()).ToBitmap();
-        //_frameCache.TryAdd(GenerateCacheKey(CurrentAnimation, CurrentFrame), Image);
+        DispatcherHelper.RunOnMainThreadAsync(() => { Image = SKBitmap.FromImage(_surface.Snapshot()).ToBitmap(); });
+        // _frameCache.TryAdd(GenerateCacheKey(CurrentAnimation, CurrentFrame), Image);
     }
 
-    private SKBitmap? CropBitmap(SKBitmap? source, SKRectI srcRect)
+    private SKImage? CropImage(SKImage? source, SKRectI srcRect, SKColor color)
     {
         if (source == null || srcRect.Width <= 0 || srcRect.Height <= 0)
             return null;
@@ -319,18 +372,18 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         var safeRect = SKRectI.Intersect(srcRect, new SKRectI(0, 0, source.Width, source.Height));
         if (safeRect.Width <= 0 || safeRect.Height <= 0)
             return null;
+        
+        using var surface = SKSurface.Create(new SKImageInfo(safeRect.Width, safeRect.Height));
+        surface.Canvas.DrawImage(source, -safeRect.Left, -safeRect.Top);
+        var image = surface.Snapshot();
 
-        var cropped = new SKBitmap(safeRect.Width, safeRect.Height);
-        using var canvas = new SKCanvas(cropped);
-        canvas.DrawBitmap(source, -safeRect.Left, -safeRect.Top);
-
-        return cropped;
+        return image;
     }
 
     [RelayCommand]
-    public void Draw(Attach attach)
+    private void Draw(Attach attach)
     {
-        DrawAttach(attach, Matrix.IdentityMatrixBy4X4, Color.White);
+        DrawAttach(attach, Matrix.IdentityMatrixBy4X4, SKColors.Transparent);
     }
 
     private void SetSkeletons()
@@ -339,7 +392,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
         if (_quadJsonData?.Skeleton is null)
         {
-            LoggerHelper.Warn("QuadJsonData or Skeleton is null");
+            LoggerHelper.Warning("QuadJsonData or Skeleton is null");
             return;
         }
 
@@ -358,7 +411,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     {
         if (string.IsNullOrEmpty(_quadFilePath) || !ImagePaths.Any())
         {
-            LoggerHelper.Warn("Missing quad file or images");
+            LoggerHelper.Warning("Missing quad file or images");
             ToastHelper.Error("ERROR", "Please select Quad file and image files first");
             return;
         }
@@ -418,7 +471,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             }
 
             LoggerHelper.Debug(
-                $"Quad file loaded. Skeletons: {_quadJsonData.Skeleton?.Count ?? 0}, Animations: {_quadJsonData.Animation?.Count ?? 0}");
+                $"Quad file loaded. Skeletons: {_quadJsonData.Skeleton?.Length ?? 0}, Animations: {_quadJsonData.Animation?.Length ?? 0}");
         }
         catch (JsonException ex)
         {
@@ -441,7 +494,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             try
             {
                 await using var stream = File.OpenRead(path);
-                var skImage = SKBitmap.Decode(stream);
+                var skImage = SKImage.FromEncodedData(stream);
                 if (skImage is null)
                 {
                     LoggerHelper.Error("Cannot decode image",
@@ -467,9 +520,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private async Task PlayAnimationAsync()
     {
-        if (CurrentAnimation?.Timeline is null || CurrentAnimation.Timeline.Count == 0)
+        if (CurrentAnimation?.Timeline is null || CurrentAnimation.Timeline.Length == 0)
         {
-            LoggerHelper.Warn("No valid animation to play");
+            LoggerHelper.Warning("No valid animation to play");
             ToastHelper.Warn("WARNING", "No animation available to play");
             return;
         }
@@ -585,6 +638,15 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         Render();
     }
 
+    void ReDraw()
+    {
+        Canvas.Clear();
+
+        foreach (var bone in CurrentSkeleton.Bone) Draw(bone.Attach);
+
+        Render();
+    }
+
     [RelayCommand]
     private async Task OpenQuadFilePickerAsync()
     {
@@ -592,7 +654,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         var file = await AvaloniaFilePickerService.OpenQuadFileAsync();
         if (file?.Count > 0)
         {
-            QuadFileName  = file[0].Name;
+            QuadFileName = file[0].Name;
             _quadFilePath = file[0].Path.LocalPath;
             LoggerHelper.Info($"Selected quad file: {QuadFileName}");
             ToastHelper.Success("SUCCESS", $"Selected: {QuadFileName}");
@@ -622,7 +684,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
     private Animation? GetSafeAnimation(int id)
     {
-        if (_quadJsonData?.Animation is null || id < 0 || id >= _quadJsonData.Animation.Count)
+        if (_quadJsonData?.Animation is null || id < 0 || id >= _quadJsonData.Animation.Length)
             return null;
         return _quadJsonData.Animation[id];
     }
@@ -632,14 +694,14 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     {
         if (attach?.AttachType != AttachType.Animation)
         {
-            LoggerHelper.Warn($"Invalid attach type: {attach?.AttachType}");
+            LoggerHelper.Warning($"Invalid attach type: {attach?.AttachType}");
             return;
         }
 
         var animation = GetSafeAnimation(attach.Id);
         if (animation?.Timeline is null)
         {
-            LoggerHelper.Warn($"Animation not found or invalid: ID {attach.Id}");
+            LoggerHelper.Warning($"Animation not found or invalid: ID {attach.Id}");
             return;
         }
 
@@ -649,6 +711,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         CurrentFrame = 0;
         TotalFrames = animation.Timeline.Sum(x => x.Time);
         Keyframes.Clear();
+        Layers.Clear();
 
         foreach (var timeline in animation.Timeline.Where(t => t.Attach is not null))
         {
@@ -657,48 +720,52 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
                 case AttachType.Keyframe:
                     Keyframes.Add(new Button
                     {
-                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = SetLayersCommand, CommandParameter = timeline.Attach
+                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = SetLayersCommand,
+                        CommandParameter = timeline.Attach
                     });
                     break;
                 case AttachType.HitBox:
                     Keyframes.Add(new Button
                     {
-                        Content          = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = DrawHitboxAttachCommand,
+                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}",
+                        Command = DrawHitboxAttachCommand,
                         CommandParameter = timeline.Attach
                     });
                     break;
             }
-
         }
 
         LoggerHelper.Debug($"Set {Keyframes.Count} animation timelines");
     }
-    
+
     [RelayCommand]
     private void SetLayers(Attach? attach)
     {
-        if(attach is null) return;
+        if (attach is null) return;
         Layers.Clear();
         var layers = _quadJsonData.Keyframe[attach.Id].Layers;
         if (layers is null) return;
-        for (var index = 0; index < layers.Count; index++)
+        for (var index = 0; index < layers.Length; index++)
         {
             Layers.Add(new Button
             {
                 Content = $"layer {index}", Command = DrawKeyframeLayerAttachCommand, CommandParameter = layers[index]
             });
         }
+
         Canvas.Clear();
         DrawAttach(attach);
         Render();
     }
+
     [RelayCommand]
     private void DrawKeyframeLayerAttach(KeyframeLayer? attach)
     {
         Canvas.Clear();
         DrawAttach(attach);
         Render();
-    }    
+    }
+
     [RelayCommand]
     private void DrawHitboxAttach(Attach? attach)
     {
@@ -706,12 +773,13 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         DrawAttach(attach);
         Render();
     }
+
     [RelayCommand]
     private void SetAnimations(QuadSkeleton? skeleton)
     {
         if (skeleton?.Bone is null)
         {
-            LoggerHelper.Warn("Invalid skeleton or no bones");
+            LoggerHelper.Warning("Invalid skeleton or no bones");
             return;
         }
 
@@ -739,7 +807,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         Image?.Dispose();
         Image = null;
         foreach (var bitmap in _sourceImages) bitmap?.Dispose();
-
+        foreach (var image in _imageCache) image.Value?.Dispose();
+        Colorize.Clear();
+        ColorizeColors.Clear();
         _sourceImages.Clear();
 
         // Clean up cache
@@ -774,21 +844,20 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private async Task QuicklyLoad()
     {
-        // _quadFilePath = "/Users/loop/Downloads/Test/ps4 odin REHD_Gwendlyn.mbs.v55.quad";
-        // ImagePaths =
-        // [
-        //     "/Users/loop/Downloads/Test/ps4 odin HD_Gwendlyn.0.gnf.png",
-        //     "/Users/loop/Downloads/Test/ps4 odin HD_Gwendlyn.1.gnf.png",
-        //     "/Users/loop/Downloads/Test/ps4 odin HD_Gwendlyn.2.gnf.png"
-        // ];
-        _quadFilePath =
-            @"F:\Codes\Test\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
+        _quadFilePath = "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M.mbs.v55.quad";
         ImagePaths =
         [
-            @"F:\Codes\Test\ps4 odin HD_Gwendlyn.0.gnf.png",
-            @"F:\Codes\Test\ps4 odin HD_Gwendlyn.1.gnf.png",
-            @"F:\Codes\Test\ps4 odin HD_Gwendlyn.2.gnf.png"
+            "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.0.nvt.png",
+            "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.1.nvt.png",
         ];
+        // _quadFilePath =
+        //     @"F:\Codes\Test\ps4 odin REHD_Gwendlyn.mbs.v55.quad";
+        // ImagePaths =
+        // [
+        //     @"F:\Codes\Test\ps4 odin HD_Gwendlyn.0.gnf.png",
+        //     @"F:\Codes\Test\ps4 odin HD_Gwendlyn.1.gnf.png",
+        //     @"F:\Codes\Test\ps4 odin HD_Gwendlyn.2.gnf.png"
+        // ];
         await LoadAsync();
     }
 }

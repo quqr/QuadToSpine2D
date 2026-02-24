@@ -1,64 +1,89 @@
 ﻿using QTSAvalonia.Helper;
+using QTSAvalonia.ViewModels.Pages;
 using QTSCore.JsonConverters;
 using QTSCore.Process;
 using QTSCore.Utility;
+using SkiaSharp;
 using Matrix = QTSCore.Utility.Matrix;
 
 namespace QTSCore.Data.Quad;
 
 public class QuadJsonData
 {
-    public List<Keyframe?>     Keyframe  { get; set; } = [];
-    public List<Animation?>    Animation { get; set; } = [];
-    public List<QuadSkeleton?> Skeleton  { get; set; } = [];
-    public List<Slot>          Slot      { get; set; } = [];
-    public List<Hitbox?>?      Hitbox    { get; set; } = [];
+    public Keyframe?[] Keyframe { get; set; } = [];
+    public Animation?[] Animation { get; set; } = [];
+    public QuadSkeleton?[] Skeleton { get; set; } = [];
+    public Slot[] Slot { get; set; } = [];
+    public Hitbox?[] Hitbox { get; set; } = [];
+    public Blend[] Blend { get; set; } = [];
+    public Mix[] Mix { get; set; } = [];
+    public Link[] Link { get; set; } = [];
+    
+}
+
+public class Blend
+{
+    public string Name { get; set; } = string.Empty;
+    public string[] ModeRgb { get; set; } = [];
+    public string[] ModeAlpha { get; set; } = [];
+    public string Color { get; set; } = string.Empty;
+    [JsonIgnore]
+    public string[] LogicOp { get; set; } = [];
+}
+
+public class Mix
+{
+    //TODO
+}
+
+public class Link
+{
+    //TODO
 }
 
 [JsonConverter(typeof(HitboxJsonConverter))]
 public class Hitbox : Attach
 {
-    public string Name { get; set; }
-    public List<HitboxLayer> Layer { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public HitboxLayer[] Layer { get; set; }=[];
 }
 
 public class HitboxLayer
 {
-    public string Name { get; set; }
-    public float[] Hitquad { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public float[] Hitquad { get; set; } = [];
 }
 
 [JsonConverter(typeof(SlotJsonConverter))]
 public class Slot : Attach
 {
-    public List<Attach>? Attaches { get; set; }
+    public Attach[]? Attaches { get; set; }
 }
 
 [JsonConverter(typeof(KeyframeJsonConverter))]
 public class Keyframe : Attach
 {
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
 
-    public List<KeyframeLayer?>? Layers { get; set; } = [];
-    public List<int> Order { get; set; } = [];
+    public KeyframeLayer?[]? Layers { get; set; } = [];
+    public int[] Order { get; set; } = [];
 }
 
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
 public class KeyframeLayer : Attach
 {
-    private float[] _dstquad = [];
     private float[]? _srcquad = [];
 
     public float[] Dstquad
     {
-        get => _dstquad;
+        get;
         set
         {
             DstMatrix = new Matrix(4, 2, value);
             //Y is down, so we need to flip it to up
-            _dstquad = value;
+            field = value;
         }
-    }
+    } = [];
 
     public Matrix DstMatrix { get; set; }
 
@@ -68,7 +93,7 @@ public class KeyframeLayer : Attach
         set
         {
             _srcquad = value;
-            if (_srcquad is null)
+            if (_srcquad is null || _srcquad.Length < 8)
             {
                 Guid = $"Fog_{Fog[0]}_{Fog[1]}_{Fog[2]}_{Fog[3]}";
                 return;
@@ -90,14 +115,13 @@ public class KeyframeLayer : Attach
         get;
         set
         {
-            if (value > -1)
+            if (value >= -1)
             {
                 field = value;
                 return;
             }
-
             // fog tex id
-            field = Instances.ConverterSetting.FogTexId;
+            field = ConverterSettingViewModel.FogTexId;
         }
     }
 
@@ -110,8 +134,8 @@ public class KeyframeLayer : Attach
     public float[] UVs { get; set; } = new float[8];
     public float[] ZeroCenterPoints { get; set; } = new float[8];
     public string LayerName { get; set; } = string.Empty;
-    public List<string> Fog { get; set; } = [];
-    public List<string>? Attribute { get; set; } = [];
+    public string[] Fog { get; set; } = [];
+    public string[] Attribute { get; set; } = [];
     public string Colorize { get; set; } = string.Empty;
 
     private void CalculateGuid()
@@ -119,7 +143,7 @@ public class KeyframeLayer : Attach
         MinAndMaxSrcPoints = ProcessUtility.FindMinAndMaxPoints(_srcquad);
         Width = MinAndMaxSrcPoints[2] - MinAndMaxSrcPoints[0];
         Height = MinAndMaxSrcPoints[3] - MinAndMaxSrcPoints[1];
-        Guid = $"{TexId}_{_srcquad
+        Guid = $"{TexId}_{_srcquad!
             .Select((t, i) => t * 3.7 / 7.3 + t * i * 97311397.135f / 773377.2746f)
             .Sum()}";
     }
@@ -155,63 +179,57 @@ public class KeyframeLayer : Attach
 
 public class Animation : Attach
 {
-    private string _name;
-
     public string Name
     {
-        get => _name;
+        get;
         set
         {
-            _name = value;
-            var splitName = _name.Split(' ');
+            field = value;
+            var splitName = field.Split(' ');
             // avoid "ALL KEYFRAMES"
             if (!splitName[0].Equals("animation")) return;
             Id = Convert.ToInt32(splitName[^1]);
             AttachType = AttachType.Animation;
         }
-    }
+    } = string.Empty;
 
-    private List<Timeline> _timeline { get; set; }
-
-    public List<Timeline> Timeline
+    public Timeline[] Timeline
     {
-        get => _timeline;
+        get;
         set
         {
-            for (var i = 0; i < value.Count; i++)
+            for (var i = 0; i < value.Length; i++)
             {
                 value[i].Prev = i > 0 ? value[i - 1] : null;
-                value[i].Next = i < value.Count - 1 ? value[i + 1] : null;
+                value[i].Next = i < value.Length - 1 ? value[i + 1] : null;
             }
 
-            _timeline = value;
+            field = value;
         }
-    }
+    } = [];
 
     public bool IsLoop { get; set; }
-    public int LoopId { get; set; }
 
     [JsonProperty]
-    private int loop_id
+    public int LoopId
     {
+        get;
         set
         {
             IsLoop = value >= 0;
-            LoopId = value;
+            field = value;
         }
     }
 }
 
 public class Timeline
 {
-    private Timeline? _prev;
-
     public Timeline? Prev
     {
-        get => _prev;
+        get;
         set
         {
-            _prev = value;
+            field = value;
             StartFrame = value?.EndFrame ?? 0;
             EndFrame = StartFrame + Frames;
         }
@@ -224,17 +242,16 @@ public class Timeline
     public int EndFrame { get; set; }
     public FramePoint FramePoint { get; set; }
     public Attach? Attach { get; set; }
-    public bool IsKeyframeMix { get; private set; }
-
-    [JsonProperty]
-    private int keyframe_mix
-    {
-        set => IsKeyframeMix = value > 0;
-    }
-
+    
+    public string Color { get; set; } = string.Empty;
+    public int MatrixMixId { get; set; }
+    public int ColorMixId { get; set; }
+    public int DstquadMixId { get; set; }
+    public int FogquadMixId { get; set; }
+    public int SrcquadMixId { get; set; }
+    public int HitquadMixId { get; set; }
     public Matrix AnimationMatrix { get; private init; } = Utility.Matrix.IdentityMatrixBy4X4;
 
-    [JsonProperty]
     private float[]? Matrix
     {
         init
@@ -242,14 +259,6 @@ public class Timeline
             if (value is null) return;
             AnimationMatrix = new Matrix(4, 4, value);
         }
-    }
-
-    public bool IsMatrixMix { get; private set; }
-
-    [JsonProperty]
-    private int MatrixMix
-    {
-        set => IsMatrixMix = value > 0;
     }
 
     public Timeline Clone()
@@ -263,9 +272,7 @@ public class Timeline
             EndFrame = EndFrame,
             FramePoint = FramePoint,
             Attach = Attach,
-            IsKeyframeMix = IsKeyframeMix,
             AnimationMatrix = AnimationMatrix,
-            IsMatrixMix = IsMatrixMix
         };
     }
 }
@@ -331,12 +338,12 @@ public enum AttachType
 [JsonConverter(typeof(SkeletonJsonConverter))]
 public class QuadSkeleton : Attach
 {
-    public string Name { get; set; }
-    public List<QuadBone>? Bone { get; set; }
-    public AnimationData CombineAnimation { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public QuadBone[]? Bone { get; set; } = [];
+    [JsonIgnore] public AnimationData CombineAnimation { get; set; } = new();
 }
 
 public class QuadBone
 {
-    public Attach Attach { get; set; }
+    public Attach Attach { get; set; } = new();
 }

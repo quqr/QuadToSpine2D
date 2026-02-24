@@ -69,7 +69,7 @@ public static class ProcessUtility
     {
         var newAnimation = new AnimationData();
 
-        var maxFrame = animations.Max(x => x.Timeline.Max(y => y.EndFrame));
+        var maxFrame = animations.Max(x => x!.Timeline.Max(y => y.EndFrame));
 
         foreach (var animation in animations)
         {
@@ -78,7 +78,7 @@ public static class ProcessUtility
 
             foreach (var timeline in animation.Timeline)
             {
-                newAnimation.IsMix = timeline.IsKeyframeMix | timeline.IsMatrixMix | newAnimation.IsMix;
+                newAnimation.IsMix = timeline.DstquadMixId != -1 | timeline.MatrixMixId != -1 | newAnimation.IsMix;
                 SetAttachmentsData(newAnimation, timeline, timeline.StartFrame,
                     timeline.EndFrame);
             }
@@ -101,7 +101,7 @@ public static class ProcessUtility
         if (!animation.IsLoop || animation.Timeline[^1].EndFrame == maxFrame) return;
         var lastTimeline = animation.Timeline[^1];
         while (true)
-            for (var j = animation.LoopId; j < animation.Timeline.Count; j++)
+            for (var j = animation.LoopId; j < animation.Timeline.Length; j++)
             {
                 var newTimeline = animation.Timeline[animation.LoopId].Clone();
 

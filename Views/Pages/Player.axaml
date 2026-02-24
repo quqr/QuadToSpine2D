@@ -1,3 +1,4 @@
+<!-- 动画预览器用户控件 -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,10 +11,13 @@
              xmlns:userControls="clr-namespace:QTSAvalonia.ViewModels.UserControls"
              xmlns:fluent="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
              x:DataType="pages:PlayerViewModel">
+    <!-- 设计时数据上下文，用于设计器预览 -->
     <Design.DataContext>
         <pages:PlayerViewModel />
     </Design.DataContext>
+    <!-- 用户控件样式定义 -->
     <UserControl.Styles>
+        <!-- 虚线坐标轴样式 -->
         <Style Selector="Path.dashed-axis">
             <Setter Property="StrokeDashArray" Value="1.5,1" />
             <Setter Property="StrokeThickness" Value="2" />
@@ -21,53 +25,75 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center" />
         </Style>
+
+        <!-- 分割器基础样式 -->
         <Style Selector="GridSplitter">
             <Setter Property="Background" Value="WhiteSmoke" />
             <Setter Property="CornerRadius" Value="2" />
             <Setter Property="Opacity" Value="0.6" />
         </Style>
+
+        <!-- 分割器悬停样式 -->
         <Style Selector="GridSplitter:pointerover">
             <Setter Property="Background" Value="#60FFFFFF" />
             <Setter Property="Opacity" Value="1" />
         </Style>
+
+        <!-- 分割器按下样式 -->
         <Style Selector="GridSplitter:pressed">
             <Setter Property="Background" Value="#80FFFFFF" />
         </Style>
     </UserControl.Styles>
+    <!-- 主容器面板 -->
     <Panel>
+        <!-- 主网格布局：预览区域(8.5*) + 分割条(0.1*) + 控制区域(1.5*) -->
         <Grid RowDefinitions="8.5*,0.1*,1.5*">
+            <!-- 上方网格：左侧控制面板(5*) + 分割条(0.1*) + 右侧预览区域(5*) -->
             <Grid Grid.Row="0" ColumnDefinitions="5*,0.1*,5*">
+                <!-- 右侧预览区域卡片 -->
                 <suki:GlassCard Grid.Column="2" Margin="5">
+                    <!-- 预览区域网格：图像显示区(9*) + 控制面板(1*) -->
                     <Grid RowDefinitions="9*,1*">
+                        <!-- 可缩放的图像边界容器 -->
                         <paz:ZoomBorder
-                            Stretch="None" ZoomSpeed="1.1"
+                            Stretch="None" ZoomSpeed="1.05"
                             ClipToBounds="True" Focusable="True"
                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                            MinZoomX="0.1"
-                            MinZoomY="0.1"
-                            MaxZoomX="5"
-                            MaxZoomY="5">
+                            MinZoomX="0.05"
+                            MinZoomY="0.05"
+                            MaxZoomX="10"
+                            MaxZoomY="10">
+                            <!-- 图像渲染容器 -->
                             <Grid>
+                                <!-- 渲染变换：使坐标系居中 -->
                                 <Grid.RenderTransform>
                                     <TranslateTransform
                                         X="{Binding Bounds.Width, RelativeSource={RelativeSource AncestorType=paz:ZoomBorder}}"
                                         Y="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=paz:ZoomBorder}}" />
                                 </Grid.RenderTransform>
+
+                                <!-- 棋盘背景 -->
                                 <Border Background="{userControls:ChessboardBackground}"
                                         Width="20000"
                                         Height="20000" />
-                                <!-- 坐标轴居中显示 -->
+
+                                <!-- X轴坐标线 -->
                                 <Path ZIndex="10" Classes="dashed-axis" Stroke="Black">
                                     <Path.Data>
                                         <LineGeometry StartPoint="-20000,0" EndPoint="20000,0" />
                                     </Path.Data>
                                 </Path>
+
+                                <!-- Y轴坐标线 -->
                                 <Path ZIndex="10" Classes="dashed-axis" Stroke="Black">
                                     <Path.Data>
                                         <LineGeometry StartPoint="0,-20000" EndPoint="0,20000" />
                                     </Path.Data>
                                 </Path>
-                                <Border ZIndex="1000" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                                <!-- 动画图像显示区域 -->
+                                <Border BorderBrush="Aqua" BorderThickness="{Binding ImageBorderThickness}"
+                                        ZIndex="1000" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Image
                                         Source="{Binding Image}" />
                                 </Border>
@@ -120,73 +146,111 @@
                         </StackPanel>
                     </Grid>
                 </suki:GlassCard>
+                <!-- 左右区域分割条 -->
                 <GridSplitter Grid.Column="1" Width="4" Margin="2,0" />
-                <!-- buttons  -->
+
+                <!-- 左侧控制面板卡片 -->
                 <suki:GlassCard Grid.Column="0" Margin="5">
-                    <Grid ColumnDefinitions="*,*,*,*">
-                        <ScrollViewer
-                            Margin="15"
-                            Height="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
-                            <ItemsControl
-                                ItemsSource="{Binding Skeletons}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Spacing="4" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </ScrollViewer>
-                        <ScrollViewer Grid.Column="1"
-                                      Margin="15"
-                                      Height="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
-                            <ItemsControl
-                                ItemsSource="{Binding Animations}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Spacing="4" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </ScrollViewer>
-                        <ScrollViewer Grid.Column="2"
-                                      Margin="15"
-                                      Height="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
-                            <ItemsControl
-                                ItemsSource="{Binding Keyframes}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Spacing="4" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </ScrollViewer>
-                        <ScrollViewer Grid.Column="3"
-                                      Margin="15"
-                                      Height="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
-                            <ItemsControl
-                                ItemsSource="{Binding Layers}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Spacing="4" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </ScrollViewer>
+                    <!-- 四列网格布局：骨架列表 | 动画列表 | 关键帧列表 | 图层列表 -->
+                    <Grid RowDefinitions="8*,2*">
+                        <Grid Background="Aqua" Grid.Row="0" ColumnDefinitions="*,*,*,*">
+                            <!-- 骨架列表区域 -->
+                            <ScrollViewer
+                                Margin="15"
+                                MaxHeight="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
+                                <ItemsControl
+                                    ItemsSource="{Binding Skeletons}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="4" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <!-- 动画列表区域 -->
+                            <ScrollViewer Grid.Column="1"
+                                          Margin="15"
+                                          MaxHeight="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
+                                <ItemsControl
+                                    ItemsSource="{Binding Animations}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="4" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <!-- 关键帧列表区域 -->
+                            <ScrollViewer Grid.Column="2"
+                                          Margin="15"
+                                          MaxHeight="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
+                                <ItemsControl
+                                    ItemsSource="{Binding Keyframes}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="4" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <!-- 图层列表区域 -->
+                            <ScrollViewer Grid.Column="3"
+                                          Margin="15"
+                                          MaxHeight="{Binding $parent[Grid].Bounds.Height,RelativeSource={RelativeSource AncestorType=Grid}}">
+                                <ItemsControl
+                                    ItemsSource="{Binding Layers}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="4" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                        <StackPanel Background="Aquamarine" Grid.Row="1">
+                            <ScrollViewer
+                                Margin="15"
+                                HorizontalScrollBarVisibility="Auto"
+                                VerticalScrollBarVisibility="Disabled"
+                                MaxWidth="{Binding $parent[StackPanel].Bounds.Width,RelativeSource={RelativeSource AncestorType=Grid}}">
+                                <ItemsControl ItemsSource="{Binding Colorize}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="15" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
                     </Grid>
                 </suki:GlassCard>
             </Grid>
+            <!-- 上下区域分割条 -->
             <GridSplitter Grid.Row="1" Height="4" Margin="0,2" />
+            <!-- 底部控制区域卡片 -->
             <suki:GlassCard Grid.Row="2">
+                <!-- 底部控制网格：Quad选择 | 图像选择 | 加载 | 清除 | 文件信息显示 -->
                 <Grid ColumnDefinitions="1*,1*,1*,1*,2*">
+                    <!-- 选择Quad文件按钮 -->
                     <Button Width="150" Grid.Column="0" Content="Select quad"
                             Command="{Binding  OpenQuadFilePickerCommand}" />
+
+                    <!-- 选择图像文件按钮 -->
                     <Button Width="150" Grid.Column="1" Content="Select images"
                             Command="{Binding OpenImageFilePickerCommand}" />
+
+                    <!-- 加载动画按钮 -->
                     <Button Width="150" Grid.Column="2" Content="Load" Command="{Binding LoadCommand}" />
+
+                    <!-- 清除数据按钮 -->
                     <Button Width="150" Grid.Column="3" Content="Clear" Command="{Binding ClearCommand}" />
+
+                    <!-- 文件信息显示区域 -->
                     <ScrollViewer Grid.Column="4">
                         <StackPanel Spacing="5" HorizontalAlignment="Center">
+                            <!-- 当前Quad文件名 -->
                             <TextBlock Text="{Binding  QuadFileName}" />
+                            <!-- 图像路径列表 -->
                             <ScrollViewer>
                                 <ItemsControl ItemsSource="{Binding  ImagePaths}">
                                     <ItemsControl.ItemTemplate>

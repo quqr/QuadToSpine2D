@@ -6,4 +6,5 @@ public partial class PlayerSettingViewModel : ViewModelBase
     [ObservableProperty] private int _canvasSize = 3200;
     [ObservableProperty] private float _fps = 60f;
     [ObservableProperty] private int _imageScaleFactor = 4;
+    [ObservableProperty] private int _imageBorderThickness = 0;
 }

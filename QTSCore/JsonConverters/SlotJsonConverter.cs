@@ -21,7 +21,7 @@ public class SlotJsonConverter : JsonConverter
         if (obj is not JArray jArray) return null;
         var slot = new Slot
         {
-            Attaches = jArray.ToObject<List<Attach>>(), Id = IdCount, AttachType = AttachType.Slot
+            Attaches = jArray.ToObject<Attach[]?>(), Id = IdCount, AttachType = AttachType.Slot
         };
         return slot;
     }

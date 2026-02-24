@@ -6,3 +6,6 @@ riderModule.iml
 .idea/ 
 .vs/
 QuadToSpine2D.sln.DotSettings.user
+Views/.DS_Store
+ViewModels/.DS_Store
+.DS_Store

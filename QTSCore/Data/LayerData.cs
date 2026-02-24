@@ -1,4 +1,5 @@
 using QTSAvalonia.Helper;
+using QTSAvalonia.ViewModels.Pages;
 using QTSCore.Data.Quad;
 
 namespace QTSCore.Data;
@@ -20,7 +21,7 @@ public class LayerData
         get => _texId;
         init
         {
-            _texId = value.Equals(Instances.ConverterSetting.FogTexId.ToString()) ? "Fog" : value;
+            _texId = value.Equals(ConverterSettingViewModel.FogTexId.ToString()) ? "Fog" : value;
             BaseSkinAttachmentName = $"Slice_{ImageIndex}_{_texId}_0_{CopyIndex}";
         }
     }
