@@ -27,7 +27,7 @@ QuadToSpine2D is a powerful tool that converts 2D animation data from QUAD forma
 3. **Configure Scale Factor**: If your images are larger than original, scale factor = current image size / original image size
 4. **Start Conversion**: Click "Process Data" button to begin conversion process
 5. **Get Results**: After conversion, you will get **Result.json** file and **images** folder
-   <div align="center"><img src="README/5.png" alt="转换结果" width="600"/></div>
+   <div align="center"><img src="README/1.png" alt="转换结果" width="600"/></div>
 #### Step 2: Import to Spine
 1. **Open Spine**: Launch Spine 2D software
 2. **Import JSON**: Import "Result.json" file (Ignore warnings)
@@ -44,7 +44,7 @@ QuadToSpine2D is a powerful tool that converts 2D animation data from QUAD forma
     - Click "Load" to load data
 2. **Animation Control**:
     - Use play, pause, frame control functions
-      <div align="center"><img src="README/1.png" alt="预览器" width="350"/></div>
+      <div align="center"><img src="README/5.png" alt="预览器" width="350"/></div>
 ## ⚙️ Configuration Options
 
 ### Converter Settings

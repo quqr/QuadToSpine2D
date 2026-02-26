@@ -29,7 +29,7 @@ QuadToSpine2D 是一款强大的工具，可将 QUAD 格式的 2D 动画数据�
 3. **配置缩放因子**：如果图像比原始图像大，缩放因子 = 当前图像大小 / 原始图像大小
 4. **开始转换**：点击 "Process Data" 按钮开始转换过程
 5. **获取结果**：转换完成后，你将获得 **Result.json** 文件和 **images** 文件夹
-<div align="center"><img src="README/5.png" alt="转换结果" width="600"/></div>
+<div align="center"><img src="README/1.png" alt="转换结果" width="600"/></div>
 
 #### 步骤2：导入到 Spine
 1. **打开 Spine**：启动 Spine 2D 软件
@@ -62,7 +62,7 @@ QuadToSpine2D 是一款强大的工具，可将 QUAD 格式的 2D 动画数据�
 - **帧率控制**：设置动画播放的 FPS
 - **图像缩放**：控制预览图像的显示比例
 
-<div align="center"><img src="README/6.png" alt="配置选项" width="500"/></div>
+<div align="center"><img src="README/5.png" alt="配置选项" width="500"/></div>
 
 ## 🛠 设置指南
 
