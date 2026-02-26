@@ -4,7 +4,7 @@
 [![.NET](https://img.shields.io/badge/.NET-10.0-blue.svg)](https://dotnet.microsoft.com/)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)]()
 
-QuadToSpine2D is a powerful tool that converts 2D animation data from QUAD format to Spine 2D format, featuring real-time animation preview and seamless integration capabilities.
+QuadToSpine2D is a tool that converts 2D animation data from QUAD format to Spine 2D format, featuring real-time animation preview and seamless integration capabilities.
 
 ## 🎯 Supported Versions
 
@@ -16,7 +16,7 @@ QuadToSpine2D is a powerful tool that converts 2D animation data from QUAD forma
 
 * [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 * Windows 10 or later
-* Spine 2D 3.8 (for importing results)
+* Spine 2D 3.8 
 
 #### Step 1: Convert QUAD to Spine Format
 1. **Select QUAD File**: Click "Open Quad File" button to select your .quad file

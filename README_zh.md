@@ -4,7 +4,7 @@
 [![.NET](https://img.shields.io/badge/.NET-10.0-blue.svg)](https://dotnet.microsoft.com/)
 [![平台](https://img.shields.io/badge/平台-Windows-lightgrey.svg)]()
 
-QuadToSpine2D 是一款强大的工具，可将 QUAD 格式的 2D 动画数据转换为 Spine 2D 格式，具有实时动画预览和无缝集成能力。
+QuadToSpine2D 是一款工具，可将 QUAD 格式的 2D 动画数据转换为 Spine 2D 格式，具有实时动画预览和无缝集成能力。
 
 ## 🎯 支持版本
 
@@ -16,7 +16,7 @@ QuadToSpine2D 是一款强大的工具，可将 QUAD 格式的 2D 动画数据�
 
 * [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 * Windows 10 或更高版本
-* Spine 2D 3.8（用于导入结果）
+* Spine 2D 3.8
 
 ### 使用流程
 
