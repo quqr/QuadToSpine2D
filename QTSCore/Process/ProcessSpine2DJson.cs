@@ -4,7 +4,6 @@ using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Data.Spine;
 using QTSCore.Utility;
-using Matrix = QTSCore.Utility.Matrix;
 
 namespace QTSCore.Process;
 
@@ -39,17 +38,15 @@ public class ProcessSpine2DJson
     public SpineJsonData Process()
     {
         InitHitboxSlot(_quadJsonData);
-        for (var index = 0; index < _quadJsonData.Skeleton.Length; index++)
+        foreach (var skeleton in _quadJsonData.Skeleton)
         {
-            var skeleton = _quadJsonData.Skeleton[index];
             if (skeleton is null) continue;
             LoggerHelper.Info($"Processing animation : {skeleton.Name}");
             SetAnimation(skeleton);
-            Instances.Converter.Progress += 48f * (index + 1) / _quadJsonData.Skeleton.Length;
         }
 
         SortSlotsAndDrawOrder();
-        Instances.Converter.Progress = 99;
+
         return _spineJsonData;
     }
 

@@ -20,20 +20,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.11"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.11"/>
+        <PackageReference Include="Avalonia" Version="11.3.12" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.11"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.12" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.12" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
-        <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.317"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2"/>
+        <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.319" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
         <PackageReference Include="PanAndZoom" Version="11.3.9.1"/>
-        <PackageReference Include="Serilog" Version="4.3.0"/>
+        <PackageReference Include="Serilog" Version="4.3.1" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1"/>
         <PackageReference Include="Serilog.Sinks.File" Version="7.0.0"/>
-        <PackageReference Include="SkiaSharp" Version="3.119.1"/>
+        <PackageReference Include="SkiaSharp" Version="3.119.2" />
         <PackageReference Include="SukiUI" Version="6.0.3"/>
         <PackageReference Include="SukiUI.Dock" Version="6.0.3"/>
     </ItemGroup>
@@ -55,38 +55,41 @@
         <EmbeddedResource Remove="QTSCore\bin\**"/>
         <EmbeddedResource Remove="QTSCore\obj\**"/>
         <EmbeddedResource Remove="ServiceGenerators\**"/>
+   
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Remove="QTSCore\bin\**"/>
         <AdditionalFiles Remove="QTSCore\obj\**"/>
         <AdditionalFiles Remove="ServiceGenerators\**"/>
+    
     </ItemGroup>
 
     <ItemGroup>
         <AvaloniaResource Remove="QTSCore\bin\**"/>
         <AvaloniaResource Remove="QTSCore\obj\**"/>
         <AvaloniaResource Remove="ServiceGenerators\**"/>
+
     </ItemGroup>
 
     <ItemGroup>
         <None Remove="QTSCore\bin\**"/>
         <None Remove="QTSCore\obj\**"/>
         <None Remove="ServiceGenerators\**"/>
+ 
     </ItemGroup>
 
     <!-- 添加对源代码生成器项目的引用 -->
     <ItemGroup>
-        <ProjectReference Include="ServiceSourceGenerators\ServiceSourceGenerators\ServiceSourceGenerators.csproj"
-                          OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="ServiceSourceGenerators\ServiceSourceGenerators\ServiceSourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     </ItemGroup>
 </Project>

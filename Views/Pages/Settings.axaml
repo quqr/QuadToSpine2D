@@ -37,20 +37,22 @@
                     <suki:SettingsLayoutItem.Content>
                         <suki:GlassCard Margin="0,25,0,0" Padding="25">
                             <StackPanel Spacing="15">
-                                <TextBlock Text="Log" FontWeight="Bold"/>
-                                <ScrollViewer
-                                    Margin="15"
-                                    MaxHeight="400">
-                                    <ItemsControl
-                                        ItemsSource="{Binding Logs }">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Spacing="15" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                    </ItemsControl>
-                                </ScrollViewer>
+                                <TextBlock Text="Log" FontWeight="Bold" />
+                                <suki:GlassCard>
+                                    <ScrollViewer
+                                        Margin="15"
+                                        MaxHeight="400">
+                                        <ItemsControl
+                                            ItemsSource="{Binding Logs }">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Spacing="15" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                    </ScrollViewer>
 
+                                </suki:GlassCard>
                             </StackPanel>
                         </suki:GlassCard>
                     </suki:SettingsLayoutItem.Content>

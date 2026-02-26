@@ -7,119 +7,150 @@ namespace QTSAvalonia.ViewModels.Pages;
 [SingletonService]
 public partial class ConverterViewModel : ViewModelBase
 {
-    [ObservableProperty] private ObservableCollection<ElementViewModel> _elements = [];
-
-    [ObservableProperty] private float _progress;
-    [ObservableProperty] private string _quadFileName = string.Empty;
+    [ObservableProperty]
+    private ObservableCollection<ElementViewModel> _elements = [];
+    
+    [ObservableProperty]
+    private string _quadFileName = string.Empty;
 
     private string _quadFilePath = string.Empty;
 
-    [ObservableProperty] private string _resultJsonUrl = "Result json path";
-    [ObservableProperty] private bool _resultJsonUrlIsEnable;
-    [ObservableProperty] private bool _isProcessing;
+    [ObservableProperty]
+    private string _resultJsonUrl = "Result json path";
+
+    [ObservableProperty]
+    private bool _resultJsonUrlIsEnabled;
+
+    [ObservableProperty]
+    private bool _isProcessing;
 
     public ConverterViewModel()
     {
-        Elements.CollectionChanged += UpdateElementsIndex;
+        Elements.CollectionChanged += OnElementsCollectionChanged;
     }
 
-    private void UpdateElementsIndex(object? sender, NotifyCollectionChangedEventArgs e)
+    private void OnElementsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        for (var index = 0; index < Elements.Count; index++) Elements[index].Index = index;
+        // 更新所有元素的索引
+        for (int i = 0; i < Elements.Count; i++)
+        {
+            Elements[i].Index = i;
+        }
     }
 
     private List<List<string?>>? ProcessImagePaths()
     {
-        var imagePaths = Elements.Select(element => element.ImagePaths).ToList();
-
-        // List<List<string?>> imagePaths =
-        // [
-        //     [
-        //         @"F:\Codes\Test\ps4 odin HD_Gwendlyn.0.gnf.png"
-        //     ],
-        //     [
-        //         @"F:\Codes\Test\ps4 odin HD_Gwendlyn.1.gnf.png"
-        //     ],
-        //     [@"F:\Codes\Test\ps4 odin HD_Gwendlyn.2.gnf.png"]
-        // ];
-        if (imagePaths.Count == 0)
+        if (Elements.Count == 0)
         {
-            ToastHelper.Error("No image paths found");
-            LoggerHelper.Warning("No image paths found");
+            LoggerHelper.Warning("No elements found for processing");
+            ToastHelper.Error("Please add at least one element with images");
             return null;
         }
 
-        var maxCount = imagePaths.Max(paths => paths.Count);
-
-        return imagePaths.Select(paths =>
-                Enumerable.Range(0, maxCount)
-                    .Select(index => index < paths.Count ? paths[index] : null)
-                    .ToList())
+        // 提取所有非空图片路径
+        var validElements = Elements
+            .Where(e => e.ImagePaths.Count > 0)
             .ToList();
+
+        if (validElements.Count == 0)
+        {
+            LoggerHelper.Warning("No valid image paths found");
+            ToastHelper.Error("No valid image paths found in elements");
+            return null;
+        }
+
+        int maxImages = validElements.Max(e => e.ImagePaths.Count);
+        var result = new List<List<string?>>(validElements.Count);
+
+        foreach (var element in validElements)
+        {
+            var paths = new List<string?>(maxImages);
+            for (int i = 0; i < maxImages; i++)
+            {
+                paths.Add(i < element.ImagePaths.Count ? element.ImagePaths[i] : null);
+            }
+            result.Add(paths);
+        }
+
+        return result;
     }
 
     [RelayCommand]
-    private async Task OpenQuadFilePicker()
+    private async Task OpenQuadFilePickerAsync()
     {
-        LoggerHelper.Info("Opening quad file picker in ConverterModelView");
-        var file = await AvaloniaFilePickerService.OpenQuadFileAsync();
-        if (file is not null && file.Count > 0)
+        LoggerHelper.Info("Opening quad file picker");
+        
+        var files = await AvaloniaFilePickerService.OpenQuadFileAsync();
+        if (files?.Any() != true) 
         {
-            QuadFileName  = file[0].Name;
-            _quadFilePath = file[0].Path.LocalPath;
-            LoggerHelper.Info($"Selected quad file: {QuadFileName}");
+            LoggerHelper.Warning("No quad file selected");
+            return;
         }
-        else
-        {
-            LoggerHelper.Warning("No quad file selected in ConverterModelView");
-        }
+
+        var selectedFile = files[0];
+        QuadFileName = selectedFile.Name;
+        _quadFilePath = selectedFile.Path.LocalPath;
+        
+        LoggerHelper.Info($"Selected quad file: {QuadFileName}");
     }
 
     [RelayCommand]
-    private void ProcessData()
+    private async Task ProcessDataAsync()
     {
         LoggerHelper.Info("Starting data processing");
-        ResultJsonUrlIsEnable = false;
-        Progress = 1;
         IsProcessing = true;
-        Task.Run(() =>
+        
+        ResultJsonUrlIsEnabled = false;
+
+        try
         {
             var imagePaths = ProcessImagePaths();
-            imagePaths?.RemoveAll(x=>x.Count == 0);
-            if (imagePaths is null || imagePaths.Count == 0)
+            if (imagePaths == null || imagePaths.Count == 0)
             {
-                LoggerHelper.Error("The images has error.");
-                ToastHelper.Error("The images has error.");
+                LoggerHelper.Error("Invalid image paths configuration");
+                ToastHelper.Error("Invalid image configuration");
                 return;
             }
-            LoggerHelper.Debug($"Processing {imagePaths.Count} image paths");
+
+            LoggerHelper.Debug($"Processing {imagePaths.Count} image groups");
+            
+            // 配置转换器
             Instances.ConverterSetting.ImagePath = imagePaths;
-            new ProcessQuadData()
-                .LoadQuadJson(_quadFilePath, true)
-                .ProcessJson();
+            
+            // 执行处理流程
+            await Task.Run(() => 
+            {
+                new ProcessQuadData()
+                    .LoadQuadJson(_quadFilePath, true)
+                    .ProcessJson();
+            });
+
             LoggerHelper.Info("Data processing completed successfully");
-        }).ContinueWith(task =>
+            ToastHelper.Success("Processing completed successfully");
+            ResultJsonUrlIsEnabled = true;
+          
+        }
+        catch (Exception ex)
         {
-            if (task.IsFaulted)
-            {
-                LoggerHelper.Error($"Error occurred during data processing : {task.Exception?.StackTrace}");
-                ToastHelper.Error($"Error occurred during data processing :{task.Exception?.StackTrace}");
-                Progress = 0;
-            }
-            else if (task.IsCompletedSuccessfully)
-            {
-                LoggerHelper.Info("Data processing completed successfully");
-                ToastHelper.Success("Data processing completed successfully");
-            }
+            LoggerHelper.Error($"Processing failed: {ex.Message}\n{ex.StackTrace}");
+            ToastHelper.Error($"Processing failed: {ex.Message}");
+        }
+        finally
+        {
             IsProcessing = false;
-        });
+        }
     }
 
     [RelayCommand]
     private void AddNewElement()
     {
         LoggerHelper.Debug($"Adding new element. Current count: {Elements.Count}");
-        Elements.Add(new ElementViewModel(vm => Elements.RemoveAt(vm.Index)));
+        
+        var newElement = new ElementViewModel(
+             vm => Elements.RemoveAt(vm.Index)
+        );
+        
+        Elements.Add(newElement);
         LoggerHelper.Debug($"Element added. New count: {Elements.Count}");
     }
 }

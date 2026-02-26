@@ -18,7 +18,7 @@ public static class LoggerHelper
     private static readonly SettingsViewModel SettingsViewModel =
         Instances.ServiceProvider.GetRequiredService<SettingsViewModel>();
     private static Logger? _logger;
-    private static readonly List<(LogLevel level, string message)> _logCache = [];
+    private static readonly List<(LogLevel level, string message)> LogCache = [];
     private const string OutputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj}{NewLine}{Exception}";
 
     public static void InitializeLogger()
@@ -47,7 +47,7 @@ public static class LoggerHelper
     private static void FlushCache()
     {
         if (_logger == null) return;
-        foreach (var (level, msg) in _logCache)
+        foreach (var (level, msg) in LogCache)
             switch (level)
             {
                 case LogLevel.Info:
@@ -61,7 +61,7 @@ public static class LoggerHelper
                     break;
             }
 
-        _logCache.Clear();
+        LogCache.Clear();
     }
     private static string FormatLogMessage(string? message, LogLevel level)
     {
@@ -80,7 +80,7 @@ public static class LoggerHelper
     private static void Log(object? message, LogLevel level)
     {
         if (_logger == null)
-            _logCache.Add((level, message?.ToString() ?? string.Empty));
+            LogCache.Add((level, message?.ToString() ?? string.Empty));
         else
         {
             switch (level)

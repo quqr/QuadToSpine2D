@@ -1,4 +1,3 @@
-using QTSAvalonia.Helper;
 using QTSAvalonia.ViewModels.Pages;
 using QTSCore.Data.Quad;
 

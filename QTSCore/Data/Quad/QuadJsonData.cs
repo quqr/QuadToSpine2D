@@ -3,7 +3,6 @@ using QTSAvalonia.ViewModels.Pages;
 using QTSCore.JsonConverters;
 using QTSCore.Process;
 using QTSCore.Utility;
-using SkiaSharp;
 using Matrix = QTSCore.Utility.Matrix;
 
 namespace QTSCore.Data.Quad;

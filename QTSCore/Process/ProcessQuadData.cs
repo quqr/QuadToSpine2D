@@ -14,9 +14,8 @@ public class ProcessQuadData
 
         var spineJson = new ProcessSpine2DJson(QuadData);
         var outputPath = spineJson.Process().WriteToJson();
-        Instances.Converter.Progress = 100;
         Instances.Converter.ResultJsonUrl = outputPath;
-        Instances.Converter.ResultJsonUrlIsEnable = true;
+        Instances.Converter.ResultJsonUrlIsEnabled = true;
     }
 
     public ProcessQuadData LoadQuadJson(string quadPath, bool isPostProcess = false)

@@ -37,7 +37,7 @@ public class ProcessQuadJsonFile
             LoggerHelper.Info("Combining animations completed");
         }
 
-        Instances.Converter.Progress = 50;
+ 
 
         LoggerHelper.Info("Quad file loaded successfully");
         return QuadData;
@@ -85,13 +85,6 @@ public class ProcessQuadJsonFile
     private void InitializeData()
     {
         Parallel.ForEach(QuadData.Animation, SetAttaches);
-
-        //ClearNullData();
-
-        // TODO : Attributes
-        // Attributes = QuadData.Keyframe
-        //     .SelectMany(x => x.Layer.Where(y => y?.Attribute is not null))
-        //     .ToDictionary(z=>z.Attribute);
     }
 
     private void SetAttaches(Animation? animation)

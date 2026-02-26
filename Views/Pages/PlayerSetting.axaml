@@ -63,23 +63,5 @@
                     TextWrapping="Wrap" />
             </StackPanel>
         </DockPanel>
-        <DockPanel>
-            <NumericUpDown
-                     Minimum="1"
-                     FormatString="0"
-                     Value="{Binding ImageBorderThickness}"
-                     DockPanel.Dock="Right" 
-                     Width="200" />
-            <StackPanel HorizontalAlignment="Left">
-                <TextBlock
-                    FontSize="16"
-                    FontWeight="Bold"
-                    Text="Image border thickness" />
-                <TextBlock
-                    Margin="0,12,70,0"
-                    Text="The image border thickness"
-                    TextWrapping="Wrap" />
-            </StackPanel>
-        </DockPanel>
     </StackPanel>
 </UserControl>
