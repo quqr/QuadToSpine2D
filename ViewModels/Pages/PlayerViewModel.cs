@@ -14,7 +14,7 @@ namespace QTSAvalonia.ViewModels.Pages;
 [SingletonService]
 public partial class PlayerViewModel : ViewModelBase, IDisposable
 {
-    #region 静态常量
+#region 静态常量
 
     private static readonly PlayerSettingViewModel Settings =
         Instances.ServiceProvider.GetRequiredService<PlayerSettingViewModel>();
@@ -24,11 +24,11 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     private const int FogBitmapSize = 256;
     private const float GradientRadius = FogBitmapSize / 2f;
 
-    #endregion
+#endregion
 
-    #region 字段
+#region 字段
 
-    private readonly List<SKImage> _sourceImages = [];
+    private readonly List<SKBitmap> _sourceImages = [];
     private readonly Dictionary<string, SKColor> _colorizeDict = [];
     private readonly Dictionary<string, ToggleButton> _attributesDict = [];
 
@@ -39,9 +39,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
     private SKSurface? _surface;
 
-    #endregion
+#endregion
 
-    #region Observable Properties
+#region Observable Properties
 
     [ObservableProperty] private ObservableCollection<Button> _animations = [];
     [ObservableProperty] private int _currentFrame;
@@ -59,18 +59,18 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     [ObservableProperty] private int _totalFrames;
     [ObservableProperty] private bool _isLoopAnimation;
 
-    #endregion
+#endregion
 
-    #region 计算属性
+#region 计算属性
 
-    private Animation? CurrentAnimation { get; set; }
-    private QuadSkeleton? CurrentSkeleton { get; set; }
+    private Animation?    CurrentAnimation { get; set; }
+    private QuadSkeleton? CurrentSkeleton  { get; set; }
 
-    private static int ImageScaleFactor => Settings.ImageScaleFactor;
-    private static int CanvasSize => Settings.CanvasSize;
-    private static float CenterX => CanvasSize / 2f;
-    private static float CenterY => CanvasSize / 2f;
-    private static float Fps => 1 / Settings.Fps;
+    private static int   ImageScaleFactor => Settings.ImageScaleFactor;
+    private static int   CanvasSize       => Settings.CanvasSize;
+    private static float CenterX          => CanvasSize / 2f;
+    private static float CenterY          => CanvasSize / 2f;
+    private static float Fps              => 1          / Settings.Fps;
 
     private SKSurface Surface
     {
@@ -80,7 +80,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
                 return _surface;
 
             _surface?.Dispose();
-            _surface = SKSurface.Create(new SKImageInfo(CanvasSize, CanvasSize));
+            _surface    = SKSurface.Create(new SKImageInfo(CanvasSize, CanvasSize));
             _canvasSize = CanvasSize;
             return _surface;
         }
@@ -88,18 +88,18 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
     private SKCanvas Canvas => Surface.Canvas;
 
-    #endregion
+#endregion
 
-    #region 构造函数
+#region 构造函数
 
     public PlayerViewModel()
     {
         Colorize.CollectionChanged += OnColorizeCollectionChanged;
     }
 
-    #endregion
+#endregion
 
-    #region 事件处理
+#region 事件处理
 
     private void OnColorizeCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -142,9 +142,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         ReDraw();
     }
 
-    #endregion
+#endregion
 
-    #region 加载方法
+#region 加载方法
 
     [RelayCommand]
     private async Task LoadAsync()
@@ -161,7 +161,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         {
             Clear();
 
-            var quadTask = Task.Run(() => LoadQuadFile(_quadFilePath));
+            var quadTask   = Task.Run(() => LoadQuadFile(_quadFilePath));
             var imagesTask = LoadSourceImagesAsync();
 
             LoggerHelper.Info("Loading preview data");
@@ -199,7 +199,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         try
         {
             _quadJsonData = new ProcessQuadData()
-                .LoadQuadJson(quadPath).QuadData;
+                            .LoadQuadJson(quadPath).QuadData;
 
             if (_quadJsonData is null)
             {
@@ -238,13 +238,12 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
         try
         {
-            await using var stream = File.OpenRead(path);
-            var skImage = SKImage.FromEncodedData(stream);
+            await using var stream  = File.OpenRead(path);
+            var             skImage = SKBitmap.Decode(stream);
             if (skImage is null)
             {
                 throw new InvalidOperationException($"Cannot decode image: {path}");
             }
-
             _sourceImages.Add(skImage);
             LoggerHelper.Debug($"Loaded image: {path}");
         }
@@ -255,9 +254,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         }
     }
 
-    #endregion
+#endregion
 
-    #region 绘制方法
+#region 绘制方法
 
     [RelayCommand]
     private void DrawAttach(Attach? attach)
@@ -281,10 +280,12 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
                 DrawSlot(attach, matrix, color);
                 break;
             case AttachType.HitBox:
-                DrawHitBox(attach, matrix, color);
+                DrawHitBox(attach, matrix);
                 break;
             case AttachType.Animation:
-                DrawAnimationAttach(attach, matrix, color);
+                // DrawAnimationAttach(attach, matrix, color);
+                var (att,mat,clr) = DrawAnimation(attach, matrix, color);
+                DrawAttachInternal(att, mat, clr);
                 break;
             case AttachType.Skeleton:
                 DrawSkeleton(attach, matrix, color);
@@ -334,7 +335,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             var layer = keyframe.Layers[order];
             if (layer != null)
             {
-                DrawAttachInternal(layer,matrix, color);
+                DrawAttachInternal(layer, matrix, color);
                 //DrawKeyframeLayer(layer, matrix, color);
             }
         }
@@ -352,7 +353,10 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         else if (!string.IsNullOrEmpty(layer.Colorize))
         {
             _colorizeDict.TryAdd(layer.Colorize, SKColors.White);
-            Colorize.Add(new ColorPicker { Content = layer.Colorize });
+            Colorize.Add(new ColorPicker
+            {
+                Content = layer.Colorize
+            });
         }
 
         // 检查属性过滤
@@ -360,10 +364,10 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             return;
 
         var srcRect = SKRectI.Create((int)layer.SrcX, (int)layer.SrcY, (int)layer.Width, (int)layer.Height);
-        var skImage = GetImage(layer, srcRect, color);
-        if (skImage is null) return;
+        var skBitmap = GetImage(layer, srcRect);
+        if (skBitmap is null) return;
 
-        DrawImageWithMatrix(skImage, layer, matrix);
+        DrawImageWithMatrix(skBitmap, layer, matrix,color);
     }
 
     private bool CheckLayerAttributes(KeyframeLayer layer)
@@ -372,7 +376,10 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         {
             if (_attributesDict.ContainsKey(attr)) continue;
 
-            var toggle = new ToggleButton { IsChecked = true ,Content = attr};
+            var toggle = new ToggleButton
+            {
+                IsChecked = true, Content = attr
+            };
             toggle.IsCheckedChanged += (_, _) => ReDraw();
             Attributes.Add(toggle);
             _attributesDict.Add(attr, toggle);
@@ -387,10 +394,12 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         return true;
     }
 
-    private void DrawImageWithMatrix(SKImage skImage, KeyframeLayer layer, Matrix matrix)
+    private void DrawImageWithMatrix(SKBitmap skBitmap, KeyframeLayer layer, Matrix matrix,SKColor color)
     {
+        if(layer.Srcquad is null) return;
+        
         var vertexMatrix = matrix * layer.DstMatrix;
-        var vertices = vertexMatrix.ToFloatArray();
+        var vertices     = vertexMatrix.ToFloatArray();
 
         var destPoints = new[]
         {
@@ -399,7 +408,6 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             new SKPoint(vertices[4] * ImageScaleFactor + CenterX, vertices[5] * ImageScaleFactor + CenterY),
             new SKPoint(vertices[6] * ImageScaleFactor + CenterX, vertices[7] * ImageScaleFactor + CenterY)
         };
-
         var texturePoints = new[]
         {
             new SKPoint(layer.Srcquad[0] - layer.SrcX, layer.Srcquad[1] - layer.SrcY),
@@ -414,18 +422,20 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             texturePoints,
             null,
             TriangleIndices);
-
-        using var shader = SKShader.CreateImage(skImage);
-        using var paint = new SKPaint();
-        paint.Shader = shader;
+        var       colorFilter = CreateColorFilter(color);
+        using var shader      = SKShader.CreateBitmap(skBitmap);
+        using var paint       = new SKPaint();
+        paint.Shader      = shader;
+        paint.ColorFilter = colorFilter;
         paint.IsAntialias = true;
-        // TODO 混合模式
+        // TODO : add more blend modes
         paint.BlendMode = layer.BlendId > 0 ? SKBlendMode.Plus : SKBlendMode.SrcOver;
 
         Canvas.DrawVertices(verticesObj, SKBlendMode.SrcOver, paint);
+        skBitmap.Dispose();
     }
 
-    private void DrawHitBox(Attach attach, Matrix matrix, SKColor color)
+    private void DrawHitBox(Attach attach, Matrix matrix)
     {
         if (_quadJsonData?.Hitbox is null || attach.Id < 0 || attach.Id >= _quadJsonData.Hitbox.Length)
             return;
@@ -435,11 +445,11 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
         foreach (var hitbox in hitboxes)
         {
-            DrawHitBoxShape(hitbox, matrix, color);
+            DrawHitBoxShape(hitbox, matrix);
         }
     }
 
-    private void DrawHitBoxShape(dynamic hitbox, Matrix matrix, SKColor color)
+    private void DrawHitBoxShape(dynamic hitbox, Matrix matrix)
     {
         var vertices = (matrix * new Matrix(4, 4, hitbox.Hitquad)).ToFloatArray();
         var destPoints = new[]
@@ -454,29 +464,40 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         path.AddPoly(destPoints);
 
         using var paint = new SKPaint();
-        paint.Style = SKPaintStyle.Stroke;
-        paint.Color = color;
+        paint.Style       = SKPaintStyle.Stroke;
+        paint.Color       = SKColors.DarkOrange;
         paint.StrokeWidth = 2;
         paint.IsAntialias = true;
 
         Canvas.DrawPath(path, paint);
     }
 
-    private void DrawAnimationAttach(Attach attach, Matrix matrix, SKColor color)
+    private (Attach attach, Matrix matrix, SKColor color) DrawAnimation(Attach attach, Matrix matrix, SKColor color)
     {
-        var animation = GetSafeAnimation(attach.Id);
-        if (animation?.Timeline is null) return;
-        // TODO 
+        var result    = (new Attach(AttachType.None, -1), matrix, color);
+        var animation = _quadJsonData.Animation[attach.Id];
         var (currentFrameIndex, currentTime) = GetAnimationTimeIndex(Time, animation);
-        if (currentFrameIndex < 0) return;
-
-        var curTimeline = animation.Timeline[currentFrameIndex];
+        if (currentFrameIndex < 0) return result;
+        var curTimeline    = animation.Timeline[currentFrameIndex];
         var nextFrameIndex = currentFrameIndex + 1;
         if (nextFrameIndex >= animation.Timeline.Length)
-            nextFrameIndex = animation.IsLoop ? animation.LoopId : currentFrameIndex;
+            nextFrameIndex = !animation.IsLoop ? currentFrameIndex : animation.LoopId;
 
-        if (curTimeline.Attach is not null)
-            DrawAttachInternal(curTimeline.Attach, matrix, color);
+        var nextTimeline = animation.Timeline[nextFrameIndex];
+        result.Item1 = curTimeline.Attach ?? new Attach { AttachType = AttachType.None, Id = -1 };
+        if (currentFrameIndex == nextFrameIndex)
+        {
+            //result.matrix *= curTimeline.AnimationMatrix;
+            //TODO: Color multi
+            return result;
+        }
+
+        var rate = (float)currentTime / curTimeline.Time;
+        var m4 = curTimeline.MatrixMixId != -1
+            ? curTimeline.AnimationMatrix
+            : Matrix.Lerp(curTimeline.AnimationMatrix, nextTimeline.AnimationMatrix, rate);
+        
+        return result;
     }
 
     private (int currentFrameIndex, int currentTime) GetAnimationTimeIndex(int currentTime, Animation animation)
@@ -490,17 +511,17 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         return animation.IsLoop ? (-1, 0) : (animation.LoopId, currentTime);
     }
 
-    #endregion
+#endregion
 
-    #region 图像处理
+#region 图像处理
 
-    private SKImage? GetImage(KeyframeLayer layer, SKRectI srcRect, SKColor color)
+    private SKBitmap? GetImage(KeyframeLayer layer, SKRectI srcRect)
     {
         if (layer.TexId >= _sourceImages.Count || layer.TexId < 0)
             return GetFogBitmap(layer.Fog);
 
-        var sourceImage = _sourceImages[layer.TexId];
-        var croppedImage = CropImage(sourceImage, srcRect, color);
+        var sourceImage  = _sourceImages[layer.TexId];
+        var croppedImage = CropImage(sourceImage, srcRect);
 
         if (croppedImage is null)
         {
@@ -512,7 +533,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         return croppedImage;
     }
 
-    private static SKImage? GetFogBitmap(string[] colors)
+    private static SKBitmap? GetFogBitmap(string[] colors)
     {
         if (colors.Length < 4)
         {
@@ -532,12 +553,12 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             );
 
             using var surface = SKSurface.Create(new SKImageInfo(FogBitmapSize, FogBitmapSize));
-            using var canvas = surface.Canvas;
-            using var paint = new SKPaint();
+            using var canvas  = surface.Canvas;
+            using var paint   = new SKPaint();
             paint.Shader = shader;
 
             canvas.DrawRect(new SKRect(0, 0, FogBitmapSize, FogBitmapSize), paint);
-            return surface.Snapshot();
+            return SKBitmap.FromImage(surface.Snapshot());
         }
         catch (Exception ex)
         {
@@ -545,8 +566,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             return null;
         }
     }
-
-    private SKImage? CropImage(SKImage? source, SKRectI srcRect, SKColor color)
+    private SKBitmap? CropImage(SKBitmap? source, SKRectI srcRect)
     {
         if (source == null || srcRect.Width <= 0 || srcRect.Height <= 0)
             return null;
@@ -557,23 +577,10 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
         try
         {
-            using var surface = SKSurface.Create(new SKImageInfo(safeRect.Width, safeRect.Height));
-            var canvas = surface.Canvas;
-            canvas.Clear(SKColors.Transparent);
-
-            var colorFilter = CreateColorFilter(color);
-            using var paint = new SKPaint();
-            paint.ColorFilter = colorFilter;
-            paint.IsAntialias = true;
-
-            canvas.DrawImage(
-                source,
-                new SKRectI(safeRect.Left, safeRect.Top, safeRect.Right, safeRect.Bottom),
-                new SKRect(0, 0, safeRect.Width, safeRect.Height),
-                paint
-            );
-
-            return surface.Snapshot();
+            // 创建目标 Bitmap
+            var dstBitmap = new SKBitmap(safeRect.Width, safeRect.Height, source.ColorType, source.AlphaType);
+            source.ExtractSubset(dstBitmap, safeRect);
+            return dstBitmap;
         }
         catch (Exception ex)
         {
@@ -581,12 +588,11 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             return null;
         }
     }
-
     private static SKColorFilter? CreateColorFilter(SKColor color)
     {
-        var r = color.Red / 255f;
+        var r = color.Red   / 255f;
         var g = color.Green / 255f;
-        var b = color.Blue / 255f;
+        var b = color.Blue  / 255f;
 
         float[] colorMatrix =
         [
@@ -599,9 +605,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         return SKColorFilter.CreateColorMatrix(colorMatrix);
     }
 
-    #endregion
+#endregion
 
-    #region 播放控制
+#region 播放控制
 
     [RelayCommand]
     private async Task PlayAnimationAsync()
@@ -712,9 +718,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         Image = Surface.Snapshot().ToAvaloniaImage();
     }
 
-    #endregion
+#endregion
 
-    #region 动画/骨骼设置
+#region 动画/骨骼设置
 
     [RelayCommand]
     private void SetAnimations(QuadSkeleton? skeleton)
@@ -736,9 +742,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         {
             Animations.Add(new Button
             {
-                Content = $"{bone.Attach.AttachType} {bone.Attach.Id}",
-                Command = SetKeyframesCommand,
-                CommandParameter = bone.Attach
+                Content = $"{bone.Attach.AttachType} {bone.Attach.Id}", Command = SetKeyframesCommand, CommandParameter = bone.Attach
             });
         }
 
@@ -764,8 +768,8 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         if (CurrentAnimation == animation) return;
 
         CurrentAnimation = animation;
-        CurrentFrame = 0;
-        TotalFrames = animation.Timeline.Sum(x => x.Time);
+        CurrentFrame     = 0;
+        TotalFrames      = animation.Timeline.Sum(x => x.Time);
 
         Keyframes.Clear();
         Layers.Clear();
@@ -781,17 +785,13 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
                 case AttachType.Keyframe:
                     Keyframes.Add(new Button
                     {
-                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}",
-                        Command = SetLayersCommand,
-                        CommandParameter = timeline.Attach
+                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = SetLayersCommand, CommandParameter = timeline.Attach
                     });
                     break;
                 case AttachType.HitBox:
                     Keyframes.Add(new Button
                     {
-                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}",
-                        Command = DrawHitboxAttachCommand,
-                        CommandParameter = timeline.Attach
+                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = DrawHitboxAttachCommand, CommandParameter = timeline.Attach
                     });
                     break;
             }
@@ -817,9 +817,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         {
             Layers.Add(new Button
             {
-                Content = $"layer {index}",
-                Command = DrawKeyframeLayerAttachCommand,
-                CommandParameter = layers[index]
+                Content = $"layer {index}", Command = DrawKeyframeLayerAttachCommand, CommandParameter = layers[index]
             });
         }
 
@@ -859,18 +857,16 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         {
             Skeletons.Add(new Button
             {
-                Content = skeleton.Name,
-                Command = SetAnimationsCommand,
-                CommandParameter = skeleton
+                Content = skeleton.Name, Command = SetAnimationsCommand, CommandParameter = skeleton
             });
         }
 
         LoggerHelper.Debug($"Set {Skeletons.Count} skeletons");
     }
 
-    #endregion
+#endregion
 
-    #region 文件选择
+#region 文件选择
 
     [RelayCommand]
     private async Task OpenQuadFilePickerAsync()
@@ -879,7 +875,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         var file = await AvaloniaFilePickerService.OpenQuadFileAsync();
         if (file?.Count > 0)
         {
-            QuadFileName = file[0].Name;
+            QuadFileName  = file[0].Name;
             _quadFilePath = file[0].Path.LocalPath;
             LoggerHelper.Info($"Selected quad file: {QuadFileName}");
             ToastHelper.Success("SUCCESS", $"Selected: {QuadFileName}");
@@ -906,9 +902,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         }
     }
 
-    #endregion
+#endregion
 
-    #region 清理和释放资源
+#region 清理和释放资源
 
     private Animation? GetSafeAnimation(int id)
     {
@@ -921,24 +917,24 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     private void ClearResources()
     {
         CurrentFrame = 0;
-        TotalFrames = 0;
-        Image = null;
+        TotalFrames  = 0;
+        Image        = null;
 
-        foreach (var bitmap in _sourceImages)
-            bitmap?.Dispose();
+        foreach (var image in _sourceImages)
+            image?.Dispose();
 
         Colorize.Clear();
         _colorizeDict.Clear();
         Attributes.Clear();
         _attributesDict.Clear();
-        
+
         _sourceImages.Clear();
 
         Canvas.Clear();
 
-        _quadJsonData = null;
+        _quadJsonData    = null;
         CurrentAnimation = null;
-        CurrentSkeleton = null;
+        CurrentSkeleton  = null;
     }
 
     [RelayCommand]
@@ -968,22 +964,28 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    #endregion
+#endregion
 
-    #region 快速加载（调试用）
+#region 快速加载（调试用）
 
     [RelayCommand]
     private async Task QuicklyLoad()
     {
-        _quadFilePath = "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M.mbs.v55.quad";
+        // _quadFilePath = "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M.mbs.v55.quad";
+        // ImagePaths =
+        // [
+        //     "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.0.nvt.png",
+        //     "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.1.nvt.png",
+        // ];
+        _quadFilePath = @"F:\Codes\Test\swi sent Fuyusaka00.mbs.v55.quad";
         ImagePaths =
         [
-            "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.0.nvt.png",
-            "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.1.nvt.png",
+            @"F:\Codes\Test\swi sent Fuyusaka00.0.nvt.png",
+            @"F:\Codes\Test\swi sent Fuyusaka00.1.nvt.png",
         ];
 
         await LoadAsync();
     }
 
-    #endregion
+#endregion
 }

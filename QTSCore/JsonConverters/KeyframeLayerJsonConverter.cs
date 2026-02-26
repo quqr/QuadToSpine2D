@@ -13,21 +13,38 @@ public class KeyframeLayerJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+        JsonSerializer                          serializer)
     {
-        var obj = serializer.Deserialize(reader);
-        if (obj is not JObject jObject) return null;
+        if (reader.TokenType == JsonToken.Null)
+            return null;
+
+        // 检查当前 token 是否为对象
+        if (reader.TokenType != JsonToken.StartObject)
+        {
+            // 如果不是对象（如Integer），跳过或返回默认值
+            reader.Skip();
+            return null;
+        }
+
+        var jObject = JObject.Load(reader);
+        return ConvertToKeyframeLayer(jObject);
+    }
+
+    private KeyframeLayer ConvertToKeyframeLayer(JObject jObject)
+    {
+        var scaleFactor = Instances.ConverterSetting.ScaleFactor;
+        
         return new KeyframeLayer
         {
             Fog = ConvertToFog(jObject),
-            TexId = jObject["tex_id"]?.ToObject<int>() ?? -1,
-            Dstquad = ProcessUtility.MulFloats(jObject["dstquad"]?.ToObject<float[]?>(),
-                Instances.ConverterSetting.ScaleFactor)!,
-            Srcquad = ProcessUtility.MulFloats(jObject["srcquad"]?.ToObject<float[]?>(),
-                Instances.ConverterSetting.ScaleFactor),
-            BlendId = jObject["blend_id"]?.ToObject<int>() ?? -1,
+            TexId = jObject["tex_id"]?.Value<int>() ?? -1,
+            Dstquad = ProcessUtility.MulFloats(
+                jObject["dstquad"]?.ToObject<float[]?>(), scaleFactor)!,
+            Srcquad = ProcessUtility.MulFloats(
+                jObject["srcquad"]?.ToObject<float[]?>(), scaleFactor),
+            BlendId = jObject["blend_id"]?.Value<int>() ?? -1,
             Attribute = ConvertToAttribute(jObject),
-            Colorize = jObject["colorize"]?.ToObject<string>() ?? string.Empty,
+            Colorize = jObject["colorize"]?.Value<string>() ?? string.Empty,
             AttachType = AttachType.KeyframeLayer
         };
     }
@@ -35,36 +52,37 @@ public class KeyframeLayerJsonConverter : JsonConverter
     private string[] ConvertToAttribute(JObject jObject)
     {
         var baseAttribute = jObject["attribute"];
-        var attribute = baseAttribute?.Type switch
+        
+        return baseAttribute?.Type switch
         {
-            JTokenType.Array => baseAttribute.ToObject<string[]?>(),
-            JTokenType.String => [baseAttribute.ToString()],
+            JTokenType.Array => baseAttribute.ToObject<string[]?>() ?? [],
+            JTokenType.String => [baseAttribute.Value<string>()],
             _ => []
         };
-        return attribute ?? [];
     }
 
     private string[] ConvertToFog(JObject jObject)
     {
         var baseFog = jObject["fogquad"];
-        string[]? fog = [];
-        switch (baseFog?.Type)
-        {
-            case JTokenType.Array:
-                fog = baseFog.ToObject<string[]>();
-                break;
-            case JTokenType.String:
-                var result = baseFog.ToString();
-                fog = [result, result, result, result];
-                break;
-        }
 
-        if (fog is null || fog.Length == 0) fog = ["#ffffffff", "#ffffffff", "#ffffffff", "#ffffffff"];
-        return fog;
+        var result = baseFog?.Type switch
+        {
+            JTokenType.Array => baseFog.ToObject<string[]?>(),
+            JTokenType.String =>
+            [
+                baseFog.Value<string>(), 
+                baseFog.Value<string>(), 
+                baseFog.Value<string>(), 
+                baseFog.Value<string>()
+            ],
+            _ => null
+        };
+
+        return result?.Length > 0 ? result : ["#ffffffff", "#ffffffff", "#ffffffff", "#ffffffff"];
     }
 
     public override bool CanConvert(Type objectType)
     {
-        return typeof(KeyframeLayer) == objectType;
+        return objectType == typeof(KeyframeLayer);
     }
 }

@@ -104,7 +104,9 @@ public static class LoggerHelper
 
         DispatcherHelper.RunOnMainThreadAsync((() =>
         {
-            SettingsViewModel.Logs.Add(new TextBlock
+            if (SettingsViewModel.Logs.Count > 50)
+                SettingsViewModel.Logs.Dequeue();
+            SettingsViewModel.Logs.Enqueue(new TextBlock
             {
                 Text = FormatLogMessage(message?.ToString(),level),
             });

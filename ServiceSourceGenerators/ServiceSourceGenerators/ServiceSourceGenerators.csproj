@@ -5,7 +5,7 @@
         <IsPackable>false</IsPackable>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
         <RootNamespace>ServiceSourceGenerators</RootNamespace>

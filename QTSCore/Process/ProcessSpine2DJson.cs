@@ -102,20 +102,11 @@ public class ProcessSpine2DJson
 
     private void SortDrawOrderAsync(SpineAnimation spineAnimation, List<DrawOrder> drawOrders)
     {
-#if RELEASE
-        Task.Run(() =>
-        {
-            foreach (var drawOrder in drawOrders) drawOrder.SortOffset();
-            drawOrders.RemoveAll(x => x.Offsets.Count == 0);
-            spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
-        });
-#endif
-#if DEBUG
+
         foreach (var drawOrder in drawOrders) drawOrder.SortOffset();
         // drawOrders must be null if it's empty, or it will cause error in Spine2D
         drawOrders.RemoveAll(x => x.Offsets.Count == 0);
         spineAnimation.DrawOrder = drawOrders.Count != 0 ? drawOrders : null;
-#endif
     }
 
     private void AddVertices(PoolData poolData, KeyframeLayer keyframeLayer, Timeline timeline)

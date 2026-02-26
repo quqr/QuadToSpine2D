@@ -291,12 +291,8 @@ public class ProcessImages
         LoggerHelper.Debug($"Saving cropped image: {imageName}, size: {rect.Width}x{rect.Height}");
 
         using var cropped = new SKBitmap(rect.Width, rect.Height);
-        using (var canvas = new SKCanvas(cropped))
-        {
-            canvas.DrawBitmap(source, -rect.Left, -rect.Top);
-        }
-
-        SaveSkImage(SKImage.FromBitmap(cropped), imageName);
+        source.ExtractSubset(cropped, rect);
+        SaveSkImage(cropped, imageName);
         LoggerHelper.Debug($"Cropped image saved successfully: {imageName}");
     }
 
@@ -330,13 +326,13 @@ public class ProcessImages
         paint.Shader = shader;
         canvas.DrawRect(new SKRect(0, 0, width, height), paint);
 
-        SaveSkImage(surface.Snapshot(), imageName);
+        SaveSkImage(SKBitmap.FromImage(surface.Snapshot()), imageName);
         LoggerHelper.Debug($"Fog image saved successfully: {imageName}");
     }
 
-    private static void SaveSkImage(SKImage image, string imageName)
+    private static void SaveSkImage(SKBitmap bitmap, string imageName)
     {
-        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
         if (data == null)
         {
             const string errorMsg = "Image encoding failed";

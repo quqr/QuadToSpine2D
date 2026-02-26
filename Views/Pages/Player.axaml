@@ -337,11 +337,6 @@
                                         ToolTip.Tip="Loop animation">
                                     <fluent:FluentIcon Icon="ArrowSync" FontSize="18" />
                                 </ToggleButton>
-                                <Separator Width="1" Margin="4,0" Opacity="0.3" />
-                                <Button Classes="icon-button" Command="{Binding QuicklyLoadCommand}"
-                                        ToolTip.Tip="Quick Load">
-                                    <fluent:FluentIcon Icon="ArrowSync" FontSize="18" />
-                                </Button>
                             </StackPanel>
                         </StackPanel>
                     </Border>

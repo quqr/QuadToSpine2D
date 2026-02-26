@@ -64,11 +64,11 @@
                     FontSize="16"
                     FontWeight="Bold"
                     Text="Spine2D json save path" />
-                <TextBlock
+                <HyperlinkButton
                     Margin="0,12,70,0"
-                    Text="{Binding ResultSavePath}"
-                    FontSize="10"
-                    TextWrapping="Wrap" />
+                    Content="{Binding ResultSavePath}"
+                    NavigateUri="{Binding ResultSavePath}"
+                    FontSize="10"/>
             </StackPanel>
             <Button
                 HorizontalAlignment="Right"
@@ -83,11 +83,11 @@
                     FontSize="16"
                     FontWeight="Bold"
                     Text="Images save path" />
-                <TextBlock
+                <HyperlinkButton
                     Margin="0,12,70,0"
-                    Text="{Binding ImageSavePath}"
-                    FontSize="10"
-                    TextWrapping="Wrap" />
+                    Content="{Binding ImageSavePath}"
+                    NavigateUri="{Binding ImageSavePath}"
+                    FontSize="10"/>
             </StackPanel>
             <Button
                 HorizontalAlignment="Right"

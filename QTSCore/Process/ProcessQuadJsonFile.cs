@@ -53,18 +53,6 @@ public class ProcessQuadJsonFile
 
     private void CombineAnimations()
     {
-#if RELEASE
-        Parallel.ForEach(QuadData.Skeleton, skeleton =>
-        {
-            var animations = new List<Animation>();
-            animations
-               .AddRange(skeleton.Bone
-                                 .Select(bone => QuadData.Animation
-                                                         .First(x => x.Id == bone.Attach.Id)));
-            skeleton.CombineAnimation = ProcessUtility.CombineAnimations(animations);
-        });
-#endif
-#if DEBUG
         foreach (var skeleton in QuadData.Skeleton)
         {
             if (skeleton?.Bone is null) continue;
@@ -79,7 +67,6 @@ public class ProcessQuadJsonFile
                         })));
             skeleton.CombineAnimation = ProcessUtility.CombineAnimations(animations);
         }
-#endif
     }
 
     private void InitializeData()

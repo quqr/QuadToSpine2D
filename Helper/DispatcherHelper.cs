@@ -17,9 +17,8 @@ public static class DispatcherHelper
 
     public static T RunOnMainThread<T>(Func<T> func)
     {
-        if (Dispatcher.UIThread.CheckAccess()) return func();
+        return Dispatcher.UIThread.CheckAccess() ? func() : Dispatcher.UIThread.Invoke(func);
 
-        return Dispatcher.UIThread.Invoke(func);
     }
 
     public static Task RunOnMainThreadAsync(Action action, DispatcherPriority? priority = null,
@@ -39,9 +38,8 @@ public static class DispatcherHelper
 
     public static Task<T> RunOnMainThreadAsync<T>(Func<T> func)
     {
-        if (Dispatcher.UIThread.CheckAccess()) return Task.FromResult(func());
+        return Dispatcher.UIThread.CheckAccess() ? Task.FromResult(func()) : Dispatcher.UIThread.InvokeAsync(func).GetTask();
 
-        return Dispatcher.UIThread.InvokeAsync(func).GetTask();
     }
 
     public static void PostOnMainThread(Action func, DispatcherPriority priority = default)

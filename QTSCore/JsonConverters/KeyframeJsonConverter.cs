@@ -13,25 +13,48 @@ public class KeyframeJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer serializer)
+        JsonSerializer                          serializer)
     {
+        if (reader.TokenType == JsonToken.Null)
+            return null;
+
+        if (reader.TokenType != JsonToken.StartObject)
+        {
+            reader.Skip();
+            return null;
+        }
+
         IdCount++;
-        var obj = serializer.Deserialize(reader);
-        if (obj is not JObject jObject) return null;
+        var jObject = JObject.Load(reader);
+        
+        return ConvertToKeyframe(jObject);
+    }
+
+    private Keyframe ConvertToKeyframe(JObject jObject)
+    {
+        // 使用 Value<T>() 替代 ToString() 和 ToObject<T>()
+        var layers = jObject["layer"]?.ToObject<KeyframeLayer?[]?>();
+        
         var json = new Keyframe
         {
-            Name = jObject["name"]?.ToString() ?? string.Empty,
-            Layers = jObject["layer"]?.ToObject<KeyframeLayer?[]?>(),
-            Id = IdCount,
+            Name       = jObject["name"]?.Value<string>() ?? string.Empty,
+            Layers     = layers,
+            Id         = IdCount,
             AttachType = AttachType.Keyframe
         };
-        if (json.Layers is not null)
-            json.Order = jObject["orders"]?.ToObject<int[]>() ?? Enumerable.Range(0, json.Layers.Length).ToArray();
+
+        // 优化 Order 生成逻辑
+        if (layers?.Length > 0)
+        {
+            json.Order = jObject["orders"]?.ToObject<int[]>() 
+                         ?? Enumerable.Range(0, layers.Length).ToArray();
+        }
+
         return json;
     }
 
     public override bool CanConvert(Type objectType)
     {
-        return typeof(Keyframe) == objectType;
+        return objectType == typeof(Keyframe);
     }
 }

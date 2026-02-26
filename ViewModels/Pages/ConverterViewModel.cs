@@ -32,7 +32,7 @@ public partial class ConverterViewModel : ViewModelBase
     private void OnElementsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         // 更新所有元素的索引
-        for (int i = 0; i < Elements.Count; i++)
+        for (var i = 0; i < Elements.Count; i++)
         {
             Elements[i].Index = i;
         }
@@ -59,13 +59,13 @@ public partial class ConverterViewModel : ViewModelBase
             return null;
         }
 
-        int maxImages = validElements.Max(e => e.ImagePaths.Count);
+        var maxImages = validElements.Max(e => e.ImagePaths.Count);
         var result = new List<List<string?>>(validElements.Count);
 
         foreach (var element in validElements)
         {
             var paths = new List<string?>(maxImages);
-            for (int i = 0; i < maxImages; i++)
+            for (var i = 0; i < maxImages; i++)
             {
                 paths.Add(i < element.ImagePaths.Count ? element.ImagePaths[i] : null);
             }

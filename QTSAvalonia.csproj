@@ -9,18 +9,22 @@
         <LangVersion>default</LangVersion>
         <TargetFramework>net10.0</TargetFramework>
         <AssemblyName>QTSAvalonia</AssemblyName>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <RootNamespace>QTSAvalonia</RootNamespace>
         <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DebugType>embedded</DebugType>
+        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DebugType>embedded</DebugType>
+        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.3.12" />
+        <PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.3.12" />
         <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.12" />
@@ -29,6 +33,7 @@
         <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.319" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+        <PackageReference Include="ObservableCollections" Version="3.3.4" />
         <PackageReference Include="PanAndZoom" Version="11.3.9.1"/>
         <PackageReference Include="Serilog" Version="4.3.1" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1"/>
@@ -55,14 +60,14 @@
         <EmbeddedResource Remove="QTSCore\bin\**"/>
         <EmbeddedResource Remove="QTSCore\obj\**"/>
         <EmbeddedResource Remove="ServiceGenerators\**"/>
-   
+
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Remove="QTSCore\bin\**"/>
         <AdditionalFiles Remove="QTSCore\obj\**"/>
         <AdditionalFiles Remove="ServiceGenerators\**"/>
-    
+
     </ItemGroup>
 
     <ItemGroup>
@@ -76,7 +81,7 @@
         <None Remove="QTSCore\bin\**"/>
         <None Remove="QTSCore\obj\**"/>
         <None Remove="ServiceGenerators\**"/>
- 
+
     </ItemGroup>
 
     <!-- 添加对源代码生成器项目的引用 -->
