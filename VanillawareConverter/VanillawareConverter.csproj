@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Version>1.0.0</Version>
+        <Authors>Rufas Wan (Original PHP), C# Port</Authors>
+        <Description>Nintendo Switch FTEX texture file decoder - C# port of nswit_unicorn_FTEX.php</Description>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <LangVersion>default</LangVersion>
+        <PackageId>VanillawareFtex</PackageId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Remove="tests\**\*.cs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="Serilog" Version="4.3.1"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1"/>
+        <PackageReference Include="Serilog.Sinks.File" Version="7.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QTSAvalonia.csproj" />
+    </ItemGroup>
+
+</Project>
