@@ -27,67 +27,67 @@
         <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.0.4" />
         <PackageReference Include="Avalonia.Desktop" Version="12.0.4" />
         <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.4" />
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
         <PackageReference Include="FluentIcons.Avalonia" Version="2.1.330" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="ObservableCollections" Version="3.3.4" />
-        <PackageReference Include="PanAndZoom" Version="12.0.0.1"/>
+        <PackageReference Include="PanAndZoom" Version="12.0.0.1" />
         <PackageReference Include="Serilog" Version="4.3.1" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="7.0.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+        <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
         <PackageReference Include="SkiaSharp" Version="3.119.4" />
-        <PackageReference Include="SukiUI" Version="7.0.1"/>
-        <PackageReference Include="SukiUI.Dock" Version="7.0.1"/>
+        <PackageReference Include="SukiUI" Version="7.0.1" />
+        <PackageReference Include="SukiUI.Dock" Version="7.0.1" />
     </ItemGroup>
 
     <!-- 移除对 ServiceSourceGenerators 的排除项 -->
     <ItemGroup>
-        <AvaloniaXaml Remove="QTSCore\bin\**"/>
-        <AvaloniaXaml Remove="QTSCore\obj\**"/>
-        <AvaloniaXaml Remove="VanillawareConverter\bin\**"/>
-        <AvaloniaXaml Remove="VanillawareConverter\obj\**"/>
-        <AvaloniaXaml Remove="ServiceGenerators\**"/>
+        <AvaloniaXaml Remove="QTSCore\bin\**" />
+        <AvaloniaXaml Remove="QTSCore\obj\**" />
+        <AvaloniaXaml Remove="VanillawareConverter\bin\**" />
+        <AvaloniaXaml Remove="VanillawareConverter\obj\**" />
+        <AvaloniaXaml Remove="ServiceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="QTSCore\bin\**"/>
-        <Compile Remove="QTSCore\obj\**"/>
-        <Compile Remove="VanillawareConverter\bin\**"/>
-        <Compile Remove="VanillawareConverter\obj\**"/>
-        <Compile Remove="ServiceGenerators\**"/>
+        <Compile Remove="QTSCore\bin\**" />
+        <Compile Remove="QTSCore\obj\**" />
+        <Compile Remove="VanillawareConverter\bin\**" />
+        <Compile Remove="VanillawareConverter\obj\**" />
+        <Compile Remove="ServiceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Remove="QTSCore\bin\**"/>
-        <EmbeddedResource Remove="QTSCore\obj\**"/>
-        <EmbeddedResource Remove="VanillawareConverter\bin\**"/>
-        <EmbeddedResource Remove="VanillawareConverter\obj\**"/>
-        <EmbeddedResource Remove="ServiceGenerators\**"/>
+        <EmbeddedResource Remove="QTSCore\bin\**" />
+        <EmbeddedResource Remove="QTSCore\obj\**" />
+        <EmbeddedResource Remove="VanillawareConverter\bin\**" />
+        <EmbeddedResource Remove="VanillawareConverter\obj\**" />
+        <EmbeddedResource Remove="ServiceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Remove="QTSCore\bin\**"/>
-        <AdditionalFiles Remove="QTSCore\obj\**"/>
-        <AdditionalFiles Remove="VanillawareConverter\bin\**"/>
-        <AdditionalFiles Remove="VanillawareConverter\obj\**"/>
-        <AdditionalFiles Remove="ServiceGenerators\**"/>
+        <AdditionalFiles Remove="QTSCore\bin\**" />
+        <AdditionalFiles Remove="QTSCore\obj\**" />
+        <AdditionalFiles Remove="VanillawareConverter\bin\**" />
+        <AdditionalFiles Remove="VanillawareConverter\obj\**" />
+        <AdditionalFiles Remove="ServiceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Remove="QTSCore\bin\**"/>
-        <AvaloniaResource Remove="QTSCore\obj\**"/>
-        <AvaloniaResource Remove="VanillawareConverter\bin\**"/>
-        <AvaloniaResource Remove="VanillawareConverter\obj\**"/>
-        <AvaloniaResource Remove="ServiceGenerators\**"/>
+        <AvaloniaResource Remove="QTSCore\bin\**" />
+        <AvaloniaResource Remove="QTSCore\obj\**" />
+        <AvaloniaResource Remove="VanillawareConverter\bin\**" />
+        <AvaloniaResource Remove="VanillawareConverter\obj\**" />
+        <AvaloniaResource Remove="ServiceGenerators\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="QTSCore\bin\**"/>
-        <None Remove="QTSCore\obj\**"/>
-        <None Remove="VanillawareConverter\bin\**"/>
-        <None Remove="VanillawareConverter\obj\**"/>
-        <None Remove="ServiceGenerators\**"/>
+        <None Remove="QTSCore\bin\**" />
+        <None Remove="QTSCore\obj\**" />
+        <None Remove="VanillawareConverter\bin\**" />
+        <None Remove="VanillawareConverter\obj\**" />
+        <None Remove="ServiceGenerators\**" />
     </ItemGroup>
 
     <!-- 添加对源代码生成器项目的引用 -->

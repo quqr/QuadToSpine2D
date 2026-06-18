@@ -72,6 +72,9 @@ public class Keyframe : Attach
 public class KeyframeLayer : Attach
 {
     private float[]? _srcquad = [];
+    private int _texId = -1;
+    private string _name = string.Empty;
+    private Timeline[] _timeline = [];
 
     public float[] Dstquad
     {
@@ -80,10 +83,11 @@ public class KeyframeLayer : Attach
         {
             DstMatrix = new Matrix(4, 2, value);
             //Y is down, so we need to flip it to up
-            field = value;
+            _dstquad = value;
         }
     } = [];
 
+    private float[]? _dstquad;
     public Matrix DstMatrix { get; set; }
 
     public float[]? Srcquad
@@ -111,16 +115,16 @@ public class KeyframeLayer : Attach
 
     public int TexId
     {
-        get;
+        get => _texId;
         set
         {
             if (value >= -1)
             {
-                field = value;
+                _texId = value;
                 return;
             }
             // fog tex id
-            field = ConverterSettingViewModel.FogTexId;
+            _texId = ConverterSettingViewModel.FogTexId;
         }
     }
 
@@ -178,23 +182,27 @@ public class KeyframeLayer : Attach
 
 public class Animation : Attach
 {
+    private string _name = string.Empty;
+    private Timeline[] _timeline = [];
+    private int _loopId;
+
     public string Name
     {
-        get;
+        get => _name;
         set
         {
-            field = value;
-            var splitName = field.Split(' ');
+            _name = value;
+            var splitName = _name.Split(' ');
             // avoid "ALL KEYFRAMES"
             if (!splitName[0].Equals("animation")) return;
             Id = Convert.ToInt32(splitName[^1]);
             AttachType = AttachType.Animation;
         }
-    } = string.Empty;
+    }
 
     public Timeline[] Timeline
     {
-        get;
+        get => _timeline;
         set
         {
             for (var i = 0; i < value.Length; i++)
@@ -203,32 +211,36 @@ public class Animation : Attach
                 value[i].Next = i < value.Length - 1 ? value[i + 1] : null;
             }
 
-            field = value;
+            _timeline = value;
         }
-    } = [];
+    }
 
     public bool IsLoop { get; set; }
 
     [JsonProperty]
     public int LoopId
     {
-        get;
+        get => _loopId;
         set
         {
-            IsLoop = value >= 0;
-            field = value;
+                IsLoop = value >= 0;
+                _loopId = value;
         }
     }
 }
 
 public class Timeline
 {
+    private Timeline? _prev;
+    private int _startFrame;
+    private int _endFrame;
+
     public Timeline? Prev
     {
-        get;
+        get => _prev;
         set
         {
-            field = value;
+            _prev = value;
             StartFrame = value?.EndFrame ?? 0;
             EndFrame = StartFrame + Frames;
         }
@@ -237,8 +249,16 @@ public class Timeline
     public Timeline? Next { get; set; }
     public int Frames => Time;
     public int Time { get; set; }
-    public int StartFrame { get; set; }
-    public int EndFrame { get; set; }
+    public int StartFrame 
+    { 
+        get => _startFrame;
+        set => _startFrame = value;
+    }
+    public int EndFrame 
+    { 
+        get => _endFrame;
+        set => _endFrame = value;
+    }
     public FramePoint FramePoint { get; set; }
     public Attach? Attach { get; set; }
     

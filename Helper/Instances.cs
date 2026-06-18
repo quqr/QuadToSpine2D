@@ -3,12 +3,53 @@ using QTSAvalonia.ViewModels.Pages;
 
 namespace QTSAvalonia.Helper;
 
+/// <summary>
+/// 提供全局服务实例访问的静态类
+/// </summary>
+/// <remarks>
+/// <para>
+/// Instances类实现了服务定位器模式，提供对依赖注入容器中服务的全局访问。
+/// 它使用延迟初始化模式，在首次访问时创建服务实例。
+/// </para>
+/// <para>
+/// <strong>重要：</strong>在使用任何服务属性之前，必须先调用<see cref="Initialize"/>方法初始化服务提供者。
+/// </para>
+/// <para>
+/// 典型使用方式：
+/// <code>
+/// // 在应用程序启动时
+/// Instances.Initialize();
+/// 
+/// // 在需要时访问服务
+/// var converterSetting = Instances.ConverterSetting;
+/// </code>
+/// </para>
+/// </remarks>
 public static partial class Instances
 {
     private static ConverterSettingViewModel? _converterSetting;
     private static ConverterViewModel? _converter;
+    
+    /// <summary>
+    /// 获取服务提供者实例
+    /// </summary>
+    /// <value>
+    /// 初始化后的IServiceProvider实例
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// 当在调用Initialize之前访问此属性时抛出
+    /// </exception>
     public static IServiceProvider ServiceProvider { get; private set; } = null!;
 
+    /// <summary>
+    /// 获取转换器设置视图模型实例
+    /// </summary>
+    /// <value>
+    /// ConverterSettingViewModel的单例实例
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// 当在调用Initialize之前访问此属性时抛出
+    /// </exception>
     public static ConverterSettingViewModel ConverterSetting
     {
         get
@@ -21,6 +62,15 @@ public static partial class Instances
         }
     }
 
+    /// <summary>
+    /// 获取转换器视图模型实例
+    /// </summary>
+    /// <value>
+    /// ConverterViewModel的单例实例
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// 当在调用Initialize之前访问此属性时抛出
+    /// </exception>
     public static ConverterViewModel Converter
     {
         get
@@ -33,6 +83,19 @@ public static partial class Instances
         }
     }
 
+    /// <summary>
+    /// 初始化服务提供者
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// 此方法应在应用程序启动时调用一次。
+    /// 它会创建服务集合并构建服务提供者。
+    /// </para>
+    /// <para>
+    /// 具体的服务注册由部分类中的AddServices方法完成，
+    /// 该方法由源代码生成器自动生成。
+    /// </para>
+    /// </remarks>
     public static void Initialize()
     {
         var services = new ServiceCollection();
@@ -40,5 +103,12 @@ public static partial class Instances
         ServiceProvider = services.BuildServiceProvider();
     }
 
+    /// <summary>
+    /// 添加服务到服务集合
+    /// </summary>
+    /// <param name="services">服务集合</param>
+    /// <remarks>
+    /// 此方法由源代码生成器自动实现，用于注册所有标记了ServiceAttribute的服务。
+    /// </remarks>
     static partial void AddServices(IServiceCollection services);
 }

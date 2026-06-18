@@ -20,7 +20,7 @@ public partial class ElementViewModel : ViewModelBase
         LoggerHelper.Debug("ElementViewModel created without delete handler");
     }
 
-    protected override void Initialize()
+    public override void Initialize()
     {
         LoggerHelper.Info("ElementViewModel initialized");
         base.Initialize();

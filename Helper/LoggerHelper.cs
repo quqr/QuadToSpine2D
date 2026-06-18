@@ -15,9 +15,24 @@ public enum LogLevel : uint
 
 public static class LoggerHelper
 {
-    private static readonly SettingsViewModel SettingsViewModel =
-        Instances.ServiceProvider.GetRequiredService<SettingsViewModel>();
+    private static SettingsViewModel? _settingsViewModel;
     private static Logger? _logger;
+
+    private static SettingsViewModel GetSettingsViewModel()
+    {
+        if (_settingsViewModel == null)
+        {
+            try
+            {
+                _settingsViewModel = Instances.ServiceProvider.GetRequiredService<SettingsViewModel>();
+            }
+            catch
+            {
+                // CLI 模式下 DI 容器未初始化
+            }
+        }
+        return _settingsViewModel!;
+    }
     private static readonly List<(LogLevel level, string message)> LogCache = [];
     private const string OutputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj}{NewLine}{Exception}";
 
@@ -102,15 +117,26 @@ public static class LoggerHelper
             }
         }
 
-        DispatcherHelper.RunOnMainThreadAsync((() =>
+        try
         {
-            if (SettingsViewModel.Logs.Count > 50)
-                SettingsViewModel.Logs.Dequeue();
-            SettingsViewModel.Logs.Enqueue(new TextBlock
+            var svm = GetSettingsViewModel();
+            if (svm != null)
             {
-                Text = FormatLogMessage(message?.ToString(),level),
-            });
-        }));
+                DispatcherHelper.RunOnMainThreadAsync((() =>
+                {
+                    if (svm.Logs.Count > 50)
+                        svm.Logs.Dequeue();
+                    svm.Logs.Enqueue(new TextBlock
+                    {
+                        Text = FormatLogMessage(message?.ToString(),level),
+                    });
+                }));
+            }
+        }
+        catch
+        {
+            // CLI 模式下 dispatcher 不可用，忽略 UI 日志更新
+        }
     }
     public static void Info(object? message)
     {

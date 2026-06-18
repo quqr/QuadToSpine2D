@@ -1,5 +1,5 @@
 ﻿using Avalonia;
-using VanillawareConverter.Ftex;
+using QTSAvalonia.CLI;
 
 namespace QTSAvalonia;
 
@@ -8,16 +8,14 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+        if (CliRoot.TryRunCli(args))
+            return;
+
+        CliRoot.StartGui(args);
     }
 
     public static AppBuilder BuildAvaloniaApp()
     {
-        return AppBuilder.Configure<App>()
-                         .UsePlatformDetect()
-                         .WithInterFont()
-                         .LogToTrace();
-
+        return CliRoot.BuildAvaloniaApp();
     }
 }
