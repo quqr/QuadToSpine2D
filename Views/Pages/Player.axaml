@@ -10,7 +10,7 @@
              x:Class="QTSAvalonia.Views.Pages.Player"
              xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
              xmlns:userControlVMs="clr-namespace:QTSAvalonia.ViewModels.UserControls"
-             xmlns:fluent="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
+             xmlns:fluent="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:converters="clr-namespace:Avalonia.Markup.Xaml.Converters;assembly=Avalonia.Markup.Xaml"
              x:DataType="pages:PlayerViewModel">
 

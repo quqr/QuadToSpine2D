@@ -5,7 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
     xmlns:userControls="clr-namespace:QTSAvalonia.Views.UserControls"
-    xmlns:fluent="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
+    xmlns:fluent="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
     mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
     x:Class="QTSAvalonia.Views.Pages.Converter"
     x:DataType="pages:ConverterViewModel">

@@ -208,7 +208,7 @@ public class FtexReader
         {
             var fn = $"{prefix}.{id}.nvt";
             LoggerHelper.Info($"[文件保存] 准备保存纹理 - 文件名: {fn}, 尺寸: {w}x{h}");
-            SaveClutFile(fn, img);
+            NvtFileWriter.Save(fn, img);
         }
     }
 
@@ -288,48 +288,6 @@ public class FtexReader
 
         LoggerHelper.Info($"[FTEX解析] 解析完成 - 共处理 {cnt} 个纹理");
         return results;
-    }
-
-    /// <summary>
-    /// 保存CLUT格式文件
-    /// </summary>
-    private void SaveClutFile(string filename, ImageResult data)
-    {
-        try
-        {
-            var dir = Path.GetDirectoryName(filename);
-            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-                LoggerHelper.Debug($"[文件保存] 创建目录 - 路径: {dir}");
-            }
-
-            using var fs = new FileStream(filename, FileMode.Create, FileAccess.Write);
-            using var bw = new BinaryWriter(fs);
-
-            if (data.Palette != null)
-            {
-                bw.Write("CLUT"u8.ToArray());
-                bw.Write(data.ColorCount);
-                bw.Write(data.Width);
-                bw.Write(data.Height);
-                bw.Write(data.Palette);
-                bw.Write(data.PixelData);
-                LoggerHelper.Info($"[文件保存] 成功保存CLUT文件 - 文件名: {filename}, 尺寸: {data.Width}x{data.Height}, 颜色数: {data.ColorCount}");
-            }
-            else
-            {
-                bw.Write("RGBA"u8.ToArray());
-                bw.Write(data.Width);
-                bw.Write(data.Height);
-                bw.Write(data.PixelData);
-                LoggerHelper.Info($"[文件保存] 成功保存RGBA文件 - 文件名: {filename}, 尺寸: {data.Width}x{data.Height}");
-            }
-        }
-        catch (Exception ex)
-        {
-            LoggerHelper.Error($"[文件保存] 保存失败 - 文件名: {filename}", ex);
-        }
     }
 
     /// <summary>

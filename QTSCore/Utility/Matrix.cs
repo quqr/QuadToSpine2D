@@ -38,12 +38,6 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
         }
     }
 
-    public bool IsZeroMatrix()
-    {
-        const float epsilon = 1e-6f;
-        return Value.Cast<float>().All(f => MathF.Abs(f) < epsilon);
-    }
-
     public static Matrix IdentityMatrixBy4X4 => new(4);
 
     /// <summary>
@@ -105,7 +99,7 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
         switch (matrixA)
         {
             case { Rows: 4, Cols: 4 } when matrixB is { Rows: 4, Cols: 2 }:
-                return Multiply4x4By4x2Optimized(matrixA, matrixB);
+                return Multiply4X4By4X2Optimized(matrixA, matrixB);
             case { Rows: 4, Cols: 4 } when matrixB is { Rows: 4, Cols: 4 }:
                 Multiply4X4(matrixA.Value, matrixB.Value, result.Value);
                 return result;
@@ -181,7 +175,7 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
         c[3, 2] = a[3, 0] * b[0, 2] + a[3, 1] * b[1, 2] + a[3, 2] * b[2, 2] + a[3, 3] * b[3, 2];
         c[3, 3] = a[3, 0] * b[0, 3] + a[3, 1] * b[1, 3] + a[3, 2] * b[2, 3] + a[3, 3] * b[3, 3];
     }
-    public static Matrix Multiply4x4By4x2Optimized(Matrix a, Matrix b)
+    public static Matrix Multiply4X4By4X2Optimized(Matrix a, Matrix b)
     {
         if (a.Rows != 4 || a.Cols != 4 || b.Rows != 4 || b.Cols != 2)
         {

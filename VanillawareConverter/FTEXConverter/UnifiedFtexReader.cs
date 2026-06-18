@@ -102,73 +102,19 @@ public class UnifiedFtexReader
         foreach (var result in results)
         {
             var baseName = $"{Path.ChangeExtension(filePath, null)}.{index}";
+            var filename = $"{baseName}.nvt";
 
-            if (result.Palette != null)
-            {
-                SaveClutFile($"{baseName}.nvt", result);
-            }
-            else
-            {
-                SaveRgbaFile($"{baseName}.nvt", result);
-            }
+            NvtFileWriter.Save(filename, result);
 
             if (convertToPng)
             {
-                PngConverter.ConvertNvtToPng($"{baseName}.nvt");
+                PngConverter.ConvertNvtToPng(filename);
             }
 
             index++;
         }
 
         LoggerHelper.Info($"[批量处理] 处理完成 - 共提取 {results.Count} 个纹理");
-    }
-
-    /// <summary>
-    /// 保存CLUT格式文件
-    /// </summary>
-    private void SaveClutFile(string filename, ImageResult data)
-    {
-        try
-        {
-            using var fs = new FileStream(filename, FileMode.Create, FileAccess.Write);
-            using var bw = new BinaryWriter(fs);
-
-            bw.Write("CLUT"u8.ToArray());
-            bw.Write(data.ColorCount);
-            bw.Write(data.Width);
-            bw.Write(data.Height);
-            if (data.Palette != null) bw.Write(data.Palette);
-            bw.Write(data.PixelData);
-
-            LoggerHelper.Info($"[文件保存] CLUT文件保存成功 - 文件名: {filename}, 尺寸: {data.Width}x{data.Height}, 颜色数: {data.ColorCount}");
-        }
-        catch (Exception ex)
-        {
-            LoggerHelper.Error($"[文件保存] CLUT文件保存失败 - 文件名: {filename}", ex);
-        }
-    }
-
-    /// <summary>
-    /// 保存RGBA格式文件
-    /// </summary>
-    private void SaveRgbaFile(string filename, ImageResult data)
-    {
-        try
-        {
-            using var fs = new FileStream(filename, FileMode.Create, FileAccess.Write);
-            using var bw = new BinaryWriter(fs);
-
-            bw.Write("RGBA"u8.ToArray());
-            bw.Write(data.Width);
-            bw.Write(data.Height);
-            bw.Write(data.PixelData);
-
-            LoggerHelper.Info($"[文件保存] RGBA文件保存成功 - 文件名: {filename}, 尺寸: {data.Width}x{data.Height}");
-        }
-        catch (Exception ex)
-        {
-            LoggerHelper.Error($"[文件保存] RGBA文件保存失败 - 文件名: {filename}", ex);
-        }
     }
 
     /// <summary>
@@ -188,16 +134,17 @@ public class UnifiedFtexReader
         LoggerHelper.Info($"[目录处理] 开始扫描目录 - 路径: {directoryPath}, 匹配模式: {pattern}");
 
         var reader = new UnifiedFtexReader();
-        var files = Directory.GetFiles(directoryPath, pattern, SearchOption.TopDirectoryOnly);
+        var files = Directory.GetFiles(directoryPath, pattern, SearchOption.AllDirectories);
 
         LoggerHelper.Info($"[目录处理] 找到 {files.Length} 个匹配文件");
 
         var successCount = 0;
         var failCount = 0;
 
-        foreach (var file in files)
+        Parallel.ForEach(files, file =>
         {
-            LoggerHelper.Info($"[目录处理] 正在处理 ({successCount + failCount + 1}/{files.Length}) - 文件: {Path.GetFileName(file)}");
+            LoggerHelper.Info(
+                $"[目录处理] 正在处理 ({successCount + failCount + 1}/{files.Length}) - 文件: {Path.GetFileName(file)}");
             try
             {
                 reader.ParseAndSave(file, convertToPng);
@@ -208,7 +155,7 @@ public class UnifiedFtexReader
                 LoggerHelper.Error($"[目录处理] 处理失败 - 文件: {Path.GetFileName(file)}", ex);
                 failCount++;
             }
-        }
+        });
 
         LoggerHelper.Info($"[目录处理] 批量处理完成 - 成功: {successCount}, 失败: {failCount}, 总计: {files.Length}");
     }
