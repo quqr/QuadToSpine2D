@@ -1,0 +1,282 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:QTSAvalonia.ViewModels.Pages"
+             xmlns:uc="clr-namespace:QTSAvalonia.ViewModels.UserControls"
+             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="QTSAvalonia.Views.Pages.FileManager"
+             x:DataType="vm:FileManagerViewModel"
+             DragDrop.AllowDrop="True"
+             DragDrop.Drop="OnDrop"
+             DragDrop.DragOver="OnDragOver">
+
+    <UserControl.Styles>
+        <Style Selector="Border.file-card">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Duration="0:0:0.15" Property="RenderTransform"/>
+                    <BoxShadowsTransition Duration="0:0:0.15" Property="BoxShadow"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.thumb-nav">
+            <Setter Property="Background" Value="#80000000"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Opacity" Value="0.6"/>
+        </Style>
+        <Style Selector="Button.thumb-nav:pointerover">
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+        <!-- Loading spinner 动画 -->
+        <Style Selector="Border.loading-spinner">
+            <Setter Property="Transitions">
+                <Transitions><DoubleTransition Duration="0:0:1" Property="Opacity"/></Transitions>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
+
+    <Panel>
+        <Grid RowDefinitions="Auto,*">
+
+            <!-- ═══ 工具栏（三列 Grid） ═══ -->
+            <Border Grid.Row="0" Background="{DynamicResource SukiCardBackground}"
+                    BorderBrush="{DynamicResource SukiBorderBrush}" BorderThickness="0,0,0,1"
+                    Padding="12,8">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                        <Button Content="Open Folder" Command="{Binding OpenFolderCommand}" Classes="outlined" FontSize="12"/>
+                        <Button Content="Open Files" Command="{Binding OpenFilesCommand}" Classes="outlined" FontSize="12"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="12,0" MaxWidth="500">
+                        <TextBlock Text="{Binding SelectedFolderPath, StringFormat='📂 {0}'}" FontSize="11" Opacity="0.6"
+                                   MaxWidth="220" TextTrimming="CharacterEllipsis" IsVisible="{Binding HasFiles}"/>
+
+                        <Border Width="1" Height="14" Background="{DynamicResource SukiBorderBrush}" VerticalAlignment="Center"
+                                IsVisible="{Binding HasFiles}"/>
+
+                        <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="{Binding HasFiles}">
+                            <Border Background="#304CAF50" CornerRadius="8" Padding="7,2"><TextBlock Text="{Binding TotalCount}" FontWeight="Bold" FontSize="11"/></Border>
+                            <Border Background="#304CAF50" CornerRadius="8" Padding="7,2"><TextBlock Text="{Binding PairedCount}" FontWeight="Bold" FontSize="11" Foreground="#4CAF50"/></Border>
+                            <Border Background="#30FF9800" CornerRadius="8" Padding="7,2"><TextBlock Text="{Binding UnpairedCount}" FontWeight="Bold" FontSize="11" Foreground="#FF9800"/></Border>
+                        </StackPanel>
+
+                        <ProgressBar Value="{Binding LoadProgress}" Maximum="100" Width="80" Height="3" IsVisible="{Binding IsLoading}"/>
+                        <ProgressBar Value="{Binding ExportProgress}" Maximum="100" Width="80" Height="3" IsVisible="{Binding IsExporting}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                        <Button Content="Clear All" Command="{Binding ClearAllCommand}" Classes="outlined" FontSize="11" Padding="8,4"
+                                Foreground="#F44336" IsVisible="{Binding HasFiles}"/>
+                        <Button Content="All" Command="{Binding ToggleSelectAllCommand}" Classes="outlined" FontSize="11" Padding="8,4"
+                                IsVisible="{Binding HasFiles}"/>
+                        <Button Content="Export" Command="{Binding ExportAllCommand}" Classes="accent" FontSize="11" Padding="8,4"
+                                IsEnabled="{Binding IsExporting, Converter={x:Static BoolConverters.Not}}" IsVisible="{Binding HasFiles}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ═══ 卡片区域 ═══ -->
+            <Panel Grid.Row="1">
+
+                <!-- 空状态 -->
+                <StackPanel IsVisible="{Binding !HasFiles}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12" Opacity="0.5">
+                    <TextBlock Text="No files loaded" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Open a folder or drag &amp; drop files here" FontSize="14" HorizontalAlignment="Center" Opacity="0.7"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                        <Button Content="Open Folder" Command="{Binding OpenFolderCommand}" Classes="accent"/>
+                        <Button Content="Open Files" Command="{Binding OpenFilesCommand}" Classes="outlined"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- 文件卡片列表 -->
+                <ScrollViewer IsVisible="{Binding HasFiles}" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding FileCards}" Margin="6">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="uc:FileCardViewModel">
+
+                                <!-- ═══ 极简卡片 ═══ -->
+                                <Border Classes="file-card" Width="220" Margin="6"
+                                        Background="{DynamicResource SukiCardBackground}"
+                                        BorderBrush="{DynamicResource SukiBorderBrush}" BorderThickness="1"
+                                        CornerRadius="10" ClipToBounds="True" Cursor="Hand"
+                                        ToolTip.Tip="{Binding FilePath}"
+                                        PointerReleased="OnCardRightClick">
+                                    <Border.Styles>
+                                        <Style Selector="Border:pointerover">
+                                            <Setter Property="RenderTransform" Value="translateY(-2px)"/>
+                                            <Setter Property="BoxShadow" Value="0 4 12 0 #20000000"/>
+                                        </Style>
+                                    </Border.Styles>
+
+                                    <Grid RowDefinitions="*,Auto">
+
+                                        <!-- ── 缩略图区域 ── -->
+                                        <Panel Grid.Row="0" Height="140" Background="#08000000" ClipToBounds="True">
+
+                                            <!-- 缩略图图片 -->
+                                            <Image Source="{Binding ThumbnailBitmap}"
+                                                   Stretch="UniformToFill"
+                                                   IsVisible="{Binding !IsThumbnailLoading}"/>
+
+                                            <!-- Loading 占位符 -->
+                                            <StackPanel IsVisible="{Binding IsThumbnailLoading}"
+                                                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                        Spacing="4" Opacity="0.45">
+                                                <Border Width="28" Height="28" CornerRadius="14" BorderBrush="#999" BorderThickness="2"
+                                                        Classes="loading-spinner">
+                                                    <TextBlock Text="⏳" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text="Loading..." FontSize="10" Opacity="0.5"/>
+                                            </StackPanel>
+
+                                            <!-- 无预览占位 -->
+                                            <TextBlock Text="No preview" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       Opacity="0.25" IsVisible="{Binding !HasThumbnails}"/>
+
+                                            <!-- 多图导航栏 -->
+                                            <Border Background="#80000000" CornerRadius="6" Padding="4,2"
+                                                    HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4"
+                                                    IsVisible="{Binding HasMultipleImages}">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <Button Content="&#x25C0;" Classes="thumb-nav" Command="{Binding PreviousThumbnailCommand}"/>
+                                                    <TextBlock Text="{Binding ThumbnailIndicatorText}" Foreground="White" FontSize="11" MinWidth="20" HorizontalAlignment="Center"/>
+                                                    <Button Content="&#x25B6;" Classes="thumb-nav" Command="{Binding NextThumbnailCommand}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </Panel>
+
+                                        <!-- ── 底部信息栏（极简：文件名+状态+数量）── -->
+                                        <DockPanel Grid.Row="1" Margin="8,6" LastChildFill="True">
+
+                                            <!-- 左：文件名 -->
+                                            <TextBlock DockPanel.Dock="Left"
+                                                       Text="{Binding BaseName}" FontWeight="SemiBold" FontSize="12"
+                                                       TextTrimming="CharacterEllipsis" MaxWidth="110"
+                                                       VerticalAlignment="Center"/>
+
+                                            <!-- 右：状态标签 + 数量 -->
+                                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                                                <!-- 状态标签 -->
+                                                <Border Background="{Binding AccentColor}" CornerRadius="4" Padding="4,1" Opacity="0.7">
+                                                    <TextBlock Text="{Binding StatusText}" FontSize="9" Foreground="White"/>
+                                                </Border>
+                                                <!-- 图片数量 -->
+                                                <TextBlock Text="{Binding ImageCount, StringFormat='{}🖼{0}'}" FontSize="10" Opacity="0.45"
+                                                           IsVisible="{Binding HasThumbnails}"/>
+                                                <!-- 动画数量 -->
+                                                <TextBlock Text="{Binding AnimationCount, StringFormat='{}🦴{0}'}" FontSize="10" Opacity="0.45"
+                                                           IsVisible="{Binding HasAnimations}"/>
+                                            </StackPanel>
+
+                                            <!-- 点击展开详情的提示 -->
+                                            <Button DockPanel.Dock="Right" Content="⋮" FontSize="16"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Foreground="{DynamicResource SukiForegroundColour}" Opacity="0.3"
+                                                    Padding="2,0" VerticalAlignment="Center" Margin="2,0,0,0"
+                                                    Command="{Binding ToggleDetailsCommand}"
+                                                    IsVisible="{Binding !IsDetailsOpen}"/>
+                                        </DockPanel>
+
+                                        <!-- 复选框 -->
+                                        <Border Background="#80000000" CornerRadius="4" Padding="3" Margin="4,4,0,0"
+                                                HorizontalAlignment="Left" VerticalAlignment="Top">
+                                            <CheckBox IsChecked="{Binding IsSelected}" FontSize="11"/>
+                                        </Border>
+
+                                        <!-- 删除按钮 -->
+                                        <Border Background="#80000000" CornerRadius="10" Padding="0" Margin="0,3,3,0"
+                                                HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <Button Content="&#x2715;" Width="20" Height="20" FontSize="10" Padding="0"
+                                                    Background="Transparent" Foreground="#F44336"
+                                                    Command="{Binding Parent.RemoveCardCommand}" CommandParameter="{Binding}"
+                                                    Opacity="0.7"/>
+                                        </Border>
+
+                                        <!-- 选中覆盖层 -->
+                                        <Border Grid.RowSpan="2" Background="#122196F3" IsVisible="{Binding IsSelected}"
+                                                IsHitTestVisible="False" CornerRadius="10"/>
+
+                                        <!-- ═══ 详情 Popover（覆盖层，放最后确保 Z-order 最高）═══ -->
+                                        <Border Grid.RowSpan="2" Background="#EE000000"
+                                                IsVisible="{Binding IsDetailsOpen}"
+                                                IsHitTestVisible="True"
+                                                CornerRadius="10" Padding="12"
+                                                VerticalAlignment="Stretch"
+                                                ZIndex="100">
+                                            <StackPanel Spacing="6">
+                                                <!-- 标题行 -->
+                                                <DockPanel>
+                                                    <TextBlock DockPanel.Dock="Left" Text="Details" FontWeight="Bold" FontSize="13" Foreground="White"/>
+                                                    <Button DockPanel.Dock="Right" Content="✕" FontSize="12" Padding="0" Width="20" Height="20"
+                                                            Background="Transparent" Foreground="White" Opacity="0.6"
+                                                            Command="{Binding ToggleDetailsCommand}"/>
+                                                </DockPanel>
+
+                                                <Separator Background="#30FFFFFF" Margin="0,-2"/>
+
+                                                <!-- 统计 -->
+                                                <TextBlock Text="{Binding StatsText}" FontSize="11" Opacity="0.7" Foreground="White"/>
+
+                                                <!-- 配对路径 -->
+                                                <StackPanel IsVisible="{Binding IsPaired}" Spacing="1">
+                                                    <TextBlock Text="FTX:" FontSize="10" FontWeight="SemiBold" Opacity="0.5" Foreground="White"/>
+                                                    <TextBlock Text="{Binding PairedFtxPath}" FontSize="9" Opacity="0.35" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="MBS:" FontSize="10" FontWeight="SemiBold" Opacity="0.5" Foreground="White"/>
+                                                    <TextBlock Text="{Binding PairedMbsPath}" FontSize="9" Opacity="0.35" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                </StackPanel>
+
+                                                <!-- 骨架名称 -->
+                                                <StackPanel IsVisible="{Binding HasAnimations}" Spacing="1">
+                                                    <TextBlock Text="Skeletons:" FontSize="10" FontWeight="SemiBold" Opacity="0.5" Foreground="White"/>
+                                                    <ItemsControl ItemsSource="{Binding AnimationNames}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate x:DataType="x:String">
+                                                                <TextBlock Text="{Binding}" FontSize="9" Opacity="0.4" Foreground="White"/>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Panel>
+        </Grid>
+
+        <!-- 全屏图片预览遮罩层 -->
+        <Border Background="#B0000000" IsVisible="{Binding IsPreviewOpen}" IsHitTestVisible="{Binding IsPreviewOpen}">
+            <Panel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Border Background="{DynamicResource SukiCardBackground}" CornerRadius="12" Padding="20"
+                        MaxWidth="900" MaxHeight="700" BoxShadow="0 8 32 0 #40000000">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+                            <TextBlock Text="{Binding SelectedCard.DisplayName}" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
+                            <Button Content="&#x2715;" Width="32" Height="32" FontSize="18" Padding="0"
+                                    Command="{Binding ClosePreviewCommand}" ToolTip.Tip="Close (Esc)"/>
+                        </Grid>
+                        <Border ClipToBounds="True" CornerRadius="8" Background="#08000000">
+                            <Image Source="{Binding PreviewImagePath}" Stretch="Uniform" MaxWidth="850" MaxHeight="550"/>
+                        </Border>
+                        <TextBlock DockPanel.Dock="Bottom" Text="{Binding PreviewImagePath}" FontSize="11" Opacity="0.4"
+                                   TextTrimming="CharacterEllipsis" Margin="0,8,0,0"/>
+                    </DockPanel>
+                </Border>
+            </Panel>
+        </Border>
+    </Panel>
+</UserControl>

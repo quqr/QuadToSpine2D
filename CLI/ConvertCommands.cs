@@ -108,7 +108,7 @@ public static class ConvertCommands
             {
                 try
                 {
-                    reader.ParseAndSave(ftxFiles[i], format.ToLowerInvariant() == "png");
+                    reader.ParseAndSave(ftxFiles[i], format.ToLowerInvariant() == "png", texOutputDir);
                     CliLogger.Progress(i + 1, ftxFiles.Length, $"Texture: {Path.GetFileName(ftxFiles[i])} ✓");
                     successCount++;
                 }
@@ -171,8 +171,12 @@ public static class ConvertCommands
 
     private static int ConvertTexture(FileInfo inputFile, string? output, string format, System.Diagnostics.Stopwatch sw)
     {
+        var outputDir = string.IsNullOrEmpty(output)
+            ? inputFile.DirectoryName
+            : Path.GetDirectoryName(output);
+
         var reader = new UnifiedFtexReader();
-        reader.ParseAndSave(inputFile.FullName, format.ToLowerInvariant() == "png");
+        reader.ParseAndSave(inputFile.FullName, format.ToLowerInvariant() == "png", outputDir);
 
         sw.Stop();
         CliLogger.Done(1, sw.Elapsed);

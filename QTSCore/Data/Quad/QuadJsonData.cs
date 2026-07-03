@@ -1,4 +1,4 @@
-﻿using QTSAvalonia.Helper;
+using QTSAvalonia.Helper;
 using QTSAvalonia.ViewModels.Pages;
 using QTSCore.JsonConverters;
 using QTSCore.Process;
@@ -15,7 +15,7 @@ public class QuadJsonData
     public Slot[] Slot { get; set; } = [];
     public Hitbox?[] Hitbox { get; set; } = [];
     public Blend[] Blend { get; set; } = [];
-    public Mix[] Mix { get; set; } = [];
+    public string[] Mix { get; set; } = [];
     public Link[] Link { get; set; } = [];
     
 }
@@ -28,11 +28,6 @@ public class Blend
     public string Color { get; set; } = string.Empty;
     [JsonIgnore]
     public string[] LogicOp { get; set; } = [];
-}
-
-public class Mix
-{
-    //TODO
 }
 
 public class Link

@@ -4,23 +4,25 @@ namespace QTSAvalonia.ViewModels.Pages;
 /// 根视图模型，管理主页面导航
 /// </summary>
 /// <remarks>
-/// <para>
-/// RootViewModel类是应用程序主界面的根视图模型，
-/// 负责管理当前显示的页面类型。
-/// </para>
-/// <para>
-/// 此类使用[SingletonService]特性标记，由依赖注入容器管理为单例服务。
-/// </para>
+/// 管理应用程序主界面的页面切换。
+/// 使用[SingletonService]特性标记为单例服务。
 /// </remarks>
 [SingletonService]
 public partial class RootViewModel : ViewModelBase
 {
     /// <summary>
-    /// 获取或设置当前页面类型
+    /// 当前选中的侧边栏菜单索引（0=Home/Converter, 1=File Manager, 2=Previewer, 3=Setting）
     /// </summary>
-    /// <value>
-    /// 当前显示的页面设置实例
-    /// </value>
-    [ObservableProperty] 
-    private Settings _pageType = new();
+    [ObservableProperty]
+    private int _selectedPageIndex;
+
+    /// <summary>
+    /// 导航到指定页面索引
+    /// </summary>
+    /// <param name="pageIndex">目标页面索引</param>
+    public void NavigateTo(int pageIndex)
+    {
+        SelectedPageIndex = pageIndex;
+        LoggerHelper.Info($"[Navigation] Navigated to page {pageIndex}");
+    }
 }

@@ -64,15 +64,13 @@ public static class DispatcherHelper
     public static Task RunOnMainThreadAsync(Action action, DispatcherPriority? priority = null,
         CancellationToken? cancellationToken = null)
     {
-        cancellationToken ??= CancellationToken.None;
-        priority ??= new DispatcherPriority();
         if (Dispatcher.UIThread.CheckAccess())
         {
             action();
             return Task.CompletedTask;
         }
 
-        return Dispatcher.UIThread.InvokeAsync(action, priority.Value, cancellationToken.Value).GetTask();
+        return Dispatcher.UIThread.InvokeAsync(action, priority ?? DispatcherPriority.Normal, cancellationToken ?? CancellationToken.None).GetTask();
     }
 
     /// <summary>

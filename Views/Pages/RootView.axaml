@@ -14,12 +14,18 @@
     x:Class="QTSAvalonia.Views.Pages.RootView"
     Title="QuadToSpine2D"
     MinHeight="750" MinWidth="1200">
-    <suki:SukiSideMenu>
+    <suki:SukiSideMenu x:Name="SideMenu">
         <suki:SukiSideMenu.Items>
             <suki:SukiSideMenuItem IsContentMovable="False" Header="Home" FontWeight="Bold"
                                    Icon="{fluent:FluentIcon Icon=TasksApp,IconVariant=Regular}">
                 <suki:SukiSideMenuItem.PageContent>
                     <pages:Converter />
+                </suki:SukiSideMenuItem.PageContent>
+            </suki:SukiSideMenuItem>
+            <suki:SukiSideMenuItem IsContentMovable="False" Header="File Manager" FontWeight="Bold"
+                                   Icon="{fluent:FluentIcon Icon=FolderOpen,IconVariant=Regular}">
+                <suki:SukiSideMenuItem.PageContent>
+                    <pages:FileManager />
                 </suki:SukiSideMenuItem.PageContent>
             </suki:SukiSideMenuItem>
             <suki:SukiSideMenuItem IsContentMovable="False" Header="Previewer" FontWeight="Bold"

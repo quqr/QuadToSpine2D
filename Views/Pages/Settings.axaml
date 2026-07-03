@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     d:DesignHeight="1000"
     d:DesignWidth="1400"
     mc:Ignorable="d"
@@ -10,6 +10,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:pages="clr-namespace:QTSAvalonia.ViewModels.Pages"
+    xmlns:model="clr-namespace:QTSAvalonia.Models"
     xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System.ObjectModel"
     xmlns:settings="clr-namespace:QTSAvalonia.Views.Pages">
     <Design.DataContext>
@@ -37,32 +38,71 @@
                     <suki:SettingsLayoutItem.Content>
                         <suki:GlassCard Margin="0,25,0,0" Padding="25">
                             <StackPanel Spacing="15">
-                                <TextBlock Text="Log" FontWeight="Bold" />
-                                <suki:GlassCard>
-                                    <ScrollViewer
-                                        Margin="15"
-                                        MaxHeight="400">
-                                        <ItemsControl
-                                            ItemsSource="{Binding Logs }">
+                                <!-- 标题 + 操作按钮 -->
+                                <DockPanel>
+                                    <TextBlock Text="Log" FontWeight="Bold" DockPanel.Dock="Left"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
+                                        <Button Content="Copy All"
+                                                Command="{Binding CopyAllLogsCommand}"
+                                                Classes="outlined"
+                                                ToolTip.Tip="Copy filtered logs to clipboard"/>
+                                        <Button Content="Clear All"
+                                                Command="{Binding ClearLogsCommand}"
+                                                Foreground="#F44336"
+                                                Classes="outlined"
+                                                ToolTip.Tip="Clear all logs"/>
+                                    </StackPanel>
+                                </DockPanel>
+
+                                <!-- 过滤栏 -->
+                                <Border Background="{DynamicResource SukiCardBackground}"
+                                        CornerRadius="6" Padding="12,8">
+                                    <DockPanel>
+                                        <!-- 关键字过滤 -->
+                                        <TextBox Text="{Binding LogFilterText}"
+                                                 PlaceholderText="Filter by keyword..."
+                                                 DockPanel.Dock="Left"
+                                                 MinWidth="200"/>
+                                        <!-- 级别过滤 -->
+                                        <ComboBox SelectedItem="{Binding SelectedLogLevel}"
+                                                  DockPanel.Dock="Right"
+                                                  Width="120"
+                                                  HorizontalAlignment="Right"
+                                                  Margin="12,0,0,0">
+                                            <ComboBox.Items>
+                                                <x:String>All</x:String>
+                                                <x:String>Debug</x:String>
+                                                <x:String>Info</x:String>
+                                                <x:String>Warn</x:String>
+                                                <x:String>Error</x:String>
+                                            </ComboBox.Items>
+                                        </ComboBox>
+                                    </DockPanel>
+                                </Border>
+
+                                <!-- 日志列表 -->
+                                <suki:GlassCard Padding="0">
+                                    <ScrollViewer Margin="10" MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding FilteredLogs}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <StackPanel Spacing="15" />
+                                                    <StackPanel Spacing="2" />
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="model:LogEntry">
+                                                    <TextBlock Text="{Binding FullText}"
+                                                               FontSize="11" FontFamily="Consolas, monospace"
+                                                               TextWrapping="NoWrap"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
-
                                 </suki:GlassCard>
                             </StackPanel>
                         </suki:GlassCard>
                     </suki:SettingsLayoutItem.Content>
                 </suki:SettingsLayoutItem>
-
-                <!-- <suki:SettingsLayoutItem Header="Base Converter"> -->
-                <!--     <suki:SettingsLayoutItem.Content> -->
-                <!--         <suki:GlassCard Margin="0,25,0,0" Padding="25" /> -->
-                <!--     </suki:SettingsLayoutItem.Content> -->
-                <!-- </suki:SettingsLayoutItem> -->
             </objectModel:ObservableCollection>
         </suki:SettingsLayout.Items>
     </suki:SettingsLayout>

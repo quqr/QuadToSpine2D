@@ -3,13 +3,14 @@
         <OutputType>WinExe</OutputType>
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
         <PublishAot>False</PublishAot>
         <PublishTrimmed>False</PublishTrimmed>
         <LangVersion>default</LangVersion>
         <TargetFramework>net10.0</TargetFramework>
         <AssemblyName>QTSAvalonia</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
         <RootNamespace>QTSAvalonia</RootNamespace>
         <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>

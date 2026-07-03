@@ -95,7 +95,7 @@ public static class TexCommands
                 if (!fileOutput.Exists)
                     fileOutput.Create();
 
-                reader.ParseAndSave(file, convertToPng);
+                reader.ParseAndSave(file, convertToPng, fileOutputDir);
                 CliLogger.Progress(i + 1, files.Length, $"{relPath} ✓");
                 successCount++;
             }
@@ -121,7 +121,7 @@ public static class TexCommands
             if (!fileOutput.Exists)
                 fileOutput.Create();
 
-            reader.ParseAndSave(filePath, convertToPng);
+            reader.ParseAndSave(filePath, convertToPng, outputDir);
             sw.Stop();
             CliLogger.Done(1, sw.Elapsed);
             return 0;

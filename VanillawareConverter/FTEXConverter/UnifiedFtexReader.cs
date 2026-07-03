@@ -92,16 +92,23 @@ public class UnifiedFtexReader
     /// </summary>
     /// <param name="filePath">文件路径</param>
     /// <param name="convertToPng">是否转换为PNG格式</param>
-    public void ParseAndSave(string filePath, bool convertToPng = true)
+    /// <param name="outputDirectory">自定义输出目录（可选，默认输出到输入文件所在目录）</param>
+    public void ParseAndSave(string filePath, bool convertToPng = true, string? outputDirectory = null)
     {
         LoggerHelper.Info($"[批量处理] 开始处理文件 - 路径: {filePath}, 转换PNG: {convertToPng}");
 
         var results = ParseFile(filePath);
 
+        var outputDir = outputDirectory ?? Path.GetDirectoryName(filePath)!;
+        if (!Directory.Exists(outputDir))
+            Directory.CreateDirectory(outputDir);
+
+        var outputPrefix = Path.Combine(outputDir, Path.GetFileNameWithoutExtension(filePath));
+
         var index = 0;
         foreach (var result in results)
         {
-            var baseName = $"{Path.ChangeExtension(filePath, null)}.{index}";
+            var baseName = $"{outputPrefix}.{index}";
             var filename = $"{baseName}.nvt";
 
             NvtFileWriter.Save(filename, result);

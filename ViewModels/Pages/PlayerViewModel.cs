@@ -147,7 +147,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 #region 加载方法
 
     [RelayCommand]
-    private async Task LoadAsync()
+    public async Task LoadAsync()
     {
         if (string.IsNullOrEmpty(_quadFilePath) || !ImagePaths.Any())
         {
@@ -363,11 +363,46 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         if (!CheckLayerAttributes(layer))
             return;
 
-        var srcRect = SKRectI.Create((int)layer.SrcX, (int)layer.SrcY, (int)layer.Width, (int)layer.Height);
-        var skBitmap = GetImage(layer, srcRect);
+        // Srcquad 是 UV 坐标，需要转换为像素坐标
+        if (layer.Srcquad == null || layer.Srcquad.Length < 8 || layer.TexId < 0 || layer.TexId >= _sourceImages.Count)
+            return;
+
+        var sourceImage = _sourceImages[layer.TexId];
+        var imgWidth = sourceImage.Width;
+        var imgHeight = sourceImage.Height;
+
+        // UV 坐标转换为像素坐标
+        var x0 = layer.Srcquad[0] * imgWidth;
+        var y0 = layer.Srcquad[1] * imgHeight;
+        var x1 = layer.Srcquad[2] * imgWidth;
+        var y1 = layer.Srcquad[3] * imgHeight;
+        var x2 = layer.Srcquad[4] * imgWidth;
+        var y2 = layer.Srcquad[5] * imgHeight;
+        var x3 = layer.Srcquad[6] * imgWidth;
+        var y3 = layer.Srcquad[7] * imgHeight;
+
+        // 计算裁剪包围盒
+        var minX = Math.Min(Math.Min(x0, x1), Math.Min(x2, x3));
+        var minY = Math.Min(Math.Min(y0, y1), Math.Min(y2, y3));
+        var maxX = Math.Max(Math.Max(x0, x1), Math.Max(x2, x3));
+        var maxY = Math.Max(Math.Max(y0, y1), Math.Max(y2, y3));
+
+        var srcRect = SKRectI.Create((int)minX, (int)minY, (int)(maxX - minX), (int)(maxY - minY));
+        var skBitmap = CropImage(sourceImage, srcRect);
         if (skBitmap is null) return;
 
-        DrawImageWithMatrix(skBitmap, layer, matrix,color);
+        // 计算裁剪后图片的纹理坐标（相对于裁剪区域的像素坐标）
+        var cropWidth = (float)(maxX - minX);
+        var cropHeight = (float)(maxY - minY);
+        var texturePoints = new[]
+        {
+            new SKPoint(x0 - minX, y0 - minY),
+            new SKPoint(x1 - minX, y1 - minY),
+            new SKPoint(x2 - minX, y2 - minY),
+            new SKPoint(x3 - minX, y3 - minY)
+        };
+
+        DrawImageWithMatrix(skBitmap, layer, matrix, color, texturePoints);
     }
 
     private bool CheckLayerAttributes(KeyframeLayer layer)
@@ -394,10 +429,8 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         return true;
     }
 
-    private void DrawImageWithMatrix(SKBitmap skBitmap, KeyframeLayer layer, Matrix matrix,SKColor color)
+    private void DrawImageWithMatrix(SKBitmap skBitmap, KeyframeLayer layer, Matrix matrix, SKColor color, SKPoint[] texturePoints)
     {
-        if(layer.Srcquad is null) return;
-        
         var vertexMatrix = matrix * layer.DstMatrix;
         var vertices     = vertexMatrix.ToFloatArray();
 
@@ -407,13 +440,6 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
             new SKPoint(vertices[2] * ImageScaleFactor + CenterX, vertices[3] * ImageScaleFactor + CenterY),
             new SKPoint(vertices[4] * ImageScaleFactor + CenterX, vertices[5] * ImageScaleFactor + CenterY),
             new SKPoint(vertices[6] * ImageScaleFactor + CenterX, vertices[7] * ImageScaleFactor + CenterY)
-        };
-        var texturePoints = new[]
-        {
-            new SKPoint(layer.Srcquad[0] - layer.SrcX, layer.Srcquad[1] - layer.SrcY),
-            new SKPoint(layer.Srcquad[2] - layer.SrcX, layer.Srcquad[3] - layer.SrcY),
-            new SKPoint(layer.Srcquad[4] - layer.SrcX, layer.Srcquad[5] - layer.SrcY),
-            new SKPoint(layer.Srcquad[6] - layer.SrcX, layer.Srcquad[7] - layer.SrcY)
         };
 
         using var verticesObj = SKVertices.CreateCopy(
@@ -520,14 +546,40 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         if (layer.TexId >= _sourceImages.Count || layer.TexId < 0)
             return GetFogBitmap(layer.Fog);
 
-        var sourceImage  = _sourceImages[layer.TexId];
+        var sourceImage = _sourceImages[layer.TexId];
+
+        // Srcquad 是 UV 坐标（0-1），需要乘以图片尺寸得到像素坐标
+        // srcRect 参数是错误的（直接使用了 UV 值），需要重新计算
+        if (layer.Srcquad != null && layer.Srcquad.Length >= 8)
+        {
+            var imgWidth = sourceImage.Width;
+            var imgHeight = sourceImage.Height;
+
+            // UV 坐标转换为像素坐标
+            var x0 = layer.Srcquad[0] * imgWidth;
+            var y0 = layer.Srcquad[1] * imgHeight;
+            var x1 = layer.Srcquad[2] * imgWidth;
+            var y1 = layer.Srcquad[3] * imgHeight;
+            var x2 = layer.Srcquad[4] * imgWidth;
+            var y2 = layer.Srcquad[5] * imgHeight;
+            var x3 = layer.Srcquad[6] * imgWidth;
+            var y3 = layer.Srcquad[7] * imgHeight;
+
+            // 计算包围盒
+            var minX = Math.Min(Math.Min(x0, x1), Math.Min(x2, x3));
+            var minY = Math.Min(Math.Min(y0, y1), Math.Min(y2, y3));
+            var maxX = Math.Max(Math.Max(x0, x1), Math.Max(x2, x3));
+            var maxY = Math.Max(Math.Max(y0, y1), Math.Max(y2, y3));
+
+            srcRect = SKRectI.Create((int)minX, (int)minY, (int)(maxX - minX), (int)(maxY - minY));
+        }
+
         var croppedImage = CropImage(sourceImage, srcRect);
 
         if (croppedImage is null)
         {
             LoggerHelper.Error("Failed to crop image",
-                new InvalidOperationException($"Failed to crop image: {layer.TexId}"));
-            ToastHelper.Error("ERROR", $"Failed to crop image: {layer.TexId}");
+                new InvalidOperationException($"Failed to crop image: {layer.TexId}, srcRect={srcRect}"));
         }
 
         return croppedImage;
@@ -952,6 +1004,26 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         ClearResources();
 
         LoggerHelper.Debug("Preview data cleared");
+    }
+
+    /// <summary>
+    /// 公共方法：清空所有加载的资源（供 FileManagerViewModel.ClearAll 调用）
+    /// </summary>
+    public void UnloadAndClear()
+    {
+        Clear();
+        _quadFilePath = string.Empty;
+        QuadFileName = string.Empty;
+        ImagePaths.Clear();
+    }
+
+    /// <summary>
+    /// 设置 Quad 文件路径（供 FileManagerViewModel.PreviewInPlayer 调用）
+    /// </summary>
+    public void SetQuadFilePath(string path)
+    {
+        _quadFilePath = path;
+        QuadFileName = Path.GetFileName(path);
     }
 
     public void Dispose()

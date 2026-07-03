@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using QTSAvalonia.Models;
 using QTSAvalonia.ViewModels.Pages;
 using Serilog;
 using Serilog.Core;
@@ -33,6 +34,7 @@ public static class LoggerHelper
         }
         return _settingsViewModel!;
     }
+
     private static readonly List<(LogLevel level, string message)> LogCache = [];
     private const string OutputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj}{NewLine}{Exception}";
 
@@ -59,26 +61,37 @@ public static class LoggerHelper
         _logger = null;
     }
 
-    private static void FlushCache()
+    /// <summary>
+    /// 将日志写入 Serilog（统一入口，消除 switch 重复）
+    /// </summary>
+    private static void WriteToSerilog(LogLevel level, string message)
     {
         if (_logger == null) return;
-        foreach (var (level, msg) in LogCache)
-            switch (level)
-            {
-                case LogLevel.Info:
-                    _logger.Information(msg);
-                    break;
-                case LogLevel.Error:
-                    _logger.Error(msg);
-                    break;
-                case LogLevel.Warn:
-                    _logger.Warning(msg);
-                    break;
-            }
+        switch (level)
+        {
+            case LogLevel.Debug:
+                _logger.Debug(message);
+                break;
+            case LogLevel.Info:
+                _logger.Information(message);
+                break;
+            case LogLevel.Warn:
+                _logger.Warning(message);
+                break;
+            case LogLevel.Error:
+                _logger.Error(message);
+                break;
+        }
+    }
 
+    private static void FlushCache()
+    {
+        foreach (var (level, msg) in LogCache)
+            WriteToSerilog(level, msg);
         LogCache.Clear();
     }
-    private static string FormatLogMessage(string? message, LogLevel level)
+
+    private static string FormatLogMessage(string message, LogLevel level)
     {
         var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
         var levelString = level switch
@@ -89,48 +102,33 @@ public static class LoggerHelper
             LogLevel.Error => "ERROR",
             _ => "UNKNOWN"
         };
-        
         return $"[{timestamp}][{levelString}] {message}";
     }
+
     private static void Log(object? message, LogLevel level)
     {
-        if (_logger == null)
-            LogCache.Add((level, message?.ToString() ?? string.Empty));
-        else
-        {
-            switch (level)
-            {
-                case LogLevel.Debug:
-                    _logger.Debug(message?.ToString() ?? string.Empty);
-                    break;
-                case LogLevel.Info:
-                    _logger.Information(message?.ToString() ?? string.Empty);
-                    break;
-                case LogLevel.Warn:
-                    _logger.Warning(message?.ToString() ?? string.Empty);
-                    break;
-                case LogLevel.Error:
-                    _logger.Error(message?.ToString() ?? string.Empty);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
-            }
-        }
+        var text = message?.ToString() ?? string.Empty;
 
+        // 写入 Serilog（或缓存）
+        if (_logger == null)
+            LogCache.Add((level, text));
+        else
+            WriteToSerilog(level, text);
+
+        // 写入 UI 日志队列
         try
         {
             var svm = GetSettingsViewModel();
             if (svm != null)
             {
-                DispatcherHelper.RunOnMainThreadAsync((() =>
+                var entry = new LogEntry
                 {
-                    if (svm.Logs.Count > 50)
-                        svm.Logs.Dequeue();
-                    svm.Logs.Enqueue(new TextBlock
-                    {
-                        Text = FormatLogMessage(message?.ToString(),level),
-                    });
-                }));
+                    Level = level.ToString(),
+                    Message = text,
+                    FullText = FormatLogMessage(text, level),
+                    Timestamp = DateTime.Now
+                };
+                svm.AddLog(entry);
             }
         }
         catch
@@ -138,30 +136,14 @@ public static class LoggerHelper
             // CLI 模式下 dispatcher 不可用，忽略 UI 日志更新
         }
     }
-    public static void Info(object? message)
-    {
-        Log(message, LogLevel.Info);
-    }
 
-    public static void Debug(object? message)
-    {
-        Log(message,LogLevel.Debug);
-    }
-    
-    public static void Error(object message)
-    {
-        Log(message,LogLevel.Error);
+    public static void Info(object? message) => Log(message, LogLevel.Info);
 
-    }
+    public static void Debug(object? message) => Log(message, LogLevel.Debug);
 
-    public static void Error(object message, Exception e)
-    {
-        Log($"{message}\n{e}",LogLevel.Error);
+    public static void Error(object message) => Log(message, LogLevel.Error);
 
-    }
+    public static void Error(object message, Exception e) => Log($"{message}\n{e}", LogLevel.Error);
 
-    public static void Warning(object message)
-    {
-        Log(message, LogLevel.Warn);
-    }
+    public static void Warning(object message) => Log(message, LogLevel.Warn);
 }
