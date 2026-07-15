@@ -1,3 +1,5 @@
+using QTSCore.Interfaces;
+
 namespace QTSAvalonia.ViewModels.Pages;
 
 /// <summary>
@@ -13,7 +15,7 @@ namespace QTSAvalonia.ViewModels.Pages;
 /// </para>
 /// </remarks>
 [SingletonService]
-public partial class ConverterSettingViewModel : ViewModelBase
+public partial class ConverterSettingViewModel : ViewModelBase, IConverterSettings
 {
     /// <summary>
     /// 获取或设置图像保存路径
@@ -57,7 +59,7 @@ public partial class ConverterSettingViewModel : ViewModelBase
     /// <value>
     /// 用于标识雾效果纹理的特殊ID值
     /// </value>
-    public static int FogTexId => 1000;
+    public int FogTexId => 1000;
 
     /// <summary>
     /// 获取或设置图像路径列表
@@ -73,7 +75,7 @@ public partial class ConverterSettingViewModel : ViewModelBase
     /// <value>
     /// 每帧的时间间隔（秒），基于60FPS计算
     /// </value>
-    public static float Fps => 1 / 60f;
+    public float Fps => 1 / 60f;
 
     /// <summary>
     /// 打开JSON保存路径选择器命令

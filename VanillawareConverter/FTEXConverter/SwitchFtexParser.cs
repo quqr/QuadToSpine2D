@@ -1,32 +1,27 @@
 using System.Text;
 using VanillawareConverter.Ftex.Swizzling;
 using VanillawareConverter.Ftex.Textures;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Parsers;
 
-public class SwitchFtexParser : IFtexParser
+public class SwitchFtexParser : BaseFtexParser
 {
     private readonly BptcTexture _bptc = new();
     private readonly S3tcTexture _s3tc = new();
 
-    public GamePlatform Platform => GamePlatform.Switch;
+    public override GamePlatform Platform => GamePlatform.Switch;
 
-    public bool CanParse(byte[] fileData)
+    protected override int MinimumFileLength => 4;
+
+    protected override bool CheckMagic(byte[] fileData)
     {
-        if (fileData == null || fileData.Length < 4)
-            return false;
-
         var magic = Encoding.ASCII.GetString(fileData, 0, 4);
         return magic == "FTEX";
     }
 
-    public List<ImageResult> Parse(byte[] fileData, string outputPrefix)
+    protected override void ParseCore(byte[] fileData, string outputPrefix, List<ImageResult> results)
     {
-        var results = new List<ImageResult>();
-
-        if (!CanParse(fileData))
-            return results;
-
         var hdsz = (int)ByteHelper.ReadUInt32(fileData, 8);
         var cnt = (int)ByteHelper.ReadUInt32(fileData, 12);
 
@@ -55,8 +50,6 @@ public class SwitchFtexParser : IFtexParser
 
             st += sz1 + sz2;
         }
-
-        return results;
     }
 
     private ImageResult? ParseNvt(byte[] file, int baseOffset)

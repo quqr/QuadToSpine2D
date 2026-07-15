@@ -9,7 +9,7 @@ using VanillawareConverter.Mbs.Parsers;
 using VanillawareConverter.Mbs.Converters;
 using Newtonsoft.Json;
 using QTSCore.Process;
-using SkiaSharp;
+using QTSCore.Services;
 
 namespace QTSAvalonia.ViewModels.Pages;
 
@@ -65,6 +65,9 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
 
     private CancellationTokenSource? _loadCts;
     private readonly ConcurrentBag<string> _tempFiles = new();
+
+    private readonly ThumbnailGenerator _thumbnailGenerator = new();
+    private readonly QuadFileLoader _fileLoader = new();
 
     public FileManagerViewModel()
     {
@@ -159,30 +162,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     /// </summary>
     public async Task LoadFilesFromDropAsync(IEnumerable<string> paths)
     {
-        var filePaths = new List<string>();
-        foreach (var path in paths)
-        {
-            if (Directory.Exists(path))
-            {
-                var dirFiles = await Task.Run(() =>
-                {
-                    var ftxFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
-                        .Where(f => Path.GetExtension(f).ToLowerInvariant() is ".ftx" or ".ftp")
-                        .ToList();
-                    var mbsFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
-                        .Where(f => Path.GetExtension(f).ToLowerInvariant() is ".mbs" or ".mbp")
-                        .ToList();
-                    return ftxFiles.Concat(mbsFiles).ToList();
-                });
-                filePaths.AddRange(dirFiles);
-            }
-            else if (File.Exists(path))
-            {
-                var ext = Path.GetExtension(path).ToLowerInvariant();
-                if (ext is ".ftx" or ".ftp" or ".mbs" or ".mbp")
-                    filePaths.Add(path);
-            }
-        }
+        var filePaths = await Task.Run(() => _fileLoader.CollectSupportedFiles(paths));
 
         if (filePaths.Count > 0)
         {
@@ -205,16 +185,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
 
         try
         {
-            var allFiles = await Task.Run(() =>
-            {
-                var ftxFiles = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
-                    .Where(f => Path.GetExtension(f).ToLowerInvariant() is ".ftx" or ".ftp")
-                    .ToList();
-                var mbsFiles = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories)
-                    .Where(f => Path.GetExtension(f).ToLowerInvariant() is ".mbs" or ".mbp")
-                    .ToList();
-                return ftxFiles.Concat(mbsFiles).ToList();
-            }, ct);
+            var allFiles = await Task.Run(() => _fileLoader.ScanSupportedFiles(folderPath), ct);
 
             LoggerHelper.Info($"[FileManager] Found {allFiles.Count} files in {folderPath}");
             await LoadFilesInternalAsync(allFiles, ct);
@@ -350,8 +321,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     {
         try
         {
-            var reader = new UnifiedFtexReader();
-            var results = reader.ParseFile(ftxPath);
+            var results = _fileLoader.ParseFtx(ftxPath);
 
             // 懒加载：只记录图片数量，不生成 PNG
             // 实际解码在 FileCardViewModel.ThumbnailBitmap getter 中按需执行
@@ -374,10 +344,9 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     {
         try
         {
-            var fileData = File.ReadAllBytes(mbsPath);
-            var tag = PlatformConfigs.DetectPlatform(fileData);
+            var result = _fileLoader.ParseMbs(mbsPath);
 
-            if (tag == PlatformTag.Unknown)
+            if (result == null)
             {
                 Dispatcher.UIThread.Post(() =>
                 {
@@ -388,68 +357,16 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
                 return;
             }
 
-            var parser = new MbsToV55Parser();
-            var v55Data = parser.Parse(fileData, tag);
-
-            // S9 = 骨架数据，过滤空名称
-            var skeletonNames = new List<string>();
-            for (int i = 0; i < v55Data.S9.Count; i++)
-            {
-                var bone = v55Data.S9[i];
-                if (bone != null && !string.IsNullOrWhiteSpace(bone.Name))
-                    skeletonNames.Add(bone.Name);
-            }
-
-            // 动画数量 = Sa 集合总数
-            var animCount = v55Data.Sa.Count;
-
             Dispatcher.UIThread.Post(() =>
             {
-                card.LoadAnimationInfo(animCount, skeletonNames);
+                card.LoadAnimationInfo(result.AnimationCount, result.SkeletonNames);
             });
 
-            LoggerHelper.Debug($"[FileManager] MBS loaded: {card.BaseName} ({animCount} animations, {skeletonNames.Count} skeletons)");
+            LoggerHelper.Debug($"[FileManager] MBS loaded: {card.BaseName} ({result.AnimationCount} animations, {result.SkeletonNames.Count} skeletons)");
         }
         catch (Exception ex)
         {
             LoggerHelper.Error($"Failed to load MBS info for {card.BaseName}: {ex.Message}");
-        }
-    }
-
-    private void SaveAsPng(ImageResult result, string outputPath)
-    {
-        try
-        {
-            // 导出原始分辨率，不缩放（Quad JSON 坐标引用原始尺寸）
-            using var srcBitmap = new SKBitmap(result.Width, result.Height, SKColorType.Rgba8888, SKAlphaType.Premul);
-
-            var pixels = new byte[result.Width * result.Height * 4];
-            for (int y = 0; y < result.Height; y++)
-            {
-                for (int x = 0; x < result.Width; x++)
-                {
-                    int dstOffset = (y * result.Width + x) * 4;
-                    int srcOffset = dstOffset;
-                    if (srcOffset + 3 < result.PixelData.Length)
-                    {
-                        pixels[dstOffset] = result.PixelData[srcOffset];
-                        pixels[dstOffset + 1] = result.PixelData[srcOffset + 1];
-                        pixels[dstOffset + 2] = result.PixelData[srcOffset + 2];
-                        pixels[dstOffset + 3] = result.PixelData[srcOffset + 3];
-                    }
-                }
-            }
-
-            System.Runtime.InteropServices.Marshal.Copy(pixels, 0, srcBitmap.GetPixels(), pixels.Length);
-
-            using var image = SKImage.FromBitmap(srcBitmap);
-            using var data = image.Encode(SKEncodedImageFormat.Png, 90);
-
-            File.WriteAllBytes(outputPath, data.ToArray());
-        }
-        catch (Exception ex)
-        {
-            LoggerHelper.Error($"Failed to save PNG: {ex.Message}");
         }
     }
 
@@ -678,13 +595,12 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
         var paths = new List<string>();
         try
         {
-            var reader = new UnifiedFtexReader();
-            var results = reader.ParseFile(ftxPath);
+            var results = _fileLoader.ParseFtx(ftxPath);
 
             for (int i = 0; i < results.Count; i++)
             {
                 var outputPath = Path.Combine(tempDir, $"{baseName}_{i}.png");
-                SaveAsPng(results[i], outputPath);
+                _thumbnailGenerator.SaveAsPng(results[i], outputPath);
                 if (File.Exists(outputPath))
                     paths.Add(outputPath);
             }

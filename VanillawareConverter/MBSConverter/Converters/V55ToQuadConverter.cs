@@ -2,6 +2,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using VanillawareConverter.Mbs.Math;
 using VanillawareConverter.Mbs.Models;
+using Matrix4x4 = VanillawareConverter.Mbs.Math.Matrix4x4;
 
 namespace VanillawareConverter.Mbs.Converters;
 

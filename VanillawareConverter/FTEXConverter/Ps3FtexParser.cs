@@ -1,31 +1,26 @@
 using System.Text;
 using VanillawareConverter.Ftex.Swizzling;
 using VanillawareConverter.Ftex.Textures;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Parsers;
 
-public class Ps3FtexParser : IFtexParser
+public class Ps3FtexParser : BaseFtexParser
 {
     private readonly S3tcTexture _s3tc = new();
 
-    public GamePlatform Platform => GamePlatform.PS3;
+    public override GamePlatform Platform => GamePlatform.PS3;
 
-    public bool CanParse(byte[] fileData)
+    protected override int MinimumFileLength => 0x10;
+
+    protected override bool CheckMagic(byte[] fileData)
     {
-        if (fileData == null || fileData.Length < 0x10)
-            return false;
-
         var magic = Encoding.ASCII.GetString(fileData, 0, 4);
         return magic is "gtf\0" or "gtf";
     }
 
-    public List<ImageResult> Parse(byte[] fileData, string outputPrefix)
+    protected override void ParseCore(byte[] fileData, string outputPrefix, List<ImageResult> results)
     {
-        var results = new List<ImageResult>();
-
-        if (!CanParse(fileData))
-            return results;
-
         var offset = 0;
         while (offset + 0x30 < fileData.Length)
         {
@@ -52,8 +47,6 @@ public class Ps3FtexParser : IFtexParser
 
             offset = dataOffset + dataSize;
         }
-
-        return results;
     }
 
     private ImageResult? ProcessTexture(byte[] data, int w, int h, int fmt, int swizzle)

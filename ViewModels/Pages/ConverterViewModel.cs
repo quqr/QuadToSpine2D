@@ -1,11 +1,12 @@
 using System.Collections.Specialized;
 using QTSAvalonia.ViewModels.UserControls;
+using QTSCore.Interfaces;
 using QTSCore.Process;
 
 namespace QTSAvalonia.ViewModels.Pages;
 
 [SingletonService]
-public partial class ConverterViewModel : ViewModelBase
+public partial class ConverterViewModel : ViewModelBase, IConversionResult
 {
     [ObservableProperty]
     private ObservableCollection<ElementViewModel> _elements = [];
@@ -118,11 +119,13 @@ public partial class ConverterViewModel : ViewModelBase
             Instances.ConverterSetting.ImagePath = imagePaths;
             
             // 执行处理流程
-            await Task.Run(() => 
+            await Task.Run(() =>
             {
-                new ProcessQuadData()
-                    .LoadQuadJson(_quadFilePath, true)
-                    .ProcessJson();
+                var quadData = new ProcessQuadJsonFile().LoadQuadJson(_quadFilePath, true);
+                var spineJson = new ProcessSpine2DJson(quadData);
+                var outputPath = spineJson.Process().WriteToJson();
+                Instances.Converter.ResultJsonUrl = outputPath;
+                Instances.Converter.ResultJsonUrlIsEnabled = true;
             });
 
             LoggerHelper.Info("Data processing completed successfully");

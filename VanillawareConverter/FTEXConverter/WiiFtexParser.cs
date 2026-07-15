@@ -1,30 +1,25 @@
 using VanillawareConverter.Ftex.Swizzling;
 using VanillawareConverter.Ftex.Textures;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Parsers;
 
-public class WiiFtexParser : IFtexParser
+public class WiiFtexParser : BaseFtexParser
 {
     private readonly S3tcTexture _s3tc = new();
 
-    public GamePlatform Platform => GamePlatform.Wii;
+    public override GamePlatform Platform => GamePlatform.Wii;
 
-    public bool CanParse(byte[] fileData)
+    protected override int MinimumFileLength => 4;
+
+    protected override bool CheckMagic(byte[] fileData)
     {
-        if (fileData == null || fileData.Length < 4)
-            return false;
-
         var magic = BitConverter.ToUInt32(fileData, 0);
         return magic == 0x20af30;
     }
 
-    public List<ImageResult> Parse(byte[] fileData, string outputPrefix)
+    protected override void ParseCore(byte[] fileData, string outputPrefix, List<ImageResult> results)
     {
-        var results = new List<ImageResult>();
-
-        if (!CanParse(fileData))
-            return results;
-
         var texCount = (int)ByteHelper.ReadUInt32(fileData, 0x08);
         var texOffset = (int)ByteHelper.ReadUInt32(fileData, 0x0C);
         var palOffset = (int)ByteHelper.ReadUInt32(fileData, 0x10);
@@ -71,8 +66,6 @@ public class WiiFtexParser : IFtexParser
             var result = ProcessTexture(pixelData, palette, colorCount, w, h, fmt);
             if (result != null) results.Add(result);
         }
-
-        return results;
     }
 
     private byte[] ParsePalette(byte[] fileData, int offset, int size, int fmt, out int colorCount)

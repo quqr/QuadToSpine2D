@@ -1,17 +1,17 @@
 using System.Text;
 using VanillawareConverter.Ftex.Swizzling;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Parsers;
 
-public class PspFtexParser : IFtexParser
+public class PspFtexParser : BaseFtexParser
 {
-    public GamePlatform Platform => GamePlatform.PSP;
+    public override GamePlatform Platform => GamePlatform.PSP;
 
-    public bool CanParse(byte[] fileData)
+    protected override int MinimumFileLength => 0x10;
+
+    protected override bool CheckMagic(byte[] fileData)
     {
-        if (fileData == null || fileData.Length < 0x10)
-            return false;
-
         if (fileData.Length < 16)
             return false;
 
@@ -26,13 +26,8 @@ public class PspFtexParser : IFtexParser
         return marker == ".00.1PSP";
     }
 
-    public List<ImageResult> Parse(byte[] fileData, string outputPrefix)
+    protected override void ParseCore(byte[] fileData, string outputPrefix, List<ImageResult> results)
     {
-        var results = new List<ImageResult>();
-
-        if (!CanParse(fileData))
-            return results;
-
         var offset = 0x100;
         while (offset + 0x40 < fileData.Length)
         {
@@ -73,8 +68,6 @@ public class PspFtexParser : IFtexParser
 
             offset += 0x40;
         }
-
-        return results;
     }
 
     private ImageResult? ProcessTexture(byte[] fileData, int pixPos, int w, int h, int fmt, int swizzle,

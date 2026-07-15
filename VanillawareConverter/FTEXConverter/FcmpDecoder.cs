@@ -1,4 +1,5 @@
 using System.Text;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex;
 

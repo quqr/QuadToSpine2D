@@ -1,17 +1,17 @@
 using System.Text;
 using VanillawareConverter.Ftex.Swizzling;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Parsers;
 
-public class Ps2FtexParser : IFtexParser
+public class Ps2FtexParser : BaseFtexParser
 {
-    public GamePlatform Platform => GamePlatform.PS2;
+    public override GamePlatform Platform => GamePlatform.PS2;
 
-    public bool CanParse(byte[] fileData)
+    protected override int MinimumFileLength => 0x30;
+
+    protected override bool CheckMagic(byte[] fileData)
     {
-        if (fileData == null || fileData.Length < 0x30)
-            return false;
-
         var magic = Encoding.ASCII.GetString(fileData, 0, 4);
         if (magic != "FTEX")
             return false;
@@ -32,13 +32,8 @@ public class Ps2FtexParser : IFtexParser
         return texMagic == "FGST";
     }
 
-    public List<ImageResult> Parse(byte[] fileData, string outputPrefix)
+    protected override void ParseCore(byte[] fileData, string outputPrefix, List<ImageResult> results)
     {
-        var results = new List<ImageResult>();
-
-        if (!CanParse(fileData))
-            return results;
-
         var hdsz = (int)ByteHelper.ReadUInt32(fileData, 8);
         var cnt = (int)ByteHelper.ReadUInt32(fileData, 12);
 
@@ -68,8 +63,6 @@ public class Ps2FtexParser : IFtexParser
 
             st += sz1 + sz2;
         }
-
-        return results;
     }
 
     private ImageResult? ParseFgst(byte[] fileData, int offset)

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using QTSAvalonia.Helper;
 using QTSCore.Data.Quad;
 using QTSCore.Utility;
@@ -38,9 +38,9 @@ public class KeyframeLayerJsonConverter : JsonConverter
         {
             Fog = ConvertToFog(jObject),
             TexId = jObject["tex_id"]?.Value<int>() ?? -1,
-            Dstquad = ProcessUtility.MulFloats(
+            Dstquad = MathHelper.MulFloats(
                 jObject["dstquad"]?.ToObject<float[]?>(), scaleFactor)!,
-            Srcquad = ProcessUtility.MulFloats(
+            Srcquad = MathHelper.MulFloats(
                 jObject["srcquad"]?.ToObject<float[]?>(), scaleFactor),
             BlendId = jObject["blend_id"]?.Value<int>() ?? -1,
             Attribute = ConvertToAttribute(jObject),

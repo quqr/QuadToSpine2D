@@ -1,27 +1,22 @@
 using System.Text;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Parsers;
 
-public class NdsFtexParser : IFtexParser
+public class NdsFtexParser : BaseFtexParser
 {
-    public GamePlatform Platform => GamePlatform.NDS;
+    public override GamePlatform Platform => GamePlatform.NDS;
 
-    public bool CanParse(byte[]? fileData)
+    protected override int MinimumFileLength => 8;
+
+    protected override bool CheckMagic(byte[] fileData)
     {
-        if (fileData == null || fileData.Length < 8)
-            return false;
-
         var magic = Encoding.ASCII.GetString(fileData, 0, 4);
         return magic is "BIT\0" or "BITD";
     }
 
-    public List<ImageResult> Parse(byte[] fileData, string outputPrefix)
+    protected override void ParseCore(byte[] fileData, string outputPrefix, List<ImageResult> results)
     {
-        var results = new List<ImageResult>();
-
-        if (!CanParse(fileData))
-            return results;
-
         byte[]? palette = null;
         var colorCount = 0;
 
@@ -46,8 +41,6 @@ public class NdsFtexParser : IFtexParser
 
             offset += chunkSize;
         }
-
-        return results;
     }
 
     private byte[] ParsePaletteData(byte[] fileData, int offset, int size, out int colorCount)

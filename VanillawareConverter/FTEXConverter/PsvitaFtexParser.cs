@@ -1,31 +1,26 @@
 using System.Text;
 using VanillawareConverter.Ftex.Swizzling;
 using VanillawareConverter.Ftex.Textures;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Parsers;
 
-public class PsvitaFtexParser : IFtexParser
+public class PsvitaFtexParser : BaseFtexParser
 {
     private readonly S3tcTexture _s3tc = new();
 
-    public GamePlatform Platform => GamePlatform.PSVita;
+    public override GamePlatform Platform => GamePlatform.PSVita;
 
-    public bool CanParse(byte[] fileData)
+    protected override int MinimumFileLength => 4;
+
+    protected override bool CheckMagic(byte[] fileData)
     {
-        if (fileData == null || fileData.Length < 4)
-            return false;
-
         var magic = Encoding.ASCII.GetString(fileData, 0, 4);
         return magic is "GXT\0" or "GXT";
     }
 
-    public List<ImageResult> Parse(byte[] fileData, string outputPrefix)
+    protected override void ParseCore(byte[] fileData, string outputPrefix, List<ImageResult> results)
     {
-        var results = new List<ImageResult>();
-
-        if (!CanParse(fileData))
-            return results;
-
         var offset = 0x20;
         while (offset + 0x40 < fileData.Length)
         {
@@ -53,8 +48,6 @@ public class PsvitaFtexParser : IFtexParser
 
             offset += 0x40;
         }
-
-        return results;
     }
 
     private ImageResult? ProcessTexture(byte[] data, int w, int h, int fmt, int swizzle)

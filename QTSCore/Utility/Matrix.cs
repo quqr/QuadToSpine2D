@@ -1,4 +1,4 @@
-﻿namespace QTSCore.Utility;
+namespace QTSCore.Utility;
 
 public readonly struct Matrix : IEquatable<Matrix>, ICloneable
 {
@@ -297,7 +297,7 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
             return false;
         for (var i = 0; i < Rows; i++)
         for (var j = 0; j < Cols; j++)
-            if (!ProcessUtility.ApproximatelyEqual(Value[i, j], other.Value[i, j]))
+            if (!MathHelper.ApproximatelyEqual(Value[i, j], other.Value[i, j]))
                 return false;
 
         return true;

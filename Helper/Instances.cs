@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using QTSAvalonia.ViewModels.Pages;
+using QTSCore.Interfaces;
 
 namespace QTSAvalonia.Helper;
 
@@ -100,6 +101,12 @@ public static partial class Instances
     {
         var services = new ServiceCollection();
         AddServices(services);
+
+        // 注册接口映射，使核心层可通过接口访问配置和日志
+        services.AddSingleton<ILogger, LoggerAdapter>();
+        services.AddSingleton<IConverterSettings>(sp => sp.GetRequiredService<ConverterSettingViewModel>());
+        services.AddSingleton<IConversionResult>(sp => sp.GetRequiredService<ConverterViewModel>());
+
         ServiceProvider = services.BuildServiceProvider();
     }
 

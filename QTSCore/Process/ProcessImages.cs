@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using QTSAvalonia.Helper;
 using QTSAvalonia.ViewModels.Pages;
@@ -9,7 +9,7 @@ using SkiaSharp;
 
 namespace QTSCore.Process;
 
-public class ProcessImages
+public class ProcessImages : IDisposable
 {
     private readonly SKBitmap?[,] _images;
 
@@ -137,7 +137,7 @@ public class ProcessImages
             if (layer.Srcquad != null &&
                 _images[layer.TexId, skinIndex] != null)
             {
-                var rect = ProcessUtility.CalculateRectangle(layer);
+                var rect = ImageHelper.CalculateRectangle(layer);
                 LoggerHelper.Debug($"Processing texture image - SkinIndex: {skinIndex}, Rect: {rect}");
 
                 data = ProcessTextureImage(
@@ -252,7 +252,7 @@ public class ProcessImages
         int copyIndex)
     {
         var imageIndex = poolData?.LayersData[skinIndex].ImageIndex ?? _currentImageIndex;
-        var texIdStr = layer.TexId == ConverterSettingViewModel.FogTexId ? "Fog" : layer.TexId.ToString();
+        var texIdStr = layer.TexId == Instances.ConverterSetting.FogTexId ? "Fog" : layer.TexId.ToString();
         var name = $"Slice_{imageIndex}_{texIdStr}_{skinIndex}_{copyIndex}";
 
         // Update layer internal sorting identifier
@@ -359,4 +359,15 @@ public class ProcessImages
     }
 
     #endregion
+
+    /// <summary>
+    /// 释放所有 SKBitmap 资源
+    /// </summary>
+    public void Dispose()
+    {
+        if (_images is null) return;
+        foreach (var bitmap in _images)
+            bitmap?.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }

@@ -1,4 +1,4 @@
-﻿using QTSAvalonia.Helper;
+using QTSAvalonia.Helper;
 using QTSCore.Data.Quad;
 using QTSCore.JsonConverters;
 using QTSCore.Utility;
@@ -65,7 +65,7 @@ public class ProcessQuadJsonFile
                             if (x is null) return false;
                             return x.Id == bone.Attach.Id;
                         })));
-            skeleton.CombineAnimation = ProcessUtility.CombineAnimations(animations);
+            skeleton.CombineAnimation = AnimationCombiner.CombineAnimations(animations);
         }
     }
 

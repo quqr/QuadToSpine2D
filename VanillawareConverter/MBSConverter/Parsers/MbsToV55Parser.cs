@@ -1,5 +1,6 @@
 using VanillawareConverter.Mbs;
 using VanillawareConverter.Mbs.Models;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Mbs.Parsers;
 
@@ -54,16 +55,25 @@ public class MbsToV55Parser
         return (sp, sc, sk);
     }
 
-    private List<S0Color?> ParseS0(SectionInfo sect)
+    private List<T?> ParseSection<T>(SectionInfo sect, Func<byte[], int, T> parseEntry) where T : class
     {
         var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S0Color?>();
+        var result = new List<T?>();
 
         for (var i = 0; i < sc; i++)
         {
             var p = sp + i * sk;
             var s = ByteHelper.SubArray(_fileData, p, sk);
+            result.Add(parseEntry(s, i));
+        }
 
+        return result;
+    }
+
+    private List<S0Color?> ParseS0(SectionInfo sect)
+    {
+        return ParseSection(sect, (s, i) =>
+        {
             object? fog = null;
             var tag = _platform.IdTag;
 
@@ -72,26 +82,18 @@ public class MbsToV55Parser
             else
                 fog = ParseNdsQuad18c(s);
 
-            result.Add(new S0Color
+            return new S0Color
             {
                 I = $"s0 {i}",
                 Fog = fog
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<S1Source?> ParseS1(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S1Source?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             float[]? quad = null;
             var tag = _platform.IdTag;
 
@@ -100,26 +102,18 @@ public class MbsToV55Parser
             else
                 quad = ParseNdsQuad30p(s, _bigEndian);
 
-            result.Add(new S1Source
+            return new S1Source
             {
                 I = $"s1 {i}",
                 SrcQuad = quad
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<S2Dest?> ParseS2(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S2Dest?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             float[]? quad = null;
             var tag = _platform.IdTag;
 
@@ -128,26 +122,18 @@ public class MbsToV55Parser
             else
                 quad = ParseNdsQuad30p(s, _bigEndian);
 
-            result.Add(new S2Dest
+            return new S2Dest
             {
                 I = $"s2 {i}",
                 DstQuad = quad
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<S3Hitbox?> ParseS3(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S3Hitbox?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             var rect = new float[8];
             var xyz = new float[12];
 
@@ -157,27 +143,19 @@ public class MbsToV55Parser
             for (var j = 0; j < 12; j++)
                 xyz[j] = ByteHelper.ReadFloat32(s, 0x20 + j * 4, _bigEndian);
 
-            result.Add(new S3Hitbox
+            return new S3Hitbox
             {
                 I = $"s3 {i}",
                 Rect = rect,
                 Xyz = xyz
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<S4Texture?> ParseS4(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S4Texture?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             int flags = 0, blendId = 0, texId = 0;
             var s0s1s2 = new int[3];
             int attrib = 0, colorId = 0;
@@ -224,7 +202,7 @@ public class MbsToV55Parser
                 ];
             }
 
-            result.Add(new S4Texture
+            return new S4Texture
             {
                 I = $"s4 {i}",
                 Blend = blendId,
@@ -233,46 +211,30 @@ public class MbsToV55Parser
                 Bits = $"0x{flags:x}",
                 Attr = $"0x{attrib:x}",
                 Color = colorId
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<S5HitboxRef?> ParseS5(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S5HitboxRef?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             var s3Id = ByteHelper.ReadInt(s, 0x00, 2, _bigEndian);
             var flags = ByteHelper.ReadInt(s, 0x04, 4, _bigEndian);
 
-            result.Add(new S5HitboxRef
+            return new S5HitboxRef
             {
                 I = $"s5 {i}",
                 S3 = s3Id,
                 Bits = $"0x{flags:x}"
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<S6Keyframe?> ParseS6(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S6Keyframe?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             var rect = new float[4];
             for (var j = 0; j < 4; j++)
                 rect[j] = ByteHelper.ReadFloat32(s, j * 4, _bigEndian);
@@ -311,29 +273,21 @@ public class MbsToV55Parser
                 flags = ByteHelper.ReadInt(s, 0x19, 1, _bigEndian);
             }
 
-            result.Add(new S6Keyframe
+            return new S6Keyframe
             {
                 I = $"s6 {i}",
                 Rect = rect,
                 S4 = s4,
                 S5 = s5,
                 Bits = $"0x{flags:x}"
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<S7Transform?> ParseS7(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S7Transform?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             var move = new float[3];
             var rotate = new float[3];
             var scale = new float[2];
@@ -388,29 +342,21 @@ public class MbsToV55Parser
                 fog = ByteHelper.ReadHexStringWithPrefix(s, 0x20, 4);
             }
 
-            result.Add(new S7Transform
+            return new S7Transform
             {
                 I = $"s7 {i}",
                 Move = move,
                 Rotate = rotate,
                 Scale = scale,
                 Fog = fog
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<S8AnimFrame?> ParseS8(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S8AnimFrame?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             var s6Id = ByteHelper.ReadInt(s, 0x00, 2, _bigEndian);
             var s7Id = ByteHelper.ReadInt(s, 0x04, 2, _bigEndian);
             var time = ByteHelper.ReadInt(s, 0x06, 2, _bigEndian);
@@ -422,7 +368,7 @@ public class MbsToV55Parser
             var inS0S1S2 = ByteHelper.ReadInt(s, 0x12, 1, _bigEndian);
             var sfx = ByteHelper.ReadInt(s, 0x1c, 4, _bigEndian);
 
-            result.Add(new S8AnimFrame
+            return new S8AnimFrame
             {
                 I = $"s8 {i}",
                 S6 = s6Id,
@@ -435,22 +381,14 @@ public class MbsToV55Parser
                 InS7 = inS7,
                 InS6 = inS6,
                 InS0S1S2 = inS0S1S2
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<S9Bone?> ParseS9(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<S9Bone?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             var rect = new float[4];
             for (var j = 0; j < 4; j++)
                 rect[j] = ByteHelper.ReadFloat32(s, j * 4, _bigEndian);
@@ -459,51 +397,36 @@ public class MbsToV55Parser
             var saSetId = ByteHelper.ReadInt(s, 0x28, 2, _bigEndian);
             var saSetNo = ByteHelper.ReadInt(s, 0x2a, 1, _bigEndian);
 
-            result.Add(new S9Bone
+            return new S9Bone
             {
                 I = $"s9 {i}",
                 Rect = rect,
                 Name = name,
                 Sa = [saSetId, saSetNo]
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<SaAnimation?> ParseSa(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<SaAnimation?>();
-
-        for (var i = 0; i < sc; i++)
+        return ParseSection(sect, (s, i) =>
         {
-            var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
-
             var s8SetId = ByteHelper.ReadInt(s, 0x00, 2, _bigEndian);
             var s8SetNo = ByteHelper.ReadInt(s, 0x02, 2, _bigEndian);
             var s8SetSum = ByteHelper.ReadInt(s, 0x04, 4, _bigEndian);
             var s8SetSt = ByteHelper.ReadInt(s, 0x13, 1, _bigEndian);
 
-            result.Add(new SaAnimation
+            return new SaAnimation
             {
                 I = $"sa {i}",
                 S8 = [s8SetId + s8SetSt, s8SetNo - s8SetSt, s8SetSum]
-            });
-        }
-
-        return result;
+            };
+        });
     }
 
     private List<SbExtension?> ParseSb(SectionInfo sect)
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
-        var result = new List<SbExtension?>();
-
-        for (var i = 0; i < sc; i++) result.Add(new SbExtension { I = $"sb {i}" });
-
-        return result;
+        return ParseSection(sect, (_, i) => new SbExtension { I = $"sb {i}" });
     }
 
     private static object ParsePs2Quad20c(byte[] s)

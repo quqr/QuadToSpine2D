@@ -1,5 +1,6 @@
 using System.Text;
 using VanillawareConverter.Ftex.Parsers;
+using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex;
 
