@@ -40,17 +40,17 @@
                             <StackPanel Spacing="15">
                                 <!-- 标题 + 操作按钮 -->
                                 <DockPanel>
-                                    <TextBlock Text="Log" FontWeight="Bold" DockPanel.Dock="Left"/>
+                                    <TextBlock Text="Log" FontWeight="Bold" DockPanel.Dock="Left" />
                                     <StackPanel Orientation="Horizontal" Spacing="8" DockPanel.Dock="Right">
                                         <Button Content="Copy All"
                                                 Command="{Binding CopyAllLogsCommand}"
                                                 Classes="outlined"
-                                                ToolTip.Tip="Copy filtered logs to clipboard"/>
+                                                ToolTip.Tip="Copy filtered logs to clipboard" />
                                         <Button Content="Clear All"
                                                 Command="{Binding ClearLogsCommand}"
                                                 Foreground="#F44336"
                                                 Classes="outlined"
-                                                ToolTip.Tip="Clear all logs"/>
+                                                ToolTip.Tip="Clear all logs" />
                                     </StackPanel>
                                 </DockPanel>
 
@@ -62,7 +62,7 @@
                                         <TextBox Text="{Binding LogFilterText}"
                                                  PlaceholderText="Filter by keyword..."
                                                  DockPanel.Dock="Left"
-                                                 MinWidth="200"/>
+                                                 MinWidth="200" />
                                         <!-- 级别过滤 -->
                                         <ComboBox SelectedItem="{Binding SelectedLogLevel}"
                                                   DockPanel.Dock="Right"
@@ -93,7 +93,7 @@
                                                 <DataTemplate x:DataType="model:LogEntry">
                                                     <TextBlock Text="{Binding FullText}"
                                                                FontSize="11" FontFamily="Consolas, monospace"
-                                                               TextWrapping="NoWrap"/>
+                                                               TextWrapping="NoWrap" />
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>

@@ -68,7 +68,7 @@
                     Margin="0,12,70,0"
                     Content="{Binding ResultSavePath}"
                     NavigateUri="{Binding ResultSavePath}"
-                    FontSize="10"/>
+                    FontSize="10" />
             </StackPanel>
             <Button
                 HorizontalAlignment="Right"
@@ -87,7 +87,7 @@
                     Margin="0,12,70,0"
                     Content="{Binding ImageSavePath}"
                     NavigateUri="{Binding ImageSavePath}"
-                    FontSize="10"/>
+                    FontSize="10" />
             </StackPanel>
             <Button
                 HorizontalAlignment="Right"

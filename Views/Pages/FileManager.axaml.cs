@@ -1,9 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
-using Avalonia.VisualTree;
 using Microsoft.Extensions.DependencyInjection;
 using QTSAvalonia.ViewModels.Pages;
 using QTSAvalonia.ViewModels.UserControls;
@@ -56,7 +54,7 @@ public partial class FileManager : UserControl
     }
 
     /// <summary>
-    /// 卡片右键事件处理 - 显示上下文菜单
+    ///     卡片右键事件处理 - 显示上下文菜单
     /// </summary>
     private void OnCardRightClick(object? sender, PointerReleasedEventArgs e)
     {
@@ -122,20 +120,17 @@ public partial class FileManager : UserControl
     }
 
     /// <summary>
-    /// 拖放进入事件
+    ///     拖放进入事件
     /// </summary>
     private void OnDragOver(object? sender, DragEventArgs e)
     {
         e.DragEffects = DragDropEffects.Copy;
 
-        if (!e.DataTransfer.Formats.Contains(DataFormat.File))
-        {
-            e.DragEffects = DragDropEffects.None;
-        }
+        if (!e.DataTransfer.Formats.Contains(DataFormat.File)) e.DragEffects = DragDropEffects.None;
     }
 
     /// <summary>
-    /// 拖放放下事件
+    ///     拖放放下事件
     /// </summary>
     private void OnDrop(object? sender, DragEventArgs e)
     {
@@ -143,53 +138,40 @@ public partial class FileManager : UserControl
 
         var paths = new List<string>();
         foreach (var item in e.DataTransfer.Items)
-        {
             if (item.TryGetValue(DataFormat.File) is IStorageItem storageItem)
             {
                 var localPath = storageItem.TryGetLocalPath();
                 if (!string.IsNullOrEmpty(localPath))
                     paths.Add(localPath);
             }
-        }
 
-        if (paths.Count > 0)
-        {
-            _ = viewModel.LoadFilesFromDropAsync(paths);
-        }
+        if (paths.Count > 0) _ = viewModel.LoadFilesFromDropAsync(paths);
     }
 
     /// <summary>
-    /// 打开文件所在文件夹
+    ///     打开文件所在文件夹
     /// </summary>
     private void OpenContainingFolder(FileCardViewModel card)
     {
         var dir = Path.GetDirectoryName(card.FilePath);
         if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
-        {
             try
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
                     Process.Start(new ProcessStartInfo("explorer.exe", $"\"{dir}\"") { UseShellExecute = true });
-                }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
                     Process.Start(new ProcessStartInfo("open", $"\"{dir}\"") { UseShellExecute = true });
-                }
                 else
-                {
                     Process.Start(new ProcessStartInfo("xdg-open", $"\"{dir}\"") { UseShellExecute = true });
-                }
             }
             catch (Exception ex)
             {
                 LoggerHelper.Error($"Failed to open folder: {ex.Message}");
             }
-        }
     }
 
     /// <summary>
-    /// 复制文件路径到剪贴板
+    ///     复制文件路径到剪贴板
     /// </summary>
     private async Task CopyPathAsync(FileCardViewModel card)
     {

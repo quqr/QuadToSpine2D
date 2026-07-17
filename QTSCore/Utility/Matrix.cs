@@ -10,15 +10,15 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
 
     public Matrix(int rows, int cols)
     {
-        Rows  = rows;
-        Cols  = cols;
+        Rows = rows;
+        Cols = cols;
         Value = new float[Rows, Cols];
     }
 
     public Matrix(int rowsAndCols)
     {
-        Rows  = rowsAndCols;
-        Cols  = rowsAndCols;
+        Rows = rowsAndCols;
+        Cols = rowsAndCols;
         Value = new float[Rows, Cols];
         for (var i = 0; i < Rows; i++)
         for (var j = 0; j < Cols; j++)
@@ -27,8 +27,8 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
 
     public Matrix(int rows, int cols, float[] source)
     {
-        Rows  = rows;
-        Cols  = cols;
+        Rows = rows;
+        Cols = cols;
         Value = new float[Rows, Cols];
         for (var i = 0; i < rows; i++)
         for (var j = 0; j < cols; j++)
@@ -69,7 +69,7 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
             result += "[";
             for (var j = 0; j < Cols; j++)
                 result += $"{Value[i, j]}, ";
-            result =  result.Remove(result.Length - 2);
+            result = result.Remove(result.Length - 2);
             result += "] ";
         }
 
@@ -94,8 +94,8 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
             throw new Exception("Non-conformable matrices in MatrixProduct");
 
         var result = new Matrix(matrixA.Rows, matrixB.Cols);
-        var colsB  = matrixB.Cols;
-        var colsA  = matrixA.Cols;
+        var colsB = matrixB.Cols;
+        var colsA = matrixA.Cols;
         switch (matrixA)
         {
             case { Rows: 4, Cols: 4 } when matrixB is { Rows: 4, Cols: 2 }:
@@ -111,7 +111,7 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
             for (var j = 0; j < colsB; j++)
             {
                 float sum = 0;
-                var   k   = 0;
+                var k = 0;
 
                 // SIMD 向量化循环
                 for (; k <= colsA - simdWidth; k += simdWidth)
@@ -175,42 +175,40 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
         c[3, 2] = a[3, 0] * b[0, 2] + a[3, 1] * b[1, 2] + a[3, 2] * b[2, 2] + a[3, 3] * b[3, 2];
         c[3, 3] = a[3, 0] * b[0, 3] + a[3, 1] * b[1, 3] + a[3, 2] * b[2, 3] + a[3, 3] * b[3, 3];
     }
+
     public static Matrix Multiply4X4By4X2Optimized(Matrix a, Matrix b)
     {
-        if (a.Rows != 4 || a.Cols != 4 || b.Rows != 4 || b.Cols != 2)
-        {
-            throw new ArgumentException("矩阵维度必须为4x4和4x2");
-        }
-    
+        if (a.Rows != 4 || a.Cols != 4 || b.Rows != 4 || b.Cols != 2) throw new ArgumentException("矩阵维度必须为4x4和4x2");
+
         var result = new Matrix(4, 2);
-        var aVal   = a.Value;
-        var bVal   = b.Value;
-        var cVal   = result.Value;
-    
+        var aVal = a.Value;
+        var bVal = b.Value;
+        var cVal = result.Value;
+
         // 预取所有矩阵元素到局部变量，减少数组访问
         float a00 = aVal[0, 0], a01 = aVal[0, 1], a02 = aVal[0, 2], a03 = aVal[0, 3];
         float a10 = aVal[1, 0], a11 = aVal[1, 1], a12 = aVal[1, 2], a13 = aVal[1, 3];
         float a20 = aVal[2, 0], a21 = aVal[2, 1], a22 = aVal[2, 2], a23 = aVal[2, 3];
         float a30 = aVal[3, 0], a31 = aVal[3, 1], a32 = aVal[3, 2], a33 = aVal[3, 3];
-    
+
         float b00 = bVal[0, 0], b01 = bVal[0, 1];
         float b10 = bVal[1, 0], b11 = bVal[1, 1];
         float b20 = bVal[2, 0], b21 = bVal[2, 1];
         float b30 = bVal[3, 0], b31 = bVal[3, 1];
-    
+
         // 完全展开计算
         cVal[0, 0] = a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30;
         cVal[0, 1] = a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31;
-    
+
         cVal[1, 0] = a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30;
         cVal[1, 1] = a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31;
-    
+
         cVal[2, 0] = a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30;
         cVal[2, 1] = a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31;
-    
+
         cVal[3, 0] = a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30;
         cVal[3, 1] = a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31;
-    
+
         return result;
     }
 
@@ -310,6 +308,12 @@ public readonly struct Matrix : IEquatable<Matrix>, ICloneable
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Rows, Cols, Value);
+        var hash = new HashCode();
+        hash.Add(Rows);
+        hash.Add(Cols);
+        for (var i = 0; i < Rows; i++)
+        for (var j = 0; j < Cols; j++)
+            hash.Add(Value[i, j]);
+        return hash.ToHashCode();
     }
 }

@@ -1,4 +1,3 @@
-using VanillawareConverter.Ftex;
 using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Textures;

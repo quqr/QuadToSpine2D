@@ -1,3 +1,5 @@
+using QTSAvalonia.Helper;
+
 namespace QTSCore.Render;
 
 /// <summary>
@@ -46,8 +48,12 @@ public class AnimationPlayer
     /// <param name="totalFrames">Total number of frames in the animation.</param>
     /// <param name="isLoop">Whether playback should loop back to frame 0 at the end.</param>
     /// <param name="frameDelaySeconds">Per-frame delay in seconds (1 / fps).</param>
-    /// <param name="hasAnimation">Whether a valid animation timeline exists; when false a warning is emitted and nothing plays.</param>
-    public async Task PlayAsync(int startFrame, int totalFrames, bool isLoop, float frameDelaySeconds, bool hasAnimation)
+    /// <param name="hasAnimation">
+    ///     Whether a valid animation timeline exists; when false a warning is emitted and nothing
+    ///     plays.
+    /// </param>
+    public async Task PlayAsync(int startFrame, int totalFrames, bool isLoop, float frameDelaySeconds,
+        bool hasAnimation)
     {
         if (!hasAnimation)
         {
@@ -75,10 +81,7 @@ public class AnimationPlayer
                 SetCurrentFrame?.Invoke(i);
                 await Task.Delay(TimeSpan.FromSeconds(frameDelaySeconds), token);
                 i++;
-                if (i >= totalFrames && isLoop)
-                {
-                    i = 0;
-                }
+                if (i >= totalFrames && isLoop) i = 0;
             }
 
             LoggerHelper.Info("Animation playback completed");
@@ -111,9 +114,13 @@ public class AnimationPlayer
 
     /// <summary>Computes the next frame index, wrapping to 0 at the end.</summary>
     public int GetNextFrame(int currentFrame, int totalFrames)
-        => currentFrame >= totalFrames - 1 ? 0 : currentFrame + 1;
+    {
+        return currentFrame >= totalFrames - 1 ? 0 : currentFrame + 1;
+    }
 
     /// <summary>Computes the previous frame index, wrapping to the last frame at the start.</summary>
     public int GetPreviousFrame(int currentFrame, int totalFrames)
-        => currentFrame <= 0 ? totalFrames - 1 : currentFrame - 1;
+    {
+        return currentFrame <= 0 ? totalFrames - 1 : currentFrame - 1;
+    }
 }

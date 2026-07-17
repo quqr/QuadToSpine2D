@@ -1,4 +1,5 @@
 using System.Text;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Threading;
 using ObservableCollections;
@@ -7,35 +8,28 @@ using QTSAvalonia.Models;
 namespace QTSAvalonia.ViewModels.Pages;
 
 /// <summary>
-/// 设置页面的视图模型
+///     设置页面的视图模型
 /// </summary>
 /// <remarks>
-/// 管理应用程序设置页面，主要功能是显示、过滤和操作日志队列。
-/// 使用[SingletonService]特性标记为单例服务。
+///     管理应用程序设置页面，主要功能是显示、过滤和操作日志队列。
+///     使用[SingletonService]特性标记为单例服务。
 /// </remarks>
 [SingletonService]
 public partial class SettingsViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private ObservableQueue<LogEntry> _logs = new(150);
+    [ObservableProperty] private string _logFilterText = string.Empty;
+
+    [ObservableProperty] private ObservableQueue<LogEntry> _logs = new(150);
+
+    [ObservableProperty] private string _selectedLogLevel = "All";
 
     /// <summary>
-    /// 过滤后的日志集合（绑定到 UI）
+    ///     过滤后的日志集合（绑定到 UI）
     /// </summary>
     public ObservableCollection<LogEntry> FilteredLogs { get; } = [];
 
-    [ObservableProperty]
-    private string _logFilterText = string.Empty;
-
-    [ObservableProperty]
-    private string _selectedLogLevel = "All";
-
-    public SettingsViewModel()
-    {
-    }
-
     /// <summary>
-    /// 添加一条日志条目（供 LoggerHelper 调用）
+    ///     添加一条日志条目（供 LoggerHelper 调用）
     /// </summary>
     internal void AddLog(LogEntry entry)
     {
@@ -49,7 +43,7 @@ public partial class SettingsViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 根据关键字和级别过滤日志
+    ///     根据关键字和级别过滤日志
     /// </summary>
     public void FilterLogs()
     {
@@ -78,7 +72,7 @@ public partial class SettingsViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 清空所有日志
+    ///     清空所有日志
     /// </summary>
     [RelayCommand]
     private void ClearLogs()
@@ -88,7 +82,7 @@ public partial class SettingsViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// 复制所有过滤后日志到剪贴板
+    ///     复制所有过滤后日志到剪贴板
     /// </summary>
     [RelayCommand]
     private async Task CopyAllLogsAsync()
@@ -102,8 +96,9 @@ public partial class SettingsViewModel : ViewModelBase
         try
         {
             var topLevel = App.Current?.ApplicationLifetime is
-                Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow : null;
+                IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
 
             if (topLevel?.Clipboard != null)
             {

@@ -1,25 +1,25 @@
 using System.Text;
 using QTSAvalonia.Helper;
+using VanillawareConverter.Common;
 using VanillawareConverter.Ftex.Swizzling;
 using VanillawareConverter.Ftex.Textures;
-using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex;
 
 /// <summary>
-/// 图像解析结果
+///     图像解析结果
 /// </summary>
 public class ImageResult
 {
     /// <summary>
-    /// 初始化图像结果的新实例
+    ///     初始化图像结果的新实例
     /// </summary>
     public ImageResult()
     {
     }
 
     /// <summary>
-    /// 使用指定参数初始化图像结果的新实例
+    ///     使用指定参数初始化图像结果的新实例
     /// </summary>
     /// <param name="width">图像宽度</param>
     /// <param name="height">图像高度</param>
@@ -32,62 +32,62 @@ public class ImageResult
     }
 
     /// <summary>
-    /// 获取或设置图像宽度（像素）
+    ///     获取或设置图像宽度（像素）
     /// </summary>
     public int Width { get; set; }
 
     /// <summary>
-    /// 获取或设置图像高度（像素）
+    ///     获取或设置图像高度（像素）
     /// </summary>
     public int Height { get; set; }
 
     /// <summary>
-    /// 获取或设置像素数据
+    ///     获取或设置像素数据
     /// </summary>
     public byte[] PixelData { get; set; } = [];
 
     /// <summary>
-    /// 获取或设置调色板数据
+    ///     获取或设置调色板数据
     /// </summary>
     public byte[]? Palette { get; set; }
 
     /// <summary>
-    /// 获取或设置颜色数量
+    ///     获取或设置颜色数量
     /// </summary>
     public int ColorCount { get; set; }
 
     /// <summary>
-    /// 获取是否为灰度图像
+    ///     获取是否为灰度图像
     /// </summary>
     public bool IsGrayscale => Palette != null;
 }
 
 /// <summary>
-/// 纹理格式枚举
+///     纹理格式枚举
 /// </summary>
 public enum TextureFormat
 {
     /// <summary>
-    /// BC3压缩格式
+    ///     BC3压缩格式
     /// </summary>
     BC3 = 0x44,
 
     /// <summary>
-    /// BC4压缩格式
+    ///     BC4压缩格式
     /// </summary>
     BC4 = 0x49,
 
     /// <summary>
-    /// BC7压缩格式
+    ///     BC7压缩格式
     /// </summary>
     BC7 = 0x4D
 }
 
 /// <summary>
-/// FTEX纹理文件读取器
+///     FTEX纹理文件读取器
 /// </summary>
 /// <remarks>
-/// 用于解析Nintendo Switch平台的FTEX纹理文件格式
+///     用于解析Nintendo Switch平台的FTEX纹理文件格式
 /// </remarks>
 public class FtexReader
 {
@@ -95,7 +95,7 @@ public class FtexReader
     private readonly S3tcTexture _s3tc = new();
 
     /// <summary>
-    /// 解析BC3格式纹理
+    ///     解析BC3格式纹理
     /// </summary>
     private ImageResult ImBc3(byte[] file, int pos, int w, int h, int size)
     {
@@ -113,7 +113,7 @@ public class FtexReader
     }
 
     /// <summary>
-    /// 解析BC4格式纹理
+    ///     解析BC4格式纹理
     /// </summary>
     private ImageResult ImBc4(byte[] file, int pos, int w, int h, int size)
     {
@@ -136,7 +136,7 @@ public class FtexReader
     }
 
     /// <summary>
-    /// 解析BC7格式纹理
+    ///     解析BC7格式纹理
     /// </summary>
     private ImageResult ImBc7(byte[] file, int pos, int w, int h, int size)
     {
@@ -154,7 +154,7 @@ public class FtexReader
     }
 
     /// <summary>
-    /// 处理Switch NVT纹理块
+    ///     处理Switch NVT纹理块
     /// </summary>
     private void Switnvt(byte[] file, int baseOffset, string prefix, int id)
     {
@@ -214,7 +214,7 @@ public class FtexReader
     }
 
     /// <summary>
-    /// 解析FTEX文件
+    ///     解析FTEX文件
     /// </summary>
     /// <param name="filePath">FTEX文件路径</param>
     /// <returns>解析后的图像结果列表</returns>
@@ -292,7 +292,7 @@ public class FtexReader
     }
 
     /// <summary>
-    /// 加载CLUT格式文件
+    ///     加载CLUT格式文件
     /// </summary>
     /// <param name="filename">文件名</param>
     /// <returns>文件字节数据</returns>

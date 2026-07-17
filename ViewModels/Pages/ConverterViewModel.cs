@@ -8,22 +8,17 @@ namespace QTSAvalonia.ViewModels.Pages;
 [SingletonService]
 public partial class ConverterViewModel : ViewModelBase, IConversionResult
 {
-    [ObservableProperty]
-    private ObservableCollection<ElementViewModel> _elements = [];
-    
-    [ObservableProperty]
-    private string _quadFileName = string.Empty;
+    [ObservableProperty] private ObservableCollection<ElementViewModel> _elements = [];
+
+    [ObservableProperty] private bool _isProcessing;
+
+    [ObservableProperty] private string _quadFileName = string.Empty;
 
     private string _quadFilePath = string.Empty;
 
-    [ObservableProperty]
-    private string _resultJsonUrl = "Result json path";
+    [ObservableProperty] private string _resultJsonUrl = "Result json path";
 
-    [ObservableProperty]
-    private bool _resultJsonUrlIsEnabled;
-
-    [ObservableProperty]
-    private bool _isProcessing;
+    [ObservableProperty] private bool _resultJsonUrlIsEnabled;
 
     public ConverterViewModel()
     {
@@ -33,10 +28,7 @@ public partial class ConverterViewModel : ViewModelBase, IConversionResult
     private void OnElementsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         // 更新所有元素的索引
-        for (var i = 0; i < Elements.Count; i++)
-        {
-            Elements[i].Index = i;
-        }
+        for (var i = 0; i < Elements.Count; i++) Elements[i].Index = i;
     }
 
     private List<List<string?>>? ProcessImagePaths()
@@ -66,10 +58,7 @@ public partial class ConverterViewModel : ViewModelBase, IConversionResult
         foreach (var element in validElements)
         {
             var paths = new List<string?>(maxImages);
-            for (var i = 0; i < maxImages; i++)
-            {
-                paths.Add(i < element.ImagePaths.Count ? element.ImagePaths[i] : null);
-            }
+            for (var i = 0; i < maxImages; i++) paths.Add(i < element.ImagePaths.Count ? element.ImagePaths[i] : null);
             result.Add(paths);
         }
 
@@ -80,9 +69,9 @@ public partial class ConverterViewModel : ViewModelBase, IConversionResult
     private async Task OpenQuadFilePickerAsync()
     {
         LoggerHelper.Info("Opening quad file picker");
-        
+
         var files = await AvaloniaFilePickerService.OpenQuadFileAsync();
-        if (files?.Any() != true) 
+        if (files?.Any() != true)
         {
             LoggerHelper.Warning("No quad file selected");
             return;
@@ -91,7 +80,7 @@ public partial class ConverterViewModel : ViewModelBase, IConversionResult
         var selectedFile = files[0];
         QuadFileName = selectedFile.Name;
         _quadFilePath = selectedFile.Path.LocalPath;
-        
+
         LoggerHelper.Info($"Selected quad file: {QuadFileName}");
     }
 
@@ -100,7 +89,7 @@ public partial class ConverterViewModel : ViewModelBase, IConversionResult
     {
         LoggerHelper.Info("Starting data processing");
         IsProcessing = true;
-        
+
         ResultJsonUrlIsEnabled = false;
 
         try
@@ -114,10 +103,10 @@ public partial class ConverterViewModel : ViewModelBase, IConversionResult
             }
 
             LoggerHelper.Debug($"Processing {imagePaths.Count} image groups");
-            
+
             // 配置转换器
             Instances.ConverterSetting.ImagePath = imagePaths;
-            
+
             // 执行处理流程
             await Task.Run(() =>
             {
@@ -131,7 +120,6 @@ public partial class ConverterViewModel : ViewModelBase, IConversionResult
             LoggerHelper.Info("Data processing completed successfully");
             ToastHelper.Success("Processing completed successfully");
             ResultJsonUrlIsEnabled = true;
-          
         }
         catch (Exception ex)
         {
@@ -148,11 +136,10 @@ public partial class ConverterViewModel : ViewModelBase, IConversionResult
     private void AddNewElement()
     {
         LoggerHelper.Debug($"Adding new element. Current count: {Elements.Count}");
-        
-        var newElement = new ElementViewModel(
-             vm => Elements.RemoveAt(vm.Index)
+
+        var newElement = new ElementViewModel(vm => Elements.RemoveAt(vm.Index)
         );
-        
+
         Elements.Add(newElement);
         LoggerHelper.Debug($"Element added. New count: {Elements.Count}");
     }

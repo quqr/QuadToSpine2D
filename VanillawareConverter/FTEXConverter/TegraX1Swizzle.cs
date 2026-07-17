@@ -3,18 +3,18 @@ using QTSAvalonia.Helper;
 namespace VanillawareConverter.Ftex.Swizzling;
 
 /// <summary>
-/// Tegra X1 (Nintendo Switch) 纹理扭曲算法
+///     Tegra X1 (Nintendo Switch) 纹理扭曲算法
 /// </summary>
 /// <remarks>
-/// 用于处理Nintendo Switch平台纹理数据的扭曲/解扭曲操作
+///     用于处理Nintendo Switch平台纹理数据的扭曲/解扭曲操作
 /// </remarks>
 public static class TegraX1Swizzle
 {
     /// <summary>
-    /// 位掩码查找表
+    ///     位掩码查找表
     /// </summary>
     /// <remarks>
-    /// 每个元素包含：[块数量阈值, X坐标掩码, Y坐标掩码]
+    ///     每个元素包含：[块数量阈值, X坐标掩码, Y坐标掩码]
     /// </remarks>
     private static readonly int[][] BitMasks =
     [
@@ -29,7 +29,7 @@ public static class TegraX1Swizzle
     ];
 
     /// <summary>
-    /// 应用位掩码进行坐标变换
+    ///     应用位掩码进行坐标变换
     /// </summary>
     /// <param name="value">原始坐标值</param>
     /// <param name="mask">位掩码</param>
@@ -60,7 +60,7 @@ public static class TegraX1Swizzle
     }
 
     /// <summary>
-    /// 复制4x4像素块到目标位置
+    ///     复制4x4像素块到目标位置
     /// </summary>
     private static void PixdecCopy44(byte[] pix, byte[] dec, ref int pos, int dx, int dy, int width, int height,
         int bpp)
@@ -82,7 +82,7 @@ public static class TegraX1Swizzle
     }
 
     /// <summary>
-    /// 解扭曲8位纹理数据
+    ///     解扭曲8位纹理数据
     /// </summary>
     /// <param name="pix">扭曲的纹理数据</param>
     /// <param name="ow">原始宽度</param>
@@ -127,7 +127,7 @@ public static class TegraX1Swizzle
     }
 
     /// <summary>
-    /// 解扭曲16位纹理数据
+    ///     解扭曲16位纹理数据
     /// </summary>
     /// <param name="pix">扭曲的纹理数据</param>
     /// <param name="ow">原始宽度</param>

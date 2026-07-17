@@ -1,22 +1,21 @@
 using System.Text;
 using QTSAvalonia.Helper;
-using VanillawareConverter.Ftex;
 using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Textures;
 
 /// <summary>
-/// PNG格式转换器
+///     PNG格式转换器
 /// </summary>
 /// <remarks>
-/// 提供将CLUT和RGBA格式转换为PNG图像的功能
+///     提供将CLUT和RGBA格式转换为PNG图像的功能
 /// </remarks>
 public static class PngConverter
 {
     private static readonly byte[] PngMagic = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
 
     /// <summary>
-    /// 应用PNG过滤器
+    ///     应用PNG过滤器
     /// </summary>
     private static byte[] PngFilter(byte[] pix, int w, int h, int bytesPerPixel)
     {
@@ -34,7 +33,7 @@ public static class PngConverter
     }
 
     /// <summary>
-    /// 计算CRC32校验值
+    ///     计算CRC32校验值
     /// </summary>
     private static uint Crc32(byte[] data)
     {
@@ -58,7 +57,7 @@ public static class PngConverter
     }
 
     /// <summary>
-    /// Zlib压缩（存储模式）
+    ///     Zlib压缩（存储模式）
     /// </summary>
     private static byte[] ZlibDeflateStore(byte[] data)
     {
@@ -117,7 +116,7 @@ public static class PngConverter
     }
 
     /// <summary>
-    /// 创建PNG数据块
+    ///     创建PNG数据块
     /// </summary>
     private static byte[] PngChunk(string name, byte[] data, bool compress = false)
     {
@@ -162,7 +161,7 @@ public static class PngConverter
     }
 
     /// <summary>
-    /// 将CLUT格式转换为PNG
+    ///     将CLUT格式转换为PNG
     /// </summary>
     /// <param name="file">CLUT文件数据</param>
     /// <param name="outputPath">输出路径（不含扩展名）</param>
@@ -187,10 +186,7 @@ public static class PngConverter
             trns.Add(file[p + 3]);
         }
 
-        if (cc > 0x100)
-        {
-            LoggerHelper.Warning($"[PNG转换] 调色板颜色数超过256 - 实际: {cc}, 将截断为256色");
-        }
+        if (cc > 0x100) LoggerHelper.Warning($"[PNG转换] 调色板颜色数超过256 - 实际: {cc}, 将截断为256色");
 
         while (trns.Count > 0 && trns[^1] == 0xFF) trns.RemoveAt(trns.Count - 1);
 
@@ -223,7 +219,7 @@ public static class PngConverter
     }
 
     /// <summary>
-    /// 将RGBA格式转换为PNG
+    ///     将RGBA格式转换为PNG
     /// </summary>
     /// <param name="file">RGBA文件数据</param>
     /// <param name="outputPath">输出路径（不含扩展名）</param>
@@ -259,7 +255,7 @@ public static class PngConverter
     }
 
     /// <summary>
-    /// 将图像文件转换为PNG
+    ///     将图像文件转换为PNG
     /// </summary>
     /// <param name="filePath">图像文件路径</param>
     public static void Img2Png(string filePath)
@@ -296,7 +292,7 @@ public static class PngConverter
     }
 
     /// <summary>
-    /// 将NVT文件转换为PNG
+    ///     将NVT文件转换为PNG
     /// </summary>
     /// <param name="nvtFilePath">NVT文件路径</param>
     public static void ConvertNvtToPng(string nvtFilePath)
@@ -334,7 +330,7 @@ public static class PngConverter
     }
 
     /// <summary>
-    /// 批量转换目录中的NVT文件
+    ///     批量转换目录中的NVT文件
     /// </summary>
     /// <param name="directoryPath">目录路径</param>
     /// <param name="pattern">文件匹配模式</param>

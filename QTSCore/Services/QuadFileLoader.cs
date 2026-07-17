@@ -5,12 +5,12 @@ using VanillawareConverter.Mbs.Parsers;
 namespace QTSCore.Services;
 
 /// <summary>
-/// Quad 文件加载服务：封装 FTX/MBS 文件的扫描与解析逻辑，与 UI 状态解耦。
+///     Quad 文件加载服务：封装 FTX/MBS 文件的扫描与解析逻辑，与 UI 状态解耦。
 /// </summary>
 public class QuadFileLoader
 {
     /// <summary>
-    /// 递归扫描目录下的受支持文件（.ftx/.ftp 与 .mbs/.mbp），FTX 在前、MBS 在后。
+    ///     递归扫描目录下的受支持文件（.ftx/.ftp 与 .mbs/.mbp），FTX 在前、MBS 在后。
     /// </summary>
     public List<string> ScanSupportedFiles(string directoryPath)
     {
@@ -24,13 +24,12 @@ public class QuadFileLoader
     }
 
     /// <summary>
-    /// 从一组混合路径（目录或文件）中收集受支持的文件。
+    ///     从一组混合路径（目录或文件）中收集受支持的文件。
     /// </summary>
     public List<string> CollectSupportedFiles(IEnumerable<string> paths)
     {
         var filePaths = new List<string>();
         foreach (var path in paths)
-        {
             if (Directory.Exists(path))
             {
                 filePaths.AddRange(ScanSupportedFiles(path));
@@ -41,12 +40,12 @@ public class QuadFileLoader
                 if (ext is ".ftx" or ".ftp" or ".mbs" or ".mbp")
                     filePaths.Add(path);
             }
-        }
+
         return filePaths;
     }
 
     /// <summary>
-    /// 解析 FTX 文件，返回其中的全部图像结果。
+    ///     解析 FTX 文件，返回其中的全部图像结果。
     /// </summary>
     public List<ImageResult> ParseFtx(string ftxPath)
     {
@@ -55,7 +54,7 @@ public class QuadFileLoader
     }
 
     /// <summary>
-    /// 解析 MBS 文件，返回动画数量与骨架名称；平台未知时返回 null。
+    ///     解析 MBS 文件，返回动画数量与骨架名称；平台未知时返回 null。
     /// </summary>
     public MbsParseResult? ParseMbs(string mbsPath)
     {
@@ -69,7 +68,7 @@ public class QuadFileLoader
 
         // S9 = 骨架数据，过滤空名称
         var skeletonNames = new List<string>();
-        for (int i = 0; i < v55Data.S9.Count; i++)
+        for (var i = 0; i < v55Data.S9.Count; i++)
         {
             var bone = v55Data.S9[i];
             if (bone != null && !string.IsNullOrWhiteSpace(bone.Name))
@@ -84,6 +83,6 @@ public class QuadFileLoader
 }
 
 /// <summary>
-/// MBS 解析结果（动画数量 + 骨架名称）。
+///     MBS 解析结果（动画数量 + 骨架名称）。
 /// </summary>
 public sealed record MbsParseResult(int AnimationCount, List<string> SkeletonNames);

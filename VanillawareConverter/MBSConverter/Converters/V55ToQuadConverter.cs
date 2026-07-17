@@ -1,17 +1,16 @@
 using System.Globalization;
 using Newtonsoft.Json;
-using VanillawareConverter.Mbs.Math;
 using VanillawareConverter.Mbs.Models;
 using Matrix4x4 = VanillawareConverter.Mbs.Math.Matrix4x4;
 
 namespace VanillawareConverter.Mbs.Converters;
 
 /// <summary>
-/// V55格式到Quad格式的转换器
+///     V55格式到Quad格式的转换器
 /// </summary>
 /// <remarks>
-/// 用于将Vanillaware游戏的MBS文件中的V55动画数据转换为Quad格式，
-/// 以便导入到Spine2D动画软件中
+///     用于将Vanillaware游戏的MBS文件中的V55动画数据转换为Quad格式，
+///     以便导入到Spine2D动画软件中
 /// </remarks>
 public class V55ToQuadConverter
 {
@@ -20,7 +19,7 @@ public class V55ToQuadConverter
     private V55Data _v55 = new();
 
     /// <summary>
-    /// 将V55数据转换为Quad格式数据
+    ///     将V55数据转换为Quad格式数据
     /// </summary>
     /// <param name="v55">V55格式的动画数据</param>
     /// <returns>转换后的Quad格式数据</returns>
@@ -42,7 +41,7 @@ public class V55ToQuadConverter
     }
 
     /// <summary>
-    /// 从JSON字符串解析并转换V55数据
+    ///     从JSON字符串解析并转换V55数据
     /// </summary>
     /// <param name="jsonContent">包含V55数据的JSON字符串</param>
     /// <returns>转换后的Quad格式数据</returns>

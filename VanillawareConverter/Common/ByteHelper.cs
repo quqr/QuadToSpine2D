@@ -3,20 +3,23 @@ using System.Text;
 namespace VanillawareConverter.Common;
 
 /// <summary>
-/// 字节数组操作工具类，提供读取、写入和转换的静态方法。
-/// 支持大端和小端字节序，用于处理二进制文件格式（FTEX 纹理、MBS 动画等）。
+///     字节数组操作工具类，提供读取、写入和转换的静态方法。
+///     支持大端和小端字节序，用于处理二进制文件格式（FTEX 纹理、MBS 动画等）。
 /// </summary>
 public static class ByteHelper
 {
     #region 数组创建
 
     /// <summary>
-    /// 创建指定长度的零填充字节数组
+    ///     创建指定长度的零填充字节数组
     /// </summary>
-    public static byte[] ZeroBytes(int count) => new byte[count];
+    public static byte[] ZeroBytes(int count)
+    {
+        return new byte[count];
+    }
 
     /// <summary>
-    /// 创建用指定值填充的字节数组
+    ///     创建用指定值填充的字节数组
     /// </summary>
     public static byte[] ByteRepeat(byte value, int count)
     {
@@ -30,7 +33,7 @@ public static class ByteHelper
     #region 读取方法
 
     /// <summary>
-    /// 从字节数组中读取32位浮点数
+    ///     从字节数组中读取32位浮点数
     /// </summary>
     /// <param name="data">源字节数组</param>
     /// <param name="offset">起始偏移量</param>
@@ -57,7 +60,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 从字节数组中读取16位有符号整数
+    ///     从字节数组中读取16位有符号整数
     /// </summary>
     /// <param name="data">源字节数组</param>
     /// <param name="offset">起始偏移量</param>
@@ -72,7 +75,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 从字节数组中读取16位无符号整数
+    ///     从字节数组中读取16位无符号整数
     /// </summary>
     /// <param name="data">源字节数组</param>
     /// <param name="pos">起始位置</param>
@@ -83,7 +86,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 从字节数组中读取32位有符号整数
+    ///     从字节数组中读取32位有符号整数
     /// </summary>
     /// <param name="data">源字节数组</param>
     /// <param name="offset">起始偏移量</param>
@@ -99,7 +102,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 从字节数组中读取32位无符号整数
+    ///     从字节数组中读取32位无符号整数
     /// </summary>
     /// <param name="data">源字节数组</param>
     /// <param name="pos">起始位置</param>
@@ -110,7 +113,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 从字节数组中读取指定字节数的整数值
+    ///     从字节数组中读取指定字节数的整数值
     /// </summary>
     /// <param name="data">源字节数组</param>
     /// <param name="offset">起始偏移量</param>
@@ -141,7 +144,7 @@ public static class ByteHelper
     #region 写入方法
 
     /// <summary>
-    /// 将16位无符号整数写入字节数组（小端序）
+    ///     将16位无符号整数写入字节数组（小端序）
     /// </summary>
     public static void WriteUInt16(byte[] data, int pos, ushort value)
     {
@@ -150,7 +153,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 将32位无符号整数写入字节数组（小端序）
+    ///     将32位无符号整数写入字节数组（小端序）
     /// </summary>
     public static void WriteUInt32(byte[] data, int pos, uint value)
     {
@@ -165,7 +168,7 @@ public static class ByteHelper
     #region 字符串方法
 
     /// <summary>
-    /// 从字节数组中读取以 null 结尾的字符串
+    ///     从字节数组中读取以 null 结尾的字符串
     /// </summary>
     /// <param name="data">源字节数组</param>
     /// <param name="offset">起始偏移量</param>
@@ -182,7 +185,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 将字节数组转换为十六进制字符串
+    ///     将字节数组转换为十六进制字符串
     /// </summary>
     public static string ReadHexString(byte[] data, int offset, int length)
     {
@@ -195,7 +198,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 将字节数组转换为带"#"前缀的十六进制字符串
+    ///     将字节数组转换为带"#"前缀的十六进制字符串
     /// </summary>
     public static string ReadHexStringWithPrefix(byte[] data, int offset, int length)
     {
@@ -207,7 +210,7 @@ public static class ByteHelper
     #region 数组操作
 
     /// <summary>
-    /// 将源字节数组复制到目标数组的指定位置
+    ///     将源字节数组复制到目标数组的指定位置
     /// </summary>
     public static void StrUpdate(byte[] dest, int pos, byte[] src)
     {
@@ -215,7 +218,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 从字节数组中提取子数组
+    ///     从字节数组中提取子数组
     /// </summary>
     /// <param name="data">源字节数组</param>
     /// <param name="offset">起始位置</param>
@@ -231,12 +234,15 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 从字节数组中提取子数组（SubArray 的别名）
+    ///     从字节数组中提取子数组（SubArray 的别名）
     /// </summary>
-    public static byte[] Substr(byte[] data, int pos, int length) => SubArray(data, pos, length);
+    public static byte[] Substr(byte[] data, int pos, int length)
+    {
+        return SubArray(data, pos, length);
+    }
 
     /// <summary>
-    /// 从右侧移除指定字符
+    ///     从右侧移除指定字符
     /// </summary>
     public static byte[] RTrim(byte[] data, byte trimChar)
     {
@@ -254,7 +260,7 @@ public static class ByteHelper
     #region 数学辅助
 
     /// <summary>
-    /// 将整数值限制在指定范围内
+    ///     将整数值限制在指定范围内
     /// </summary>
     public static int IntClamp(int value, int min, int max)
     {
@@ -264,7 +270,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 计算大于或等于指定值的最小2的幂
+    ///     计算大于或等于指定值的最小2的幂
     /// </summary>
     public static int IntCeilPow2(int value)
     {
@@ -276,7 +282,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 计算向上取整的结果
+    ///     计算向上取整的结果
     /// </summary>
     public static int IntCeil(int value, int divisor)
     {
@@ -303,7 +309,7 @@ public static class ByteHelper
     #region 调色板生成
 
     /// <summary>
-    /// 生成灰度调色板
+    ///     生成灰度调色板
     /// </summary>
     public static byte[] GrayClut(int count)
     {
@@ -311,7 +317,7 @@ public static class ByteHelper
     }
 
     /// <summary>
-    /// 生成渐变调色板
+    ///     生成渐变调色板
     /// </summary>
     /// <param name="count">颜色数量</param>
     /// <param name="src">起始颜色（RGBA格式）</param>

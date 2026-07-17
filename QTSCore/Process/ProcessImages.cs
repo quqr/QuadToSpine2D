@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using QTSAvalonia.Helper;
-using QTSAvalonia.ViewModels.Pages;
 using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Utility;
@@ -47,6 +46,17 @@ public class ProcessImages : IDisposable
         LoadImagesParallel(imagesSrc);
 
         LoggerHelper.Info("Image resource library initialization completed");
+    }
+
+    /// <summary>
+    ///     释放所有 SKBitmap 资源
+    /// </summary>
+    public void Dispose()
+    {
+        if (_images is null) return;
+        foreach (var bitmap in _images)
+            bitmap?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>
@@ -134,6 +144,7 @@ public class ProcessImages : IDisposable
                 ToastHelper.Error("Invalid TexId.The image has error");
                 return;
             }
+
             if (layer.Srcquad != null &&
                 _images[layer.TexId, skinIndex] != null)
             {
@@ -160,6 +171,7 @@ public class ProcessImages : IDisposable
                 LoggerHelper.Debug($"Skipping layer data - SkinIndex: {skinIndex}");
                 return;
             }
+
             // Safely store in nested ConcurrentDictionary
             _layersDataDict
                 .GetOrAdd(layer.TexId,
@@ -359,15 +371,4 @@ public class ProcessImages : IDisposable
     }
 
     #endregion
-
-    /// <summary>
-    /// 释放所有 SKBitmap 资源
-    /// </summary>
-    public void Dispose()
-    {
-        if (_images is null) return;
-        foreach (var bitmap in _images)
-            bitmap?.Dispose();
-        GC.SuppressFinalize(this);
-    }
 }

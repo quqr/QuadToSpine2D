@@ -1,6 +1,6 @@
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using QTSAvalonia.ViewModels.Pages;
 using SukiUI.Controls;
@@ -9,8 +9,8 @@ namespace QTSAvalonia.Views.Pages;
 
 public partial class RootView : SukiWindow
 {
-    private SukiSideMenu? _sideMenu;
     private PropertyInfo? _selectedIndexProperty;
+    private SukiSideMenu? _sideMenu;
 
     public RootView()
     {
@@ -18,19 +18,14 @@ public partial class RootView : SukiWindow
         Loaded += OnLoaded;
     }
 
-    private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         _sideMenu = this.FindControl<SukiSideMenu>("SideMenu");
         if (_sideMenu != null)
-        {
             // 用反射查找 SelectedIndex 属性（SukiSideMenu 可能通过基类提供）
             _selectedIndexProperty = _sideMenu.GetType().GetProperty("SelectedIndex");
-        }
 
-        if (DataContext is RootViewModel vm)
-        {
-            vm.PropertyChanged += OnViewModelPropertyChanged;
-        }
+        if (DataContext is RootViewModel vm) vm.PropertyChanged += OnViewModelPropertyChanged;
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

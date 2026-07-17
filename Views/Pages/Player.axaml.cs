@@ -9,5 +9,5 @@ public partial class Player : UserControl
     {
         DataContext = Instances.ServiceProvider.GetService<PlayerViewModel>();
         InitializeComponent();
-    }    
+    }
 }

@@ -10,5 +10,4 @@ public class QuadJsonData
     public Blend[] Blend { get; set; } = [];
     public string[] Mix { get; set; } = [];
     public Link[] Link { get; set; } = [];
-
 }

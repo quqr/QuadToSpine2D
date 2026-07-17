@@ -1,15 +1,14 @@
 using System.Collections.Concurrent;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using QTSAvalonia.ViewModels.UserControls;
+using QTSCore.Services;
 using VanillawareConverter.Ftex;
+using VanillawareConverter.Mbs.Converters;
 using VanillawareConverter.Mbs.Models;
 using VanillawareConverter.Mbs.Parsers;
-using VanillawareConverter.Mbs.Converters;
-using Newtonsoft.Json;
-using QTSCore.Process;
-using QTSCore.Services;
 
 namespace QTSAvalonia.ViewModels.Pages;
 
@@ -17,81 +16,73 @@ namespace QTSAvalonia.ViewModels.Pages;
 public partial class FileManagerViewModel : ViewModelBase, IDisposable
 {
     /// <summary>
-    /// 缩略图最大尺寸（按需解码时缩放上限）
+    ///     缩略图最大尺寸（按需解码时缩放上限）
     /// </summary>
     private const int ThumbnailMaxSize = 256;
 
-    [ObservableProperty]
-    private ObservableCollection<FileCardViewModel> _fileCards = [];
-
-    [ObservableProperty]
-    private int _totalCount;
-
-    [ObservableProperty]
-    private int _pairedCount;
-
-    [ObservableProperty]
-    private int _unpairedCount;
-
-    [ObservableProperty]
-    private bool _isExporting;
-
-    [ObservableProperty]
-    private double _exportProgress;
-
-    [ObservableProperty]
-    private string _selectedFolderPath = string.Empty;
-
-    [ObservableProperty]
-    private FileCardViewModel? _selectedCard;
-
-    [ObservableProperty]
-    private bool _isPreviewOpen;
-
-    [ObservableProperty]
-    private string _previewImagePath = string.Empty;
-
-    [ObservableProperty]
-    private string _exportOutputPath = string.Empty;
-
-    [ObservableProperty]
-    private bool _isLoading;
-
-    [ObservableProperty]
-    private double _loadProgress;
-
-    [ObservableProperty]
-    private string _loadStatus = string.Empty;
-
-    private CancellationTokenSource? _loadCts;
+    private readonly QuadFileLoader _fileLoader = new();
     private readonly ConcurrentBag<string> _tempFiles = new();
 
     private readonly ThumbnailGenerator _thumbnailGenerator = new();
-    private readonly QuadFileLoader _fileLoader = new();
 
-    public FileManagerViewModel()
-    {
-    }
+    [ObservableProperty] private string _exportOutputPath = string.Empty;
+
+    [ObservableProperty] private double _exportProgress;
+
+    [ObservableProperty] private ObservableCollection<FileCardViewModel> _fileCards = [];
+
+    [ObservableProperty] private bool _isExporting;
+
+    [ObservableProperty] private bool _isLoading;
+
+    [ObservableProperty] private bool _isPreviewOpen;
+
+    private CancellationTokenSource? _loadCts;
+
+    [ObservableProperty] private double _loadProgress;
+
+    [ObservableProperty] private string _loadStatus = string.Empty;
+
+    [ObservableProperty] private int _pairedCount;
+
+    [ObservableProperty] private string _previewImagePath = string.Empty;
+
+    [ObservableProperty] private FileCardViewModel? _selectedCard;
+
+    [ObservableProperty] private string _selectedFolderPath = string.Empty;
+
+    [ObservableProperty] private int _totalCount;
+
+    [ObservableProperty] private int _unpairedCount;
 
     /// <summary>
-    /// 是否有文件已加载
+    ///     是否有文件已加载
     /// </summary>
     public bool HasFiles => FileCards.Count > 0;
 
     /// <summary>
-    /// 是否未处于加载或导出状态
+    ///     是否未处于加载或导出状态
     /// </summary>
     public bool IsNotBusy => !IsLoading && !IsExporting;
 
     /// <summary>
-    /// 是否全部选中
+    ///     是否全部选中
     /// </summary>
     public bool IsAllSelected => FileCards.Count > 0 && FileCards.All(c => c.IsSelected);
 
+    public void Dispose()
+    {
+        DisposeAllCards();
+        Cleanup();
+    }
+
     /// <summary>
-    /// 公共方法：通知 IsAllSelected 属性变更（供 FileCardViewModel 调用）
+    ///     公共方法：通知 IsAllSelected 属性变更（供 FileCardViewModel 调用）
     /// </summary>
-    public void NotifyIsAllSelectedChanged() => OnPropertyChanged(nameof(IsAllSelected));
+    public void NotifyIsAllSelectedChanged()
+    {
+        OnPropertyChanged(nameof(IsAllSelected));
+    }
 
     partial void OnIsLoadingChanged(bool value)
     {
@@ -107,8 +98,9 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     private async Task OpenFolder()
     {
         var topLevel = App.Current?.ApplicationLifetime is
-            Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-            ? desktop.MainWindow : null;
+            IClassicDesktopStyleApplicationLifetime desktop
+            ? desktop.MainWindow
+            : null;
 
         if (topLevel == null) return;
 
@@ -131,8 +123,9 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     private async Task OpenFiles()
     {
         var topLevel = App.Current?.ApplicationLifetime is
-            Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-            ? desktop.MainWindow : null;
+            IClassicDesktopStyleApplicationLifetime desktop
+            ? desktop.MainWindow
+            : null;
 
         if (topLevel == null) return;
 
@@ -158,7 +151,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 从拖放操作加载文件
+    ///     从拖放操作加载文件
     /// </summary>
     public async Task LoadFilesFromDropAsync(IEnumerable<string> paths)
     {
@@ -332,7 +325,8 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
                 OnPropertyChanged(nameof(HasFiles)); // 触发 UI 刷新缩略图
             });
 
-            LoggerHelper.Debug($"[FileManager] FTX metadata loaded: {card.BaseName} ({results.Count} images, lazy decode)");
+            LoggerHelper.Debug(
+                $"[FileManager] FTX metadata loaded: {card.BaseName} ({results.Count} images, lazy decode)");
         }
         catch (Exception ex)
         {
@@ -357,12 +351,10 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
                 return;
             }
 
-            Dispatcher.UIThread.Post(() =>
-            {
-                card.LoadAnimationInfo(result.AnimationCount, result.SkeletonNames);
-            });
+            Dispatcher.UIThread.Post(() => { card.LoadAnimationInfo(result.AnimationCount, result.SkeletonNames); });
 
-            LoggerHelper.Debug($"[FileManager] MBS loaded: {card.BaseName} ({result.AnimationCount} animations, {result.SkeletonNames.Count} skeletons)");
+            LoggerHelper.Debug(
+                $"[FileManager] MBS loaded: {card.BaseName} ({result.AnimationCount} animations, {result.SkeletonNames.Count} skeletons)");
         }
         catch (Exception ex)
         {
@@ -384,9 +376,13 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
 
         // 删除临时缩略图文件
         foreach (var path in card.ThumbnailPaths)
-        {
-            try { if (File.Exists(path)) File.Delete(path); } catch { }
-        }
+            try
+            {
+                if (File.Exists(path)) File.Delete(path);
+            }
+            catch
+            {
+            }
 
         // 释放 Bitmap 资源和循环引用
         card.Dispose();
@@ -398,10 +394,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
         var selected = FileCards.Where(c => c.IsSelected).ToList();
         if (selected.Count == 0) return;
         LoggerHelper.Info($"[FileManager] Removing {selected.Count} selected cards");
-        foreach (var card in selected)
-        {
-            RemoveCard(card);
-        }
+        foreach (var card in selected) RemoveCard(card);
     }
 
     [RelayCommand]
@@ -423,7 +416,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 切换全选/取消全选
+    ///     切换全选/取消全选
     /// </summary>
     [RelayCommand]
     private void ToggleSelectAll()
@@ -446,8 +439,9 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
         if (card == null) return;
 
         var topLevel = App.Current?.ApplicationLifetime is
-            Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-            ? desktop.MainWindow : null;
+            IClassicDesktopStyleApplicationLifetime desktop
+            ? desktop.MainWindow
+            : null;
 
         if (topLevel == null) return;
 
@@ -503,7 +497,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 在 Previewer 页面中打开卡片（导出临时文件 + 设置 Player + 跳转页面）
+    ///     在 Previewer 页面中打开卡片（导出临时文件 + 设置 Player + 跳转页面）
     /// </summary>
     [RelayCommand]
     private async Task PreviewInPlayer(FileCardViewModel? card)
@@ -524,7 +518,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
             Directory.CreateDirectory(tempDir);
 
             // 处理 MBS → 导出 Quad JSON
-            string quadPath = string.Empty;
+            var quadPath = string.Empty;
             if (!string.IsNullOrEmpty(card.PairedMbsPath) && File.Exists(card.PairedMbsPath))
                 quadPath = await ExportMbsToTempAsync(card.PairedMbsPath, tempDir);
             else if (card.IsMbsFile && File.Exists(card.FilePath))
@@ -533,18 +527,13 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
             // 导出 FTX 图片到临时目录（后台线程）
             var imagePaths = new List<string>();
             var ftxPath = !string.IsNullOrEmpty(card.PairedFtxPath) ? card.PairedFtxPath
-                        : card.IsFtxFile ? card.FilePath : string.Empty;
+                : card.IsFtxFile ? card.FilePath : string.Empty;
 
             if (!string.IsNullOrEmpty(ftxPath) && File.Exists(ftxPath))
-            {
                 imagePaths = await Task.Run(() => ExportFtxImages(ftxPath, tempDir, card.BaseName));
-            }
 
             // 如果有 Quad 文件，设置到 Player
-            if (!string.IsNullOrEmpty(quadPath) && File.Exists(quadPath))
-            {
-                playerVm.SetQuadFilePath(quadPath);
-            }
+            if (!string.IsNullOrEmpty(quadPath) && File.Exists(quadPath)) playerVm.SetQuadFilePath(quadPath);
 
             // 设置图片路径
             foreach (var imgPath in imagePaths)
@@ -588,7 +577,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 导出 FTX 文件中的所有图片为 PNG（后台线程执行）
+    ///     导出 FTX 文件中的所有图片为 PNG（后台线程执行）
     /// </summary>
     private List<string> ExportFtxImages(string ftxPath, string tempDir, string baseName)
     {
@@ -597,7 +586,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
         {
             var results = _fileLoader.ParseFtx(ftxPath);
 
-            for (int i = 0; i < results.Count; i++)
+            for (var i = 0; i < results.Count; i++)
             {
                 var outputPath = Path.Combine(tempDir, $"{baseName}_{i}.png");
                 _thumbnailGenerator.SaveAsPng(results[i], outputPath);
@@ -611,6 +600,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
         {
             LoggerHelper.Error($"[FileManager] Failed to export FTX images: {ex.Message}");
         }
+
         return paths;
     }
 
@@ -619,8 +609,9 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
         if (FileCards.Count == 0) return;
 
         var topLevel = App.Current?.ApplicationLifetime is
-            Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-            ? desktop.MainWindow : null;
+            IClassicDesktopStyleApplicationLifetime desktop
+            ? desktop.MainWindow
+            : null;
 
         if (topLevel == null) return;
 
@@ -718,7 +709,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 清空所有卡片并释放内存（含 Player 关联清理）
+    ///     清空所有卡片并释放内存（含 Player 关联清理）
     /// </summary>
     [RelayCommand]
     private void ClearAll()
@@ -731,7 +722,10 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
             var playerVm = Instances.ServiceProvider.GetService<PlayerViewModel>();
             playerVm?.UnloadAndClear();
         }
-        catch { /* Player 可能未注册 */ }
+        catch
+        {
+            /* Player 可能未注册 */
+        }
 
         DisposeAllCards();
         Cleanup();
@@ -759,7 +753,7 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 释放所有卡片的资源
+    ///     释放所有卡片的资源
     /// </summary>
     private void DisposeAllCards()
     {
@@ -774,20 +768,15 @@ public partial class FileManagerViewModel : ViewModelBase, IDisposable
         _loadCts?.Dispose();
 
         foreach (var path in _tempFiles)
-        {
             try
             {
                 if (File.Exists(path))
                     File.Delete(path);
             }
-            catch { }
-        }
-        _tempFiles.Clear();
-    }
+            catch
+            {
+            }
 
-    public void Dispose()
-    {
-        DisposeAllCards();
-        Cleanup();
+        _tempFiles.Clear();
     }
 }

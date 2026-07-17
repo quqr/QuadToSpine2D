@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using QTSCore.Process;
 
 namespace QTSAvalonia.CLI;
@@ -39,7 +40,7 @@ public static class SpineCommands
             return 1;
         }
 
-        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
 
         try
         {
@@ -60,13 +61,13 @@ public static class SpineCommands
             if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
                 Directory.CreateDirectory(outputDir);
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(spineData, new Newtonsoft.Json.JsonSerializerSettings
+            var json = JsonConvert.SerializeObject(spineData, new JsonSerializerSettings
             {
-                ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver
+                ContractResolver = new DefaultContractResolver
                 {
-                    NamingStrategy = new Newtonsoft.Json.Serialization.CamelCaseNamingStrategy()
+                    NamingStrategy = new CamelCaseNamingStrategy()
                 },
-                Formatting = Newtonsoft.Json.Formatting.Indented
+                Formatting = Formatting.Indented
             });
             File.WriteAllText(outputPath, json);
 
@@ -86,10 +87,8 @@ public static class SpineCommands
     private static string? GetOption(string[] args, params string[] names)
     {
         for (var i = 0; i < args.Length - 1; i++)
-        {
             if (names.Contains(args[i]))
                 return args[i + 1];
-        }
         return null;
     }
 

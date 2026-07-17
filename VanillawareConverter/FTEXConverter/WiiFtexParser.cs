@@ -1,6 +1,6 @@
+using VanillawareConverter.Common;
 using VanillawareConverter.Ftex.Swizzling;
 using VanillawareConverter.Ftex.Textures;
-using VanillawareConverter.Common;
 
 namespace VanillawareConverter.Ftex.Parsers;
 

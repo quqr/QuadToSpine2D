@@ -13,7 +13,7 @@ public class KeyframeJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer                          serializer)
+        JsonSerializer serializer)
     {
         if (reader.TokenType == JsonToken.Null)
             return null;
@@ -26,7 +26,7 @@ public class KeyframeJsonConverter : JsonConverter
 
         IdCount++;
         var jObject = JObject.Load(reader);
-        
+
         return ConvertToKeyframe(jObject);
     }
 
@@ -34,21 +34,19 @@ public class KeyframeJsonConverter : JsonConverter
     {
         // 使用 Value<T>() 替代 ToString() 和 ToObject<T>()
         var layers = jObject["layer"]?.ToObject<KeyframeLayer?[]?>();
-        
+
         var json = new Keyframe
         {
-            Name       = jObject["name"]?.Value<string>() ?? string.Empty,
-            Layers     = layers,
-            Id         = IdCount,
+            Name = jObject["name"]?.Value<string>() ?? string.Empty,
+            Layers = layers,
+            Id = IdCount,
             AttachType = AttachType.Keyframe
         };
 
         // 优化 Order 生成逻辑
         if (layers?.Length > 0)
-        {
-            json.Order = jObject["orders"]?.ToObject<int[]>() 
+            json.Order = jObject["orders"]?.ToObject<int[]>()
                          ?? Enumerable.Range(0, layers.Length).ToArray();
-        }
 
         return json;
     }

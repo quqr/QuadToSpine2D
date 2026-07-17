@@ -1,12 +1,12 @@
 namespace QTSCore.Utility;
 
 /// <summary>
-/// 数学计算辅助工具，提供坐标和浮点数组操作。
+///     数学计算辅助工具，提供坐标和浮点数组操作。
 /// </summary>
 public static class MathHelper
 {
     /// <summary>
-    /// 在浮点数组中查找最小和最大坐标点
+    ///     在浮点数组中查找最小和最大坐标点
     /// </summary>
     /// <param name="quad">包含坐标点的浮点数组，格式为[x1,y1,x2,y2,...]</param>
     /// <returns>包含最小和最大坐标的数组：[minX, minY, maxX, maxY]</returns>
@@ -30,23 +30,21 @@ public static class MathHelper
     }
 
     /// <summary>
-    /// 计算两个浮点数组的差值
+    ///     计算两个浮点数组的差值，结果长度为较短数组的长度
     /// </summary>
     public static float[] MinusFloats(float[]? a, float[]? b)
     {
         if (a is null || b is null) return [];
-        var c = new float[a.Length];
-        for (var i = 0; i < a.Length; i++)
-        {
-            if (i >= b.Length) break;
+        var len = Math.Min(a.Length, b.Length);
+        var c = new float[len];
+        for (var i = 0; i < len; i++)
             c[i] = a[i] - b[i];
-        }
 
         return c;
     }
 
     /// <summary>
-    /// 将浮点数组的每个元素乘以指定标量
+    ///     将浮点数组的每个元素乘以指定标量
     /// </summary>
     public static float[]? MulFloats(float[]? a, float b)
     {
@@ -58,7 +56,7 @@ public static class MathHelper
     }
 
     /// <summary>
-    /// 判断两个浮点数是否近似相等
+    ///     判断两个浮点数是否近似相等
     /// </summary>
     public static bool ApproximatelyEqual(float? a, float? b, float epsilon = 0.000001f)
     {

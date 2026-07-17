@@ -4,12 +4,12 @@ using QTSCore.Interfaces;
 namespace QTSCore.Process.AttachmentHandlers;
 
 /// <summary>
-/// Handles <see cref="AttachType.Slot"/> attachments by unwrapping the contained keyframe
-/// attach and delegating to <see cref="KeyframeHandler"/>.
+///     Handles <see cref="Data.Quad.AttachType.Slot" /> attachments by unwrapping the contained keyframe
+///     attach and delegating to <see cref="KeyframeHandler" />.
 /// </summary>
 /// <remarks>
-/// A slot attach is a container whose <see cref="Slot.Attaches"/> collection holds the real
-/// attach(es) to display/conceal; only the inner <see cref="AttachType.Keyframe"/> is processed.
+///     A slot attach is a container whose <see cref="Slot.Attaches" /> collection holds the real
+///     attach(es) to display/conceal; only the inner <see cref="AttachType.Keyframe" /> is processed.
 /// </remarks>
 public class SlotHandler : IAttachmentHandler
 {

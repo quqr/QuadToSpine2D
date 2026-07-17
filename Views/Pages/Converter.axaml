@@ -9,11 +9,11 @@
     mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
     x:Class="QTSAvalonia.Views.Pages.Converter"
     x:DataType="pages:ConverterViewModel">
-    
+
     <Design.DataContext>
         <pages:ConverterViewModel />
     </Design.DataContext>
-    
+
     <Grid RowDefinitions="Auto,*,Auto" MinHeight="600" MinWidth="1000">
         <!-- 顶部区域 - 文件选择 -->
         <StackPanel
@@ -22,38 +22,38 @@
             HorizontalAlignment="Stretch"
             Margin="15"
             Spacing="15">
-            
+
             <Button
                 Content="Open Quad File"
                 Width="140"
                 Height="40"
                 Command="{Binding OpenQuadFilePickerCommand}" />
-                
-            
-                <HyperlinkButton
-                    
-                    NavigateUri="{Binding QuadFileName, FallbackValue='No file selected'}"
-                    Content="{Binding QuadFileName, FallbackValue='No file selected'}"
-                    Foreground="DarkCyan"
-                    FontWeight="SemiBold"
-                    VerticalAlignment="Center"/>
-           
+
+
+            <HyperlinkButton
+
+                NavigateUri="{Binding QuadFileName, FallbackValue='No file selected'}"
+                Content="{Binding QuadFileName, FallbackValue='No file selected'}"
+                Foreground="DarkCyan"
+                FontWeight="SemiBold"
+                VerticalAlignment="Center" />
+
         </StackPanel>
-        
+
         <!-- 中间区域 - 元素列表 -->
         <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="15,0">
             <ScrollViewer
                 HorizontalScrollBarVisibility="Auto"
                 VerticalScrollBarVisibility="Disabled"
                 MinWidth="900">
-                
+
                 <ItemsControl ItemsSource="{Binding Elements}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Spacing="8" Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-                    
+
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <userControls:Element DataContext="{Binding}" />
@@ -61,15 +61,15 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            
+
             <Button Grid.Column="1"
                     Height="40"
                     Width="40"
                     Command="{Binding AddNewElementCommand}">
-                <fluent:FluentIcon  Icon="Add" />
+                <fluent:FluentIcon Icon="Add" />
             </Button>
         </Grid>
-        
+
         <!-- 底部区域 - 进度和操作 -->
         <StackPanel Grid.Row="2" Margin="15" Spacing="15">
             <!-- 进度条和百分比显示 -->
@@ -80,28 +80,27 @@
                     Minimum="0"
                     Maximum="100"
                     Foreground="DarkOrange"
-                    IsIndeterminate="{Binding IsProcessing}"
-                    />
+                    IsIndeterminate="{Binding IsProcessing}" />
             </Grid>
-            
+
             <!-- 操作按钮和结果链接 -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
                 <Button
                     Content="Process Data"
                     IsEnabled="{Binding !IsProcessing}"
                     Command="{Binding ProcessDataCommand}" />
-                
-                    <HyperlinkButton
-                        NavigateUri="{Binding ResultJsonUrl}"
-                        IsEnabled="{Binding ResultJsonUrlIsEnabled}"
-                        HorizontalAlignment="Center"
-                        FontSize="14">
-                        <HyperlinkButton.Content>
-                            <TextBlock 
-                                Text="{Binding ResultJsonUrl, FallbackValue='Result json path'}"
-                                TextTrimming = "CharacterEllipsis" />
-                        </HyperlinkButton.Content>
-                    </HyperlinkButton>
+
+                <HyperlinkButton
+                    NavigateUri="{Binding ResultJsonUrl}"
+                    IsEnabled="{Binding ResultJsonUrlIsEnabled}"
+                    HorizontalAlignment="Center"
+                    FontSize="14">
+                    <HyperlinkButton.Content>
+                        <TextBlock
+                            Text="{Binding ResultJsonUrl, FallbackValue='Result json path'}"
+                            TextTrimming="CharacterEllipsis" />
+                    </HyperlinkButton.Content>
+                </HyperlinkButton>
             </StackPanel>
         </StackPanel>
     </Grid>

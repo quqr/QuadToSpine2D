@@ -16,13 +16,17 @@ public enum LogLevel : uint
 
 public static class LoggerHelper
 {
+    private const string OutputTemplate =
+        "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj}{NewLine}{Exception}";
+
     private static SettingsViewModel? _settingsViewModel;
     private static Logger? _logger;
+
+    private static readonly List<(LogLevel level, string message)> LogCache = [];
 
     private static SettingsViewModel GetSettingsViewModel()
     {
         if (_settingsViewModel == null)
-        {
             try
             {
                 _settingsViewModel = Instances.ServiceProvider.GetRequiredService<SettingsViewModel>();
@@ -31,12 +35,9 @@ public static class LoggerHelper
             {
                 // CLI 模式下 DI 容器未初始化
             }
-        }
+
         return _settingsViewModel!;
     }
-
-    private static readonly List<(LogLevel level, string message)> LogCache = [];
-    private const string OutputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}][{Level:u3}] {Message:lj}{NewLine}{Exception}";
 
     public static void InitializeLogger()
     {
@@ -62,7 +63,7 @@ public static class LoggerHelper
     }
 
     /// <summary>
-    /// 将日志写入 Serilog（统一入口，消除 switch 重复）
+    ///     将日志写入 Serilog（统一入口，消除 switch 重复）
     /// </summary>
     private static void WriteToSerilog(LogLevel level, string message)
     {
@@ -137,13 +138,28 @@ public static class LoggerHelper
         }
     }
 
-    public static void Info(object? message) => Log(message, LogLevel.Info);
+    public static void Info(object? message)
+    {
+        Log(message, LogLevel.Info);
+    }
 
-    public static void Debug(object? message) => Log(message, LogLevel.Debug);
+    public static void Debug(object? message)
+    {
+        Log(message, LogLevel.Debug);
+    }
 
-    public static void Error(object message) => Log(message, LogLevel.Error);
+    public static void Error(object message)
+    {
+        Log(message, LogLevel.Error);
+    }
 
-    public static void Error(object message, Exception e) => Log($"{message}\n{e}", LogLevel.Error);
+    public static void Error(object message, Exception e)
+    {
+        Log($"{message}\n{e}", LogLevel.Error);
+    }
 
-    public static void Warning(object message) => Log(message, LogLevel.Warn);
+    public static void Warning(object message)
+    {
+        Log(message, LogLevel.Warn);
+    }
 }

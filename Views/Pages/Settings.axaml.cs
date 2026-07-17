@@ -5,11 +5,9 @@ namespace QTSAvalonia.Views.Pages;
 
 public partial class Settings : UserControl
 {
-
     public Settings()
     {
         DataContext = Instances.ServiceProvider.GetRequiredService<SettingsViewModel>();
         InitializeComponent();
     }
-    
 }

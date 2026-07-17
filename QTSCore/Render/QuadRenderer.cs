@@ -1,7 +1,9 @@
+using System.Collections.ObjectModel;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using QTSCore.Data.Quad;
-using QTSCore.Utility;
+using QTSAvalonia.Helper;
 using QTSAvalonia.ViewModels.Pages;
+using QTSCore.Data.Quad;
 using SkiaSharp;
 using Matrix = QTSCore.Utility.Matrix;
 
@@ -13,16 +15,34 @@ namespace QTSCore.Render;
 /// </summary>
 public class QuadRenderer : IDisposable
 {
-#region 常量
+    #region 构造函数
+
+    public QuadRenderer(
+        PlayerSettingViewModel settings,
+        ObservableCollection<ColorPicker> colorize,
+        ObservableCollection<ToggleButton> attributes,
+        Dictionary<string, SKColor> colorizeDict,
+        Dictionary<string, ToggleButton> attributesDict)
+    {
+        _settings = settings;
+        _colorize = colorize;
+        _attributes = attributes;
+        _colorizeDict = colorizeDict;
+        _attributesDict = attributesDict;
+    }
+
+    #endregion
+
+    #region 常量
 
     private static readonly ushort[] TriangleIndices = [0, 1, 2, 0, 2, 3];
 
     private const int FogBitmapSize = 256;
     private const float GradientRadius = FogBitmapSize / 2f;
 
-#endregion
+    #endregion
 
-#region 字段
+    #region 字段
 
     private readonly PlayerSettingViewModel _settings;
 
@@ -34,37 +54,14 @@ public class QuadRenderer : IDisposable
     private readonly Dictionary<string, SKColor> _colorizeDict;
     private readonly Dictionary<string, ToggleButton> _attributesDict;
 
-    private QuadJsonData? _quadJsonData;
     private SKSurface? _surface;
     private int _canvasSize;
 
-#endregion
+    #endregion
 
-#region 构造函数
+    #region 属性
 
-    public QuadRenderer(
-        PlayerSettingViewModel settings,
-        ObservableCollection<ColorPicker> colorize,
-        ObservableCollection<ToggleButton> attributes,
-        Dictionary<string, SKColor> colorizeDict,
-        Dictionary<string, ToggleButton> attributesDict)
-    {
-        _settings       = settings;
-        _colorize       = colorize;
-        _attributes     = attributes;
-        _colorizeDict   = colorizeDict;
-        _attributesDict = attributesDict;
-    }
-
-#endregion
-
-#region 属性
-
-    public QuadJsonData? QuadData
-    {
-        get => _quadJsonData;
-        set => _quadJsonData = value;
-    }
+    public QuadJsonData? QuadData { get; set; }
 
     /// <summary>
     ///     当前播放时间（帧），供 <see cref="DrawAnimation" /> 评估时间线使用。
@@ -93,7 +90,7 @@ public class QuadRenderer : IDisposable
                 return _surface;
 
             _surface?.Dispose();
-            _surface    = SKSurface.Create(new SKImageInfo(CanvasSize, CanvasSize));
+            _surface = SKSurface.Create(new SKImageInfo(CanvasSize, CanvasSize));
             _canvasSize = CanvasSize;
             return _surface;
         }
@@ -101,15 +98,24 @@ public class QuadRenderer : IDisposable
 
     private SKCanvas Canvas => Surface.Canvas;
 
-#endregion
+    #endregion
 
-#region 资源管理
+    #region 资源管理
 
-    public void AddSourceImage(SKBitmap bitmap) => _sourceImages.Add(bitmap);
+    public void AddSourceImage(SKBitmap bitmap)
+    {
+        _sourceImages.Add(bitmap);
+    }
 
-    public void ClearCanvas() => Canvas.Clear();
+    public void ClearCanvas()
+    {
+        Canvas.Clear();
+    }
 
-    public SKImage Snapshot() => Surface.Snapshot();
+    public SKImage Snapshot()
+    {
+        return Surface.Snapshot();
+    }
 
     /// <summary>
     ///     释放已加载的源图像、清空画布并重置 Quad 数据，供 PlayerViewModel.ClearResources 调用。
@@ -123,8 +129,8 @@ public class QuadRenderer : IDisposable
 
         Canvas.Clear();
 
-        _quadJsonData = null;
-        CurrentTime   = 0;
+        QuadData = null;
+        CurrentTime = 0;
     }
 
     public void Dispose()
@@ -139,12 +145,14 @@ public class QuadRenderer : IDisposable
         GC.SuppressFinalize(this);
     }
 
-#endregion
+    #endregion
 
-#region 绘制入口
+    #region 绘制入口
 
     public void DrawAttach(Attach? attach, Matrix matrix, SKColor color)
-        => DrawAttachInternal(attach, matrix, color);
+    {
+        DrawAttachInternal(attach, matrix, color);
+    }
 
     /// <summary>
     ///     绘制指定骨骼的全部 Bone.Attach（使用单位矩阵与透明初始色）。
@@ -195,30 +203,30 @@ public class QuadRenderer : IDisposable
 
     private void DrawSkeleton(Attach attach, Matrix matrix, SKColor color)
     {
-        if (_quadJsonData?.Skeleton is null || attach.Id < 0 || attach.Id >= _quadJsonData.Skeleton.Length)
+        if (QuadData?.Skeleton is null || attach.Id < 0 || attach.Id >= QuadData.Skeleton.Length)
             return;
 
-        var skeleton = _quadJsonData.Skeleton[attach.Id];
+        var skeleton = QuadData.Skeleton[attach.Id];
         foreach (var bone in skeleton?.Bone ?? [])
             DrawAttachInternal(bone.Attach, matrix, color);
     }
 
     private void DrawSlot(Attach attach, Matrix matrix, SKColor color)
     {
-        if (_quadJsonData?.Slot is null || attach.Id < 0 || attach.Id >= _quadJsonData.Slot.Length)
+        if (QuadData?.Slot is null || attach.Id < 0 || attach.Id >= QuadData.Slot.Length)
             return;
 
-        var slot = _quadJsonData.Slot[attach.Id];
+        var slot = QuadData.Slot[attach.Id];
         foreach (var att in slot?.Attaches ?? [])
             DrawAttachInternal(att, matrix, color);
     }
 
     private void DrawKeyframeByAttach(Attach attach, Matrix matrix, SKColor color)
     {
-        if (_quadJsonData?.Keyframe is null || attach.Id < 0 || attach.Id >= _quadJsonData.Keyframe.Length)
+        if (QuadData?.Keyframe is null || attach.Id < 0 || attach.Id >= QuadData.Keyframe.Length)
             return;
 
-        var keyframe = _quadJsonData.Keyframe[attach.Id];
+        var keyframe = QuadData.Keyframe[attach.Id];
         if (keyframe?.Layers is null) return;
 
         foreach (var order in keyframe.Order)
@@ -226,11 +234,8 @@ public class QuadRenderer : IDisposable
             if (order < 0 || order >= keyframe.Layers.Length) continue;
 
             var layer = keyframe.Layers[order];
-            if (layer != null)
-            {
-                DrawAttachInternal(layer, matrix, color);
-                //DrawKeyframeLayer(layer, matrix, color);
-            }
+            if (layer != null) DrawAttachInternal(layer, matrix, color);
+            //DrawKeyframeLayer(layer, matrix, color);
         }
     }
 
@@ -285,8 +290,8 @@ public class QuadRenderer : IDisposable
         if (skBitmap is null) return;
 
         // 计算裁剪后图片的纹理坐标（相对于裁剪区域的像素坐标）
-        var cropWidth = (float)(maxX - minX);
-        var cropHeight = (float)(maxY - minY);
+        var cropWidth = maxX - minX;
+        var cropHeight = maxY - minY;
         var texturePoints = new[]
         {
             new SKPoint(x0 - minX, y0 - minY),
@@ -314,18 +319,17 @@ public class QuadRenderer : IDisposable
         }
 
         foreach (var attr in layer.Attribute)
-        {
             if (_attributesDict.TryGetValue(attr, out var toggleSwitch) && toggleSwitch.IsChecked == false)
                 return false;
-        }
 
         return true;
     }
 
-    private void DrawImageWithMatrix(SKBitmap skBitmap, KeyframeLayer layer, Matrix matrix, SKColor color, SKPoint[] texturePoints)
+    private void DrawImageWithMatrix(SKBitmap skBitmap, KeyframeLayer layer, Matrix matrix, SKColor color,
+        SKPoint[] texturePoints)
     {
         var vertexMatrix = matrix * layer.DstMatrix;
-        var vertices     = vertexMatrix.ToFloatArray();
+        var vertices = vertexMatrix.ToFloatArray();
 
         var destPoints = new[]
         {
@@ -341,10 +345,10 @@ public class QuadRenderer : IDisposable
             texturePoints,
             null,
             TriangleIndices);
-        var       colorFilter = CreateColorFilter(color);
-        using var shader      = SKShader.CreateBitmap(skBitmap);
-        using var paint       = new SKPaint();
-        paint.Shader      = shader;
+        var colorFilter = CreateColorFilter(color);
+        using var shader = SKShader.CreateBitmap(skBitmap);
+        using var paint = new SKPaint();
+        paint.Shader = shader;
         paint.ColorFilter = colorFilter;
         paint.IsAntialias = true;
         // TODO : add more blend modes
@@ -356,16 +360,13 @@ public class QuadRenderer : IDisposable
 
     private void DrawHitBox(Attach attach, Matrix matrix)
     {
-        if (_quadJsonData?.Hitbox is null || attach.Id < 0 || attach.Id >= _quadJsonData.Hitbox.Length)
+        if (QuadData?.Hitbox is null || attach.Id < 0 || attach.Id >= QuadData.Hitbox.Length)
             return;
 
-        var hitboxes = _quadJsonData.Hitbox[attach.Id]?.Layer;
+        var hitboxes = QuadData.Hitbox[attach.Id]?.Layer;
         if (hitboxes is null) return;
 
-        foreach (var hitbox in hitboxes)
-        {
-            DrawHitBoxShape(hitbox, matrix);
-        }
+        foreach (var hitbox in hitboxes) DrawHitBoxShape(hitbox, matrix);
     }
 
     private void DrawHitBoxShape(dynamic hitbox, Matrix matrix)
@@ -383,8 +384,8 @@ public class QuadRenderer : IDisposable
         path.AddPoly(destPoints);
 
         using var paint = new SKPaint();
-        paint.Style       = SKPaintStyle.Stroke;
-        paint.Color       = SKColors.DarkOrange;
+        paint.Style = SKPaintStyle.Stroke;
+        paint.Color = SKColors.DarkOrange;
         paint.StrokeWidth = 2;
         paint.IsAntialias = true;
 
@@ -393,11 +394,11 @@ public class QuadRenderer : IDisposable
 
     private (Attach attach, Matrix matrix, SKColor color) DrawAnimation(Attach attach, Matrix matrix, SKColor color)
     {
-        var result    = (new Attach(AttachType.None, -1), matrix, color);
-        var animation = _quadJsonData.Animation[attach.Id];
+        var result = (new Attach(AttachType.None, -1), matrix, color);
+        var animation = QuadData.Animation[attach.Id];
         var (currentFrameIndex, currentTime) = GetAnimationTimeIndex(CurrentTime, animation);
         if (currentFrameIndex < 0) return result;
-        var curTimeline    = animation.Timeline[currentFrameIndex];
+        var curTimeline = animation.Timeline[currentFrameIndex];
         var nextFrameIndex = currentFrameIndex + 1;
         if (nextFrameIndex >= animation.Timeline.Length)
             nextFrameIndex = !animation.IsLoop ? currentFrameIndex : animation.LoopId;
@@ -405,11 +406,9 @@ public class QuadRenderer : IDisposable
         var nextTimeline = animation.Timeline[nextFrameIndex];
         result.Item1 = curTimeline.Attach ?? new Attach { AttachType = AttachType.None, Id = -1 };
         if (currentFrameIndex == nextFrameIndex)
-        {
             //result.matrix *= curTimeline.AnimationMatrix;
             //TODO: Color multi
             return result;
-        }
 
         var rate = (float)currentTime / curTimeline.Time;
         var m4 = curTimeline.MatrixMixId != -1
@@ -430,9 +429,9 @@ public class QuadRenderer : IDisposable
         return animation.IsLoop ? (-1, 0) : (animation.LoopId, currentTime);
     }
 
-#endregion
+    #endregion
 
-#region 图像处理
+    #region 图像处理
 
     private SKBitmap? GetImage(KeyframeLayer layer, SKRectI srcRect)
     {
@@ -470,10 +469,8 @@ public class QuadRenderer : IDisposable
         var croppedImage = CropImage(sourceImage, srcRect);
 
         if (croppedImage is null)
-        {
             LoggerHelper.Error("Failed to crop image",
                 new InvalidOperationException($"Failed to crop image: {layer.TexId}, srcRect={srcRect}"));
-        }
 
         return croppedImage;
     }
@@ -498,8 +495,8 @@ public class QuadRenderer : IDisposable
             );
 
             using var surface = SKSurface.Create(new SKImageInfo(FogBitmapSize, FogBitmapSize));
-            using var canvas  = surface.Canvas;
-            using var paint   = new SKPaint();
+            using var canvas = surface.Canvas;
+            using var paint = new SKPaint();
             paint.Shader = shader;
 
             canvas.DrawRect(new SKRect(0, 0, FogBitmapSize, FogBitmapSize), paint);
@@ -537,9 +534,9 @@ public class QuadRenderer : IDisposable
 
     private static SKColorFilter? CreateColorFilter(SKColor color)
     {
-        var r = color.Red   / 255f;
+        var r = color.Red / 255f;
         var g = color.Green / 255f;
-        var b = color.Blue  / 255f;
+        var b = color.Blue / 255f;
 
         float[] colorMatrix =
         [
@@ -552,5 +549,5 @@ public class QuadRenderer : IDisposable
         return SKColorFilter.CreateColorMatrix(colorMatrix);
     }
 
-#endregion
+    #endregion
 }

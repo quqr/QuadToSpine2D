@@ -1,5 +1,4 @@
 using QTSCore.Process;
-using QTSCore.Utility;
 using Matrix = QTSCore.Utility.Matrix;
 
 namespace QTSCore.Data.Quad;
@@ -7,8 +6,6 @@ namespace QTSCore.Data.Quad;
 public class Timeline
 {
     private Timeline? _prev;
-    private int _startFrame;
-    private int _endFrame;
 
     public Timeline? Prev
     {
@@ -24,16 +21,11 @@ public class Timeline
     public Timeline? Next { get; set; }
     public int Frames => Time;
     public int Time { get; set; }
-    public int StartFrame
-    {
-        get => _startFrame;
-        set => _startFrame = value;
-    }
-    public int EndFrame
-    {
-        get => _endFrame;
-        set => _endFrame = value;
-    }
+
+    public int StartFrame { get; set; }
+
+    public int EndFrame { get; set; }
+
     public FramePoint FramePoint { get; set; }
     public Attach? Attach { get; set; }
 
@@ -66,7 +58,7 @@ public class Timeline
             EndFrame = EndFrame,
             FramePoint = FramePoint,
             Attach = Attach,
-            AnimationMatrix = AnimationMatrix,
+            AnimationMatrix = AnimationMatrix
         };
     }
 }

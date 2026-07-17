@@ -8,9 +8,10 @@ namespace QTSCore.Data.Quad;
 [JsonConverter(typeof(KeyframeLayerJsonConverter))]
 public class KeyframeLayer : Attach
 {
+    private float[]? _dstquad;
+    private string _name = string.Empty;
     private float[]? _srcquad = [];
     private int _texId = -1;
-    private string _name = string.Empty;
     private Timeline[] _timeline = [];
 
     public float[] Dstquad
@@ -24,7 +25,6 @@ public class KeyframeLayer : Attach
         }
     } = [];
 
-    private float[]? _dstquad;
     public Matrix DstMatrix { get; set; }
 
     public float[]? Srcquad
@@ -60,6 +60,7 @@ public class KeyframeLayer : Attach
                 _texId = value;
                 return;
             }
+
             // fog tex id
             _texId = Instances.ConverterSetting.FogTexId;
         }

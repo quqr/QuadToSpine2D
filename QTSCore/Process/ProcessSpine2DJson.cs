@@ -1,17 +1,18 @@
 using QTSAvalonia.Helper;
-using QTSAvalonia.ViewModels.Pages;
 using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Data.Spine;
 using QTSCore.Interfaces;
 using QTSCore.Process.AttachmentHandlers;
-using QTSCore.Utility;
 
 namespace QTSCore.Process;
 
 public class ProcessSpine2DJson
 {
+    private readonly ConversionContext _context;
     private readonly List<DrawOrder> _drawOrders = [];
+
+    private readonly Dictionary<AttachType, IAttachmentHandler> _handlers;
 
     private readonly Skin _hitboxSkin = new()
     {
@@ -21,10 +22,6 @@ public class ProcessSpine2DJson
     private readonly QuadJsonData _quadJsonData;
 
     private readonly SpineJsonData _spineJsonData = new();
-
-    private readonly ConversionContext _context;
-
-    private readonly Dictionary<AttachType, IAttachmentHandler> _handlers;
 
     public ProcessSpine2DJson(QuadJsonData quadJsonData)
     {
@@ -115,14 +112,14 @@ public class ProcessSpine2DJson
         if (skeleton.CombineAnimation.Data.Count == 0) animationName += "_EMPTY";
         _spineJsonData.Animations[animationName] = new SpineAnimation
         {
-            Slots = new Dictionary<string, AnimationSlot>(_context.SpineAnimationSlots), Deform = _context.Deform.Clone(),
+            Slots = new Dictionary<string, AnimationSlot>(_context.SpineAnimationSlots),
+            Deform = _context.Deform.Clone(),
             DrawOrder = [.._drawOrders]
         };
     }
 
     private void SortDrawOrderAsync(SpineAnimation spineAnimation, List<DrawOrder> drawOrders)
     {
-
         foreach (var drawOrder in drawOrders) drawOrder.SortOffset();
         // drawOrders must be null if it's empty, or it will cause error in Spine2D
         drawOrders.RemoveAll(x => x.Offsets.Count == 0);

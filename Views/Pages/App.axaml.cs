@@ -12,7 +12,6 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        
         Instances.Initialize();
         LoggerHelper.InitializeLogger();
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

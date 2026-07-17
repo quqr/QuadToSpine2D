@@ -7,9 +7,9 @@ using QTSCore.Utility;
 namespace QTSCore.Process.AttachmentHandlers;
 
 /// <summary>
-/// Handles <see cref="AttachType.Keyframe"/> attachments: allocates pool data, registers
-/// slots/skins/meshes, records animation slots, and interpolates vertex deformations for
-/// each keyframe layer.
+///     Handles <see cref="Data.Quad.AttachType.Keyframe" /> attachments: allocates pool data, registers
+///     slots/skins/meshes, records animation slots, and interpolates vertex deformations for
+///     each keyframe layer.
 /// </summary>
 public class KeyframeHandler : IAttachmentHandler
 {
@@ -28,8 +28,8 @@ public class KeyframeHandler : IAttachmentHandler
     }
 
     /// <summary>
-    /// Displays every layer of a keyframe attach. Exposed so <see cref="SlotHandler"/> can
-    /// reuse the logic after unwrapping its inner keyframe.
+    ///     Displays every layer of a keyframe attach. Exposed so <see cref="SlotHandler" /> can
+    ///     reuse the logic after unwrapping its inner keyframe.
     /// </summary>
     internal static void GetKeyframe(Keyframe? attachKeyframe,
         Timeline timeline,
@@ -50,8 +50,8 @@ public class KeyframeHandler : IAttachmentHandler
     }
 
     /// <summary>
-    /// Conceals every layer of a keyframe attach. Exposed so <see cref="SlotHandler"/> can
-    /// reuse the logic after unwrapping its inner keyframe.
+    ///     Conceals every layer of a keyframe attach. Exposed so <see cref="SlotHandler" /> can
+    ///     reuse the logic after unwrapping its inner keyframe.
     /// </summary>
     internal static void ReleaseKeyframe(Keyframe? attachKeyframe, FramePoint framePoint, ConversionContext context)
     {

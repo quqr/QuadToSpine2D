@@ -29,11 +29,11 @@
         <DockPanel>
 
             <NumericUpDown
-                     FormatString="0"
-                     Value="{Binding Fps}"
-                     Minimum="1"
-                     DockPanel.Dock="Right"
-                     Width="200" />
+                FormatString="0"
+                Value="{Binding Fps}"
+                Minimum="1"
+                DockPanel.Dock="Right"
+                Width="200" />
             <StackPanel HorizontalAlignment="Left">
                 <TextBlock
                     FontSize="16"
@@ -47,11 +47,11 @@
         </DockPanel>
         <DockPanel>
             <NumericUpDown
-                     Minimum="1"
-                     FormatString="0"
-                     Value="{Binding ImageScaleFactor}"
-                     DockPanel.Dock="Right" 
-                     Width="200" />
+                Minimum="1"
+                FormatString="0"
+                Value="{Binding ImageScaleFactor}"
+                DockPanel.Dock="Right"
+                Width="200" />
             <StackPanel HorizontalAlignment="Left">
                 <TextBlock
                     FontSize="16"

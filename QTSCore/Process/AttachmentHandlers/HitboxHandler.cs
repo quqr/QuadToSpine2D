@@ -5,13 +5,13 @@ using QTSCore.Interfaces;
 namespace QTSCore.Process.AttachmentHandlers;
 
 /// <summary>
-/// Handles <see cref="AttachType.HitBox"/> attachments.
+///     Handles <see cref="Data.Quad.AttachType.HitBox" /> attachments.
 /// </summary>
 /// <remarks>
-/// Hitbox processing is currently disabled in the original implementation (the active code
-/// path contained bugs), so <see cref="Add"/> and <see cref="Remove"/> are no-ops to preserve
-/// existing behaviour. The supporting methods are kept here so the logic can be re-enabled in
-/// a single place rather than re-introducing a switch branch in the orchestrator.
+///     Hitbox processing is currently disabled in the original implementation (the active code
+///     path contained bugs), so <see cref="Add" /> and <see cref="Remove" /> are no-ops to preserve
+///     existing behaviour. The supporting methods are kept here so the logic can be re-enabled in
+///     a single place rather than re-introducing a switch branch in the orchestrator.
 /// </remarks>
 public class HitboxHandler : IAttachmentHandler
 {

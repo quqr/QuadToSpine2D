@@ -1,4 +1,3 @@
-using System.Text;
 using QTSAvalonia.Helper;
 using VanillawareConverter.Ftex.Parsers;
 using VanillawareConverter.Ftex.Textures;
@@ -6,10 +5,10 @@ using VanillawareConverter.Ftex.Textures;
 namespace VanillawareConverter.Ftex;
 
 /// <summary>
-/// 统一FTEX文件读取器
+///     统一FTEX文件读取器
 /// </summary>
 /// <remarks>
-/// 提供跨平台的FTEX纹理文件解析功能，支持自动检测平台类型
+///     提供跨平台的FTEX纹理文件解析功能，支持自动检测平台类型
 /// </remarks>
 public class UnifiedFtexReader
 {
@@ -26,7 +25,7 @@ public class UnifiedFtexReader
     ];
 
     /// <summary>
-    /// 检测文件所属的游戏平台
+    ///     检测文件所属的游戏平台
     /// </summary>
     /// <param name="fileData">文件字节数据</param>
     /// <returns>检测到的平台类型</returns>
@@ -40,7 +39,7 @@ public class UnifiedFtexReader
     }
 
     /// <summary>
-    /// 解析FTEX文件
+    ///     解析FTEX文件
     /// </summary>
     /// <param name="filePath">文件路径</param>
     /// <returns>解析后的图像结果列表</returns>
@@ -60,12 +59,9 @@ public class UnifiedFtexReader
 
         if (FcmpDecoder.IsFcmpFile(fileData))
         {
-            LoggerHelper.Info($"[压缩检测] 检测到FCMP压缩格式，正在解压...");
+            LoggerHelper.Info("[压缩检测] 检测到FCMP压缩格式，正在解压...");
             fileData = FcmpDecoder.Decode(fileData);
-            if (fileData.Length > 0)
-            {
-                LoggerHelper.Info($"[压缩检测] 解压成功 - 解压后大小: {fileData.Length}字节");
-            }
+            if (fileData.Length > 0) LoggerHelper.Info($"[压缩检测] 解压成功 - 解压后大小: {fileData.Length}字节");
         }
 
         if (fileData.Length == 0)
@@ -88,7 +84,7 @@ public class UnifiedFtexReader
     }
 
     /// <summary>
-    /// 解析并保存纹理文件
+    ///     解析并保存纹理文件
     /// </summary>
     /// <param name="filePath">文件路径</param>
     /// <param name="convertToPng">是否转换为PNG格式</param>
@@ -113,10 +109,7 @@ public class UnifiedFtexReader
 
             NvtFileWriter.Save(filename, result);
 
-            if (convertToPng)
-            {
-                PngConverter.ConvertNvtToPng(filename);
-            }
+            if (convertToPng) PngConverter.ConvertNvtToPng(filename);
 
             index++;
         }
@@ -125,7 +118,7 @@ public class UnifiedFtexReader
     }
 
     /// <summary>
-    /// 批量处理目录中的FTEX文件
+    ///     批量处理目录中的FTEX文件
     /// </summary>
     /// <param name="directoryPath">目录路径</param>
     /// <param name="pattern">文件匹配模式</param>

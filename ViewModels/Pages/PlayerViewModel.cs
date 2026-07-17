@@ -15,14 +15,63 @@ namespace QTSAvalonia.ViewModels.Pages;
 [SingletonService]
 public partial class PlayerViewModel : ViewModelBase, IDisposable
 {
-#region 静态常量
+    #region 静态常量
 
     private static readonly PlayerSettingViewModel Settings =
         Instances.ServiceProvider.GetRequiredService<PlayerSettingViewModel>();
 
-#endregion
+    #endregion
 
-#region 字段
+    #region 构造函数
+
+    public PlayerViewModel()
+    {
+        _renderer = new QuadRenderer(Settings, Colorize, Attributes, _colorizeDict, _attributesDict);
+        _renderer.RequestRedraw = ReDraw;
+
+        _player = new AnimationPlayer();
+        _player.SetCurrentFrame = f => CurrentFrame = f;
+        _player.SetIsPlaying = p => IsPlaying = p;
+
+        Colorize.CollectionChanged += OnColorizeCollectionChanged;
+    }
+
+    #endregion
+
+    #region 绘制方法
+
+    [RelayCommand]
+    private void DrawAttach(Attach? attach)
+    {
+        _renderer.DrawAttach(attach, Matrix.IdentityMatrixBy4X4, SKColors.Transparent);
+    }
+
+    #endregion
+
+    #region 快速加载（调试用）
+
+    [RelayCommand]
+    private async Task QuicklyLoad()
+    {
+        // _quadFilePath = "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M.mbs.v55.quad";
+        // ImagePaths =
+        // [
+        //     "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.0.nvt.png",
+        //     "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.1.nvt.png",
+        // ];
+        _quadFilePath = @"F:\Codes\Test\swi sent Fuyusaka00.mbs.v55.quad";
+        ImagePaths =
+        [
+            @"F:\Codes\Test\swi sent Fuyusaka00.0.nvt.png",
+            @"F:\Codes\Test\swi sent Fuyusaka00.1.nvt.png"
+        ];
+
+        await LoadAsync();
+    }
+
+    #endregion
+
+    #region 字段
 
     private readonly Dictionary<string, SKColor> _colorizeDict = [];
     private readonly Dictionary<string, ToggleButton> _attributesDict = [];
@@ -32,9 +81,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     private readonly QuadRenderer _renderer;
     private readonly AnimationPlayer _player;
 
-#endregion
+    #endregion
 
-#region Observable Properties
+    #region Observable Properties
 
     [ObservableProperty] private ObservableCollection<Button> _animations = [];
     [ObservableProperty] private int _currentFrame;
@@ -52,34 +101,18 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     [ObservableProperty] private int _totalFrames;
     [ObservableProperty] private bool _isLoopAnimation;
 
-#endregion
+    #endregion
 
-#region 计算属性
+    #region 计算属性
 
-    private Animation?    CurrentAnimation { get; set; }
-    private QuadSkeleton? CurrentSkeleton  { get; set; }
+    private Animation? CurrentAnimation { get; set; }
+    private QuadSkeleton? CurrentSkeleton { get; set; }
 
     private static float Fps => 1 / Settings.Fps;
 
-#endregion
+    #endregion
 
-#region 构造函数
-
-    public PlayerViewModel()
-    {
-        _renderer = new QuadRenderer(Settings, Colorize, Attributes, _colorizeDict, _attributesDict);
-        _renderer.RequestRedraw = ReDraw;
-
-        _player = new AnimationPlayer();
-        _player.SetCurrentFrame = f => CurrentFrame = f;
-        _player.SetIsPlaying   = p => IsPlaying = p;
-
-        Colorize.CollectionChanged += OnColorizeCollectionChanged;
-    }
-
-#endregion
-
-#region 事件处理
+    #region 事件处理
 
     private void OnColorizeCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -122,9 +155,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         ReDraw();
     }
 
-#endregion
+    #endregion
 
-#region 加载方法
+    #region 加载方法
 
     [RelayCommand]
     public async Task LoadAsync()
@@ -141,7 +174,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         {
             Clear();
 
-            var quadTask   = Task.Run(() => LoadQuadFile(_quadFilePath));
+            var quadTask = Task.Run(() => LoadQuadFile(_quadFilePath));
             var imagesTask = LoadSourceImagesAsync();
 
             LoggerHelper.Info("Loading preview data");
@@ -180,10 +213,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         {
             _renderer.QuadData = new ProcessQuadJsonFile().LoadQuadJson(quadPath);
 
-            if (_renderer.QuadData is null)
-            {
-                throw new InvalidOperationException("Failed to parse Quad file");
-            }
+            if (_renderer.QuadData is null) throw new InvalidOperationException("Failed to parse Quad file");
 
             LoggerHelper.Debug(
                 $"Quad file loaded. Skeletons: {_renderer.QuadData.Skeleton?.Length ?? 0}, Animations: {_renderer.QuadData.Animation?.Length ?? 0}");
@@ -217,12 +247,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
         try
         {
-            await using var stream  = File.OpenRead(path);
-            var             skImage = SKBitmap.Decode(stream);
-            if (skImage is null)
-            {
-                throw new InvalidOperationException($"Cannot decode image: {path}");
-            }
+            await using var stream = File.OpenRead(path);
+            var skImage = SKBitmap.Decode(stream);
+            if (skImage is null) throw new InvalidOperationException($"Cannot decode image: {path}");
             _renderer.AddSourceImage(skImage);
             LoggerHelper.Debug($"Loaded image: {path}");
         }
@@ -233,19 +260,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         }
     }
 
-#endregion
+    #endregion
 
-#region 绘制方法
-
-    [RelayCommand]
-    private void DrawAttach(Attach? attach)
-    {
-        _renderer.DrawAttach(attach, Matrix.IdentityMatrixBy4X4, SKColors.Transparent);
-    }
-
-#endregion
-
-#region 播放控制
+    #region 播放控制
 
     [RelayCommand]
     private async Task PlayAnimationAsync()
@@ -297,9 +314,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         Image = _renderer.Snapshot().ToAvaloniaImage();
     }
 
-#endregion
+    #endregion
 
-#region 动画/骨骼设置
+    #region 动画/骨骼设置
 
     [RelayCommand]
     private void SetAnimations(QuadSkeleton? skeleton)
@@ -318,12 +335,11 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         CurrentSkeleton = skeleton;
 
         foreach (var bone in skeleton.Bone.Where(b => b.Attach is not null))
-        {
             Animations.Add(new Button
             {
-                Content = $"{bone.Attach.AttachType} {bone.Attach.Id}", Command = SetKeyframesCommand, CommandParameter = bone.Attach
+                Content = $"{bone.Attach.AttachType} {bone.Attach.Id}", Command = SetKeyframesCommand,
+                CommandParameter = bone.Attach
             });
-        }
 
         LoggerHelper.Debug($"Set {Animations.Count} animations for skeleton: {skeleton.Name}");
     }
@@ -347,8 +363,8 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         if (CurrentAnimation == animation) return;
 
         CurrentAnimation = animation;
-        CurrentFrame     = 0;
-        TotalFrames      = animation.Timeline.Sum(x => x.Time);
+        CurrentFrame = 0;
+        TotalFrames = animation.Timeline.Sum(x => x.Time);
 
         Keyframes.Clear();
         Layers.Clear();
@@ -358,23 +374,23 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         _colorizeDict.Clear();
 
         foreach (var timeline in animation.Timeline.Where(t => t.Attach is not null))
-        {
             switch (timeline.Attach.AttachType)
             {
                 case AttachType.Keyframe:
                     Keyframes.Add(new Button
                     {
-                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = SetLayersCommand, CommandParameter = timeline.Attach
+                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = SetLayersCommand,
+                        CommandParameter = timeline.Attach
                     });
                     break;
                 case AttachType.HitBox:
                     Keyframes.Add(new Button
                     {
-                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}", Command = DrawHitboxAttachCommand, CommandParameter = timeline.Attach
+                        Content = $"{timeline.Attach.AttachType} {timeline.Attach.Id}",
+                        Command = DrawHitboxAttachCommand, CommandParameter = timeline.Attach
                     });
                     break;
             }
-        }
 
         LoggerHelper.Debug($"Set {Keyframes.Count} animation timelines");
     }
@@ -393,12 +409,10 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         if (layers is null) return;
 
         for (var index = 0; index < layers.Length; index++)
-        {
             Layers.Add(new Button
             {
                 Content = $"layer {index}", Command = DrawKeyframeLayerAttachCommand, CommandParameter = layers[index]
             });
-        }
 
         _renderer.ClearCanvas();
         _renderer.DrawAttach(attach, Matrix.IdentityMatrixBy4X4, SKColors.Transparent);
@@ -433,19 +447,17 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
 
         Skeletons.Clear();
         foreach (var skeleton in _renderer.QuadData.Skeleton.Where(s => s != null))
-        {
             Skeletons.Add(new Button
             {
                 Content = skeleton.Name, Command = SetAnimationsCommand, CommandParameter = skeleton
             });
-        }
 
         LoggerHelper.Debug($"Set {Skeletons.Count} skeletons");
     }
 
-#endregion
+    #endregion
 
-#region 文件选择
+    #region 文件选择
 
     [RelayCommand]
     private async Task OpenQuadFilePickerAsync()
@@ -454,7 +466,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         var file = await AvaloniaFilePickerService.OpenQuadFileAsync();
         if (file?.Count > 0)
         {
-            QuadFileName  = file[0].Name;
+            QuadFileName = file[0].Name;
             _quadFilePath = file[0].Path.LocalPath;
             LoggerHelper.Info($"Selected quad file: {QuadFileName}");
             ToastHelper.Success("SUCCESS", $"Selected: {QuadFileName}");
@@ -481,9 +493,9 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         }
     }
 
-#endregion
+    #endregion
 
-#region 清理和释放资源
+    #region 清理和释放资源
 
     private Animation? GetSafeAnimation(int id)
     {
@@ -496,8 +508,8 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     private void ClearResources()
     {
         CurrentFrame = 0;
-        TotalFrames  = 0;
-        Image        = null;
+        TotalFrames = 0;
+        Image = null;
 
         Colorize.Clear();
         _colorizeDict.Clear();
@@ -507,7 +519,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         _renderer.Reset();
 
         CurrentAnimation = null;
-        CurrentSkeleton  = null;
+        CurrentSkeleton = null;
     }
 
     [RelayCommand]
@@ -528,7 +540,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 公共方法：清空所有加载的资源（供 FileManagerViewModel.ClearAll 调用）
+    ///     公共方法：清空所有加载的资源（供 FileManagerViewModel.ClearAll 调用）
     /// </summary>
     public void UnloadAndClear()
     {
@@ -539,7 +551,7 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 设置 Quad 文件路径（供 FileManagerViewModel.PreviewInPlayer 调用）
+    ///     设置 Quad 文件路径（供 FileManagerViewModel.PreviewInPlayer 调用）
     /// </summary>
     public void SetQuadFilePath(string path)
     {
@@ -556,28 +568,5 @@ public partial class PlayerViewModel : ViewModelBase, IDisposable
         GC.SuppressFinalize(this);
     }
 
-#endregion
-
-#region 快速加载（调试用）
-
-    [RelayCommand]
-    private async Task QuicklyLoad()
-    {
-        // _quadFilePath = "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M.mbs.v55.quad";
-        // ImagePaths =
-        // [
-        //     "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.0.nvt.png",
-        //     "/Users/loop/Downloads/Test/swi unic BlackKnight_HG_M00.1.nvt.png",
-        // ];
-        _quadFilePath = @"F:\Codes\Test\swi sent Fuyusaka00.mbs.v55.quad";
-        ImagePaths =
-        [
-            @"F:\Codes\Test\swi sent Fuyusaka00.0.nvt.png",
-            @"F:\Codes\Test\swi sent Fuyusaka00.1.nvt.png",
-        ];
-
-        await LoadAsync();
-    }
-
-#endregion
+    #endregion
 }

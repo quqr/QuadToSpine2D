@@ -1,9 +1,9 @@
+using System.Diagnostics;
+using QTSCore.Process;
 using VanillawareConverter.Ftex;
+using VanillawareConverter.Mbs.Converters;
 using VanillawareConverter.Mbs.Models;
 using VanillawareConverter.Mbs.Parsers;
-using VanillawareConverter.Mbs.Converters;
-using Newtonsoft.Json;
-using QTSCore.Process;
 
 namespace QTSAvalonia.CLI;
 
@@ -39,7 +39,7 @@ public static class ConvertCommands
             return 1;
         }
 
-        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
 
         try
         {
@@ -58,7 +58,8 @@ public static class ConvertCommands
         }
     }
 
-    private static int ConvertFile(FileInfo inputFile, string? output, string? game, string? textures, string format, System.Diagnostics.Stopwatch sw)
+    private static int ConvertFile(FileInfo inputFile, string? output, string? game, string? textures, string format,
+        Stopwatch sw)
     {
         var ext = Path.GetExtension(inputFile.FullName).ToLowerInvariant();
 
@@ -76,7 +77,8 @@ public static class ConvertCommands
         }
     }
 
-    private static int ConvertDirectory(DirectoryInfo inputDir, string? output, string? game, string? textures, string format, System.Diagnostics.Stopwatch sw)
+    private static int ConvertDirectory(DirectoryInfo inputDir, string? output, string? game, string? textures,
+        string format, Stopwatch sw)
     {
         var outputDir = string.IsNullOrEmpty(output)
             ? new DirectoryInfo(Path.Combine(inputDir.FullName, "output"))
@@ -105,7 +107,6 @@ public static class ConvertCommands
 
             var reader = new UnifiedFtexReader();
             for (var i = 0; i < ftxFiles.Length; i++)
-            {
                 try
                 {
                     reader.ParseAndSave(ftxFiles[i], format.ToLowerInvariant() == "png", texOutputDir);
@@ -114,10 +115,10 @@ public static class ConvertCommands
                 }
                 catch (Exception ex)
                 {
-                    CliLogger.Progress(i + 1, ftxFiles.Length, $"Texture: {Path.GetFileName(ftxFiles[i])} ✗ {ex.Message}");
+                    CliLogger.Progress(i + 1, ftxFiles.Length,
+                        $"Texture: {Path.GetFileName(ftxFiles[i])} ✗ {ex.Message}");
                     failCount++;
                 }
-            }
         }
 
         if (mbsFiles.Length > 0)
@@ -128,7 +129,6 @@ public static class ConvertCommands
                 Directory.CreateDirectory(quadOutputDir);
 
             for (var i = 0; i < mbsFiles.Length; i++)
-            {
                 try
                 {
                     var fileData = File.ReadAllBytes(mbsFiles[i]);
@@ -139,7 +139,8 @@ public static class ConvertCommands
 
                     if (tag == PlatformTag.Unknown)
                     {
-                        CliLogger.Progress(i + 1, mbsFiles.Length, $"Sprite: {Path.GetFileName(mbsFiles[i])} ✗ Unknown platform");
+                        CliLogger.Progress(i + 1, mbsFiles.Length,
+                            $"Sprite: {Path.GetFileName(mbsFiles[i])} ✗ Unknown platform");
                         failCount++;
                         continue;
                     }
@@ -149,7 +150,8 @@ public static class ConvertCommands
                     var converter = new V55ToQuadConverter();
                     var quadData = converter.Convert(v55Data);
 
-                    var quadPath = Path.Combine(quadOutputDir, Path.GetFileNameWithoutExtension(mbsFiles[i]) + ".quad.json");
+                    var quadPath = Path.Combine(quadOutputDir,
+                        Path.GetFileNameWithoutExtension(mbsFiles[i]) + ".quad.json");
                     var quadJson = JsonConvert.SerializeObject(quadData, Formatting.Indented);
                     File.WriteAllText(quadPath, quadJson);
 
@@ -158,10 +160,10 @@ public static class ConvertCommands
                 }
                 catch (Exception ex)
                 {
-                    CliLogger.Progress(i + 1, mbsFiles.Length, $"Sprite: {Path.GetFileName(mbsFiles[i])} ✗ {ex.Message}");
+                    CliLogger.Progress(i + 1, mbsFiles.Length,
+                        $"Sprite: {Path.GetFileName(mbsFiles[i])} ✗ {ex.Message}");
                     failCount++;
                 }
-            }
         }
 
         sw.Stop();
@@ -169,7 +171,7 @@ public static class ConvertCommands
         return failCount > 0 ? 1 : 0;
     }
 
-    private static int ConvertTexture(FileInfo inputFile, string? output, string format, System.Diagnostics.Stopwatch sw)
+    private static int ConvertTexture(FileInfo inputFile, string? output, string format, Stopwatch sw)
     {
         var outputDir = string.IsNullOrEmpty(output)
             ? inputFile.DirectoryName
@@ -183,7 +185,7 @@ public static class ConvertCommands
         return 0;
     }
 
-    private static int ConvertSprite(FileInfo inputFile, string? output, string? game, string? textures, System.Diagnostics.Stopwatch sw)
+    private static int ConvertSprite(FileInfo inputFile, string? output, string? game, string? textures, Stopwatch sw)
     {
         var fileData = File.ReadAllBytes(inputFile.FullName);
         var tag = PlatformConfigs.DetectPlatform(fileData);
@@ -217,7 +219,7 @@ public static class ConvertCommands
         return 0;
     }
 
-    private static int ConvertQuadJson(FileInfo inputFile, string? output, System.Diagnostics.Stopwatch sw)
+    private static int ConvertQuadJson(FileInfo inputFile, string? output, Stopwatch sw)
     {
         Instances.Initialize();
 
@@ -236,9 +238,9 @@ public static class ConvertCommands
 
         var json = JsonConvert.SerializeObject(spineData, new JsonSerializerSettings
         {
-            ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver
+            ContractResolver = new DefaultContractResolver
             {
-                NamingStrategy = new Newtonsoft.Json.Serialization.CamelCaseNamingStrategy()
+                NamingStrategy = new CamelCaseNamingStrategy()
             },
             Formatting = Formatting.Indented
         });
@@ -274,10 +276,8 @@ public static class ConvertCommands
     private static string? GetOption(string[] args, params string[] names)
     {
         for (var i = 0; i < args.Length - 1; i++)
-        {
             if (names.Contains(args[i]))
                 return args[i + 1];
-        }
         return null;
     }
 

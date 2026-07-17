@@ -1,0 +1,907 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="064a0e92-5804-41ec-8235-3f236fac1529" name="Administrator@H6SDFGBTTS64357 2026-07-16 09:14:35" runUser="H6SDFGBTTS64357\Administrator" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-07-16T09:14:35.9160255+08:00" queuing="2026-07-16T09:14:35.9160257+08:00" start="2026-07-16T09:14:34.9880648+08:00" finish="2026-07-16T09:14:40.1579630+08:00" />
+  <TestSettings name="default" id="a2520175-9b97-4dc5-ab16-578cc2625b4a">
+    <Deployment runDeploymentRoot="Administrator_H6SDFGBTTS64357_2026-07-16_09_14_35" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a1bebd0b-1943-4651-ace0-94feedd49442" testId="77e27f72-5486-b61a-5327-6ff9a2c7bd29" testName="Tests.ByteHelperTests.ReadInt32_BigEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0001495" startTime="2026-07-16T09:14:35.8921349+08:00" endTime="2026-07-16T09:14:35.8921754+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a1bebd0b-1943-4651-ace0-94feedd49442" />
+    <UnitTestResult executionId="56438f96-4dab-4323-8662-ec7b044963ef" testId="7b9e8037-2de1-09b3-e216-733624e23343" testName="Tests.ByteHelperTests.ReadInt_2Bytes_LittleEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0001246" startTime="2026-07-16T09:14:35.9209514+08:00" endTime="2026-07-16T09:14:35.9209788+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="56438f96-4dab-4323-8662-ec7b044963ef" />
+    <UnitTestResult executionId="a537420e-4b40-4eb9-9822-9717fb8516ac" testId="0ee0063e-946b-68f3-73e4-12f11cee5a1c" testName="Tests.MatrixTests.Constructor_Square_CreatesIdentityMatrix" computerName="H6SDFGBTTS64357" duration="00:00:00.0005118" startTime="2026-07-16T09:14:35.8893567+08:00" endTime="2026-07-16T09:14:35.8893850+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a537420e-4b40-4eb9-9822-9717fb8516ac" />
+    <UnitTestResult executionId="b6c059e0-2d16-4138-be93-add887340025" testId="ebbb7dd6-dc22-c323-f154-ec6f9f8cce8e" testName="Tests.MatrixTests.Indexer_ReadWrite" computerName="H6SDFGBTTS64357" duration="00:00:00.0047167" startTime="2026-07-16T09:14:35.8059177+08:00" endTime="2026-07-16T09:14:35.8768815+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b6c059e0-2d16-4138-be93-add887340025" />
+    <UnitTestResult executionId="f66bfe6c-bb78-4648-9bbe-3535a9cd11d4" testId="52f29320-83ff-b64c-9132-b346ef67e187" testName="Tests.MathHelperTests.ApproximatelyEqual_ZeroAndNearZero" computerName="H6SDFGBTTS64357" duration="00:00:00.0001559" startTime="2026-07-16T09:14:35.9366038+08:00" endTime="2026-07-16T09:14:35.9367351+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f66bfe6c-bb78-4648-9bbe-3535a9cd11d4" />
+    <UnitTestResult executionId="b074d37e-1a40-4fed-a3d4-20e674de53e8" testId="5acb7c8a-dbbd-40e5-6a07-4b395be42351" testName="Tests.MatrixTests.Clone_CreatesDeepCopy" computerName="H6SDFGBTTS64357" duration="00:00:00.0030569" startTime="2026-07-16T09:14:35.9376968+08:00" endTime="2026-07-16T09:14:35.9379788+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b074d37e-1a40-4fed-a3d4-20e674de53e8" />
+    <UnitTestResult executionId="e6993f98-bfeb-42a5-b5f1-47630a5632f1" testId="5c212791-a9ec-19d1-7fb0-6cfbee58dd6b" testName="Tests.MatrixTests.Multiply_4x4By4x4_ReturnsCorrectResult" computerName="H6SDFGBTTS64357" duration="00:00:00.0011395" startTime="2026-07-16T09:14:35.8902567+08:00" endTime="2026-07-16T09:14:35.8903943+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e6993f98-bfeb-42a5-b5f1-47630a5632f1" />
+    <UnitTestResult executionId="1c44c845-ef88-4103-badf-fa919b325cf8" testId="963244be-3ec3-863e-42eb-a0a64959e166" testName="Tests.ByteHelperTests.ReadInt32_LittleEndian_Negative" computerName="H6SDFGBTTS64357" duration="00:00:00.0001524" startTime="2026-07-16T09:14:35.9123473+08:00" endTime="2026-07-16T09:14:35.9124072+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1c44c845-ef88-4103-badf-fa919b325cf8" />
+    <UnitTestResult executionId="9f35262d-6a3d-4db1-8c97-d085455187b8" testId="91009f20-55de-1f32-881b-0eb5aab66873" testName="Tests.MbsParserTests.Parse_RealMbsFile_BattleIcon_SwitchPlatform" computerName="H6SDFGBTTS64357" duration="00:00:00.0252135" startTime="2026-07-16T09:14:35.9447723+08:00" endTime="2026-07-16T09:14:35.9448153+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9f35262d-6a3d-4db1-8c97-d085455187b8" />
+    <UnitTestResult executionId="7792fb5b-0dd9-424d-b430-c107c49da144" testId="8399a857-9bf8-ebc0-f2b4-e4a87886a6f9" testName="Tests.ByteHelperTests.ReadFloat32_NegativeValue_LittleEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0082975" startTime="2026-07-16T09:14:35.9126430+08:00" endTime="2026-07-16T09:14:35.9126887+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7792fb5b-0dd9-424d-b430-c107c49da144" />
+    <UnitTestResult executionId="f1f49dd2-9928-4617-b942-966a63f25b06" testId="c4874370-c389-2cc3-0914-53832303aab1" testName="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 5, expected: 8)" computerName="H6SDFGBTTS64357" duration="00:00:00.0000054" startTime="2026-07-16T09:14:35.9144135+08:00" endTime="2026-07-16T09:14:35.9144557+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1f49dd2-9928-4617-b942-966a63f25b06" />
+    <UnitTestResult executionId="7ca736c3-959b-4664-9087-573780616736" testId="96c2f537-a58f-63db-9953-32f56dc285f8" testName="Tests.ByteHelperTests.IntClamp_ClampsCorrectly(value: 5, min: 0, max: 10, expected: 5)" computerName="H6SDFGBTTS64357" duration="00:00:00.0001732" startTime="2026-07-16T09:14:35.9127988+08:00" endTime="2026-07-16T09:14:35.9128609+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7ca736c3-959b-4664-9087-573780616736" />
+    <UnitTestResult executionId="31695b20-1bb5-404c-95ef-6305bea92cc9" testId="e68a7be2-1d51-1aee-9462-0f87bc9d8260" testName="Tests.MatrixTests.Lerp_AtHalf_ReturnsMidpoint" computerName="H6SDFGBTTS64357" duration="00:00:00.0041311" startTime="2026-07-16T09:14:35.8888116+08:00" endTime="2026-07-16T09:14:35.8888409+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="31695b20-1bb5-404c-95ef-6305bea92cc9" />
+    <UnitTestResult executionId="520bcd94-ee6b-4830-8f1d-4a0be32871c7" testId="6288fc4d-c37f-853f-3d87-2a4523c640fb" testName="Tests.MathHelperTests.ApproximatelyEqual_DistantValues_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0004363" startTime="2026-07-16T09:14:35.8759608+08:00" endTime="2026-07-16T09:14:35.8760230+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="520bcd94-ee6b-4830-8f1d-4a0be32871c7" />
+    <UnitTestResult executionId="2ff5fa02-6dfd-438d-aa6a-4ec629791925" testId="52138a77-24fc-f7b4-4de7-b2ded80a6f8b" testName="Tests.ByteHelperTests.IntCeil_ReturnsCeilingDivision(value: 7, divisor: 0, expected: 0)" computerName="H6SDFGBTTS64357" duration="00:00:00.0001084" startTime="2026-07-16T09:14:35.9156776+08:00" endTime="2026-07-16T09:14:35.9157333+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ff5fa02-6dfd-438d-aa6a-4ec629791925" />
+    <UnitTestResult executionId="c810770f-6691-4a36-a2a6-af9fec284ba2" testId="acb0e52b-a959-3078-267c-4142a96ab7c7" testName="Tests.ByteHelperTests.ReadHexString_ReturnsLowercaseHex" computerName="H6SDFGBTTS64357" duration="00:00:00.0001188" startTime="2026-07-16T09:14:35.9200797+08:00" endTime="2026-07-16T09:14:35.9201088+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c810770f-6691-4a36-a2a6-af9fec284ba2" />
+    <UnitTestResult executionId="cf1bfc36-31e4-4be7-a688-ac44a4eb9e57" testId="dbc07e6d-2e6d-462f-8f74-e607dc1ef2d2" testName="Tests.MathHelperTests.MinusFloats_NullA_ReturnsEmpty" computerName="H6SDFGBTTS64357" duration="00:00:00.0001386" startTime="2026-07-16T09:14:35.8875841+08:00" endTime="2026-07-16T09:14:35.8877019+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cf1bfc36-31e4-4be7-a688-ac44a4eb9e57" />
+    <UnitTestResult executionId="43699760-e577-4054-8a5a-ae5adc818240" testId="76c02241-abaa-ecbc-0342-9593941608e5" testName="Tests.FtexParserTests.CanParse_TooShortData_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0001861" startTime="2026-07-16T09:14:37.7140218+08:00" endTime="2026-07-16T09:14:37.7140985+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43699760-e577-4054-8a5a-ae5adc818240" />
+    <UnitTestResult executionId="ed05b96c-e5e6-4177-b4df-8fe6eb2111e0" testId="6b4cbe30-e9f8-8f03-e5b5-6329fdda87f5" testName="Tests.ByteHelperTests.IntCeil_ReturnsCeilingDivision(value: 9, divisor: 3, expected: 9)" computerName="H6SDFGBTTS64357" duration="00:00:00.0000014" startTime="2026-07-16T09:14:35.9161058+08:00" endTime="2026-07-16T09:14:35.9161518+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ed05b96c-e5e6-4177-b4df-8fe6eb2111e0" />
+    <UnitTestResult executionId="83672f5c-90d3-4288-8a20-fdbc5544ef23" testId="4500eeb1-cf98-dd3c-6078-c77502ff641e" testName="Tests.MbsParserTests.Parse_S9Bone_ContainsName" computerName="H6SDFGBTTS64357" duration="00:00:00.0092702" startTime="2026-07-16T09:14:35.9448930+08:00" endTime="2026-07-16T09:14:35.9449348+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="83672f5c-90d3-4288-8a20-fdbc5544ef23" />
+    <UnitTestResult executionId="e98a18e0-3608-45b3-89b1-f6e17dffed67" testId="febf4d9a-b9c9-0d05-d1bb-f997aa4c0b79" testName="Tests.MatrixTests.Add_NonConformable_Throws" computerName="H6SDFGBTTS64357" duration="00:00:00.0004040" startTime="2026-07-16T09:14:35.9406173+08:00" endTime="2026-07-16T09:14:35.9417300+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e98a18e0-3608-45b3-89b1-f6e17dffed67" />
+    <UnitTestResult executionId="87a04937-98e0-42db-a365-309dd54e3219" testId="425725a3-db8c-d9b4-508f-f68f254d9b09" testName="Tests.MatrixTests.IdentityMatrixBy4X4_Is4x4Identity" computerName="H6SDFGBTTS64357" duration="00:00:00.0003512" startTime="2026-07-16T09:14:35.9351211+08:00" endTime="2026-07-16T09:14:35.9354378+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="87a04937-98e0-42db-a365-309dd54e3219" />
+    <UnitTestResult executionId="0dd0d30b-4161-4801-9982-fa53d612a8a4" testId="99cf6cad-7a44-3fb5-6d47-93660dbd6ccd" testName="Tests.FtexParserTests.SwitchFtexParser_CanParse_ValidMagic_ReturnsTrue" computerName="H6SDFGBTTS64357" duration="00:00:00.0001326" startTime="2026-07-16T09:14:37.7162632+08:00" endTime="2026-07-16T09:14:37.7163100+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0dd0d30b-4161-4801-9982-fa53d612a8a4" />
+    <UnitTestResult executionId="9e0d5168-ecae-4f19-8674-0a3dab338356" testId="c9668305-46c8-6b36-0d93-453f4165178c" testName="Tests.ByteHelperTests.ReadInt16_BigEndian_Positive" computerName="H6SDFGBTTS64357" duration="00:00:00.0001565" startTime="2026-07-16T09:14:35.9166167+08:00" endTime="2026-07-16T09:14:35.9166543+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e0d5168-ecae-4f19-8674-0a3dab338356" />
+    <UnitTestResult executionId="6b59bf7f-434a-416f-817e-ebf14fa41203" testId="1b3a33f8-96b1-70b0-520e-6a2ec7e01d94" testName="Tests.ByteHelperTests.IntClamp_ClampsCorrectly(value: 15, min: 0, max: 10, expected: 10)" computerName="H6SDFGBTTS64357" duration="00:00:00.0004011" startTime="2026-07-16T09:14:35.9129367+08:00" endTime="2026-07-16T09:14:35.9131531+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6b59bf7f-434a-416f-817e-ebf14fa41203" />
+    <UnitTestResult executionId="c98002a8-e52d-453d-81fc-e219e55dc444" testId="4438e2af-15ea-395f-a0a7-01497affa396" testName="Tests.MathHelperTests.MulFloats_NullInput_ReturnsNull" computerName="H6SDFGBTTS64357" duration="00:00:00.0002668" startTime="2026-07-16T09:14:35.8769361+08:00" endTime="2026-07-16T09:14:35.8789408+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c98002a8-e52d-453d-81fc-e219e55dc444" />
+    <UnitTestResult executionId="137de303-57e9-46a4-9dcb-59e2f9aad254" testId="6b040de1-edbf-15f2-a258-505c330d924b" testName="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 16, expected: 16)" computerName="H6SDFGBTTS64357" duration="00:00:00.0000015" startTime="2026-07-16T09:14:35.9145255+08:00" endTime="2026-07-16T09:14:35.9145674+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="137de303-57e9-46a4-9dcb-59e2f9aad254" />
+    <UnitTestResult executionId="4350177d-6688-4d55-9b2c-99c6247cf959" testId="e1d30d38-542c-680e-6ae0-243ebfa2a766" testName="Tests.MathHelperTests.ApproximatelyEqual_CloseValues_ReturnsTrue" computerName="H6SDFGBTTS64357" duration="00:00:00.0001335" startTime="2026-07-16T09:14:35.9358073+08:00" endTime="2026-07-16T09:14:35.9365284+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4350177d-6688-4d55-9b2c-99c6247cf959" />
+    <UnitTestResult executionId="a35a17f8-b5e4-4909-aaae-ae8c01381542" testId="c5f33d36-8fe5-d577-e0a5-68f3c76c518f" testName="Tests.MbsParserTests.Parse_S4Texture_ContainsExpectedFields" computerName="H6SDFGBTTS64357" duration="00:00:00.0367034" startTime="2026-07-16T09:14:35.7668722+08:00" endTime="2026-07-16T09:14:35.8918611+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a35a17f8-b5e4-4909-aaae-ae8c01381542" />
+    <UnitTestResult executionId="551a8ef1-c54b-4ec6-a00a-b2f0e1ac1e0d" testId="0361bf12-7480-4847-6cad-9d6f59b4f286" testName="Tests.ByteHelperTests.ReadInt_1Byte_ReturnsCorrectValue(byteCount: 1, signed: True, expected: 127)" computerName="H6SDFGBTTS64357" duration="00:00:00.0001629" startTime="2026-07-16T09:14:35.9162530+08:00" endTime="2026-07-16T09:14:35.9162893+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="551a8ef1-c54b-4ec6-a00a-b2f0e1ac1e0d" />
+    <UnitTestResult executionId="cf34d227-9757-4f30-977b-de4028e27ce8" testId="76245b7c-f295-9eba-ea76-32eaa1653b14" testName="Tests.MathHelperTests.ApproximatelyEqual_NullA_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0001372" startTime="2026-07-16T09:14:35.9351539+08:00" endTime="2026-07-16T09:14:35.9353394+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cf34d227-9757-4f30-977b-de4028e27ce8" />
+    <UnitTestResult executionId="2e913351-4601-47f4-b1d3-20c027d0c2f6" testId="bea3357c-61b6-6e4b-9414-3f23f19864e9" testName="Tests.MatrixTests.Constructor_RowCol_CreatesZeroMatrix" computerName="H6SDFGBTTS64357" duration="00:00:00.0019207" startTime="2026-07-16T09:14:35.8770102+08:00" endTime="2026-07-16T09:14:35.8886000+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2e913351-4601-47f4-b1d3-20c027d0c2f6" />
+    <UnitTestResult executionId="908b684e-fea8-4df7-99a5-fb2a38aaa5ba" testId="be6809e7-a1ec-2579-036a-5f14753721e8" testName="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 1, expected: 1)" computerName="H6SDFGBTTS64357" duration="00:00:00.0000012" startTime="2026-07-16T09:14:35.9146318+08:00" endTime="2026-07-16T09:14:35.9146745+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="908b684e-fea8-4df7-99a5-fb2a38aaa5ba" />
+    <UnitTestResult executionId="6b63cab2-a114-4b06-b01f-566ee662b80d" testId="0377419d-3256-9d83-80ce-8b4fd05a3bb2" testName="Tests.MathHelperTests.ApproximatelyEqual_BothNull_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0001805" startTime="2026-07-16T09:14:35.9378683+08:00" endTime="2026-07-16T09:14:35.9379131+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6b63cab2-a114-4b06-b01f-566ee662b80d" />
+    <UnitTestResult executionId="14edfa9c-6673-4918-8b25-420ff6af601d" testId="8c04ced1-f49c-b76e-c3a6-4c1e615c9125" testName="Tests.MatrixTests.Multiply4X4By4X2Optimized_InvalidDimensions_Throws" computerName="H6SDFGBTTS64357" duration="00:00:00.0007772" startTime="2026-07-16T09:14:35.8887002+08:00" endTime="2026-07-16T09:14:35.8887314+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14edfa9c-6673-4918-8b25-420ff6af601d" />
+    <UnitTestResult executionId="17643b24-0f55-43e5-9961-c005b9b9a6e8" testId="14d2c956-29c1-a00a-039e-ef9a9ecc6ece" testName="Tests.MathHelperTests.FindMinAndMaxPoints_NegativeCoordinates" computerName="H6SDFGBTTS64357" duration="00:00:00.0028802" startTime="2026-07-16T09:14:35.9375281+08:00" endTime="2026-07-16T09:14:35.9377407+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17643b24-0f55-43e5-9961-c005b9b9a6e8" />
+    <UnitTestResult executionId="800c08c8-ba15-4292-a1ff-ff0b1e6991eb" testId="e305c3d9-77f3-f99e-5d4e-e6736bad591f" testName="Tests.ByteHelperTests.GrayClut_Returns256Colors" computerName="H6SDFGBTTS64357" duration="00:00:00.0003395" startTime="2026-07-16T09:14:35.9388151+08:00" endTime="2026-07-16T09:14:35.9404350+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="800c08c8-ba15-4292-a1ff-ff0b1e6991eb" />
+    <UnitTestResult executionId="2bef0f6f-15a1-4e76-be1d-841fbe758850" testId="c9a0deb2-7ba4-6f21-91c6-d07ad54ea19c" testName="Tests.MbsParserTests.MbsToV55Parser_UnknownPlatform_Throws" computerName="H6SDFGBTTS64357" duration="00:00:00.0013519" startTime="2026-07-16T09:14:35.9450073+08:00" endTime="2026-07-16T09:14:35.9450359+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2bef0f6f-15a1-4e76-be1d-841fbe758850" />
+    <UnitTestResult executionId="d13d84f3-f3a4-4719-b43a-46b8ae557e04" testId="8df2dc8a-80c3-a2a8-8356-4fcf5e61bd23" testName="Tests.FtexParserTests.SwitchFtexParser_Parse_InvalidData_ReturnsEmptyList" computerName="H6SDFGBTTS64357" duration="00:00:00.0003067" startTime="2026-07-16T09:14:37.7176181+08:00" endTime="2026-07-16T09:14:37.7178067+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d13d84f3-f3a4-4719-b43a-46b8ae557e04" />
+    <UnitTestResult executionId="536c3c02-f394-4a8a-aa60-185d68812488" testId="d099fdcc-fc1f-f37a-f0c2-edd66217cbd0" testName="Tests.MathHelperTests.MinusFloats_ShorterBAvoidsOffByOne" computerName="H6SDFGBTTS64357" duration="00:00:00.0005322" startTime="2026-07-16T09:14:35.9380189+08:00" endTime="2026-07-16T09:14:35.9399385+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="536c3c02-f394-4a8a-aa60-185d68812488">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ&#xD;
+Expected: [4, 8]&#xD;
+Actual:   [4, 8, 0]&#xD;
+                 ↑ (pos 2)</Message>
+          <StackTrace>   at Tests.MathHelperTests.MinusFloats_ShorterBAvoidsOffByOne() in F:\Codes\QuadToSpine2D\Tests\MathHelperTests.cs:line 122&#xD;
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="41a4bc54-d139-4dcf-ad42-eecca5c610b7" testId="e8527d28-6443-7044-2ac4-99b00546e2f5" testName="Tests.ByteHelperTests.ReadNullTerminatedString_NoNullTerminator" computerName="H6SDFGBTTS64357" duration="00:00:00.0001425" startTime="2026-07-16T09:14:35.9212576+08:00" endTime="2026-07-16T09:14:35.9212883+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="41a4bc54-d139-4dcf-ad42-eecca5c610b7" />
+    <UnitTestResult executionId="2cc83a60-3df0-4ccc-bd7f-b3e0116e655b" testId="99c532ff-11ac-0e98-dcdf-9d2b936eb5d7" testName="Tests.FtexParserTests.Parse_RealFtxFile_Interface_ReturnsImages" computerName="H6SDFGBTTS64357" duration="00:00:01.4587888" startTime="2026-07-16T09:14:37.7192110+08:00" endTime="2026-07-16T09:14:39.1769383+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2cc83a60-3df0-4ccc-bd7f-b3e0116e655b" />
+    <UnitTestResult executionId="8ad5346c-c781-4425-a174-df564535b6bf" testId="44ad96e6-7891-4805-32d6-c8efda8ccbc1" testName="Tests.MbsParserTests.Parse_RealMbsFile_CharacterBj00_SwitchPlatform" computerName="H6SDFGBTTS64357" duration="00:00:00.0209662" startTime="2026-07-16T09:14:35.8919386+08:00" endTime="2026-07-16T09:14:35.9129826+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ad5346c-c781-4425-a174-df564535b6bf" />
+    <UnitTestResult executionId="de900f4a-ac5e-4e70-8edd-676d1a56a5cc" testId="41fcb274-d974-405e-da70-25d4393f69e1" testName="Tests.ByteHelperTests.WriteReadUInt32_RoundTrip" computerName="H6SDFGBTTS64357" duration="00:00:00.0040499" startTime="2026-07-16T09:14:35.9124990+08:00" endTime="2026-07-16T09:14:35.9125409+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de900f4a-ac5e-4e70-8edd-676d1a56a5cc" />
+    <UnitTestResult executionId="cc484fea-76a6-40b1-9aa9-aead8517b738" testId="3ab44fbc-e431-40a0-cca8-ba336dff6d42" testName="Tests.ByteHelperTests.ReadUInt16_BigEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0001499" startTime="2026-07-16T09:14:35.9196534+08:00" endTime="2026-07-16T09:14:35.9196838+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cc484fea-76a6-40b1-9aa9-aead8517b738" />
+    <UnitTestResult executionId="ddf9e625-cbc6-45c8-8d31-b7963d037a7a" testId="990a5d8e-bc55-d174-3073-68e84ab03436" testName="Tests.MathHelperTests.MinusFloats_NormalSubtraction" computerName="H6SDFGBTTS64357" duration="00:00:00.0001999" startTime="2026-07-16T09:14:35.8766615+08:00" endTime="2026-07-16T09:14:35.8766969+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ddf9e625-cbc6-45c8-8d31-b7963d037a7a" />
+    <UnitTestResult executionId="cb7c76dc-f6ce-4ef9-8963-27aa080790fe" testId="60fb2153-2ec5-31d4-da0a-1ab41d4517d4" testName="Tests.ByteHelperTests.WriteUInt32_WithOffset" computerName="H6SDFGBTTS64357" duration="00:00:00.0001673" startTime="2026-07-16T09:14:35.9419758+08:00" endTime="2026-07-16T09:14:35.9420035+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cb7c76dc-f6ce-4ef9-8963-27aa080790fe" />
+    <UnitTestResult executionId="dfd4c1c5-7412-47a7-a2bf-fa615936c3ba" testId="a9e1f906-035f-9c06-9f56-b149c1c3840f" testName="Tests.ByteHelperTests.IntClamp_ClampsCorrectly(value: -1, min: 0, max: 10, expected: 0)" computerName="H6SDFGBTTS64357" duration="00:00:00.0000085" startTime="2026-07-16T09:14:35.9140217+08:00" endTime="2026-07-16T09:14:35.9140797+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dfd4c1c5-7412-47a7-a2bf-fa615936c3ba" />
+    <UnitTestResult executionId="1676fa95-f8eb-485f-aa85-e7fc3968eba2" testId="b53efa76-509c-0acd-1a6e-31b35b795690" testName="Tests.MathHelperTests.ApproximatelyEqual_CustomEpsilon" computerName="H6SDFGBTTS64357" duration="00:00:00.0001330" startTime="2026-07-16T09:14:35.9356073+08:00" endTime="2026-07-16T09:14:35.9357439+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1676fa95-f8eb-485f-aa85-e7fc3968eba2" />
+    <UnitTestResult executionId="63c91401-283c-4613-bf62-b1eec4b35934" testId="d71ed1e9-784c-a0cc-6a0a-e29464967eca" testName="Tests.MatrixTests.Equals_DifferentMatrix_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0002658" startTime="2026-07-16T09:14:35.8894538+08:00" endTime="2026-07-16T09:14:35.8894854+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63c91401-283c-4613-bf62-b1eec4b35934" />
+    <UnitTestResult executionId="63894587-d367-438f-a427-671931bcc805" testId="61429fff-ec71-0e8d-6edc-7ea88a526536" testName="Tests.MathHelperTests.ApproximatelyEqual_SameValues_ReturnsTrue" computerName="H6SDFGBTTS64357" duration="00:00:00.0003478" startTime="2026-07-16T09:14:35.8062166+08:00" endTime="2026-07-16T09:14:35.8062926+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63894587-d367-438f-a427-671931bcc805" />
+    <UnitTestResult executionId="bb3e6641-123b-4e63-a8d9-796621bd5a00" testId="c15044ec-5576-256d-bcde-b0266c813a57" testName="Tests.MathHelperTests.MinusFloats_DifferentLengths_TruncatesToShorter" computerName="H6SDFGBTTS64357" duration="00:00:00.0276096" startTime="2026-07-16T09:14:35.8885570+08:00" endTime="2026-07-16T09:14:35.9337343+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bb3e6641-123b-4e63-a8d9-796621bd5a00">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ&#xD;
+Expected: [9, 18]&#xD;
+Actual:   [9, 18, 0, 0]&#xD;
+                  ↑ (pos 2)</Message>
+          <StackTrace>   at Tests.MathHelperTests.MinusFloats_DifferentLengths_TruncatesToShorter() in F:\Codes\QuadToSpine2D\Tests\MathHelperTests.cs:line 81&#xD;
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0c69ea02-5919-4ed0-94e8-a4d03d324326" testId="530b8e51-72f0-8948-44f3-5cdf5023a29f" testName="Tests.MatrixTests.Add_Scalar" computerName="H6SDFGBTTS64357" duration="00:00:00.0060315" startTime="2026-07-16T09:14:35.7668955+08:00" endTime="2026-07-16T09:14:35.7811940+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0c69ea02-5919-4ed0-94e8-a4d03d324326" />
+    <UnitTestResult executionId="863f3cd8-0f33-4401-a4c0-9abfcdffd7e4" testId="e0edb88c-2101-444f-5274-2606780055d9" testName="Tests.MatrixTests.Multiply4X4By4X2Optimized_IdentityMatrix" computerName="H6SDFGBTTS64357" duration="00:00:00.0001798" startTime="2026-07-16T09:14:35.8904697+08:00" endTime="2026-07-16T09:14:35.8904997+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="863f3cd8-0f33-4401-a4c0-9abfcdffd7e4" />
+    <UnitTestResult executionId="e2c010ca-c3cd-48c6-8f10-52005aef18e3" testId="d38092cb-0732-4f6b-c50d-207120b11a63" testName="Tests.ByteHelperTests.ReadNullTerminatedString_WithOffset" computerName="H6SDFGBTTS64357" duration="00:00:00.0001482" startTime="2026-07-16T09:14:35.9408066+08:00" endTime="2026-07-16T09:14:35.9408520+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e2c010ca-c3cd-48c6-8f10-52005aef18e3" />
+    <UnitTestResult executionId="737dfd53-c086-4668-8db0-554ff8b6855b" testId="70b4bef4-8871-8025-c51a-104d841b5fd1" testName="Tests.ByteHelperTests.ReadFloat32_WithOffset_LittleEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0001532" startTime="2026-07-16T09:14:35.9363736+08:00" endTime="2026-07-16T09:14:35.9366348+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="737dfd53-c086-4668-8db0-554ff8b6855b" />
+    <UnitTestResult executionId="87c689ad-404b-4e57-bece-69e344eec2d8" testId="344394fc-944f-d771-04bb-6a34b653383d" testName="Tests.MathHelperTests.FindMinAndMaxPoints_NormalInput" computerName="H6SDFGBTTS64357" duration="00:00:00.0002452" startTime="2026-07-16T09:14:35.8796079+08:00" endTime="2026-07-16T09:14:35.8796384+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="87c689ad-404b-4e57-bece-69e344eec2d8" />
+    <UnitTestResult executionId="5a2dd517-76e9-4594-af6f-462ea320f40b" testId="17266c8a-22e6-5f8f-ce8f-fa87031ef000" testName="Tests.MathHelperTests.FindMinAndMaxPoints_EmptyInput_ReturnsZeroArray" computerName="H6SDFGBTTS64357" duration="00:00:00.0001706" startTime="2026-07-16T09:14:35.8794053+08:00" endTime="2026-07-16T09:14:35.8794355+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5a2dd517-76e9-4594-af6f-462ea320f40b" />
+    <UnitTestResult executionId="8dfdf738-2b3d-42e6-8fff-e2ca3b84597d" testId="5d6db384-5471-73e9-9406-e63d0ac6f97c" testName="Tests.ByteHelperTests.ReadFloat32_ThrowsWhenOffsetOutOfRange" computerName="H6SDFGBTTS64357" duration="00:00:00.0053784" startTime="2026-07-16T09:14:35.7649606+08:00" endTime="2026-07-16T09:14:35.7883344+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8dfdf738-2b3d-42e6-8fff-e2ca3b84597d" />
+    <UnitTestResult executionId="79a16aec-4e70-4dcd-95e5-0a922c870c71" testId="b90d6171-7939-f73e-5f46-1fc7cf9042ed" testName="Tests.MatrixTests.Constructor_FromArray_ShorterArray_PadsWithZero" computerName="H6SDFGBTTS64357" duration="00:00:00.0002610" startTime="2026-07-16T09:14:35.9399017+08:00" endTime="2026-07-16T09:14:35.9405485+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="79a16aec-4e70-4dcd-95e5-0a922c870c71" />
+    <UnitTestResult executionId="97295d3a-dbaa-4957-bb59-fe574af27e2a" testId="9f7017c0-fad4-3ae4-16cd-407171feb99b" testName="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 17, expected: 32)" computerName="H6SDFGBTTS64357" duration="00:00:00.0000011" startTime="2026-07-16T09:14:35.9148416+08:00" endTime="2026-07-16T09:14:35.9148790+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97295d3a-dbaa-4957-bb59-fe574af27e2a" />
+    <UnitTestResult executionId="aa208bac-44b6-41f5-9526-7b1d40a7c306" testId="2e4dec97-816b-1ce4-6379-34e6965b065e" testName="Tests.ByteHelperTests.ReadNullTerminatedString_OffsetOutOfRange_ReturnsEmpty" computerName="H6SDFGBTTS64357" duration="00:00:00.0001538" startTime="2026-07-16T09:14:35.9405178+08:00" endTime="2026-07-16T09:14:35.9407038+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa208bac-44b6-41f5-9526-7b1d40a7c306" />
+    <UnitTestResult executionId="ab89893b-1337-472b-88b5-734903722359" testId="c35f1731-1ee7-6d9e-da28-497688a3aa16" testName="Tests.MbsParserTests.Parse_MultipleMbsFiles_AllSucceed" computerName="H6SDFGBTTS64357" duration="00:00:00.0542154" startTime="2026-07-16T09:14:35.9211545+08:00" endTime="2026-07-16T09:14:35.9446135+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab89893b-1337-472b-88b5-734903722359" />
+    <UnitTestResult executionId="c9ba396b-dafb-4b23-8697-28fcb8d5f3a8" testId="aba7a32f-68d4-3f23-67ef-ffb821031c1d" testName="Tests.MathHelperTests.MulFloats_ByOne_ReturnsSameArray" computerName="H6SDFGBTTS64357" duration="00:00:00.0002939" startTime="2026-07-16T09:14:35.8765514+08:00" endTime="2026-07-16T09:14:35.8765862+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c9ba396b-dafb-4b23-8697-28fcb8d5f3a8" />
+    <UnitTestResult executionId="3b3c314c-c9f7-4fa3-8bc1-b559aa800219" testId="f2363cad-f5c1-7576-e653-901d34ead2db" testName="Tests.MatrixTests.Multiply_Scalar_ReturnsScaledMatrix" computerName="H6SDFGBTTS64357" duration="00:00:00.0002152" startTime="2026-07-16T09:14:35.8905686+08:00" endTime="2026-07-16T09:14:35.8906708+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3b3c314c-c9f7-4fa3-8bc1-b559aa800219" />
+    <UnitTestResult executionId="b386f735-6c9e-4c4c-bf96-6eb47f6b052d" testId="4dd82515-b191-031f-08fa-5a149638391d" testName="Tests.ByteHelperTests.GradientClut_CountOfOne_Throws" computerName="H6SDFGBTTS64357" duration="00:00:00.0009630" startTime="2026-07-16T09:14:35.8903638+08:00" endTime="2026-07-16T09:14:35.8906001+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b386f735-6c9e-4c4c-bf96-6eb47f6b052d" />
+    <UnitTestResult executionId="c04e2e36-f733-4b0c-8a1f-0c762d292bb4" testId="9a6a8d26-d994-d82c-6470-39cbf1903adc" testName="Tests.MatrixTests.Multiply_ScalarCommutative" computerName="H6SDFGBTTS64357" duration="00:00:00.0007509" startTime="2026-07-16T09:14:35.8901197+08:00" endTime="2026-07-16T09:14:35.8901594+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c04e2e36-f733-4b0c-8a1f-0c762d292bb4" />
+    <UnitTestResult executionId="ebe8740a-0efb-4dfb-ae85-3960570dd865" testId="75775654-c2eb-0037-ecec-6f7c868bb023" testName="Tests.ByteHelperTests.ReadInt_4Bytes_LittleEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0001342" startTime="2026-07-16T09:14:35.9191724+08:00" endTime="2026-07-16T09:14:35.9192231+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ebe8740a-0efb-4dfb-ae85-3960570dd865" />
+    <UnitTestResult executionId="4afdc9de-aa31-45e5-90fd-ada591aa805f" testId="76fa1ef6-6ff6-abf3-6c1a-bf5ecaa164e0" testName="Tests.ByteHelperTests.RTrim_AllTrimChar_ReturnsEmpty" computerName="H6SDFGBTTS64357" duration="00:00:00.0002544" startTime="2026-07-16T09:14:35.9378560+08:00" endTime="2026-07-16T09:14:35.9381117+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4afdc9de-aa31-45e5-90fd-ada591aa805f" />
+    <UnitTestResult executionId="6001b9ea-a24f-442c-b58a-b196343b975e" testId="7d0b52f9-4788-f064-2bc2-bdc2dc451356" testName="Tests.ByteHelperTests.WriteReadUInt16_RoundTrip" computerName="H6SDFGBTTS64357" duration="00:00:00.0001365" startTime="2026-07-16T09:14:35.9357161+08:00" endTime="2026-07-16T09:14:35.9358351+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6001b9ea-a24f-442c-b58a-b196343b975e" />
+    <UnitTestResult executionId="586022a4-cbc9-4739-9b49-5e73dfaae51d" testId="671d1152-b6a4-b3d6-293f-ea7dbbd329fc" testName="Tests.MathHelperTests.MulFloats_NormalMultiplication" computerName="H6SDFGBTTS64357" duration="00:00:00.0002054" startTime="2026-07-16T09:14:35.8795094+08:00" endTime="2026-07-16T09:14:35.8795397+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="586022a4-cbc9-4739-9b49-5e73dfaae51d" />
+    <UnitTestResult executionId="f6dd27c9-7bb8-4e66-bc32-75ae7b59af89" testId="043f315f-801c-9ed1-13c4-b9bb875faf74" testName="Tests.MatrixTests.GetHashCode_SameMatrices_SameHash" computerName="H6SDFGBTTS64357" duration="00:00:00.0062467" startTime="2026-07-16T09:14:35.8916150+08:00" endTime="2026-07-16T09:14:35.9220596+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6dd27c9-7bb8-4e66-bc32-75ae7b59af89">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 2072264188&#xD;
+Actual:   -165775466</Message>
+          <StackTrace>   at Tests.MatrixTests.GetHashCode_SameMatrices_SameHash() in F:\Codes\QuadToSpine2D\Tests\MatrixTests.cs:line 290&#xD;
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="853fb3a4-cdc1-487e-9c5d-7693afe3744d" testId="0108103e-bd82-c75d-54e9-30b09241ca14" testName="Tests.FtexParserTests.SwitchFtexParser_CanParse_NullData_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0001019" startTime="2026-07-16T09:14:37.7179573+08:00" endTime="2026-07-16T09:14:37.7180099+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="853fb3a4-cdc1-487e-9c5d-7693afe3744d" />
+    <UnitTestResult executionId="3da338bd-7c41-4b1a-a21b-0033eceeab3b" testId="63964560-0472-3c2c-a739-01adb4d838c6" testName="Tests.MatrixTests.Subtract_TwoMatrices" computerName="H6SDFGBTTS64357" duration="00:00:00.0005585" startTime="2026-07-16T09:14:35.8889159+08:00" endTime="2026-07-16T09:14:35.8889514+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3da338bd-7c41-4b1a-a21b-0033eceeab3b" />
+    <UnitTestResult executionId="185251ab-986b-4c9e-95e6-b5bd9807e2b8" testId="51757a25-fa0c-c523-f892-4f4ba9a21cfc" testName="Tests.ByteHelperTests.ReadHexStringWithPrefix_ReturnsWithHash" computerName="H6SDFGBTTS64357" duration="00:00:00.0007932" startTime="2026-07-16T09:14:35.8920413+08:00" endTime="2026-07-16T09:14:35.8920695+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="185251ab-986b-4c9e-95e6-b5bd9807e2b8" />
+    <UnitTestResult executionId="dc780a2c-b363-4cd3-a0b1-41c86229118e" testId="f9809034-2dbb-e0f4-e117-902a0f924828" testName="Tests.ByteHelperTests.WriteUInt32_LittleEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0028700" startTime="2026-07-16T09:14:35.9375446+08:00" endTime="2026-07-16T09:14:35.9377286+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc780a2c-b363-4cd3-a0b1-41c86229118e" />
+    <UnitTestResult executionId="9df99c69-892a-4167-b751-d965d501d164" testId="709a9162-ccc7-a05a-a02b-3a32ebba8f25" testName="Tests.ByteHelperTests.ReadHexString_OutOfRange_ReturnsEmpty" computerName="H6SDFGBTTS64357" duration="00:00:00.0001105" startTime="2026-07-16T09:14:35.9121918+08:00" endTime="2026-07-16T09:14:35.9122346+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9df99c69-892a-4167-b751-d965d501d164" />
+    <UnitTestResult executionId="706f8bc4-a28f-4512-b607-5bb167277898" testId="b2d4a8dd-0b3a-2554-bedf-a7312f4cee0f" testName="Tests.MatrixTests.Equals_SameMatrix_ReturnsTrue" computerName="H6SDFGBTTS64357" duration="00:00:00.0002768" startTime="2026-07-16T09:14:35.9364991+08:00" endTime="2026-07-16T09:14:35.9368147+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="706f8bc4-a28f-4512-b607-5bb167277898" />
+    <UnitTestResult executionId="615f2bc4-11fc-4bfb-977a-d77444657aab" testId="0ff966b5-e7f2-8d7e-9818-01da61495bf0" testName="Tests.FtexParserTests.Parse_CannotParse_ReturnsEmptyList" computerName="H6SDFGBTTS64357" duration="00:00:00.0008652" startTime="2026-07-16T09:14:37.7166937+08:00" endTime="2026-07-16T09:14:37.7174555+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="615f2bc4-11fc-4bfb-977a-d77444657aab" />
+    <UnitTestResult executionId="39742537-eca8-481a-8941-c62ac5a1f4e0" testId="0bab0072-0965-2b97-e307-21b8133baa44" testName="Tests.FtexParserTests.SwitchFtexParser_CanParse_EmptyData_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0000986" startTime="2026-07-16T09:14:37.7164100+08:00" endTime="2026-07-16T09:14:37.7164496+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="39742537-eca8-481a-8941-c62ac5a1f4e0" />
+    <UnitTestResult executionId="5c07442f-3d0b-412a-9d2f-d8e4e9c32552" testId="3645fe0d-cb5b-d1cf-f118-48f1974ec85e" testName="Tests.ByteHelperTests.ReadInt16_LittleEndian_Positive" computerName="H6SDFGBTTS64357" duration="00:00:00.0001782" startTime="2026-07-16T09:14:35.9198520+08:00" endTime="2026-07-16T09:14:35.9198881+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c07442f-3d0b-412a-9d2f-d8e4e9c32552" />
+    <UnitTestResult executionId="0868c1a3-6fb8-4583-8231-57fb8d236809" testId="2fbfe269-f355-35b9-69bc-33f0a9431ae7" testName="Tests.MatrixTests.Lerp_NonConformable_Throws" computerName="H6SDFGBTTS64357" duration="00:00:00.0003570" startTime="2026-07-16T09:14:35.8891337+08:00" endTime="2026-07-16T09:14:35.8891673+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0868c1a3-6fb8-4583-8231-57fb8d236809" />
+    <UnitTestResult executionId="f4f8de96-716e-4342-a9ab-4f4127ca9078" testId="822c9f23-7aa8-a0bc-bd32-cde1d43f7520" testName="Tests.ByteHelperTests.IntCeil_ReturnsCeilingDivision(value: 10, divisor: 3, expected: 12)" computerName="H6SDFGBTTS64357" duration="00:00:00.0002607" startTime="2026-07-16T09:14:35.9158617+08:00" endTime="2026-07-16T09:14:35.9159043+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f4f8de96-716e-4342-a9ab-4f4127ca9078" />
+    <UnitTestResult executionId="54baa46a-b899-450c-af75-12447c7ba32b" testId="f2b9e2ee-5e05-c658-59ff-d6181aeb7d26" testName="Tests.ByteHelperTests.GradientClut_TwoColors_InterpolatesCorrectly" computerName="H6SDFGBTTS64357" duration="00:00:00.0002252" startTime="2026-07-16T09:14:35.9367037+08:00" endTime="2026-07-16T09:14:35.9369285+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54baa46a-b899-450c-af75-12447c7ba32b" />
+    <UnitTestResult executionId="acc08c88-f4f6-4b79-94e8-cf284d0326e0" testId="b641305b-5192-2549-2f2e-0bc93e49770f" testName="Tests.MatrixTests.Multiply_4x4By4x2_UsesOptimizedPath" computerName="H6SDFGBTTS64357" duration="00:00:00.0003914" startTime="2026-07-16T09:14:35.9387025+08:00" endTime="2026-07-16T09:14:35.9397901+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="acc08c88-f4f6-4b79-94e8-cf284d0326e0" />
+    <UnitTestResult executionId="cc4df914-c1de-4ccc-8e9d-7f7df69fcd45" testId="d9f38dd0-1b88-f240-ccaa-d1d244617be4" testName="Tests.ByteHelperTests.IntCeil_ReturnsCeilingDivision(value: 0, divisor: 3, expected: 0)" computerName="H6SDFGBTTS64357" duration="00:00:00.0000068" startTime="2026-07-16T09:14:35.9159957+08:00" endTime="2026-07-16T09:14:35.9160333+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cc4df914-c1de-4ccc-8e9d-7f7df69fcd45" />
+    <UnitTestResult executionId="d12d3500-16e7-4914-8b1e-653cedbef36f" testId="9cce9da7-5d8f-3ed3-59bd-3a1070c7de53" testName="Tests.MathHelperTests.FindMinAndMaxPoints_NullInput_ReturnsZeroArray" computerName="H6SDFGBTTS64357" duration="00:00:00.0001055" startTime="2026-07-16T09:14:35.9368029+08:00" endTime="2026-07-16T09:14:35.9369604+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d12d3500-16e7-4914-8b1e-653cedbef36f" />
+    <UnitTestResult executionId="2031918d-d6ce-416c-a444-cc4743cce63f" testId="d6216434-0c86-56b6-f8db-e749ecddb8a1" testName="Tests.MathHelperTests.MulFloats_ByZero_ReturnsZeroArray" computerName="H6SDFGBTTS64357" duration="00:00:00.0010757" startTime="2026-07-16T09:14:35.8058214+08:00" endTime="2026-07-16T09:14:35.8060246+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2031918d-d6ce-416c-a444-cc4743cce63f" />
+    <UnitTestResult executionId="13584b27-74d7-4aa1-8972-70a80a0d6f25" testId="8f1ad830-eda3-f6db-006b-f5e1d22b6a95" testName="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 2, expected: 2)" computerName="H6SDFGBTTS64357" duration="00:00:00.0000011" startTime="2026-07-16T09:14:35.9149396+08:00" endTime="2026-07-16T09:14:35.9149742+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="13584b27-74d7-4aa1-8972-70a80a0d6f25" />
+    <UnitTestResult executionId="f8ec1c55-f128-4515-b830-4857d2c373f2" testId="db71b380-555e-588b-7de0-a7ba16adc767" testName="Tests.ByteHelperTests.ReadNullTerminatedString_Normal" computerName="H6SDFGBTTS64357" duration="00:00:00.0001666" startTime="2026-07-16T09:14:35.9194541+08:00" endTime="2026-07-16T09:14:35.9194852+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f8ec1c55-f128-4515-b830-4857d2c373f2" />
+    <UnitTestResult executionId="876a7358-f397-4798-9266-18e1ca95f823" testId="e8a223fd-bd3f-fead-909d-fc1784047df8" testName="Tests.ByteHelperTests.RTrim_NoTrailingTrimChar_ReturnsSame" computerName="H6SDFGBTTS64357" duration="00:00:00.0003710" startTime="2026-07-16T09:14:35.9195548+08:00" endTime="2026-07-16T09:14:35.9195857+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="876a7358-f397-4798-9266-18e1ca95f823" />
+    <UnitTestResult executionId="75df0a3b-4669-4fbb-9966-68a5d63348dc" testId="95c74497-2eb3-24f5-970f-330f5c89ae3f" testName="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 0, expected: 1)" computerName="H6SDFGBTTS64357" duration="00:00:00.0001901" startTime="2026-07-16T09:14:35.9142064+08:00" endTime="2026-07-16T09:14:35.9142465+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75df0a3b-4669-4fbb-9966-68a5d63348dc" />
+    <UnitTestResult executionId="3aa79b26-53ed-451b-862b-4ad6483cd11e" testId="588d252e-941a-b2f6-0687-4dc0ce73b7b5" testName="Tests.ByteHelperTests.WriteUInt16_LittleEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0002940" startTime="2026-07-16T09:14:35.9167362+08:00" endTime="2026-07-16T09:14:35.9167764+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3aa79b26-53ed-451b-862b-4ad6483cd11e" />
+    <UnitTestResult executionId="8a78782f-962a-41a0-9a6f-db448537939d" testId="69f52d26-1b13-4c62-1e2d-08af88dcafe1" testName="Tests.ByteHelperTests.StrUpdate_CopiesIntoDest" computerName="H6SDFGBTTS64357" duration="00:00:00.0003182" startTime="2026-07-16T09:14:35.9213567+08:00" endTime="2026-07-16T09:14:35.9352006+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8a78782f-962a-41a0-9a6f-db448537939d" />
+    <UnitTestResult executionId="d244f6bb-2d6b-407c-b62a-322c10540faf" testId="e0c78793-9ec6-e1c0-2469-fbf690ded279" testName="Tests.MathHelperTests.FindMinAndMaxPoints_SinglePoint" computerName="H6SDFGBTTS64357" duration="00:00:00.0001834" startTime="2026-07-16T09:14:35.9354086+08:00" endTime="2026-07-16T09:14:35.9354733+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d244f6bb-2d6b-407c-b62a-322c10540faf" />
+    <UnitTestResult executionId="9f9271b7-2ce3-46fe-b56d-35d628dea668" testId="f62fb0f3-f867-93ef-f44a-873251002a1f" testName="Tests.MathHelperTests.MinusFloats_NullB_ReturnsEmpty" computerName="H6SDFGBTTS64357" duration="00:00:00.0004407" startTime="2026-07-16T09:14:35.8764156+08:00" endTime="2026-07-16T09:14:35.8764548+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9f9271b7-2ce3-46fe-b56d-35d628dea668" />
+    <UnitTestResult executionId="31fb33fe-ea67-474a-bebd-f47ca02fea41" testId="1b0a4250-a2f0-ede9-1bee-1111477a9732" testName="Tests.ByteHelperTests.Substr_IsAliasForSubArray" computerName="H6SDFGBTTS64357" duration="00:00:00.0001948" startTime="2026-07-16T09:14:35.9418808+08:00" endTime="2026-07-16T09:14:35.9419101+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="31fb33fe-ea67-474a-bebd-f47ca02fea41" />
+    <UnitTestResult executionId="2693f94d-4486-4f0b-914a-6cb82b6c6cc2" testId="68f8fe05-8c11-bebc-b086-2676db055215" testName="Tests.ByteHelperTests.ReadInt32_WithOffset" computerName="H6SDFGBTTS64357" duration="00:00:00.0001491" startTime="2026-07-16T09:14:35.8917189+08:00" endTime="2026-07-16T09:14:35.8917520+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2693f94d-4486-4f0b-914a-6cb82b6c6cc2" />
+    <UnitTestResult executionId="d909d047-3241-4ee7-8237-af8b6c095bcc" testId="05fecf1b-5e6a-df30-40ba-4032d8014658" testName="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: -1, expected: 1)" computerName="H6SDFGBTTS64357" duration="00:00:00.0002471" startTime="2026-07-16T09:14:35.9143094+08:00" endTime="2026-07-16T09:14:35.9143498+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d909d047-3241-4ee7-8237-af8b6c095bcc" />
+    <UnitTestResult executionId="3a241de6-bb6c-40f2-9265-ad7bf17497ae" testId="f703041f-4045-5b79-7c7b-3fb8c09d8fa0" testName="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 3, expected: 4)" computerName="H6SDFGBTTS64357" duration="00:00:00.0000018" startTime="2026-07-16T09:14:35.9147379+08:00" endTime="2026-07-16T09:14:35.9147719+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a241de6-bb6c-40f2-9265-ad7bf17497ae" />
+    <UnitTestResult executionId="1014a129-d7de-43de-8990-243b6951f504" testId="7aa73d49-0d92-79d5-c217-fddebcdc417c" testName="Tests.FtexParserTests.Parse_RealFtxFile_BattleIcon_ReturnsImages" computerName="H6SDFGBTTS64357" duration="00:00:00.9319718" startTime="2026-07-16T09:14:36.7837804+08:00" endTime="2026-07-16T09:14:37.7137377+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1014a129-d7de-43de-8990-243b6951f504" />
+    <UnitTestResult executionId="0c68374b-3e65-42c9-9008-877eaca2b319" testId="8469cbe3-1146-f19a-8717-3887a26b93ae" testName="Tests.ByteHelperTests.ReadInt_InvalidByteCount_Throws" computerName="H6SDFGBTTS64357" duration="00:00:00.0003303" startTime="2026-07-16T09:14:35.9353092+08:00" endTime="2026-07-16T09:14:35.9356481+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0c68374b-3e65-42c9-9008-877eaca2b319" />
+    <UnitTestResult executionId="5e822d72-8217-4b74-ad99-e54ded455a59" testId="ef24db39-4c2e-2520-e011-b5253641b420" testName="Tests.MatrixTests.Subtract_Scalar" computerName="H6SDFGBTTS64357" duration="00:00:00.0004774" startTime="2026-07-16T09:14:35.8892554+08:00" endTime="2026-07-16T09:14:35.8892854+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e822d72-8217-4b74-ad99-e54ded455a59" />
+    <UnitTestResult executionId="d4594ec9-ca08-4422-b9d6-be7f0a704d8b" testId="117a36dd-9c74-82ca-0a5a-6ab588e17368" testName="Tests.MathHelperTests.MinusFloats_EmptyArrays_ReturnsEmpty" computerName="H6SDFGBTTS64357" duration="00:00:00.0001773" startTime="2026-07-16T09:14:35.8792948+08:00" endTime="2026-07-16T09:14:35.8793350+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d4594ec9-ca08-4422-b9d6-be7f0a704d8b" />
+    <UnitTestResult executionId="8f70aabb-59da-4bd7-be86-b6e3fe04f216" testId="f9cccb18-c21e-976d-c258-25926a132594" testName="Tests.MathHelperTests.ApproximatelyEqual_NullB_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0001659" startTime="2026-07-16T09:14:35.9404017+08:00" endTime="2026-07-16T09:14:35.9406593+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8f70aabb-59da-4bd7-be86-b6e3fe04f216" />
+    <UnitTestResult executionId="1b0c4d78-d87a-4ecc-8bbc-c147d677aa91" testId="2215cfdc-fe45-5b23-41d5-0504b29ff9eb" testName="Tests.MathHelperTests.MulFloats_NegativeScalar" computerName="H6SDFGBTTS64357" duration="00:00:00.0003624" startTime="2026-07-16T09:14:35.8790609+08:00" endTime="2026-07-16T09:14:35.8791556+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b0c4d78-d87a-4ecc-8bbc-c147d677aa91" />
+    <UnitTestResult executionId="97df0909-a58b-4b05-88cd-19d9df2ac3ee" testId="8078c553-d0cb-1fc4-23ee-fbf537471146" testName="Tests.ByteHelperTests.ReadInt16_ThrowsWhenOffsetOutOfRange" computerName="H6SDFGBTTS64357" duration="00:00:00.0004847" startTime="2026-07-16T09:14:35.8788889+08:00" endTime="2026-07-16T09:14:35.8790987+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97df0909-a58b-4b05-88cd-19d9df2ac3ee" />
+    <UnitTestResult executionId="e3bd19e3-2e91-4c07-b8b8-0111037d4d75" testId="f1da27d7-4198-2d15-4353-c625fe9c9579" testName="Tests.ByteHelperTests.ReadFloat32_LittleEndian_ReturnsCorrectValue" computerName="H6SDFGBTTS64357" duration="00:00:00.0001342" startTime="2026-07-16T09:14:35.9208258+08:00" endTime="2026-07-16T09:14:35.9208676+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e3bd19e3-2e91-4c07-b8b8-0111037d4d75" />
+    <UnitTestResult executionId="bddb347e-6d08-411e-9fdc-88a1ddf1228b" testId="b0406699-4425-d83b-9ef9-498eb346a735" testName="Tests.MathHelperTests.MinusFloats_BothNull_ReturnsEmpty" computerName="H6SDFGBTTS64357" duration="00:00:00.0073948" startTime="2026-07-16T09:14:35.7667884+08:00" endTime="2026-07-16T09:14:35.7882391+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bddb347e-6d08-411e-9fdc-88a1ddf1228b" />
+    <UnitTestResult executionId="eedcb82e-7902-4b32-8afa-6d4071a39e4d" testId="0312789c-4379-5fc6-b6c1-27903624cb4f" testName="Tests.ByteHelperTests.ReadInt32_ThrowsWhenOffsetOutOfRange" computerName="H6SDFGBTTS64357" duration="00:00:00.0003494" startTime="2026-07-16T09:14:35.9381776+08:00" endTime="2026-07-16T09:14:35.9387367+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eedcb82e-7902-4b32-8afa-6d4071a39e4d" />
+    <UnitTestResult executionId="c5053b7a-7bf9-455c-8618-2335eb4bcaf3" testId="b9643a27-29f4-418b-8ab9-fb466d5b6140" testName="Tests.ByteHelperTests.ReadInt_1Byte_ReturnsCorrectValue(byteCount: 1, signed: False, expected: 127)" computerName="H6SDFGBTTS64357" duration="00:00:00.0002851" startTime="2026-07-16T09:14:35.9163572+08:00" endTime="2026-07-16T09:14:35.9163984+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c5053b7a-7bf9-455c-8618-2335eb4bcaf3" />
+    <UnitTestResult executionId="8def14e4-e115-4942-ac9b-e777e795d60c" testId="7653cfcd-20b0-5c5f-37e5-c2bf0e0f8d99" testName="Tests.FtexParserTests.Parse_RealFtxFile_CharacterBj00_ReturnsImages" computerName="H6SDFGBTTS64357" duration="00:00:00.8874384" startTime="2026-07-16T09:14:39.1772027+08:00" endTime="2026-07-16T09:14:40.0645849+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8def14e4-e115-4942-ac9b-e777e795d60c" />
+    <UnitTestResult executionId="d9d88238-034a-4eb0-992d-261bf8285f5b" testId="776136f0-e49e-5bd6-2452-fa42d162e824" testName="Tests.ByteHelperTests.ByteRepeat_CreatesFilledArray" computerName="H6SDFGBTTS64357" duration="00:00:00.0008647" startTime="2026-07-16T09:14:35.9193416+08:00" endTime="2026-07-16T09:14:35.9193765+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9d88238-034a-4eb0-992d-261bf8285f5b" />
+    <UnitTestResult executionId="4eb2d67d-0d4b-4db3-bc68-b2137b7ac574" testId="2d0fa193-761f-b9cf-6442-ac5fd2fae8fc" testName="Tests.ByteHelperTests.SubArray_ExtractsCorrectSlice" computerName="H6SDFGBTTS64357" duration="00:00:00.0185570" startTime="2026-07-16T09:14:35.8792679+08:00" endTime="2026-07-16T09:14:35.8902880+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4eb2d67d-0d4b-4db3-bc68-b2137b7ac574" />
+    <UnitTestResult executionId="06052246-9302-42d2-bac2-a21912343b94" testId="c83e077b-c742-a67b-2b8c-264a6b883ec8" testName="Tests.ByteHelperTests.SubArray_LengthExceedsData_Truncates" computerName="H6SDFGBTTS64357" duration="00:00:00.0001999" startTime="2026-07-16T09:14:35.9201818+08:00" endTime="2026-07-16T09:14:35.9202124+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06052246-9302-42d2-bac2-a21912343b94" />
+    <UnitTestResult executionId="ae3458c6-7912-4e17-88cb-2998c6b1b3bf" testId="d4b27ed5-3589-344b-e4fd-d8dc3103f87a" testName="Tests.MatrixTests.Equals_DifferentDimensions_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0001207" startTime="2026-07-16T09:14:35.9380816+08:00" endTime="2026-07-16T09:14:35.9382054+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ae3458c6-7912-4e17-88cb-2998c6b1b3bf" />
+    <UnitTestResult executionId="55d45100-80c6-48e7-86c3-8eb3afc36f52" testId="656e1587-cc5b-e26a-4975-fd996b0c509f" testName="Tests.ByteHelperTests.ZeroBytes_CreatesZeroFilledArray" computerName="H6SDFGBTTS64357" duration="00:00:00.0010976" startTime="2026-07-16T09:14:35.8906888+08:00" endTime="2026-07-16T09:14:35.8916442+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55d45100-80c6-48e7-86c3-8eb3afc36f52" />
+    <UnitTestResult executionId="26c0dc42-e08f-4079-874d-96b263e6634c" testId="c1e8c96f-2a2e-8b70-dfe4-7636cb3deb14" testName="Tests.MatrixTests.Lerp_AtZero_ReturnsSource" computerName="H6SDFGBTTS64357" duration="00:00:00.0001803" startTime="2026-07-16T09:14:35.9369005+08:00" endTime="2026-07-16T09:14:35.9376048+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26c0dc42-e08f-4079-874d-96b263e6634c" />
+    <UnitTestResult executionId="358abd69-5870-41d9-8a70-bdbd2da0716e" testId="a03ae2dd-254f-78df-01a3-b7a290eff81f" testName="Tests.MatrixTests.Lerp_AtOne_ReturnsDestination" computerName="H6SDFGBTTS64357" duration="00:00:00.0003073" startTime="2026-07-16T09:14:35.8908799+08:00" endTime="2026-07-16T09:14:35.8909090+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="358abd69-5870-41d9-8a70-bdbd2da0716e" />
+    <UnitTestResult executionId="c0b6eb45-39f2-4d9c-ab87-63ea3cb318bb" testId="c9ec6117-0e4b-bb26-d7c9-fc61688b77c7" testName="Tests.ByteHelperTests.ReadInt16_LittleEndian_Negative" computerName="H6SDFGBTTS64357" duration="00:00:00.0048792" startTime="2026-07-16T09:14:35.8058508+08:00" endTime="2026-07-16T09:14:35.8770465+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c0b6eb45-39f2-4d9c-ab87-63ea3cb318bb" />
+    <UnitTestResult executionId="f7238c00-6a69-48ba-84b5-a2597dc4d232" testId="1439a748-b676-1da2-71f2-6e0f91196c84" testName="Tests.MatrixTests.Multiply_NonConformable_Throws" computerName="H6SDFGBTTS64357" duration="00:00:00.0083469" startTime="2026-07-16T09:14:35.8890270+08:00" endTime="2026-07-16T09:14:35.8890612+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f7238c00-6a69-48ba-84b5-a2597dc4d232" />
+    <UnitTestResult executionId="a7f30ee6-b634-45ba-9bd2-f09613f1540e" testId="184ee8ea-f90f-442d-aee6-5b06d3740ee4" testName="Tests.ByteHelperTests.RTrim_RemovesTrailingBytes" computerName="H6SDFGBTTS64357" duration="00:00:00.0001705" startTime="2026-07-16T09:14:35.9416853+08:00" endTime="2026-07-16T09:14:35.9417967+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a7f30ee6-b634-45ba-9bd2-f09613f1540e" />
+    <UnitTestResult executionId="1e786749-f9ed-43a8-95d5-4d6b98b0a3eb" testId="b82fa96f-030b-e5b7-a557-6465d551d34c" testName="Tests.MbsParserTests.Parse_RealMbsFile_Interface_SwitchPlatform" computerName="H6SDFGBTTS64357" duration="00:00:00.0059274" startTime="2026-07-16T09:14:35.9131132+08:00" endTime="2026-07-16T09:14:35.9210821+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e786749-f9ed-43a8-95d5-4d6b98b0a3eb" />
+    <UnitTestResult executionId="2a5b7f9c-bd29-40c8-8c71-7c097a2f23ef" testId="ee65d7fc-dff1-fc9b-0d8d-9ea2947fbdfb" testName="Tests.MatrixTests.Add_TwoMatrices" computerName="H6SDFGBTTS64357" duration="00:00:00.0002787" startTime="2026-07-16T09:14:35.8914951+08:00" endTime="2026-07-16T09:14:35.8915309+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2a5b7f9c-bd29-40c8-8c71-7c097a2f23ef" />
+    <UnitTestResult executionId="e56cf33f-2d6c-432e-9ef6-732fd5d7cb9e" testId="8cf67f26-e8a6-e9e8-3f34-069284b65a40" testName="Tests.ByteHelperTests.ReadUInt32_LittleEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0001847" startTime="2026-07-16T09:14:35.9164921+08:00" endTime="2026-07-16T09:14:35.9165308+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e56cf33f-2d6c-432e-9ef6-732fd5d7cb9e" />
+    <UnitTestResult executionId="a61e2a4b-e84c-4cf3-98b5-9859a557d5a0" testId="ef506d55-c725-6ddb-bf97-4193d790e64e" testName="Tests.FtexParserTests.SwitchFtexParser_CanParse_InvalidMagic_ReturnsFalse" computerName="H6SDFGBTTS64357" duration="00:00:00.0000870" startTime="2026-07-16T09:14:37.7165480+08:00" endTime="2026-07-16T09:14:37.7165927+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a61e2a4b-e84c-4cf3-98b5-9859a557d5a0" />
+    <UnitTestResult executionId="5926c0c6-021a-4daf-915c-fa3ec73d312e" testId="412d5ced-fd0e-dee0-17e4-c82f7aff8455" testName="Tests.ByteHelperTests.ReadInt32_LittleEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0002654" startTime="2026-07-16T09:14:35.9210522+08:00" endTime="2026-07-16T09:14:35.9211860+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5926c0c6-021a-4daf-915c-fa3ec73d312e" />
+    <UnitTestResult executionId="27e5fc68-862b-44bf-8308-f44e988b1f18" testId="4cdcdc41-0ebd-462a-22bd-ad554608e552" testName="Tests.MatrixTests.ToFloatArray_ReturnsRowMajorLayout" computerName="H6SDFGBTTS64357" duration="00:00:00.0001990" startTime="2026-07-16T09:14:35.8907732+08:00" endTime="2026-07-16T09:14:35.8908088+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="27e5fc68-862b-44bf-8308-f44e988b1f18" />
+    <UnitTestResult executionId="82c9774d-a112-4ea4-80c0-d7de2994776f" testId="d8361f67-d74f-084f-0ed3-78441e0ca079" testName="Tests.FtexParserTests.SwitchFtexParser_Platform_IsSwitch" computerName="H6SDFGBTTS64357" duration="00:00:00.0021768" startTime="2026-07-16T09:14:37.7142428+08:00" endTime="2026-07-16T09:14:37.7160763+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="82c9774d-a112-4ea4-80c0-d7de2994776f" />
+    <UnitTestResult executionId="54cecc03-ea67-4e4b-8e53-bd03e4081e8d" testId="bf57f2ba-9712-7865-1f6c-4be111758ac2" testName="Tests.FtexParserTests.Parse_MultipleFtxFiles_AllReturnValidResults" computerName="H6SDFGBTTS64357" duration="00:00:01.0094996" startTime="2026-07-16T09:14:35.7668460+08:00" endTime="2026-07-16T09:14:36.7813237+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54cecc03-ea67-4e4b-8e53-bd03e4081e8d" />
+    <UnitTestResult executionId="b8515027-acc6-49c5-8aa9-ae5c676c93c0" testId="af1bbbdf-b8ec-460d-a846-29210bb3c4e3" testName="Tests.ByteHelperTests.ReadInt_SignedByte_Negative" computerName="H6SDFGBTTS64357" duration="00:00:00.0001410" startTime="2026-07-16T09:14:35.9118990+08:00" endTime="2026-07-16T09:14:35.9119934+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8515027-acc6-49c5-8aa9-ae5c676c93c0" />
+    <UnitTestResult executionId="f255ab27-f9de-4917-a9da-a670e0158d4a" testId="c30ab3b5-0b83-a5b8-5a2e-3d1c68139e0e" testName="Tests.ByteHelperTests.ReadUInt16_LittleEndian" computerName="H6SDFGBTTS64357" duration="00:00:00.0065509" startTime="2026-07-16T09:14:35.8918273+08:00" endTime="2026-07-16T09:14:35.8919686+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f255ab27-f9de-4917-a9da-a670e0158d4a" />
+    <UnitTestResult executionId="63961abe-f86f-4b91-8dfd-369006654633" testId="424f2001-32c6-5cf1-7f9f-5c6b334220bf" testName="Tests.MatrixTests.Constructor_FromArray_FillsCorrectly" computerName="H6SDFGBTTS64357" duration="00:00:00.0002069" startTime="2026-07-16T09:14:35.9355864+08:00" endTime="2026-07-16T09:14:35.9363897+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63961abe-f86f-4b91-8dfd-369006654633" />
+    <UnitTestResult executionId="04a7d54e-1d4c-4eb0-83a7-2045c2597488" testId="043ec629-f646-3ca5-e260-0c1b85ae8dad" testName="Tests.MathHelperTests.FindMinAndMaxPoints_FloatPrecision" computerName="H6SDFGBTTS64357" duration="00:00:00.0015443" startTime="2026-07-16T09:14:35.8767780+08:00" endTime="2026-07-16T09:14:35.8768114+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="04a7d54e-1d4c-4eb0-83a7-2045c2597488" />
+    <UnitTestResult executionId="4eb0b254-1322-45e3-b24b-888e92014bf8" testId="e25301ef-172d-21a3-05b5-26e2c3f819f4" testName="Tests.ByteHelperTests.ReadFloat32_BigEndian_ReturnsCorrectValue" computerName="H6SDFGBTTS64357" duration="00:00:00.0001458" startTime="2026-07-16T09:14:35.9199735+08:00" endTime="2026-07-16T09:14:35.9200066+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4eb0b254-1322-45e3-b24b-888e92014bf8" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt_1Byte_ReturnsCorrectValue(byteCount: 1, signed: True, expected: 127)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="0361bf12-7480-4847-6cad-9d6f59b4f286">
+      <Execution id="551a8ef1-c54b-4ec6-a00a-b2f0e1ac1e0d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt_1Byte_ReturnsCorrectValue" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt32_BigEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="77e27f72-5486-b61a-5327-6ff9a2c7bd29">
+      <Execution id="a1bebd0b-1943-4651-ace0-94feedd49442" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt32_BigEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.IdentityMatrixBy4X4_Is4x4Identity" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="425725a3-db8c-d9b4-508f-f68f254d9b09">
+      <Execution id="87a04937-98e0-42db-a365-309dd54e3219" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="IdentityMatrixBy4X4_Is4x4Identity" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.RTrim_NoTrailingTrimChar_ReturnsSame" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="e8a223fd-bd3f-fead-909d-fc1784047df8">
+      <Execution id="876a7358-f397-4798-9266-18e1ca95f823" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="RTrim_NoTrailingTrimChar_ReturnsSame" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.SwitchFtexParser_CanParse_InvalidMagic_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="ef506d55-c725-6ddb-bf97-4193d790e64e">
+      <Execution id="a61e2a4b-e84c-4cf3-98b5-9859a557d5a0" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="SwitchFtexParser_CanParse_InvalidMagic_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.WriteReadUInt16_RoundTrip" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="7d0b52f9-4788-f064-2bc2-bdc2dc451356">
+      <Execution id="6001b9ea-a24f-442c-b58a-b196343b975e" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="WriteReadUInt16_RoundTrip" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MinusFloats_BothNull_ReturnsEmpty" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="b0406699-4425-d83b-9ef9-498eb346a735">
+      <Execution id="bddb347e-6d08-411e-9fdc-88a1ddf1228b" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MinusFloats_BothNull_ReturnsEmpty" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Clone_CreatesDeepCopy" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="5acb7c8a-dbbd-40e5-6a07-4b395be42351">
+      <Execution id="b074d37e-1a40-4fed-a3d4-20e674de53e8" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Clone_CreatesDeepCopy" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 16, expected: 16)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="6b040de1-edbf-15f2-a258-505c330d924b">
+      <Execution id="137de303-57e9-46a4-9dcb-59e2f9aad254" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeilPow2_ReturnsNextPowerOf2" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadUInt16_LittleEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c30ab3b5-0b83-a5b8-5a2e-3d1c68139e0e">
+      <Execution id="f255ab27-f9de-4917-a9da-a670e0158d4a" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadUInt16_LittleEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.GradientClut_TwoColors_InterpolatesCorrectly" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="f2b9e2ee-5e05-c658-59ff-d6181aeb7d26">
+      <Execution id="54baa46a-b899-450c-af75-12447c7ba32b" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="GradientClut_TwoColors_InterpolatesCorrectly" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt16_ThrowsWhenOffsetOutOfRange" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="8078c553-d0cb-1fc4-23ee-fbf537471146">
+      <Execution id="97df0909-a58b-4b05-88cd-19d9df2ac3ee" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt16_ThrowsWhenOffsetOutOfRange" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadHexString_ReturnsLowercaseHex" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="acb0e52b-a959-3078-267c-4142a96ab7c7">
+      <Execution id="c810770f-6691-4a36-a2a6-af9fec284ba2" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadHexString_ReturnsLowercaseHex" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadNullTerminatedString_OffsetOutOfRange_ReturnsEmpty" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="2e4dec97-816b-1ce4-6379-34e6965b065e">
+      <Execution id="aa208bac-44b6-41f5-9526-7b1d40a7c306" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadNullTerminatedString_OffsetOutOfRange_ReturnsEmpty" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeil_ReturnsCeilingDivision(value: 0, divisor: 3, expected: 0)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="d9f38dd0-1b88-f240-ccaa-d1d244617be4">
+      <Execution id="cc4df914-c1de-4ccc-8e9d-7f7df69fcd45" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeil_ReturnsCeilingDivision" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.WriteReadUInt32_RoundTrip" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="41fcb274-d974-405e-da70-25d4393f69e1">
+      <Execution id="de900f4a-ac5e-4e70-8edd-676d1a56a5cc" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="WriteReadUInt32_RoundTrip" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Lerp_AtHalf_ReturnsMidpoint" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="e68a7be2-1d51-1aee-9462-0f87bc9d8260">
+      <Execution id="31695b20-1bb5-404c-95ef-6305bea92cc9" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Lerp_AtHalf_ReturnsMidpoint" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MinusFloats_EmptyArrays_ReturnsEmpty" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="117a36dd-9c74-82ca-0a5a-6ab588e17368">
+      <Execution id="d4594ec9-ca08-4422-b9d6-be7f0a704d8b" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MinusFloats_EmptyArrays_ReturnsEmpty" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.WriteUInt16_LittleEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="588d252e-941a-b2f6-0687-4dc0ce73b7b5">
+      <Execution id="3aa79b26-53ed-451b-862b-4ad6483cd11e" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="WriteUInt16_LittleEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 5, expected: 8)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c4874370-c389-2cc3-0914-53832303aab1">
+      <Execution id="f1f49dd2-9928-4617-b942-966a63f25b06" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeilPow2_ReturnsNextPowerOf2" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.Parse_RealFtxFile_CharacterBj00_ReturnsImages" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="7653cfcd-20b0-5c5f-37e5-c2bf0e0f8d99">
+      <Execution id="8def14e4-e115-4942-ac9b-e777e795d60c" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="Parse_RealFtxFile_CharacterBj00_ReturnsImages" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadNullTerminatedString_WithOffset" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="d38092cb-0732-4f6b-c50d-207120b11a63">
+      <Execution id="e2c010ca-c3cd-48c6-8f10-52005aef18e3" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadNullTerminatedString_WithOffset" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.GetHashCode_SameMatrices_SameHash" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="043f315f-801c-9ed1-13c4-b9bb875faf74">
+      <Execution id="f6dd27c9-7bb8-4e66-bc32-75ae7b59af89" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="GetHashCode_SameMatrices_SameHash" />
+    </UnitTest>
+    <UnitTest name="Tests.MbsParserTests.Parse_S9Bone_ContainsName" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="4500eeb1-cf98-dd3c-6078-c77502ff641e">
+      <Execution id="83672f5c-90d3-4288-8a20-fdbc5544ef23" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MbsParserTests" name="Parse_S9Bone_ContainsName" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.FindMinAndMaxPoints_EmptyInput_ReturnsZeroArray" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="17266c8a-22e6-5f8f-ce8f-fa87031ef000">
+      <Execution id="5a2dd517-76e9-4594-af6f-462ea320f40b" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="FindMinAndMaxPoints_EmptyInput_ReturnsZeroArray" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt16_LittleEndian_Negative" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c9ec6117-0e4b-bb26-d7c9-fc61688b77c7">
+      <Execution id="c0b6eb45-39f2-4d9c-ab87-63ea3cb318bb" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt16_LittleEndian_Negative" />
+    </UnitTest>
+    <UnitTest name="Tests.MbsParserTests.Parse_MultipleMbsFiles_AllSucceed" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c35f1731-1ee7-6d9e-da28-497688a3aa16">
+      <Execution id="ab89893b-1337-472b-88b5-734903722359" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MbsParserTests" name="Parse_MultipleMbsFiles_AllSucceed" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ZeroBytes_CreatesZeroFilledArray" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="656e1587-cc5b-e26a-4975-fd996b0c509f">
+      <Execution id="55d45100-80c6-48e7-86c3-8eb3afc36f52" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ZeroBytes_CreatesZeroFilledArray" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.GrayClut_Returns256Colors" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="e305c3d9-77f3-f99e-5d4e-e6736bad591f">
+      <Execution id="800c08c8-ba15-4292-a1ff-ff0b1e6991eb" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="GrayClut_Returns256Colors" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 17, expected: 32)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="9f7017c0-fad4-3ae4-16cd-407171feb99b">
+      <Execution id="97295d3a-dbaa-4957-bb59-fe574af27e2a" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeilPow2_ReturnsNextPowerOf2" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadUInt16_BigEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="3ab44fbc-e431-40a0-cca8-ba336dff6d42">
+      <Execution id="cc484fea-76a6-40b1-9aa9-aead8517b738" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadUInt16_BigEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt_1Byte_ReturnsCorrectValue(byteCount: 1, signed: False, expected: 127)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="b9643a27-29f4-418b-8ab9-fb466d5b6140">
+      <Execution id="c5053b7a-7bf9-455c-8618-2335eb4bcaf3" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt_1Byte_ReturnsCorrectValue" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.FindMinAndMaxPoints_FloatPrecision" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="043ec629-f646-3ca5-e260-0c1b85ae8dad">
+      <Execution id="04a7d54e-1d4c-4eb0-83a7-2045c2597488" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="FindMinAndMaxPoints_FloatPrecision" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.Substr_IsAliasForSubArray" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="1b0a4250-a2f0-ede9-1bee-1111477a9732">
+      <Execution id="31fb33fe-ea67-474a-bebd-f47ca02fea41" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="Substr_IsAliasForSubArray" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MulFloats_ByZero_ReturnsZeroArray" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="d6216434-0c86-56b6-f8db-e749ecddb8a1">
+      <Execution id="2031918d-d6ce-416c-a444-cc4743cce63f" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MulFloats_ByZero_ReturnsZeroArray" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadFloat32_ThrowsWhenOffsetOutOfRange" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="5d6db384-5471-73e9-9406-e63d0ac6f97c">
+      <Execution id="8dfdf738-2b3d-42e6-8fff-e2ca3b84597d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadFloat32_ThrowsWhenOffsetOutOfRange" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeil_ReturnsCeilingDivision(value: 9, divisor: 3, expected: 9)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="6b4cbe30-e9f8-8f03-e5b5-6329fdda87f5">
+      <Execution id="ed05b96c-e5e6-4177-b4df-8fe6eb2111e0" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeil_ReturnsCeilingDivision" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MinusFloats_NullB_ReturnsEmpty" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="f62fb0f3-f867-93ef-f44a-873251002a1f">
+      <Execution id="9f9271b7-2ce3-46fe-b56d-35d628dea668" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MinusFloats_NullB_ReturnsEmpty" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Subtract_Scalar" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="ef24db39-4c2e-2520-e011-b5253641b420">
+      <Execution id="5e822d72-8217-4b74-ad99-e54ded455a59" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Subtract_Scalar" />
+    </UnitTest>
+    <UnitTest name="Tests.MbsParserTests.Parse_S4Texture_ContainsExpectedFields" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c5f33d36-8fe5-d577-e0a5-68f3c76c518f">
+      <Execution id="a35a17f8-b5e4-4909-aaae-ae8c01381542" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MbsParserTests" name="Parse_S4Texture_ContainsExpectedFields" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 2, expected: 2)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="8f1ad830-eda3-f6db-006b-f5e1d22b6a95">
+      <Execution id="13584b27-74d7-4aa1-8972-70a80a0d6f25" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeilPow2_ReturnsNextPowerOf2" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 1, expected: 1)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="be6809e7-a1ec-2579-036a-5f14753721e8">
+      <Execution id="908b684e-fea8-4df7-99a5-fb2a38aaa5ba" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeilPow2_ReturnsNextPowerOf2" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntClamp_ClampsCorrectly(value: -1, min: 0, max: 10, expected: 0)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="a9e1f906-035f-9c06-9f56-b149c1c3840f">
+      <Execution id="dfd4c1c5-7412-47a7-a2bf-fa615936c3ba" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntClamp_ClampsCorrectly" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.Parse_RealFtxFile_Interface_ReturnsImages" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="99c532ff-11ac-0e98-dcdf-9d2b936eb5d7">
+      <Execution id="2cc83a60-3df0-4ccc-bd7f-b3e0116e655b" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="Parse_RealFtxFile_Interface_ReturnsImages" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.SwitchFtexParser_Parse_InvalidData_ReturnsEmptyList" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="8df2dc8a-80c3-a2a8-8356-4fcf5e61bd23">
+      <Execution id="d13d84f3-f3a4-4719-b43a-46b8ae557e04" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="SwitchFtexParser_Parse_InvalidData_ReturnsEmptyList" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.ApproximatelyEqual_BothNull_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="0377419d-3256-9d83-80ce-8b4fd05a3bb2">
+      <Execution id="6b63cab2-a114-4b06-b01f-566ee662b80d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="ApproximatelyEqual_BothNull_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.SubArray_ExtractsCorrectSlice" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="2d0fa193-761f-b9cf-6442-ac5fd2fae8fc">
+      <Execution id="4eb2d67d-0d4b-4db3-bc68-b2137b7ac574" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="SubArray_ExtractsCorrectSlice" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.Parse_MultipleFtxFiles_AllReturnValidResults" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="bf57f2ba-9712-7865-1f6c-4be111758ac2">
+      <Execution id="54cecc03-ea67-4e4b-8e53-bd03e4081e8d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="Parse_MultipleFtxFiles_AllReturnValidResults" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadHexStringWithPrefix_ReturnsWithHash" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="51757a25-fa0c-c523-f892-4f4ba9a21cfc">
+      <Execution id="185251ab-986b-4c9e-95e6-b5bd9807e2b8" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadHexStringWithPrefix_ReturnsWithHash" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt16_BigEndian_Positive" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c9668305-46c8-6b36-0d93-453f4165178c">
+      <Execution id="9e0d5168-ecae-4f19-8674-0a3dab338356" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt16_BigEndian_Positive" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.ApproximatelyEqual_ZeroAndNearZero" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="52f29320-83ff-b64c-9132-b346ef67e187">
+      <Execution id="f66bfe6c-bb78-4648-9bbe-3535a9cd11d4" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="ApproximatelyEqual_ZeroAndNearZero" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Multiply4X4By4X2Optimized_InvalidDimensions_Throws" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="8c04ced1-f49c-b76e-c3a6-4c1e615c9125">
+      <Execution id="14edfa9c-6673-4918-8b25-420ff6af601d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Multiply4X4By4X2Optimized_InvalidDimensions_Throws" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt32_ThrowsWhenOffsetOutOfRange" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="0312789c-4379-5fc6-b6c1-27903624cb4f">
+      <Execution id="eedcb82e-7902-4b32-8afa-6d4071a39e4d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt32_ThrowsWhenOffsetOutOfRange" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadUInt32_LittleEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="8cf67f26-e8a6-e9e8-3f34-069284b65a40">
+      <Execution id="e56cf33f-2d6c-432e-9ef6-732fd5d7cb9e" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadUInt32_LittleEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MinusFloats_NullA_ReturnsEmpty" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="dbc07e6d-2e6d-462f-8f74-e607dc1ef2d2">
+      <Execution id="cf1bfc36-31e4-4be7-a688-ac44a4eb9e57" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MinusFloats_NullA_ReturnsEmpty" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Constructor_FromArray_FillsCorrectly" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="424f2001-32c6-5cf1-7f9f-5c6b334220bf">
+      <Execution id="63961abe-f86f-4b91-8dfd-369006654633" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Constructor_FromArray_FillsCorrectly" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.CanParse_TooShortData_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="76c02241-abaa-ecbc-0342-9593941608e5">
+      <Execution id="43699760-e577-4054-8a5a-ae5adc818240" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="CanParse_TooShortData_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt_InvalidByteCount_Throws" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="8469cbe3-1146-f19a-8717-3887a26b93ae">
+      <Execution id="0c68374b-3e65-42c9-9008-877eaca2b319" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt_InvalidByteCount_Throws" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.SwitchFtexParser_Platform_IsSwitch" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="d8361f67-d74f-084f-0ed3-78441e0ca079">
+      <Execution id="82c9774d-a112-4ea4-80c0-d7de2994776f" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="SwitchFtexParser_Platform_IsSwitch" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Constructor_RowCol_CreatesZeroMatrix" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="bea3357c-61b6-6e4b-9414-3f23f19864e9">
+      <Execution id="2e913351-4601-47f4-b1d3-20c027d0c2f6" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Constructor_RowCol_CreatesZeroMatrix" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.FindMinAndMaxPoints_NegativeCoordinates" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="14d2c956-29c1-a00a-039e-ef9a9ecc6ece">
+      <Execution id="17643b24-0f55-43e5-9961-c005b9b9a6e8" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="FindMinAndMaxPoints_NegativeCoordinates" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Lerp_AtOne_ReturnsDestination" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="a03ae2dd-254f-78df-01a3-b7a290eff81f">
+      <Execution id="358abd69-5870-41d9-8a70-bdbd2da0716e" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Lerp_AtOne_ReturnsDestination" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.SubArray_LengthExceedsData_Truncates" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c83e077b-c742-a67b-2b8c-264a6b883ec8">
+      <Execution id="06052246-9302-42d2-bac2-a21912343b94" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="SubArray_LengthExceedsData_Truncates" />
+    </UnitTest>
+    <UnitTest name="Tests.MbsParserTests.Parse_RealMbsFile_CharacterBj00_SwitchPlatform" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="44ad96e6-7891-4805-32d6-c8efda8ccbc1">
+      <Execution id="8ad5346c-c781-4425-a174-df564535b6bf" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MbsParserTests" name="Parse_RealMbsFile_CharacterBj00_SwitchPlatform" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Subtract_TwoMatrices" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="63964560-0472-3c2c-a739-01adb4d838c6">
+      <Execution id="3da338bd-7c41-4b1a-a21b-0033eceeab3b" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Subtract_TwoMatrices" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.SwitchFtexParser_CanParse_ValidMagic_ReturnsTrue" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="99cf6cad-7a44-3fb5-6d47-93660dbd6ccd">
+      <Execution id="0dd0d30b-4161-4801-9982-fa53d612a8a4" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="SwitchFtexParser_CanParse_ValidMagic_ReturnsTrue" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadNullTerminatedString_Normal" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="db71b380-555e-588b-7de0-a7ba16adc767">
+      <Execution id="f8ec1c55-f128-4515-b830-4857d2c373f2" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadNullTerminatedString_Normal" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeil_ReturnsCeilingDivision(value: 10, divisor: 3, expected: 12)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="822c9f23-7aa8-a0bc-bd32-cde1d43f7520">
+      <Execution id="f4f8de96-716e-4342-a9ab-4f4127ca9078" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeil_ReturnsCeilingDivision" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Multiply4X4By4X2Optimized_IdentityMatrix" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="e0edb88c-2101-444f-5274-2606780055d9">
+      <Execution id="863f3cd8-0f33-4401-a4c0-9abfcdffd7e4" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Multiply4X4By4X2Optimized_IdentityMatrix" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.ApproximatelyEqual_NullA_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="76245b7c-f295-9eba-ea76-32eaa1653b14">
+      <Execution id="cf34d227-9757-4f30-977b-de4028e27ce8" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="ApproximatelyEqual_NullA_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.ApproximatelyEqual_CloseValues_ReturnsTrue" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="e1d30d38-542c-680e-6ae0-243ebfa2a766">
+      <Execution id="4350177d-6688-4d55-9b2c-99c6247cf959" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="ApproximatelyEqual_CloseValues_ReturnsTrue" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.RTrim_RemovesTrailingBytes" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="184ee8ea-f90f-442d-aee6-5b06d3740ee4">
+      <Execution id="a7f30ee6-b634-45ba-9bd2-f09613f1540e" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="RTrim_RemovesTrailingBytes" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt32_WithOffset" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="68f8fe05-8c11-bebc-b086-2676db055215">
+      <Execution id="2693f94d-4486-4f0b-914a-6cb82b6c6cc2" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt32_WithOffset" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ByteRepeat_CreatesFilledArray" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="776136f0-e49e-5bd6-2452-fa42d162e824">
+      <Execution id="d9d88238-034a-4eb0-992d-261bf8285f5b" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ByteRepeat_CreatesFilledArray" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.WriteUInt32_WithOffset" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="60fb2153-2ec5-31d4-da0a-1ab41d4517d4">
+      <Execution id="cb7c76dc-f6ce-4ef9-8963-27aa080790fe" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="WriteUInt32_WithOffset" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.FindMinAndMaxPoints_NullInput_ReturnsZeroArray" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="9cce9da7-5d8f-3ed3-59bd-3a1070c7de53">
+      <Execution id="d12d3500-16e7-4914-8b1e-653cedbef36f" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="FindMinAndMaxPoints_NullInput_ReturnsZeroArray" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.ApproximatelyEqual_DistantValues_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="6288fc4d-c37f-853f-3d87-2a4523c640fb">
+      <Execution id="520bcd94-ee6b-4830-8f1d-4a0be32871c7" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="ApproximatelyEqual_DistantValues_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Multiply_Scalar_ReturnsScaledMatrix" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="f2363cad-f5c1-7576-e653-901d34ead2db">
+      <Execution id="3b3c314c-c9f7-4fa3-8bc1-b559aa800219" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Multiply_Scalar_ReturnsScaledMatrix" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntClamp_ClampsCorrectly(value: 15, min: 0, max: 10, expected: 10)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="1b3a33f8-96b1-70b0-520e-6a2ec7e01d94">
+      <Execution id="6b59bf7f-434a-416f-817e-ebf14fa41203" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntClamp_ClampsCorrectly" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt_2Bytes_LittleEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="7b9e8037-2de1-09b3-e216-733624e23343">
+      <Execution id="56438f96-4dab-4323-8662-ec7b044963ef" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt_2Bytes_LittleEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadFloat32_BigEndian_ReturnsCorrectValue" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="e25301ef-172d-21a3-05b5-26e2c3f819f4">
+      <Execution id="4eb0b254-1322-45e3-b24b-888e92014bf8" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadFloat32_BigEndian_ReturnsCorrectValue" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt_SignedByte_Negative" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="af1bbbdf-b8ec-460d-a846-29210bb3c4e3">
+      <Execution id="b8515027-acc6-49c5-8aa9-ae5c676c93c0" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt_SignedByte_Negative" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.FindMinAndMaxPoints_NormalInput" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="344394fc-944f-d771-04bb-6a34b653383d">
+      <Execution id="87c689ad-404b-4e57-bece-69e344eec2d8" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="FindMinAndMaxPoints_NormalInput" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MinusFloats_ShorterBAvoidsOffByOne" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="d099fdcc-fc1f-f37a-f0c2-edd66217cbd0">
+      <Execution id="536c3c02-f394-4a8a-aa60-185d68812488" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MinusFloats_ShorterBAvoidsOffByOne" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MulFloats_NullInput_ReturnsNull" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="4438e2af-15ea-395f-a0a7-01497affa396">
+      <Execution id="c98002a8-e52d-453d-81fc-e219e55dc444" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MulFloats_NullInput_ReturnsNull" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: -1, expected: 1)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="05fecf1b-5e6a-df30-40ba-4032d8014658">
+      <Execution id="d909d047-3241-4ee7-8237-af8b6c095bcc" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeilPow2_ReturnsNextPowerOf2" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Lerp_AtZero_ReturnsSource" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c1e8c96f-2a2e-8b70-dfe4-7636cb3deb14">
+      <Execution id="26c0dc42-e08f-4079-874d-96b263e6634c" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Lerp_AtZero_ReturnsSource" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadNullTerminatedString_NoNullTerminator" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="e8527d28-6443-7044-2ac4-99b00546e2f5">
+      <Execution id="41a4bc54-d139-4dcf-ad42-eecca5c610b7" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadNullTerminatedString_NoNullTerminator" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadFloat32_LittleEndian_ReturnsCorrectValue" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="f1da27d7-4198-2d15-4353-c625fe9c9579">
+      <Execution id="e3bd19e3-2e91-4c07-b8b8-0111037d4d75" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadFloat32_LittleEndian_ReturnsCorrectValue" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.SwitchFtexParser_CanParse_NullData_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="0108103e-bd82-c75d-54e9-30b09241ca14">
+      <Execution id="853fb3a4-cdc1-487e-9c5d-7693afe3744d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="SwitchFtexParser_CanParse_NullData_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Equals_DifferentDimensions_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="d4b27ed5-3589-344b-e4fd-d8dc3103f87a">
+      <Execution id="ae3458c6-7912-4e17-88cb-2998c6b1b3bf" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Equals_DifferentDimensions_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.StrUpdate_CopiesIntoDest" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="69f52d26-1b13-4c62-1e2d-08af88dcafe1">
+      <Execution id="8a78782f-962a-41a0-9a6f-db448537939d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="StrUpdate_CopiesIntoDest" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.GradientClut_CountOfOne_Throws" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="4dd82515-b191-031f-08fa-5a149638391d">
+      <Execution id="b386f735-6c9e-4c4c-bf96-6eb47f6b052d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="GradientClut_CountOfOne_Throws" />
+    </UnitTest>
+    <UnitTest name="Tests.MbsParserTests.Parse_RealMbsFile_BattleIcon_SwitchPlatform" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="91009f20-55de-1f32-881b-0eb5aab66873">
+      <Execution id="9f35262d-6a3d-4db1-8c97-d085455187b8" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MbsParserTests" name="Parse_RealMbsFile_BattleIcon_SwitchPlatform" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MulFloats_NormalMultiplication" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="671d1152-b6a4-b3d6-293f-ea7dbbd329fc">
+      <Execution id="586022a4-cbc9-4739-9b49-5e73dfaae51d" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MulFloats_NormalMultiplication" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Multiply_ScalarCommutative" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="9a6a8d26-d994-d82c-6470-39cbf1903adc">
+      <Execution id="c04e2e36-f733-4b0c-8a1f-0c762d292bb4" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Multiply_ScalarCommutative" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MulFloats_NegativeScalar" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="2215cfdc-fe45-5b23-41d5-0504b29ff9eb">
+      <Execution id="1b0c4d78-d87a-4ecc-8bbc-c147d677aa91" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MulFloats_NegativeScalar" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Add_TwoMatrices" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="ee65d7fc-dff1-fc9b-0d8d-9ea2947fbdfb">
+      <Execution id="2a5b7f9c-bd29-40c8-8c71-7c097a2f23ef" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Add_TwoMatrices" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Equals_SameMatrix_ReturnsTrue" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="b2d4a8dd-0b3a-2554-bedf-a7312f4cee0f">
+      <Execution id="706f8bc4-a28f-4512-b607-5bb167277898" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Equals_SameMatrix_ReturnsTrue" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MinusFloats_NormalSubtraction" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="990a5d8e-bc55-d174-3073-68e84ab03436">
+      <Execution id="ddf9e625-cbc6-45c8-8d31-b7963d037a7a" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MinusFloats_NormalSubtraction" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.FindMinAndMaxPoints_SinglePoint" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="e0c78793-9ec6-e1c0-2469-fbf690ded279">
+      <Execution id="d244f6bb-2d6b-407c-b62a-322c10540faf" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="FindMinAndMaxPoints_SinglePoint" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadHexString_OutOfRange_ReturnsEmpty" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="709a9162-ccc7-a05a-a02b-3a32ebba8f25">
+      <Execution id="9df99c69-892a-4167-b751-d965d501d164" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadHexString_OutOfRange_ReturnsEmpty" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MinusFloats_DifferentLengths_TruncatesToShorter" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c15044ec-5576-256d-bcde-b0266c813a57">
+      <Execution id="bb3e6641-123b-4e63-a8d9-796621bd5a00" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MinusFloats_DifferentLengths_TruncatesToShorter" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.MulFloats_ByOne_ReturnsSameArray" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="aba7a32f-68d4-3f23-67ef-ffb821031c1d">
+      <Execution id="c9ba396b-dafb-4b23-8697-28fcb8d5f3a8" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="MulFloats_ByOne_ReturnsSameArray" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadFloat32_WithOffset_LittleEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="70b4bef4-8871-8025-c51a-104d841b5fd1">
+      <Execution id="737dfd53-c086-4668-8db0-554ff8b6855b" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadFloat32_WithOffset_LittleEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt_4Bytes_LittleEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="75775654-c2eb-0037-ecec-6f7c868bb023">
+      <Execution id="ebe8740a-0efb-4dfb-ae85-3960570dd865" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt_4Bytes_LittleEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Indexer_ReadWrite" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="ebbb7dd6-dc22-c323-f154-ec6f9f8cce8e">
+      <Execution id="b6c059e0-2d16-4138-be93-add887340025" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Indexer_ReadWrite" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.ApproximatelyEqual_CustomEpsilon" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="b53efa76-509c-0acd-1a6e-31b35b795690">
+      <Execution id="1676fa95-f8eb-485f-aa85-e7fc3968eba2" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="ApproximatelyEqual_CustomEpsilon" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Constructor_FromArray_ShorterArray_PadsWithZero" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="b90d6171-7939-f73e-5f46-1fc7cf9042ed">
+      <Execution id="79a16aec-4e70-4dcd-95e5-0a922c870c71" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Constructor_FromArray_ShorterArray_PadsWithZero" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Add_NonConformable_Throws" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="febf4d9a-b9c9-0d05-d1bb-f997aa4c0b79">
+      <Execution id="e98a18e0-3608-45b3-89b1-f6e17dffed67" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Add_NonConformable_Throws" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Multiply_NonConformable_Throws" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="1439a748-b676-1da2-71f2-6e0f91196c84">
+      <Execution id="f7238c00-6a69-48ba-84b5-a2597dc4d232" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Multiply_NonConformable_Throws" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.ApproximatelyEqual_SameValues_ReturnsTrue" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="61429fff-ec71-0e8d-6edc-7ea88a526536">
+      <Execution id="63894587-d367-438f-a427-671931bcc805" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="ApproximatelyEqual_SameValues_ReturnsTrue" />
+    </UnitTest>
+    <UnitTest name="Tests.MbsParserTests.MbsToV55Parser_UnknownPlatform_Throws" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="c9a0deb2-7ba4-6f21-91c6-d07ad54ea19c">
+      <Execution id="2bef0f6f-15a1-4e76-be1d-841fbe758850" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MbsParserTests" name="MbsToV55Parser_UnknownPlatform_Throws" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.RTrim_AllTrimChar_ReturnsEmpty" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="76fa1ef6-6ff6-abf3-6c1a-bf5ecaa164e0">
+      <Execution id="4afdc9de-aa31-45e5-90fd-ada591aa805f" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="RTrim_AllTrimChar_ReturnsEmpty" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Add_Scalar" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="530b8e51-72f0-8948-44f3-5cdf5023a29f">
+      <Execution id="0c69ea02-5919-4ed0-94e8-a4d03d324326" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Add_Scalar" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Multiply_4x4By4x4_ReturnsCorrectResult" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="5c212791-a9ec-19d1-7fb0-6cfbee58dd6b">
+      <Execution id="e6993f98-bfeb-42a5-b5f1-47630a5632f1" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Multiply_4x4By4x4_ReturnsCorrectResult" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.Parse_RealFtxFile_BattleIcon_ReturnsImages" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="7aa73d49-0d92-79d5-c217-fddebcdc417c">
+      <Execution id="1014a129-d7de-43de-8990-243b6951f504" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="Parse_RealFtxFile_BattleIcon_ReturnsImages" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.ToFloatArray_ReturnsRowMajorLayout" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="4cdcdc41-0ebd-462a-22bd-ad554608e552">
+      <Execution id="27e5fc68-862b-44bf-8308-f44e988b1f18" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="ToFloatArray_ReturnsRowMajorLayout" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Equals_DifferentMatrix_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="d71ed1e9-784c-a0cc-6a0a-e29464967eca">
+      <Execution id="63c91401-283c-4613-bf62-b1eec4b35934" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Equals_DifferentMatrix_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Constructor_Square_CreatesIdentityMatrix" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="0ee0063e-946b-68f3-73e4-12f11cee5a1c">
+      <Execution id="a537420e-4b40-4eb9-9822-9717fb8516ac" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Constructor_Square_CreatesIdentityMatrix" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.Parse_CannotParse_ReturnsEmptyList" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="0ff966b5-e7f2-8d7e-9818-01da61495bf0">
+      <Execution id="615f2bc4-11fc-4bfb-977a-d77444657aab" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="Parse_CannotParse_ReturnsEmptyList" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeil_ReturnsCeilingDivision(value: 7, divisor: 0, expected: 0)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="52138a77-24fc-f7b4-4de7-b2ded80a6f8b">
+      <Execution id="2ff5fa02-6dfd-438d-aa6a-4ec629791925" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeil_ReturnsCeilingDivision" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.WriteUInt32_LittleEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="f9809034-2dbb-e0f4-e117-902a0f924828">
+      <Execution id="dc780a2c-b363-4cd3-a0b1-41c86229118e" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="WriteUInt32_LittleEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 0, expected: 1)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="95c74497-2eb3-24f5-970f-330f5c89ae3f">
+      <Execution id="75df0a3b-4669-4fbb-9966-68a5d63348dc" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeilPow2_ReturnsNextPowerOf2" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt32_LittleEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="412d5ced-fd0e-dee0-17e4-c82f7aff8455">
+      <Execution id="5926c0c6-021a-4daf-915c-fa3ec73d312e" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt32_LittleEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.FtexParserTests.SwitchFtexParser_CanParse_EmptyData_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="0bab0072-0965-2b97-e307-21b8133baa44">
+      <Execution id="39742537-eca8-481a-8941-c62ac5a1f4e0" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.FtexParserTests" name="SwitchFtexParser_CanParse_EmptyData_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Multiply_4x4By4x2_UsesOptimizedPath" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="b641305b-5192-2549-2f2e-0bc93e49770f">
+      <Execution id="acc08c88-f4f6-4b79-94e8-cf284d0326e0" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Multiply_4x4By4x2_UsesOptimizedPath" />
+    </UnitTest>
+    <UnitTest name="Tests.MbsParserTests.Parse_RealMbsFile_Interface_SwitchPlatform" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="b82fa96f-030b-e5b7-a557-6465d551d34c">
+      <Execution id="1e786749-f9ed-43a8-95d5-4d6b98b0a3eb" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MbsParserTests" name="Parse_RealMbsFile_Interface_SwitchPlatform" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt32_LittleEndian_Negative" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="963244be-3ec3-863e-42eb-a0a64959e166">
+      <Execution id="1c44c845-ef88-4103-badf-fa919b325cf8" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt32_LittleEndian_Negative" />
+    </UnitTest>
+    <UnitTest name="Tests.MathHelperTests.ApproximatelyEqual_NullB_ReturnsFalse" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="f9cccb18-c21e-976d-c258-25926a132594">
+      <Execution id="8f70aabb-59da-4bd7-be86-b6e3fe04f216" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MathHelperTests" name="ApproximatelyEqual_NullB_ReturnsFalse" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntClamp_ClampsCorrectly(value: 5, min: 0, max: 10, expected: 5)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="96c2f537-a58f-63db-9953-32f56dc285f8">
+      <Execution id="7ca736c3-959b-4664-9087-573780616736" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntClamp_ClampsCorrectly" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadFloat32_NegativeValue_LittleEndian" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="8399a857-9bf8-ebc0-f2b4-e4a87886a6f9">
+      <Execution id="7792fb5b-0dd9-424d-b430-c107c49da144" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadFloat32_NegativeValue_LittleEndian" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.ReadInt16_LittleEndian_Positive" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="3645fe0d-cb5b-d1cf-f118-48f1974ec85e">
+      <Execution id="5c07442f-3d0b-412a-9d2f-d8e4e9c32552" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="ReadInt16_LittleEndian_Positive" />
+    </UnitTest>
+    <UnitTest name="Tests.ByteHelperTests.IntCeilPow2_ReturnsNextPowerOf2(value: 3, expected: 4)" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="f703041f-4045-5b79-7c7b-3fb8c09d8fa0">
+      <Execution id="3a241de6-bb6c-40f2-9265-ad7bf17497ae" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.ByteHelperTests" name="IntCeilPow2_ReturnsNextPowerOf2" />
+    </UnitTest>
+    <UnitTest name="Tests.MatrixTests.Lerp_NonConformable_Throws" storage="f:\codes\quadtospine2d\tests\bin\debug\net10.0\tests.dll" id="2fbfe269-f355-35b9-69bc-33f0a9431ae7">
+      <Execution id="0868c1a3-6fb8-4583-8231-57fb8d236809" />
+      <TestMethod codeBase="F:\Codes\QuadToSpine2D\Tests\bin\Debug\net10.0\Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Tests.MatrixTests" name="Lerp_NonConformable_Throws" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="77e27f72-5486-b61a-5327-6ff9a2c7bd29" executionId="a1bebd0b-1943-4651-ace0-94feedd49442" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7b9e8037-2de1-09b3-e216-733624e23343" executionId="56438f96-4dab-4323-8662-ec7b044963ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0ee0063e-946b-68f3-73e4-12f11cee5a1c" executionId="a537420e-4b40-4eb9-9822-9717fb8516ac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ebbb7dd6-dc22-c323-f154-ec6f9f8cce8e" executionId="b6c059e0-2d16-4138-be93-add887340025" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="52f29320-83ff-b64c-9132-b346ef67e187" executionId="f66bfe6c-bb78-4648-9bbe-3535a9cd11d4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5acb7c8a-dbbd-40e5-6a07-4b395be42351" executionId="b074d37e-1a40-4fed-a3d4-20e674de53e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5c212791-a9ec-19d1-7fb0-6cfbee58dd6b" executionId="e6993f98-bfeb-42a5-b5f1-47630a5632f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="963244be-3ec3-863e-42eb-a0a64959e166" executionId="1c44c845-ef88-4103-badf-fa919b325cf8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="91009f20-55de-1f32-881b-0eb5aab66873" executionId="9f35262d-6a3d-4db1-8c97-d085455187b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8399a857-9bf8-ebc0-f2b4-e4a87886a6f9" executionId="7792fb5b-0dd9-424d-b430-c107c49da144" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c4874370-c389-2cc3-0914-53832303aab1" executionId="f1f49dd2-9928-4617-b942-966a63f25b06" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96c2f537-a58f-63db-9953-32f56dc285f8" executionId="7ca736c3-959b-4664-9087-573780616736" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e68a7be2-1d51-1aee-9462-0f87bc9d8260" executionId="31695b20-1bb5-404c-95ef-6305bea92cc9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6288fc4d-c37f-853f-3d87-2a4523c640fb" executionId="520bcd94-ee6b-4830-8f1d-4a0be32871c7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="52138a77-24fc-f7b4-4de7-b2ded80a6f8b" executionId="2ff5fa02-6dfd-438d-aa6a-4ec629791925" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="acb0e52b-a959-3078-267c-4142a96ab7c7" executionId="c810770f-6691-4a36-a2a6-af9fec284ba2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dbc07e6d-2e6d-462f-8f74-e607dc1ef2d2" executionId="cf1bfc36-31e4-4be7-a688-ac44a4eb9e57" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="76c02241-abaa-ecbc-0342-9593941608e5" executionId="43699760-e577-4054-8a5a-ae5adc818240" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b4cbe30-e9f8-8f03-e5b5-6329fdda87f5" executionId="ed05b96c-e5e6-4177-b4df-8fe6eb2111e0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4500eeb1-cf98-dd3c-6078-c77502ff641e" executionId="83672f5c-90d3-4288-8a20-fdbc5544ef23" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="febf4d9a-b9c9-0d05-d1bb-f997aa4c0b79" executionId="e98a18e0-3608-45b3-89b1-f6e17dffed67" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="425725a3-db8c-d9b4-508f-f68f254d9b09" executionId="87a04937-98e0-42db-a365-309dd54e3219" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="99cf6cad-7a44-3fb5-6d47-93660dbd6ccd" executionId="0dd0d30b-4161-4801-9982-fa53d612a8a4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9668305-46c8-6b36-0d93-453f4165178c" executionId="9e0d5168-ecae-4f19-8674-0a3dab338356" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b3a33f8-96b1-70b0-520e-6a2ec7e01d94" executionId="6b59bf7f-434a-416f-817e-ebf14fa41203" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4438e2af-15ea-395f-a0a7-01497affa396" executionId="c98002a8-e52d-453d-81fc-e219e55dc444" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b040de1-edbf-15f2-a258-505c330d924b" executionId="137de303-57e9-46a4-9dcb-59e2f9aad254" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e1d30d38-542c-680e-6ae0-243ebfa2a766" executionId="4350177d-6688-4d55-9b2c-99c6247cf959" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c5f33d36-8fe5-d577-e0a5-68f3c76c518f" executionId="a35a17f8-b5e4-4909-aaae-ae8c01381542" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0361bf12-7480-4847-6cad-9d6f59b4f286" executionId="551a8ef1-c54b-4ec6-a00a-b2f0e1ac1e0d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="76245b7c-f295-9eba-ea76-32eaa1653b14" executionId="cf34d227-9757-4f30-977b-de4028e27ce8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bea3357c-61b6-6e4b-9414-3f23f19864e9" executionId="2e913351-4601-47f4-b1d3-20c027d0c2f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="be6809e7-a1ec-2579-036a-5f14753721e8" executionId="908b684e-fea8-4df7-99a5-fb2a38aaa5ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0377419d-3256-9d83-80ce-8b4fd05a3bb2" executionId="6b63cab2-a114-4b06-b01f-566ee662b80d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8c04ced1-f49c-b76e-c3a6-4c1e615c9125" executionId="14edfa9c-6673-4918-8b25-420ff6af601d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14d2c956-29c1-a00a-039e-ef9a9ecc6ece" executionId="17643b24-0f55-43e5-9961-c005b9b9a6e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e305c3d9-77f3-f99e-5d4e-e6736bad591f" executionId="800c08c8-ba15-4292-a1ff-ff0b1e6991eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9a0deb2-7ba4-6f21-91c6-d07ad54ea19c" executionId="2bef0f6f-15a1-4e76-be1d-841fbe758850" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8df2dc8a-80c3-a2a8-8356-4fcf5e61bd23" executionId="d13d84f3-f3a4-4719-b43a-46b8ae557e04" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d099fdcc-fc1f-f37a-f0c2-edd66217cbd0" executionId="536c3c02-f394-4a8a-aa60-185d68812488" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e8527d28-6443-7044-2ac4-99b00546e2f5" executionId="41a4bc54-d139-4dcf-ad42-eecca5c610b7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="99c532ff-11ac-0e98-dcdf-9d2b936eb5d7" executionId="2cc83a60-3df0-4ccc-bd7f-b3e0116e655b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="44ad96e6-7891-4805-32d6-c8efda8ccbc1" executionId="8ad5346c-c781-4425-a174-df564535b6bf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="41fcb274-d974-405e-da70-25d4393f69e1" executionId="de900f4a-ac5e-4e70-8edd-676d1a56a5cc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ab44fbc-e431-40a0-cca8-ba336dff6d42" executionId="cc484fea-76a6-40b1-9aa9-aead8517b738" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="990a5d8e-bc55-d174-3073-68e84ab03436" executionId="ddf9e625-cbc6-45c8-8d31-b7963d037a7a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60fb2153-2ec5-31d4-da0a-1ab41d4517d4" executionId="cb7c76dc-f6ce-4ef9-8963-27aa080790fe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9e1f906-035f-9c06-9f56-b149c1c3840f" executionId="dfd4c1c5-7412-47a7-a2bf-fa615936c3ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b53efa76-509c-0acd-1a6e-31b35b795690" executionId="1676fa95-f8eb-485f-aa85-e7fc3968eba2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d71ed1e9-784c-a0cc-6a0a-e29464967eca" executionId="63c91401-283c-4613-bf62-b1eec4b35934" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="61429fff-ec71-0e8d-6edc-7ea88a526536" executionId="63894587-d367-438f-a427-671931bcc805" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c15044ec-5576-256d-bcde-b0266c813a57" executionId="bb3e6641-123b-4e63-a8d9-796621bd5a00" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="530b8e51-72f0-8948-44f3-5cdf5023a29f" executionId="0c69ea02-5919-4ed0-94e8-a4d03d324326" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0edb88c-2101-444f-5274-2606780055d9" executionId="863f3cd8-0f33-4401-a4c0-9abfcdffd7e4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d38092cb-0732-4f6b-c50d-207120b11a63" executionId="e2c010ca-c3cd-48c6-8f10-52005aef18e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="70b4bef4-8871-8025-c51a-104d841b5fd1" executionId="737dfd53-c086-4668-8db0-554ff8b6855b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="344394fc-944f-d771-04bb-6a34b653383d" executionId="87c689ad-404b-4e57-bece-69e344eec2d8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="17266c8a-22e6-5f8f-ce8f-fa87031ef000" executionId="5a2dd517-76e9-4594-af6f-462ea320f40b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d6db384-5471-73e9-9406-e63d0ac6f97c" executionId="8dfdf738-2b3d-42e6-8fff-e2ca3b84597d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b90d6171-7939-f73e-5f46-1fc7cf9042ed" executionId="79a16aec-4e70-4dcd-95e5-0a922c870c71" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9f7017c0-fad4-3ae4-16cd-407171feb99b" executionId="97295d3a-dbaa-4957-bb59-fe574af27e2a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2e4dec97-816b-1ce4-6379-34e6965b065e" executionId="aa208bac-44b6-41f5-9526-7b1d40a7c306" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c35f1731-1ee7-6d9e-da28-497688a3aa16" executionId="ab89893b-1337-472b-88b5-734903722359" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aba7a32f-68d4-3f23-67ef-ffb821031c1d" executionId="c9ba396b-dafb-4b23-8697-28fcb8d5f3a8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2363cad-f5c1-7576-e653-901d34ead2db" executionId="3b3c314c-c9f7-4fa3-8bc1-b559aa800219" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4dd82515-b191-031f-08fa-5a149638391d" executionId="b386f735-6c9e-4c4c-bf96-6eb47f6b052d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9a6a8d26-d994-d82c-6470-39cbf1903adc" executionId="c04e2e36-f733-4b0c-8a1f-0c762d292bb4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="75775654-c2eb-0037-ecec-6f7c868bb023" executionId="ebe8740a-0efb-4dfb-ae85-3960570dd865" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="76fa1ef6-6ff6-abf3-6c1a-bf5ecaa164e0" executionId="4afdc9de-aa31-45e5-90fd-ada591aa805f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7d0b52f9-4788-f064-2bc2-bdc2dc451356" executionId="6001b9ea-a24f-442c-b58a-b196343b975e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="671d1152-b6a4-b3d6-293f-ea7dbbd329fc" executionId="586022a4-cbc9-4739-9b49-5e73dfaae51d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="043f315f-801c-9ed1-13c4-b9bb875faf74" executionId="f6dd27c9-7bb8-4e66-bc32-75ae7b59af89" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0108103e-bd82-c75d-54e9-30b09241ca14" executionId="853fb3a4-cdc1-487e-9c5d-7693afe3744d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="63964560-0472-3c2c-a739-01adb4d838c6" executionId="3da338bd-7c41-4b1a-a21b-0033eceeab3b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="51757a25-fa0c-c523-f892-4f4ba9a21cfc" executionId="185251ab-986b-4c9e-95e6-b5bd9807e2b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f9809034-2dbb-e0f4-e117-902a0f924828" executionId="dc780a2c-b363-4cd3-a0b1-41c86229118e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="709a9162-ccc7-a05a-a02b-3a32ebba8f25" executionId="9df99c69-892a-4167-b751-d965d501d164" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b2d4a8dd-0b3a-2554-bedf-a7312f4cee0f" executionId="706f8bc4-a28f-4512-b607-5bb167277898" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0ff966b5-e7f2-8d7e-9818-01da61495bf0" executionId="615f2bc4-11fc-4bfb-977a-d77444657aab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0bab0072-0965-2b97-e307-21b8133baa44" executionId="39742537-eca8-481a-8941-c62ac5a1f4e0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3645fe0d-cb5b-d1cf-f118-48f1974ec85e" executionId="5c07442f-3d0b-412a-9d2f-d8e4e9c32552" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2fbfe269-f355-35b9-69bc-33f0a9431ae7" executionId="0868c1a3-6fb8-4583-8231-57fb8d236809" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="822c9f23-7aa8-a0bc-bd32-cde1d43f7520" executionId="f4f8de96-716e-4342-a9ab-4f4127ca9078" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2b9e2ee-5e05-c658-59ff-d6181aeb7d26" executionId="54baa46a-b899-450c-af75-12447c7ba32b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b641305b-5192-2549-2f2e-0bc93e49770f" executionId="acc08c88-f4f6-4b79-94e8-cf284d0326e0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d9f38dd0-1b88-f240-ccaa-d1d244617be4" executionId="cc4df914-c1de-4ccc-8e9d-7f7df69fcd45" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9cce9da7-5d8f-3ed3-59bd-3a1070c7de53" executionId="d12d3500-16e7-4914-8b1e-653cedbef36f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d6216434-0c86-56b6-f8db-e749ecddb8a1" executionId="2031918d-d6ce-416c-a444-cc4743cce63f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8f1ad830-eda3-f6db-006b-f5e1d22b6a95" executionId="13584b27-74d7-4aa1-8972-70a80a0d6f25" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db71b380-555e-588b-7de0-a7ba16adc767" executionId="f8ec1c55-f128-4515-b830-4857d2c373f2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e8a223fd-bd3f-fead-909d-fc1784047df8" executionId="876a7358-f397-4798-9266-18e1ca95f823" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="95c74497-2eb3-24f5-970f-330f5c89ae3f" executionId="75df0a3b-4669-4fbb-9966-68a5d63348dc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="588d252e-941a-b2f6-0687-4dc0ce73b7b5" executionId="3aa79b26-53ed-451b-862b-4ad6483cd11e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="69f52d26-1b13-4c62-1e2d-08af88dcafe1" executionId="8a78782f-962a-41a0-9a6f-db448537939d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0c78793-9ec6-e1c0-2469-fbf690ded279" executionId="d244f6bb-2d6b-407c-b62a-322c10540faf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f62fb0f3-f867-93ef-f44a-873251002a1f" executionId="9f9271b7-2ce3-46fe-b56d-35d628dea668" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b0a4250-a2f0-ede9-1bee-1111477a9732" executionId="31fb33fe-ea67-474a-bebd-f47ca02fea41" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="68f8fe05-8c11-bebc-b086-2676db055215" executionId="2693f94d-4486-4f0b-914a-6cb82b6c6cc2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="05fecf1b-5e6a-df30-40ba-4032d8014658" executionId="d909d047-3241-4ee7-8237-af8b6c095bcc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f703041f-4045-5b79-7c7b-3fb8c09d8fa0" executionId="3a241de6-bb6c-40f2-9265-ad7bf17497ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7aa73d49-0d92-79d5-c217-fddebcdc417c" executionId="1014a129-d7de-43de-8990-243b6951f504" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8469cbe3-1146-f19a-8717-3887a26b93ae" executionId="0c68374b-3e65-42c9-9008-877eaca2b319" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ef24db39-4c2e-2520-e011-b5253641b420" executionId="5e822d72-8217-4b74-ad99-e54ded455a59" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="117a36dd-9c74-82ca-0a5a-6ab588e17368" executionId="d4594ec9-ca08-4422-b9d6-be7f0a704d8b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f9cccb18-c21e-976d-c258-25926a132594" executionId="8f70aabb-59da-4bd7-be86-b6e3fe04f216" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2215cfdc-fe45-5b23-41d5-0504b29ff9eb" executionId="1b0c4d78-d87a-4ecc-8bbc-c147d677aa91" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8078c553-d0cb-1fc4-23ee-fbf537471146" executionId="97df0909-a58b-4b05-88cd-19d9df2ac3ee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f1da27d7-4198-2d15-4353-c625fe9c9579" executionId="e3bd19e3-2e91-4c07-b8b8-0111037d4d75" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0406699-4425-d83b-9ef9-498eb346a735" executionId="bddb347e-6d08-411e-9fdc-88a1ddf1228b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0312789c-4379-5fc6-b6c1-27903624cb4f" executionId="eedcb82e-7902-4b32-8afa-6d4071a39e4d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b9643a27-29f4-418b-8ab9-fb466d5b6140" executionId="c5053b7a-7bf9-455c-8618-2335eb4bcaf3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7653cfcd-20b0-5c5f-37e5-c2bf0e0f8d99" executionId="8def14e4-e115-4942-ac9b-e777e795d60c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="776136f0-e49e-5bd6-2452-fa42d162e824" executionId="d9d88238-034a-4eb0-992d-261bf8285f5b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d0fa193-761f-b9cf-6442-ac5fd2fae8fc" executionId="4eb2d67d-0d4b-4db3-bc68-b2137b7ac574" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c83e077b-c742-a67b-2b8c-264a6b883ec8" executionId="06052246-9302-42d2-bac2-a21912343b94" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4b27ed5-3589-344b-e4fd-d8dc3103f87a" executionId="ae3458c6-7912-4e17-88cb-2998c6b1b3bf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="656e1587-cc5b-e26a-4975-fd996b0c509f" executionId="55d45100-80c6-48e7-86c3-8eb3afc36f52" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c1e8c96f-2a2e-8b70-dfe4-7636cb3deb14" executionId="26c0dc42-e08f-4079-874d-96b263e6634c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a03ae2dd-254f-78df-01a3-b7a290eff81f" executionId="358abd69-5870-41d9-8a70-bdbd2da0716e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9ec6117-0e4b-bb26-d7c9-fc61688b77c7" executionId="c0b6eb45-39f2-4d9c-ab87-63ea3cb318bb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1439a748-b676-1da2-71f2-6e0f91196c84" executionId="f7238c00-6a69-48ba-84b5-a2597dc4d232" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="184ee8ea-f90f-442d-aee6-5b06d3740ee4" executionId="a7f30ee6-b634-45ba-9bd2-f09613f1540e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b82fa96f-030b-e5b7-a557-6465d551d34c" executionId="1e786749-f9ed-43a8-95d5-4d6b98b0a3eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ee65d7fc-dff1-fc9b-0d8d-9ea2947fbdfb" executionId="2a5b7f9c-bd29-40c8-8c71-7c097a2f23ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8cf67f26-e8a6-e9e8-3f34-069284b65a40" executionId="e56cf33f-2d6c-432e-9ef6-732fd5d7cb9e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ef506d55-c725-6ddb-bf97-4193d790e64e" executionId="a61e2a4b-e84c-4cf3-98b5-9859a557d5a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="412d5ced-fd0e-dee0-17e4-c82f7aff8455" executionId="5926c0c6-021a-4daf-915c-fa3ec73d312e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4cdcdc41-0ebd-462a-22bd-ad554608e552" executionId="27e5fc68-862b-44bf-8308-f44e988b1f18" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d8361f67-d74f-084f-0ed3-78441e0ca079" executionId="82c9774d-a112-4ea4-80c0-d7de2994776f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bf57f2ba-9712-7865-1f6c-4be111758ac2" executionId="54cecc03-ea67-4e4b-8e53-bd03e4081e8d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="af1bbbdf-b8ec-460d-a846-29210bb3c4e3" executionId="b8515027-acc6-49c5-8aa9-ae5c676c93c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c30ab3b5-0b83-a5b8-5a2e-3d1c68139e0e" executionId="f255ab27-f9de-4917-a9da-a670e0158d4a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="424f2001-32c6-5cf1-7f9f-5c6b334220bf" executionId="63961abe-f86f-4b91-8dfd-369006654633" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="043ec629-f646-3ca5-e260-0c1b85ae8dad" executionId="04a7d54e-1d4c-4eb0-83a7-2045c2597488" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e25301ef-172d-21a3-05b5-26e2c3f819f4" executionId="4eb0b254-1322-45e3-b24b-888e92014bf8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="135" executed="135" passed="132" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.9)&#xD;
+[xUnit.net 00:00:00.10]   Discovering: Tests&#xD;
+[xUnit.net 00:00:00.17]   Discovered:  Tests&#xD;
+[xUnit.net 00:00:00.22]   Starting:    Tests&#xD;
+[xUnit.net 00:00:00.41]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:00.41]       Expected: 2072264188&#xD;
+[xUnit.net 00:00:00.41]       Actual:   -165775466&#xD;
+[xUnit.net 00:00:00.41]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.42]         F:\Codes\QuadToSpine2D\Tests\MatrixTests.cs(290,0): at Tests.MatrixTests.GetHashCode_SameMatrices_SameHash()&#xD;
+[xUnit.net 00:00:00.42]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+[xUnit.net 00:00:00.42]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.42]       Assert.Equal() Failure: Collections differ&#xD;
+[xUnit.net 00:00:00.42]       Expected: [9, 18]&#xD;
+[xUnit.net 00:00:00.42]       Actual:   [9, 18, 0, 0]&#xD;
+[xUnit.net 00:00:00.42]                         ↑ (pos 2)&#xD;
+[xUnit.net 00:00:00.42]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.42]         F:\Codes\QuadToSpine2D\Tests\MathHelperTests.cs(81,0): at Tests.MathHelperTests.MinusFloats_DifferentLengths_TruncatesToShorter()&#xD;
+[xUnit.net 00:00:00.42]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+[xUnit.net 00:00:00.42]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.42]       Assert.Equal() Failure: Collections differ&#xD;
+[xUnit.net 00:00:00.42]       Expected: [4, 8]&#xD;
+[xUnit.net 00:00:00.42]       Actual:   [4, 8, 0]&#xD;
+[xUnit.net 00:00:00.42]                        ↑ (pos 2)&#xD;
+[xUnit.net 00:00:00.42]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.42]         F:\Codes\QuadToSpine2D\Tests\MathHelperTests.cs(122,0): at Tests.MathHelperTests.MinusFloats_ShorterBAvoidsOffByOne()&#xD;
+[xUnit.net 00:00:00.42]            at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)&#xD;
+[xUnit.net 00:00:00.42]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:04.55]   Finished:    Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="H6SDFGBTTS64357" outcome="Error" timestamp="2026-07-16T09:14:35.9255747+08:00">
+        <Text>[xUnit.net 00:00:00.41]     Tests.MatrixTests.GetHashCode_SameMatrices_SameHash [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="H6SDFGBTTS64357" outcome="Error" timestamp="2026-07-16T09:14:35.9340249+08:00">
+        <Text>[xUnit.net 00:00:00.42]     Tests.MathHelperTests.MinusFloats_DifferentLengths_TruncatesToShorter [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="H6SDFGBTTS64357" outcome="Error" timestamp="2026-07-16T09:14:35.9530966+08:00">
+        <Text>[xUnit.net 00:00:00.42]     Tests.MathHelperTests.MinusFloats_ShorterBAvoidsOffByOne [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -2,9 +2,9 @@ namespace QTSCore.Data.Quad;
 
 public class Animation : Attach
 {
+    private int _loopId;
     private string _name = string.Empty;
     private Timeline[] _timeline = [];
-    private int _loopId;
 
     public string Name
     {
@@ -43,8 +43,8 @@ public class Animation : Attach
         get => _loopId;
         set
         {
-                IsLoop = value >= 0;
-                _loopId = value;
+            IsLoop = value >= 0;
+            _loopId = value;
         }
     }
 }

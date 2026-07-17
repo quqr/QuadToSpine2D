@@ -1,6 +1,7 @@
 <Solution>
-    <Project Path="QTSAvalonia.csproj" />
-    <Project Path="QTSCore/QTSCore.csproj" />
-    <Project Path="ServiceSourceGenerators/ServiceSourceGenerators/ServiceSourceGenerators.csproj" />
-    <Project Path="VanillawareConverter/VanillawareConverter.csproj" />
+    <Project Path="QTSAvalonia.csproj"/>
+    <Project Path="QTSCore/QTSCore.csproj"/>
+    <Project Path="ServiceSourceGenerators/ServiceSourceGenerators/ServiceSourceGenerators.csproj"/>
+    <Project Path="Tests/Tests.csproj"/>
+    <Project Path="VanillawareConverter/VanillawareConverter.csproj"/>
 </Solution>

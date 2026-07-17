@@ -6,5 +6,5 @@ namespace QTSCore.Data.Quad;
 public class Hitbox : Attach
 {
     public string Name { get; set; } = string.Empty;
-    public HitboxLayer[] Layer { get; set; }=[];
+    public HitboxLayer[] Layer { get; set; } = [];
 }

@@ -37,7 +37,6 @@ public class ProcessQuadJsonFile
             LoggerHelper.Info("Combining animations completed");
         }
 
- 
 
         LoggerHelper.Info("Quad file loaded successfully");
         return QuadData;

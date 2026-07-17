@@ -1,24 +1,16 @@
-using VanillawareConverter.Mbs;
-using VanillawareConverter.Mbs.Models;
 using VanillawareConverter.Common;
+using VanillawareConverter.Mbs.Models;
 
 namespace VanillawareConverter.Mbs.Parsers;
 
 public class MbsToV55Parser
 {
-    private bool _bigEndian;
-    private byte[] _fileData = [];
-    private PlatformData _platform = new();
-
     public V55Data Parse(byte[] fileData, PlatformTag tag)
     {
-        _fileData = fileData;
-        var platform = PlatformConfigs.GetConfig(tag);
-        if (platform == null)
-            throw new NotSupportedException($"Unknown platform: {tag}");
+        var platform = PlatformConfigs.GetConfig(tag)
+                       ?? throw new NotSupportedException($"Unknown platform: {tag}");
 
-        _platform = platform;
-        _bigEndian = platform.BigEndian;
+        var ctx = new ParseContext(fileData, platform.BigEndian, platform);
 
         var result = new V55Data
         {
@@ -27,55 +19,56 @@ public class MbsToV55Parser
             Ver = "55"
         };
 
-        var sections = _platform.Sections;
+        var sections = platform.Sections;
         if (sections.Count < 11)
             throw new NotSupportedException($"Invalid section count: {sections.Count}");
 
-        result.S0 = ParseS0(sections[0]);
-        result.S1 = ParseS1(sections[1]);
-        result.S2 = ParseS2(sections[2]);
-        result.S3 = ParseS3(sections[3]);
-        result.S4 = ParseS4(sections[4]);
-        result.S5 = ParseS5(sections[5]);
-        result.S6 = ParseS6(sections[6]);
-        result.S7 = ParseS7(sections[7]);
-        result.S8 = ParseS8(sections[8]);
-        result.S9 = ParseS9(sections[9]);
-        result.Sa = ParseSa(sections[10]);
-        result.Sb = sections.Count > 11 ? ParseSb(sections[11]) : [];
+        result.S0 = ParseS0(ctx, sections[0]);
+        result.S1 = ParseS1(ctx, sections[1]);
+        result.S2 = ParseS2(ctx, sections[2]);
+        result.S3 = ParseS3(ctx, sections[3]);
+        result.S4 = ParseS4(ctx, sections[4]);
+        result.S5 = ParseS5(ctx, sections[5]);
+        result.S6 = ParseS6(ctx, sections[6]);
+        result.S7 = ParseS7(ctx, sections[7]);
+        result.S8 = ParseS8(ctx, sections[8]);
+        result.S9 = ParseS9(ctx, sections[9]);
+        result.Sa = ParseSa(ctx, sections[10]);
+        result.Sb = sections.Count > 11 ? ParseSb(ctx, sections[11]) : [];
 
         return result;
     }
 
-    private (int sp, int sc, int sk) GetSectionHead(SectionInfo sect)
+    private static (int sp, int sc, int sk) GetSectionHead(ParseContext ctx, SectionInfo sect)
     {
-        var sp = ByteHelper.ReadInt(_fileData, sect.P, 4, _bigEndian);
-        var sc = ByteHelper.ReadInt(_fileData, sect.C[0], sect.C[1], _bigEndian);
+        var sp = ByteHelper.ReadInt(ctx.FileData, sect.P, 4, ctx.BigEndian);
+        var sc = ByteHelper.ReadInt(ctx.FileData, sect.C[0], sect.C[1], ctx.BigEndian);
         var sk = sect.K;
         return (sp, sc, sk);
     }
 
-    private List<T?> ParseSection<T>(SectionInfo sect, Func<byte[], int, T> parseEntry) where T : class
+    private static List<T?> ParseSection<T>(ParseContext ctx, SectionInfo sect, Func<byte[], int, T> parseEntry)
+        where T : class
     {
-        var (sp, sc, sk) = GetSectionHead(sect);
+        var (sp, sc, sk) = GetSectionHead(ctx, sect);
         var result = new List<T?>();
 
         for (var i = 0; i < sc; i++)
         {
             var p = sp + i * sk;
-            var s = ByteHelper.SubArray(_fileData, p, sk);
+            var s = ByteHelper.SubArray(ctx.FileData, p, sk);
             result.Add(parseEntry(s, i));
         }
 
         return result;
     }
 
-    private List<S0Color?> ParseS0(SectionInfo sect)
+    private static List<S0Color?> ParseS0(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
             object? fog = null;
-            var tag = _platform.IdTag;
+            var tag = ctx.Platform.IdTag;
 
             if (tag.Contains("ps2") && (tag.Contains("grim") || tag.Contains("odin")))
                 fog = ParsePs2Quad20c(s);
@@ -90,17 +83,17 @@ public class MbsToV55Parser
         });
     }
 
-    private List<S1Source?> ParseS1(SectionInfo sect)
+    private static List<S1Source?> ParseS1(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
             float[]? quad = null;
-            var tag = _platform.IdTag;
+            var tag = ctx.Platform.IdTag;
 
             if (tag.Contains("ps2") && (tag.Contains("grim") || tag.Contains("odin")))
-                quad = ParsePs2Quad20p(s, _bigEndian);
+                quad = ParsePs2Quad20p(s, ctx.BigEndian);
             else
-                quad = ParseNdsQuad30p(s, _bigEndian);
+                quad = ParseNdsQuad30p(s, ctx.BigEndian);
 
             return new S1Source
             {
@@ -110,17 +103,17 @@ public class MbsToV55Parser
         });
     }
 
-    private List<S2Dest?> ParseS2(SectionInfo sect)
+    private static List<S2Dest?> ParseS2(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
             float[]? quad = null;
-            var tag = _platform.IdTag;
+            var tag = ctx.Platform.IdTag;
 
             if (tag.Contains("ps2") && (tag.Contains("grim") || tag.Contains("odin")))
-                quad = ParsePs2Quad20p(s, _bigEndian);
+                quad = ParsePs2Quad20p(s, ctx.BigEndian);
             else
-                quad = ParseNdsQuad30p(s, _bigEndian);
+                quad = ParseNdsQuad30p(s, ctx.BigEndian);
 
             return new S2Dest
             {
@@ -130,18 +123,18 @@ public class MbsToV55Parser
         });
     }
 
-    private List<S3Hitbox?> ParseS3(SectionInfo sect)
+    private static List<S3Hitbox?> ParseS3(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
             var rect = new float[8];
             var xyz = new float[12];
 
             for (var j = 0; j < 8; j++)
-                rect[j] = ByteHelper.ReadFloat32(s, j * 4, _bigEndian);
+                rect[j] = ByteHelper.ReadFloat32(s, j * 4, ctx.BigEndian);
 
             for (var j = 0; j < 12; j++)
-                xyz[j] = ByteHelper.ReadFloat32(s, 0x20 + j * 4, _bigEndian);
+                xyz[j] = ByteHelper.ReadFloat32(s, 0x20 + j * 4, ctx.BigEndian);
 
             return new S3Hitbox
             {
@@ -152,53 +145,53 @@ public class MbsToV55Parser
         });
     }
 
-    private List<S4Texture?> ParseS4(SectionInfo sect)
+    private static List<S4Texture?> ParseS4(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
             int flags = 0, blendId = 0, texId = 0;
             var s0s1s2 = new int[3];
             int attrib = 0, colorId = 0;
 
-            var tag = _platform.IdTag;
+            var tag = ctx.Platform.IdTag;
 
             if (tag.Contains("ps2") && (tag.Contains("grim") || tag.Contains("odin")))
             {
-                flags = ByteHelper.ReadInt(s, 0x00, 2, _bigEndian);
-                blendId = ByteHelper.ReadInt(s, 0x02, 1, _bigEndian);
-                texId = ByteHelper.ReadInt(s, 0x03, 1, _bigEndian);
+                flags = ByteHelper.ReadInt(s, 0x00, 2, ctx.BigEndian);
+                blendId = ByteHelper.ReadInt(s, 0x02, 1, ctx.BigEndian);
+                texId = ByteHelper.ReadInt(s, 0x03, 1, ctx.BigEndian);
                 s0s1s2 =
                 [
-                    ByteHelper.ReadInt(s, 0x08, 2, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x04, 2, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x10, 2, _bigEndian)
+                    ByteHelper.ReadInt(s, 0x08, 2, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x04, 2, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x10, 2, ctx.BigEndian)
                 ];
             }
             else if (tag.Contains("nds_kuma") || tag.Contains("wii_mura"))
             {
-                flags = ByteHelper.ReadInt(s, 0x00, 2, _bigEndian);
-                blendId = ByteHelper.ReadInt(s, 0x02, 1, _bigEndian);
-                texId = ByteHelper.ReadInt(s, 0x03, 1, _bigEndian);
+                flags = ByteHelper.ReadInt(s, 0x00, 2, ctx.BigEndian);
+                blendId = ByteHelper.ReadInt(s, 0x02, 1, ctx.BigEndian);
+                texId = ByteHelper.ReadInt(s, 0x03, 1, ctx.BigEndian);
                 s0s1s2 =
                 [
-                    ByteHelper.ReadInt(s, 0x08, 2, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x04, 2, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x0a, 2, _bigEndian)
+                    ByteHelper.ReadInt(s, 0x08, 2, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x04, 2, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x0a, 2, ctx.BigEndian)
                 ];
             }
             else
             {
-                ByteHelper.ReadInt(s, 0x00, 4, _bigEndian);
-                colorId = ByteHelper.ReadInt(s, 0x04, 1, _bigEndian);
-                flags = ByteHelper.ReadInt(s, 0x05, 1, _bigEndian);
-                blendId = ByteHelper.ReadInt(s, 0x06, 1, _bigEndian);
-                texId = ByteHelper.ReadInt(s, 0x07, 1, _bigEndian);
-                attrib = ByteHelper.ReadInt(s, 0x08, 4, _bigEndian);
+                ByteHelper.ReadInt(s, 0x00, 4, ctx.BigEndian);
+                colorId = ByteHelper.ReadInt(s, 0x04, 1, ctx.BigEndian);
+                flags = ByteHelper.ReadInt(s, 0x05, 1, ctx.BigEndian);
+                blendId = ByteHelper.ReadInt(s, 0x06, 1, ctx.BigEndian);
+                texId = ByteHelper.ReadInt(s, 0x07, 1, ctx.BigEndian);
+                attrib = ByteHelper.ReadInt(s, 0x08, 4, ctx.BigEndian);
                 s0s1s2 =
                 [
-                    ByteHelper.ReadInt(s, 0x0e, 2, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x0c, 2, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x10, 2, _bigEndian)
+                    ByteHelper.ReadInt(s, 0x0e, 2, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x0c, 2, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x10, 2, ctx.BigEndian)
                 ];
             }
 
@@ -215,12 +208,12 @@ public class MbsToV55Parser
         });
     }
 
-    private List<S5HitboxRef?> ParseS5(SectionInfo sect)
+    private static List<S5HitboxRef?> ParseS5(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
-            var s3Id = ByteHelper.ReadInt(s, 0x00, 2, _bigEndian);
-            var flags = ByteHelper.ReadInt(s, 0x04, 4, _bigEndian);
+            var s3Id = ByteHelper.ReadInt(s, 0x00, 2, ctx.BigEndian);
+            var flags = ByteHelper.ReadInt(s, 0x04, 4, ctx.BigEndian);
 
             return new S5HitboxRef
             {
@@ -231,46 +224,46 @@ public class MbsToV55Parser
         });
     }
 
-    private List<S6Keyframe?> ParseS6(SectionInfo sect)
+    private static List<S6Keyframe?> ParseS6(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
             var rect = new float[4];
             for (var j = 0; j < 4; j++)
-                rect[j] = ByteHelper.ReadFloat32(s, j * 4, _bigEndian);
+                rect[j] = ByteHelper.ReadFloat32(s, j * 4, ctx.BigEndian);
 
             var s4 = new int[2];
             var s5 = new int[2];
             var flags = 0;
 
-            var tag = _platform.IdTag;
+            var tag = ctx.Platform.IdTag;
             if (tag.Contains("ps2") || tag.Contains("nds_kuma") || tag.Contains("wii_mura"))
             {
                 s4 =
                 [
-                    ByteHelper.ReadInt(s, 0x10, 2, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x14, 1, _bigEndian)
+                    ByteHelper.ReadInt(s, 0x10, 2, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x14, 1, ctx.BigEndian)
                 ];
                 s5 =
                 [
-                    ByteHelper.ReadInt(s, 0x12, 2, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x15, 1, _bigEndian)
+                    ByteHelper.ReadInt(s, 0x12, 2, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x15, 1, ctx.BigEndian)
                 ];
-                flags = ByteHelper.ReadInt(s, 0x16, 2, _bigEndian);
+                flags = ByteHelper.ReadInt(s, 0x16, 2, ctx.BigEndian);
             }
             else
             {
                 s4 =
                 [
-                    ByteHelper.ReadInt(s, 0x10, 4, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x16, 2, _bigEndian)
+                    ByteHelper.ReadInt(s, 0x10, 4, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x16, 2, ctx.BigEndian)
                 ];
                 s5 =
                 [
-                    ByteHelper.ReadInt(s, 0x14, 2, _bigEndian),
-                    ByteHelper.ReadInt(s, 0x18, 1, _bigEndian)
+                    ByteHelper.ReadInt(s, 0x14, 2, ctx.BigEndian),
+                    ByteHelper.ReadInt(s, 0x18, 1, ctx.BigEndian)
                 ];
-                flags = ByteHelper.ReadInt(s, 0x19, 1, _bigEndian);
+                flags = ByteHelper.ReadInt(s, 0x19, 1, ctx.BigEndian);
             }
 
             return new S6Keyframe
@@ -284,16 +277,16 @@ public class MbsToV55Parser
         });
     }
 
-    private List<S7Transform?> ParseS7(SectionInfo sect)
+    private static List<S7Transform?> ParseS7(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
             var move = new float[3];
             var rotate = new float[3];
             var scale = new float[2];
             var fog = "#ffffffff";
 
-            var tag = _platform.IdTag;
+            var tag = ctx.Platform.IdTag;
             if (tag.Contains("ps2") && (tag.Contains("grim") || tag.Contains("odin")))
             {
                 var r = ByteHelper.ReadFloat32(s, 0x00);
@@ -324,20 +317,20 @@ public class MbsToV55Parser
             {
                 move =
                 [
-                    ByteHelper.ReadFloat32(s, 0x00, _bigEndian),
-                    ByteHelper.ReadFloat32(s, 0x04, _bigEndian),
-                    ByteHelper.ReadFloat32(s, 0x08, _bigEndian)
+                    ByteHelper.ReadFloat32(s, 0x00, ctx.BigEndian),
+                    ByteHelper.ReadFloat32(s, 0x04, ctx.BigEndian),
+                    ByteHelper.ReadFloat32(s, 0x08, ctx.BigEndian)
                 ];
                 rotate =
                 [
-                    ByteHelper.ReadFloat32(s, 0x0c, _bigEndian),
-                    ByteHelper.ReadFloat32(s, 0x10, _bigEndian),
-                    ByteHelper.ReadFloat32(s, 0x14, _bigEndian)
+                    ByteHelper.ReadFloat32(s, 0x0c, ctx.BigEndian),
+                    ByteHelper.ReadFloat32(s, 0x10, ctx.BigEndian),
+                    ByteHelper.ReadFloat32(s, 0x14, ctx.BigEndian)
                 ];
                 scale =
                 [
-                    ByteHelper.ReadFloat32(s, 0x18, _bigEndian),
-                    ByteHelper.ReadFloat32(s, 0x1c, _bigEndian)
+                    ByteHelper.ReadFloat32(s, 0x18, ctx.BigEndian),
+                    ByteHelper.ReadFloat32(s, 0x1c, ctx.BigEndian)
                 ];
                 fog = ByteHelper.ReadHexStringWithPrefix(s, 0x20, 4);
             }
@@ -353,20 +346,20 @@ public class MbsToV55Parser
         });
     }
 
-    private List<S8AnimFrame?> ParseS8(SectionInfo sect)
+    private static List<S8AnimFrame?> ParseS8(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
-            var s6Id = ByteHelper.ReadInt(s, 0x00, 2, _bigEndian);
-            var s7Id = ByteHelper.ReadInt(s, 0x04, 2, _bigEndian);
-            var time = ByteHelper.ReadInt(s, 0x06, 2, _bigEndian);
-            var flags = ByteHelper.ReadInt(s, 0x08, 4, _bigEndian);
-            var loop = ByteHelper.ReadInt(s, 0x0c, 2, _bigEndian);
-            var inS5S3 = ByteHelper.ReadInt(s, 0x0e, 1, _bigEndian);
-            var inS7 = ByteHelper.ReadInt(s, 0x10, 1, _bigEndian);
-            var inS6 = ByteHelper.ReadInt(s, 0x11, 1, _bigEndian);
-            var inS0S1S2 = ByteHelper.ReadInt(s, 0x12, 1, _bigEndian);
-            var sfx = ByteHelper.ReadInt(s, 0x1c, 4, _bigEndian);
+            var s6Id = ByteHelper.ReadInt(s, 0x00, 2, ctx.BigEndian);
+            var s7Id = ByteHelper.ReadInt(s, 0x04, 2, ctx.BigEndian);
+            var time = ByteHelper.ReadInt(s, 0x06, 2, ctx.BigEndian);
+            var flags = ByteHelper.ReadInt(s, 0x08, 4, ctx.BigEndian);
+            var loop = ByteHelper.ReadInt(s, 0x0c, 2, ctx.BigEndian);
+            var inS5S3 = ByteHelper.ReadInt(s, 0x0e, 1, ctx.BigEndian);
+            var inS7 = ByteHelper.ReadInt(s, 0x10, 1, ctx.BigEndian);
+            var inS6 = ByteHelper.ReadInt(s, 0x11, 1, ctx.BigEndian);
+            var inS0S1S2 = ByteHelper.ReadInt(s, 0x12, 1, ctx.BigEndian);
+            var sfx = ByteHelper.ReadInt(s, 0x1c, 4, ctx.BigEndian);
 
             return new S8AnimFrame
             {
@@ -385,17 +378,17 @@ public class MbsToV55Parser
         });
     }
 
-    private List<S9Bone?> ParseS9(SectionInfo sect)
+    private static List<S9Bone?> ParseS9(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
             var rect = new float[4];
             for (var j = 0; j < 4; j++)
-                rect[j] = ByteHelper.ReadFloat32(s, j * 4, _bigEndian);
+                rect[j] = ByteHelper.ReadFloat32(s, j * 4, ctx.BigEndian);
 
             var name = ByteHelper.ReadNullTerminatedString(s, 0x10);
-            var saSetId = ByteHelper.ReadInt(s, 0x28, 2, _bigEndian);
-            var saSetNo = ByteHelper.ReadInt(s, 0x2a, 1, _bigEndian);
+            var saSetId = ByteHelper.ReadInt(s, 0x28, 2, ctx.BigEndian);
+            var saSetNo = ByteHelper.ReadInt(s, 0x2a, 1, ctx.BigEndian);
 
             return new S9Bone
             {
@@ -407,14 +400,14 @@ public class MbsToV55Parser
         });
     }
 
-    private List<SaAnimation?> ParseSa(SectionInfo sect)
+    private static List<SaAnimation?> ParseSa(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (s, i) =>
+        return ParseSection(ctx, sect, (s, i) =>
         {
-            var s8SetId = ByteHelper.ReadInt(s, 0x00, 2, _bigEndian);
-            var s8SetNo = ByteHelper.ReadInt(s, 0x02, 2, _bigEndian);
-            var s8SetSum = ByteHelper.ReadInt(s, 0x04, 4, _bigEndian);
-            var s8SetSt = ByteHelper.ReadInt(s, 0x13, 1, _bigEndian);
+            var s8SetId = ByteHelper.ReadInt(s, 0x00, 2, ctx.BigEndian);
+            var s8SetNo = ByteHelper.ReadInt(s, 0x02, 2, ctx.BigEndian);
+            var s8SetSum = ByteHelper.ReadInt(s, 0x04, 4, ctx.BigEndian);
+            var s8SetSt = ByteHelper.ReadInt(s, 0x13, 1, ctx.BigEndian);
 
             return new SaAnimation
             {
@@ -424,9 +417,9 @@ public class MbsToV55Parser
         });
     }
 
-    private List<SbExtension?> ParseSb(SectionInfo sect)
+    private static List<SbExtension?> ParseSb(ParseContext ctx, SectionInfo sect)
     {
-        return ParseSection(sect, (_, i) => new SbExtension { I = $"sb {i}" });
+        return ParseSection(ctx, sect, (_, i) => new SbExtension { I = $"sb {i}" });
     }
 
     private static object ParsePs2Quad20c(byte[] s)
@@ -478,5 +471,12 @@ public class MbsToV55Parser
             floats[6], floats[7],
             floats[8], floats[9]
         ];
+    }
+
+    private readonly struct ParseContext(byte[] fileData, bool bigEndian, PlatformData platform)
+    {
+        public readonly byte[] FileData = fileData;
+        public readonly bool BigEndian = bigEndian;
+        public readonly PlatformData Platform = platform;
     }
 }

@@ -1,6 +1,6 @@
 using System.Text;
-using VanillawareConverter.Ftex.Swizzling;
 using VanillawareConverter.Common;
+using VanillawareConverter.Ftex.Swizzling;
 
 namespace VanillawareConverter.Ftex.Parsers;
 

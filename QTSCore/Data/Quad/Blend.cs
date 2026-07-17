@@ -6,6 +6,6 @@ public class Blend
     public string[] ModeRgb { get; set; } = [];
     public string[] ModeAlpha { get; set; } = [];
     public string Color { get; set; } = string.Empty;
-    [JsonIgnore]
-    public string[] LogicOp { get; set; } = [];
+
+    [JsonIgnore] public string[] LogicOp { get; set; } = [];
 }

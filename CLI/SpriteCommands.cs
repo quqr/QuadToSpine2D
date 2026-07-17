@@ -1,7 +1,7 @@
-using Newtonsoft.Json;
+using System.Diagnostics;
+using VanillawareConverter.Mbs.Converters;
 using VanillawareConverter.Mbs.Models;
 using VanillawareConverter.Mbs.Parsers;
-using VanillawareConverter.Mbs.Converters;
 
 namespace QTSAvalonia.CLI;
 
@@ -35,7 +35,7 @@ public static class SpriteCommands
             return 1;
         }
 
-        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
 
         try
         {
@@ -113,7 +113,7 @@ public static class SpriteCommands
             return 1;
         }
 
-        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
 
         try
         {
@@ -150,7 +150,7 @@ public static class SpriteCommands
             {
                 var json = File.ReadAllText(inputFile.FullName);
                 v55Data = JsonConvert.DeserializeObject<V55Data>(json)
-                    ?? throw new ArgumentException("Invalid V55 JSON file");
+                          ?? throw new ArgumentException("Invalid V55 JSON file");
             }
             else
             {
@@ -207,10 +207,8 @@ public static class SpriteCommands
     private static string? GetOption(string[] args, params string[] names)
     {
         for (var i = 0; i < args.Length - 1; i++)
-        {
             if (names.Contains(args[i]))
                 return args[i + 1];
-        }
         return null;
     }
 

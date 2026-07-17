@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using VanillawareConverter.Ftex;
 
 namespace QTSAvalonia.CLI;
@@ -79,7 +80,7 @@ public static class TexCommands
             return 0;
         }
 
-        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         var successCount = 0;
         var failCount = 0;
 
@@ -113,7 +114,7 @@ public static class TexCommands
 
     private static int ProcessFile(UnifiedFtexReader reader, string filePath, string outputDir, bool convertToPng)
     {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
 
         try
         {
@@ -137,10 +138,8 @@ public static class TexCommands
     private static string? GetOption(string[] args, params string[] names)
     {
         for (var i = 0; i < args.Length - 1; i++)
-        {
             if (names.Contains(args[i]))
                 return args[i + 1];
-        }
         return null;
     }
 

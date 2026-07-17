@@ -3,7 +3,7 @@ using QTSAvalonia.ViewModels.Pages;
 
 namespace QTSAvalonia.Views.Pages;
 
-public partial class PlayerSetting: UserControl
+public partial class PlayerSetting : UserControl
 {
     public PlayerSetting()
     {

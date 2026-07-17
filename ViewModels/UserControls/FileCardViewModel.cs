@@ -1,81 +1,83 @@
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Media.Immutable;
 using Avalonia.Threading;
-using VanillawareConverter.Ftex;
+using QTSAvalonia.ViewModels.Pages;
 using SkiaSharp;
+using VanillawareConverter.Ftex;
 
 namespace QTSAvalonia.ViewModels.UserControls;
 
 public partial class FileCardViewModel : ViewModelBase, IDisposable
 {
-    [ObservableProperty]
-    private string _fileName = string.Empty;
-
-    [ObservableProperty]
-    private string _filePath = string.Empty;
-
-    [ObservableProperty]
-    private bool _isFtxFile;
-
-    [ObservableProperty]
-    private bool _isMbsFile;
-
-    [ObservableProperty]
-    private bool _isPaired;
-
-    [ObservableProperty]
-    private bool _isSelected;
-
-    [ObservableProperty]
-    private int _imageCount;
-
-    [ObservableProperty]
-    private int _animationCount;
-
-    [ObservableProperty]
-    private string _statusText = string.Empty;
-
-    [ObservableProperty]
-    private List<string> _thumbnailPaths = [];
-
-    [ObservableProperty]
-    private List<string> _animationNames = [];
-
-    [ObservableProperty]
-    private string _pairedFtxPath = string.Empty;
-
-    [ObservableProperty]
-    private string _pairedMbsPath = string.Empty;
-
-    [ObservableProperty]
-    private int _selectedThumbnailIndex = 0;
-
-    /// <summary>
-    /// 缩略图是否正在异步加载中
-    /// </summary>
-    [ObservableProperty]
-    private bool _isThumbnailLoading;
-
-    /// <summary>
-    /// 详情面板是否展开（Popover）
-    /// </summary>
-    [ObservableProperty]
-    private bool _isDetailsOpen;
-
-    public Pages.FileManagerViewModel? Parent { get; set; }
-
-    /// <summary>FTX 源文件路径</summary>
-    private string _ftxSourcePath = string.Empty;
     private const int ThumbnailMaxSize = 512;
 
-    // Bitmap 缓存（只由后台线程写入，UI 线程读取）
-    private Bitmap? _thumbnailBitmapCache;
+    private static readonly ImmutableSolidColorBrush BlueBrush = new(Color.Parse("#2196F3"));
+    private static readonly ImmutableSolidColorBrush GreenBrush = new(Color.Parse("#4CAF50"));
+    private static readonly ImmutableSolidColorBrush OrangeBrush = new(Color.Parse("#FF9800"));
+
+    [ObservableProperty] private int _animationCount;
+
+    [ObservableProperty] private List<string> _animationNames = [];
+
     private int _cachedIndex = -1;
     private Task? _currentDecodeTask;
     private CancellationTokenSource? _decodeCts;
+
+    [ObservableProperty] private string _fileName = string.Empty;
+
+    [ObservableProperty] private string _filePath = string.Empty;
+
+    /// <summary>FTX 源文件路径</summary>
+    private string _ftxSourcePath = string.Empty;
+
+    [ObservableProperty] private int _imageCount;
+
+    /// <summary>
+    ///     详情面板是否展开（Popover）
+    /// </summary>
+    [ObservableProperty] private bool _isDetailsOpen;
+
+    [ObservableProperty] private bool _isFtxFile;
+
+    [ObservableProperty] private bool _isMbsFile;
+
+    [ObservableProperty] private bool _isPaired;
+
+    [ObservableProperty] private bool _isSelected;
+
+    /// <summary>
+    ///     缩略图是否正在异步加载中
+    /// </summary>
+    [ObservableProperty] private bool _isThumbnailLoading;
+
+    [ObservableProperty] private string _pairedFtxPath = string.Empty;
+
+    [ObservableProperty] private string _pairedMbsPath = string.Empty;
+
+    [ObservableProperty] private int _selectedThumbnailIndex;
+
+    [ObservableProperty] private string _statusText = string.Empty;
+
+    // Bitmap 缓存（只由后台线程写入，UI 线程读取）
+
+    [ObservableProperty] private List<string> _thumbnailPaths = [];
+
+    public FileCardViewModel()
+    {
+    }
+
+    public FileCardViewModel(string filePath)
+    {
+        FilePath = filePath;
+        FileName = Path.GetFileName(filePath);
+        var ext = Path.GetExtension(filePath).ToLowerInvariant();
+        IsFtxFile = ext is ".ftx" or ".ftp";
+        IsMbsFile = ext is ".mbs" or ".mbp";
+    }
+
+    public FileManagerViewModel? Parent { get; set; }
 
     public string BaseName => Path.GetFileNameWithoutExtension(FileName);
 
@@ -83,10 +85,6 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
         : IsFtxFile ? $"{BaseName} (FTX)"
         : IsMbsFile ? $"{BaseName} (MBS)"
         : FileName;
-
-    private static readonly ImmutableSolidColorBrush BlueBrush = new(Color.Parse("#2196F3"));
-    private static readonly ImmutableSolidColorBrush GreenBrush = new(Color.Parse("#4CAF50"));
-    private static readonly ImmutableSolidColorBrush OrangeBrush = new(Color.Parse("#FF9800"));
 
     public IBrush AccentColor => IsSelected ? BlueBrush : IsPaired ? GreenBrush : OrangeBrush;
 
@@ -111,9 +109,19 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 缩略图 Bitmap（纯读取缓存，绝不触发解码，不阻塞 UI 线程）
+    ///     缩略图 Bitmap（纯读取缓存，绝不触发解码，不阻塞 UI 线程）
     /// </summary>
-    public Bitmap? ThumbnailBitmap => _thumbnailBitmapCache;
+    public Bitmap? ThumbnailBitmap { get; private set; }
+
+    // ─── Dispose ─────────────────────────────────────────
+
+    public void Dispose()
+    {
+        _decodeCts?.Cancel();
+        _decodeCts?.Dispose();
+        ClearBitmapCache();
+        Parent = null;
+    }
 
     public List<string> GetExportPaths()
     {
@@ -124,21 +132,10 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
         return paths;
     }
 
-    public FileCardViewModel() { }
-
-    public FileCardViewModel(string filePath)
-    {
-        FilePath = filePath;
-        FileName = Path.GetFileName(filePath);
-        var ext = Path.GetExtension(filePath).ToLowerInvariant();
-        IsFtxFile = ext is ".ftx" or ".ftp";
-        IsMbsFile = ext is ".mbs" or ".mbp";
-    }
-
     // ─── 缩略图加载 ──────────────────────────────────────
 
     /// <summary>
-    /// 设置 FTX 源路径并触发首次异步加载
+    ///     设置 FTX 源路径并触发首次异步加载
     /// </summary>
     public void SetFtxSource(string ftxPath)
     {
@@ -162,7 +159,7 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// 从 PNG 路径加载到缓存（用于 PreviewInPlayer 等已有 PNG 的场景）
+    ///     从 PNG 路径加载到缓存（用于 PreviewInPlayer 等已有 PNG 的场景）
     /// </summary>
     private void LoadFromPngPath(string path)
     {
@@ -170,17 +167,20 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
         {
             if (File.Exists(path))
             {
-                _thumbnailBitmapCache?.Dispose();
-                _thumbnailBitmapCache = new Bitmap(path);
+                ThumbnailBitmap?.Dispose();
+                ThumbnailBitmap = new Bitmap(path);
                 _cachedIndex = 0;
                 OnPropertyChanged(nameof(ThumbnailBitmap));
             }
         }
-        catch { /* 文件可能尚未就绪 */ }
+        catch
+        {
+            /* 文件可能尚未就绪 */
+        }
     }
 
     /// <summary>
-    /// 异步加载当前索引的缩略图（后台线程解码，完成后通知 UI）
+    ///     异步加载当前索引的缩略图（后台线程解码，完成后通知 UI）
     /// </summary>
     public void TriggerAsyncLoad()
     {
@@ -190,7 +190,7 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
         var targetIdx = Math.Clamp(SelectedThumbnailIndex, 0, ImageCount - 1);
 
         // 已有缓存则跳过
-        if (_thumbnailBitmapCache != null && _cachedIndex == targetIdx) return;
+        if (ThumbnailBitmap != null && _cachedIndex == targetIdx) return;
 
         // 取消之前的未完成任务
         _decodeCts?.Cancel();
@@ -204,8 +204,14 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
 
         _currentDecodeTask = Task.Run(() =>
         {
-            try { return DecodeFtxFrame(ftxPath, idx); }
-            catch (OperationCanceledException) { return null; }
+            try
+            {
+                return DecodeFtxFrame(ftxPath, idx);
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
+            }
             catch (Exception ex)
             {
                 LoggerHelper.Error($"[FileCard] Async decode failed ({idx}): {ex.Message}");
@@ -220,8 +226,8 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
             {
                 if (cts.IsCancellationRequested) return;
 
-                _thumbnailBitmapCache?.Dispose();
-                _thumbnailBitmapCache = bitmap;
+                ThumbnailBitmap?.Dispose();
+                ThumbnailBitmap = bitmap;
                 _cachedIndex = idx;
                 IsThumbnailLoading = false;
                 OnPropertyChanged(nameof(ThumbnailBitmap));
@@ -230,7 +236,7 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// FTX 帧解码（必须在后台线程调用）
+    ///     FTX 帧解码（必须在后台线程调用）
     /// </summary>
     private static Bitmap? DecodeFtxFrame(string ftxPath, int frameIndex)
     {
@@ -259,8 +265,8 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
 
     private void ClearBitmapCache()
     {
-        _thumbnailBitmapCache?.Dispose();
-        _thumbnailBitmapCache = null;
+        ThumbnailBitmap?.Dispose();
+        ThumbnailBitmap = null;
         _cachedIndex = -1;
     }
 
@@ -340,15 +346,5 @@ public partial class FileCardViewModel : ViewModelBase, IDisposable
     {
         IsPaired = false;
         StatusText = "Unpaired";
-    }
-
-    // ─── Dispose ─────────────────────────────────────────
-
-    public void Dispose()
-    {
-        _decodeCts?.Cancel();
-        _decodeCts?.Dispose();
-        ClearBitmapCache();
-        Parent = null;
     }
 }

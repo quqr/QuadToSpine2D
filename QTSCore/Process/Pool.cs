@@ -1,35 +1,29 @@
 ﻿using QTSAvalonia.Helper;
-using QTSCore.Data;
 using QTSCore.Data.Quad;
 using QTSCore.Interfaces;
 
 namespace QTSCore.Process;
 
 /// <summary>
-/// 对象池实现类，用于管理和复用PoolData对象
+///     对象池实现类，用于管理和复用PoolData对象
 /// </summary>
 /// <remarks>
-/// <para>
-/// Pool类实现了IPool接口，提供对象池功能以优化内存使用和性能。
-/// 它维护了已使用和未使用的PoolData对象池，支持对象的获取、释放和查找操作。
-/// </para>
-/// <para>
-/// 对象池模式通过复用对象来减少内存分配和垃圾回收的开销。
-/// </para>
+///     <para>
+///         Pool类实现了IPool接口，提供对象池功能以优化内存使用和性能。
+///         它维护了已使用和未使用的PoolData对象池，支持对象的获取、释放和查找操作。
+///     </para>
+///     <para>
+///         对象池模式通过复用对象来减少内存分配和垃圾回收的开销。
+///     </para>
 /// </remarks>
 public class Pool : IPool
 {
     private readonly Dictionary<string, List<PoolData>> _poolDictionary = new();
-    private readonly Dictionary<string, List<PoolData>> _unusedPoolDictionary = new();
     private readonly ProcessImages _processImages;
+    private readonly Dictionary<string, List<PoolData>> _unusedPoolDictionary = new();
 
     /// <summary>
-    /// 获取已使用的池数据字典
-    /// </summary>
-    public Dictionary<string, List<PoolData>> UsedPoolDictionary { get; } = new();
-
-    /// <summary>
-    /// 使用默认图像路径初始化Pool实例
+    ///     使用默认图像路径初始化Pool实例
     /// </summary>
     public Pool()
     {
@@ -37,7 +31,7 @@ public class Pool : IPool
     }
 
     /// <summary>
-    /// 使用指定的图像路径列表初始化Pool实例
+    ///     使用指定的图像路径列表初始化Pool实例
     /// </summary>
     /// <param name="imagePaths">图像路径列表的列表</param>
     public Pool(List<List<string?>> imagePaths)
@@ -46,20 +40,21 @@ public class Pool : IPool
     }
 
     /// <summary>
-    /// 从池中获取或创建PoolData对象
+    ///     获取已使用的池数据字典
+    /// </summary>
+    public Dictionary<string, List<PoolData>> UsedPoolDictionary { get; } = new();
+
+    /// <summary>
+    ///     从池中获取或创建PoolData对象
     /// </summary>
     /// <param name="layer">关键帧层</param>
     /// <returns>获取或创建的PoolData实例</returns>
     public PoolData Get(KeyframeLayer layer)
     {
         if (!UsedPoolDictionary.TryGetValue(layer.Guid, out var usedPoolsData))
-        {
             UsedPoolDictionary.Add(layer.Guid, usedPoolsData = []);
-        }
         if (!_unusedPoolDictionary.TryGetValue(layer.Guid, out var unusedPoolsData))
-        {
             _unusedPoolDictionary.Add(layer.Guid, unusedPoolsData = []);
-        }
 
         var unusedPoolData = unusedPoolsData.FirstOrDefault();
         PoolData poolData;
@@ -72,12 +67,13 @@ public class Pool : IPool
             poolData = unusedPoolData;
             unusedPoolsData.Remove(poolData);
         }
+
         usedPoolsData.Add(poolData);
         return poolData;
     }
 
     /// <summary>
-    /// 释放PoolData对象回池中
+    ///     释放PoolData对象回池中
     /// </summary>
     /// <param name="layer">关键帧层</param>
     /// <param name="poolData">要释放的池数据</param>
@@ -89,7 +85,7 @@ public class Pool : IPool
     }
 
     /// <summary>
-    /// 查找指定帧点的PoolData对象
+    ///     查找指定帧点的PoolData对象
     /// </summary>
     /// <param name="layer">关键帧层</param>
     /// <param name="framePoint">帧点</param>
@@ -100,17 +96,14 @@ public class Pool : IPool
         if (!_poolDictionary.TryGetValue(layer.Guid, out var poolDataList))
             throw new ArgumentException("Pool data not found for layer " + layer.Guid);
         foreach (var poolData in poolDataList)
-        {
             if (UsedPoolDictionary[layer.Guid].Contains(poolData) && poolData.FramePoint == framePoint)
-            {
                 return poolData;
-            }
-        }
+
         throw new ArgumentException("Pool data not found for layer " + layer.Guid);
     }
 
     /// <summary>
-    /// 创建新的PoolData对象
+    ///     创建新的PoolData对象
     /// </summary>
     /// <param name="layer">关键帧层</param>
     /// <param name="usedPoolsData">已使用的池数据列表</param>
@@ -126,6 +119,7 @@ public class Pool : IPool
             poolDataList = [];
             _poolDictionary.Add(layer.Guid, poolDataList);
         }
+
         poolDataList.Add(poolData);
         return poolData;
     }

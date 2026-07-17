@@ -13,7 +13,7 @@ public class KeyframeLayerJsonConverter : JsonConverter
     }
 
     public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
-        JsonSerializer                          serializer)
+        JsonSerializer serializer)
     {
         if (reader.TokenType == JsonToken.Null)
             return null;
@@ -33,7 +33,7 @@ public class KeyframeLayerJsonConverter : JsonConverter
     private KeyframeLayer ConvertToKeyframeLayer(JObject jObject)
     {
         var scaleFactor = Instances.ConverterSetting.ScaleFactor;
-        
+
         return new KeyframeLayer
         {
             Fog = ConvertToFog(jObject),
@@ -52,7 +52,7 @@ public class KeyframeLayerJsonConverter : JsonConverter
     private string[] ConvertToAttribute(JObject jObject)
     {
         var baseAttribute = jObject["attribute"];
-        
+
         return baseAttribute?.Type switch
         {
             JTokenType.Array => baseAttribute.ToObject<string[]?>() ?? [],
@@ -70,9 +70,9 @@ public class KeyframeLayerJsonConverter : JsonConverter
             JTokenType.Array => baseFog.ToObject<string[]?>(),
             JTokenType.String =>
             [
-                baseFog.Value<string>(), 
-                baseFog.Value<string>(), 
-                baseFog.Value<string>(), 
+                baseFog.Value<string>(),
+                baseFog.Value<string>(),
+                baseFog.Value<string>(),
                 baseFog.Value<string>()
             ],
             _ => null
